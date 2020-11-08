@@ -2,3 +2,6 @@ chatbot/data/
 node_modules/
 release-builds/
 test.js
+auth.txt
+nodeAPI1.js
+nodeglimeshAPI.MD

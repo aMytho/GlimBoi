@@ -1,0 +1,49 @@
+{
+    "Auth":{
+        "Oauth": "string", 
+        "RefreshToken": "string" 
+    },
+    "Mods": {
+        "ModList":[
+           { "Name": "TheCat",
+            "GlimeshMod": true 
+           },
+           { "Name": "AFaithfulServant",
+            "GlimeshMod": true 
+           }
+        ],
+        "ModPowers": {
+            "GlimeshMod": {
+
+            },
+            "Editor": {
+
+            }
+        }
+    },
+    "Points": {
+        "enabled":  true,
+        "name": "GlimBucks",
+        "StartingAmount": 0,
+        "accumalation": 15 
+    },
+    "Games": {
+        "enabled": true,
+        "Numbers": true,
+        "BankHeist": true,
+        "Trivia": true
+    },
+    "Commands": {
+        "enabled": true,
+        "cooldown": 15, 
+        "Prefix": "!", 
+        "Error": true 
+    },
+    "GlimBot": {
+        "chatControls": true,
+        "startLog": true,
+        "isCool": "O Y E S"
+    }
+
+    
+}

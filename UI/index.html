@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gleam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="src/style.css">
+    <!-- jQuery library -->
+    <script src="src/js/jquery.js"></script>
+    <script>
+    window.jQuery || document.write('<script src="src/js/jquery.js"><\/script>') //Imports it if it failed initially.
+    </script>
+    <link rel="stylesheet" href="src/css/bootstrap.css">
+    <!-- Popper JS -->
+    <script src="src/js/popper.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="src/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="src/electronNav.js"></script>
+    <script src="src/js/commands.js"></script>
+</head>
+<body>
+        </script>
+        <i id="maximize" class="fa fa-window-maximize" style="color: skyblue;position: absolute;right: 2px;top:1px;z-index: 2;"></i>
+        <i id="minimize" class="fa fa-window-minimize" style="color: skyblue;position: absolute;right: 25px;top:1px;z-index: 3;"></i>
+
+        <!-- A grey horizontal navbar that becomes vertical on small screens -->
+        <nav class="navbar navbar-expand-md navbar-dark glimNav mt-3 ml-4" style="padding-bottom: 5px;-webkit-app-region: drag" >
+          <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active glimNavItem" id="Commands">
+                    <a class="nav-link" href="UI/src/html/commands.html">Commands</a>
+                </li>
+                <li class="nav-item glimNavItem" id="Quotes">
+                    <a class="nav-link" href="UI/src/html/quotes.html">Quotes</a>
+                </li>
+                <li class="nav-item glimNavItem" id="Games">
+                    <a class="nav-link" href="#">Games</a>
+                </li>
+                <li class="nav-item glimNavItem" id="DB">
+                    <a class="nav-link" href="#">Database</a>
+                </li>
+                <li class="nav-item glimNavItem" id="Settings">
+                    <a class="nav-link" href="UI/src/html/settings.html">Settings</a>
+                </li>
+                <li class="nav-item glimNavItem" id="Chat">
+                  <a class="nav-link" href="UI/src/html/chat.html">Chat</a>
+              </li>
+            </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto nav-link glimNavItem" href="UI/src/html/homepage.html" style="color: turquoise;">Gleam</a>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item glimNavItem">
+                    <a class="nav-link" href="#"><i class="fa fa-bell" style="color: skyblue;"></i></a>
+                </li>
+                <li class="nav-item glimNavItem">
+                    <a class="nav-link" href="#" id="close">Exit</a>
+                </li>
+            </ul>
+        </div>
+  </nav>
+
+  
+  <!-- Or let Bootstrap automatically handle the layout -->
+  <div class="pane">
+  <div class="row pt-3">
+    <div class="col">
+      <div class="container p-4 ml-3 text-white glimPanel">
+         <h1>Welcome to <p style="color: turquoise;">Gleam</p></h1>
+         <p>New? View this guide on Getting Started</p>
+         <p>If you have any bugs be sure to report them on our Forums.</p>
+      </div>
+   </div>
+   <div class="col">
+      <div class="container p-3 ml-3 text-white glimPanel">
+         <h1>My second Bootstrap Page</h1>
+         <p>This part is inside a .container class.</p>
+         <p>The .container class provides a responsive fixed width container.</p>
+      </div>
+   </div>
+   <div class="col">
+      <div class="container p-4 mr-3 ml-3 text-white glimPanel">
+         <h1>My second Bootstrap Page</h1>
+         <p>This part is inside a .container class.</p>
+         <p>The .container class provides a responsive fixed width container.</p>
+      </div>
+   </div>
+
+    </div>
+    
+
+      <div class="row pt-6 mb-2">
+      <div class="col">
+        <div class="container p-4 ml-3 text-white glimPanel">
+           <h1>Welcome to <p style="color: turquoise;">Gleam</p></h1>
+           <p>New? View this guide on Getting Started</p>
+           <p>If you have any bugs be sure to report them on our Forums.</p>
+        </div>
+     </div>
+     <div class="col">
+        <div class="container p-3 ml-3 text-white glimPanel">
+           <h1>My second Bootstrap Page</h1>
+           <p>This part is inside a .container class.</p>
+           <p>The .container class provides a responsive fixed width container.</p>
+        </div>
+     </div>
+      </div>
+  </div>
+
+</body>
+</html>

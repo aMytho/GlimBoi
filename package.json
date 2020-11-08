@@ -1,0 +1,35 @@
+{
+  "name": "glimesh",
+  "productName": "Gleam",
+  "version": "1.0.0",
+  "description": "A chatbot for Glimesh.tv",
+  "main": "main.js",
+  "repository": "https://github.com/aMytho/GlimBoi.git",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron main.js",
+    "package-win": "electron-packager . Gleam --overwrite --platform=win32 --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\"" 
+  },
+  "author": "Mytho",
+  "license": "ISC",
+  "win": {
+    "icon": "UI/Icon/ending.png"
+  },
+  "dependencies": {
+    "@types/node": "^14.11.2",
+    "body-parser": "^1.19.0",
+    "electron": "^10.1.4",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "graphql": "^15.3.0",
+    "graphql-request": "^3.1.0",
+    "nedb": "^1.8.0",
+    "pkginfo": "^0.4.1",
+    "request": "^2.88.2",
+    "socket.io-client": "^2.3.1"
+  },
+  "devDependencies": {
+    "electron": "^10.1.4",
+    "electron-packager": "^15.1.0"
+  }
+}

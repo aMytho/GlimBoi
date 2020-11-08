@@ -1,0 +1,56 @@
+body {
+    background-color: #060818 !important;/*Same as Glimesh.tv */
+    overflow-x: hidden; /*prevents a vertical scollbar*/
+}
+.glimPanel {
+    background-color: #14193D !important; /*Color of most panels*/
+}
+.glimNav {
+    background-color: #151033 !important; /*Nav bar*/
+}
+.glimNavItem {
+    -webkit-app-region: no-drag; /*Allow the links to be clickable and not draggable. */
+}
+.whiteText {
+    color: aliceblue;
+}
+
+
+th {
+  color: aliceblue;
+}
+
+.dataTables_wrapper label, .dataTables_wrapper select, .dataTables_wrapper input, .dataTables_wrapper #example_info {
+  color: aliceblue;
+}
+
+.table-hover th {
+    color: rgb(255, 255, 255);
+}
+
+.table-hover td {
+    color: rgb(255, 255, 255);
+}
+
+.errorClass {
+    outline: 5px solid red;
+    outline-offset: -5px;
+}
+
+.errorMessage {
+    color: red;
+}
+
+.icon-input {
+    width: 100%;
+    border: 1px solid #E6E6E6;
+    margin: 8px 0;
+    outline: none;
+    padding: 8px 0px 8px 35px;
+    transition: 0.3s;
+  }
+  
+  .icon-input-container {
+    position: relative;
+  }
+  
