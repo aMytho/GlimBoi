@@ -1,6 +1,6 @@
 {
-  "name": "glimesh",
-  "productName": "Gleam",
+  "name": "glimboi",
+  "productName": "GlimBoi",
   "version": "1.0.0",
   "description": "A chatbot for Glimesh.tv",
   "main": "main.js",
