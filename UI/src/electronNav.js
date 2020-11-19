@@ -1,7 +1,13 @@
 //handles sending users to differen to parts of the app
 var {
-  BrowserWindow, app
+  BrowserView, BrowserWindow, app
 } = require("electron").remote
+
+function changeNavHighlight(highlight) { //Removes the old and highlights the new
+  console.log(highlight)
+  try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
+  document.getElementById(highlight).classList.add("active");
+}
 
 window.onload = function() {
 
@@ -33,6 +39,7 @@ naviLinks.forEach((linkEl) => {
         e.preventDefault();
         // Get the path to page content file
         const href = linkEl.getAttribute("href");
+        var id = linkEl.id
         if (href) {
             // Use node.js fs-module to read the file
             const fs = require("fs");
@@ -43,7 +50,10 @@ naviLinks.forEach((linkEl) => {
                 // show the selected page
                 contentEl.innerHTML = "";
                 contentEl.insertAdjacentHTML("beforeend", data);
+                changeNavHighlight(id) //Changes the highlight
                 if (linkEl.id = "Commands") {loadCommandTable();} //Builds the data table
+                if (linkEl.id = "GlimBoiHeader") {loadCharts();} //Builds the homepage charts
+                //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }
     })

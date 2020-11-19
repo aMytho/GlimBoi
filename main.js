@@ -1,4 +1,4 @@
-const { app, BrowserWindow, screen } = require('electron')
+const { app, BrowserView, BrowserWindow, screen } = require('electron')
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands

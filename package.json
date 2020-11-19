@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js",
-    "package-win": "electron-packager . Gleam --overwrite --platform=win32 --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\"" 
+    "package-win": "electron-packager . Gleam --overwrite --platform=win32 --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\""
   },
   "author": "Mytho",
   "license": "ISC",
@@ -24,12 +24,16 @@
     "graphql": "^15.3.0",
     "graphql-request": "^3.1.0",
     "nedb": "^1.8.0",
+    "open": "^7.3.0",
+    "passport-glimesh": "^1.0.5",
     "pkginfo": "^0.4.1",
     "request": "^2.88.2",
     "socket.io-client": "^2.3.1"
   },
   "devDependencies": {
     "electron": "^10.1.4",
-    "electron-packager": "^15.1.0"
+    "electron-packager": "^15.1.0",
+    "express-session": "^1.17.1",
+    "ws": "^7.4.0"
   }
 }

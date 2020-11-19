@@ -1,7 +1,15 @@
 # GlimBoi
 A chatbot for Glimesh.tv
 
-This chatbot has two modes.
+## Setup
+Download the bot here.
+Run the installer for your platform. Windows users can use the .exe file. Mac and Linux users can use Wine or build the app manually.
+
+## Login
+GlimBoi uses oAuth to connect to the glimesh service. You must create a dev app to use GlimBoi. This allows for a *custom bot name.*
+Go to https://glimesh.tv/users/settings/applications and make an application on the account with the desired name. Many users create a new account with the desired (bot) name. This is where the app needs to be created. 
+
+### Name
 
 ## GUI
 This is the normal mode for the bot. This is a user interface which you use to link your bot to chat and manage commands, quotes, and users.

@@ -18,8 +18,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <!--Apex Charts-->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!--custom scripts-->
     <script src="src/electronNav.js"></script>
+    <script src="src/js/charts.js"></script>
+    <script src="src/js/home.js"></script>
     <script src="src/js/commands.js"></script>
+    <script src="src/js/chat.js"></script>
 </head>
 <body>
         </script>
@@ -30,28 +36,28 @@
         <nav class="navbar navbar-expand-md navbar-dark glimNav mt-3 ml-4" style="padding-bottom: 5px;-webkit-app-region: drag" >
           <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active glimNavItem" id="Commands">
-                    <a class="nav-link" href="UI/src/html/commands.html">Commands</a>
+                <li class="nav-item glimNavItem" id="Commands">
+                    <a class="nav-link" href="UI/src/html/commands.html" id="CommandLink">Commands</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Quotes">
-                    <a class="nav-link" href="UI/src/html/quotes.html">Quotes</a>
+                    <a class="nav-link" href="UI/src/html/quotes.html" id="QuotesLink">Quotes</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Games">
-                    <a class="nav-link" href="#">Games</a>
+                    <a class="nav-link" href="#" id="GamesLink">Games</a>
                 </li>
                 <li class="nav-item glimNavItem" id="DB">
-                    <a class="nav-link" href="#">Database</a>
+                    <a class="nav-link" href="#" id="UsersLink">Users</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Settings">
-                    <a class="nav-link" href="UI/src/html/settings.html">Settings</a>
+                    <a class="nav-link" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Chat">
-                  <a class="nav-link" href="UI/src/html/chat.html">Chat</a>
+                  <a class="nav-link" href="UI/src/html/chat.html" id="ChatLink">Chat</a>
               </li>
             </ul>
         </div>
         <div class="mx-auto order-0">
-            <a class="navbar-brand mx-auto nav-link glimNavItem" href="UI/src/html/homepage.html" style="color: turquoise;">Gleam</a>
+            <a class="navbar-brand mx-auto nav-link glimNavItem" href="UI/src/html/homepage.html" style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
         </div>
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
@@ -68,48 +74,84 @@
   
   <!-- Or let Bootstrap automatically handle the layout -->
   <div class="pane">
-  <div class="row pt-3">
-    <div class="col">
-      <div class="container p-4 ml-3 text-white glimPanel">
-         <h1>Welcome to <p style="color: turquoise;">Gleam</p></h1>
-         <p>New? View this guide on Getting Started</p>
-         <p>If you have any bugs be sure to report them on our Forums.</p>
-      </div>
-   </div>
-   <div class="col">
-      <div class="container p-3 ml-3 text-white glimPanel">
-         <h1>My second Bootstrap Page</h1>
-         <p>This part is inside a .container class.</p>
-         <p>The .container class provides a responsive fixed width container.</p>
-      </div>
-   </div>
-   <div class="col">
-      <div class="container p-4 mr-3 ml-3 text-white glimPanel">
-         <h1>My second Bootstrap Page</h1>
-         <p>This part is inside a .container class.</p>
-         <p>The .container class provides a responsive fixed width container.</p>
-      </div>
-   </div>
-
-    </div>
-    
-
-      <div class="row pt-6 mb-2">
-      <div class="col">
-        <div class="container p-4 ml-3 text-white glimPanel">
-           <h1>Welcome to <p style="color: turquoise;">Gleam</p></h1>
-           <p>New? View this guide on Getting Started</p>
-           <p>If you have any bugs be sure to report them on our Forums.</p>
+    <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
+        
+        <div class="row">
+        <div class="col-sm-6">
+        <div class="introaaa">
+            <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
         </div>
-     </div>
-     <div class="col">
-        <div class="container p-3 ml-3 text-white glimPanel">
-           <h1>My second Bootstrap Page</h1>
-           <p>This part is inside a .container class.</p>
-           <p>The .container class provides a responsive fixed width container.</p>
+        <p>To get started please authenicate with Glimesh. You need a <span style="color: violet;"> Developer Application</span> for GlimBoi to function properly. This allows the bot to have a custom name.</p>
+        <p>Click here to create an application. It takes less than 5 minutes and gives the bot full functionality. When you are finished, click the button below to authenicate the bot with your application.</p>
+        <div class="row">
+            <div class="col">
+            <button class="btn btn-info btn-block" type="submit" id="authButton">Auth App</button>
+            </div>
+            <div class="col">
+            <button class="btn btn-info btn-block" type="submit" id="authButton">Contributing</button>
+            </div>
+            <div class="col">
+            <button class="btn btn-info btn-block" type="submit" id="authButton">Tutorials</button>
+            </div>
+            <div class="col">
+            <button class="btn btn-info btn-block" type="submit" id="authButton">FAQ</button>
+            </div>
+            </div>
         </div>
-     </div>
-      </div>
+        <div class="col-sm-6">
+            <form>
+                <div class="form-row">
+                  <div class="col">
+                    <input type="text" class="form-control" placeholder="Client ID" id="clientID">
+                  </div>
+                  <div class="col">
+                    <select class="form-control" disabled>
+                        <option>Account selection coming soon</option>
+                        <option>Coming soon</option>
+                      </select>
+                  </div>
+                </div>
+              </form>
+              <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
+              <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="auth()">Authenicate</button>
+        </div>
+        </div>
+       
+        <div class="row">
+        <div class="col-sm-6 mt-3">
+        <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
+        <p>It was inspired by Scottybot (Rip Mixer). Special thanks to Daddy Robot and Codestics for the help and inspiration. The goal of this bot is to provide an easy to use interface while using minimal resources in server mode.</p>
+        <p>Contributions are always welcome :)</p>
+        </div>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="chart">
+
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h5>Messages</h5>
+                    <ul class="mt-5">
+                        <li>Coffee</li>
+                        <li>Tea</li>
+                        <li>Milk</li>
+                      </ul>
+                </div>
+
+
+            </div>
+            
+            
+        </div>
+        </div>
+        
+        </div>
+        <script>
+          //Creates the chart. Only build the first time.
+          var introChart = new ApexCharts(document.querySelector("#chart"), introChartOptions);
+          introChart.render();
+        </script>
   </div>
 
 </body>

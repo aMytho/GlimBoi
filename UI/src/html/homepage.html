@@ -1,42 +1,54 @@
-<div class="row pt-3">
-    <div class="col">
-      <div class="container p-4 ml-3 text-white glimPanel">
-         <h1>Welcome to <p style="color: turquoise;">Gleam</p></h1>
-         <p>New? View this guide on Getting Started</p>
-         <p>If you have any bugs be sure to report them on our Forums.</p>
-      </div>
-   </div>
-   <div class="col">
-      <div class="container p-3 ml-3 text-white glimPanel">
-         <h1>My second Bootstrap Page</h1>
-         <p>This part is inside a .container class.</p>
-         <p>The .container class provides a responsive fixed width container.</p>
-      </div>
-   </div>
-   <div class="col">
-      <div class="container p-4 mr-3 ml-3 text-white glimPanel">
-         <h1>My second Bootstrap Page</h1>
-         <p>This part is inside a .container class.</p>
-         <p>The .container class provides a responsive fixed width container.</p>
-      </div>
-   </div>
+<div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
+        
+    <div class="row">
+    <div class="col-sm-6">
+    <div class="introaaa">
+        <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
+    </div>
+    <p>To get started please authenicate with Glimesh. You need a <span style="color: violet;"> Developer Application</span> for GlimBoi to function properly. This allows the bot to have a custom name.</p>
+    <p>Click here to create an application. It takes less than 5 minutes and gives the bot full functionality. When you are finished, click the button below to authenicate the bot with your application.</p>
+    <div class="row">
+        <div class="col">
+        <button class="btn btn-info btn-block" type="submit" id="authButton">Auth Instructions</button>
+        </div>
+        <div class="col">
+        <button class="btn btn-info btn-block" type="submit" id="authButton">Contributing</button>
+        </div>
+        <div class="col">
+        <button class="btn btn-info btn-block" type="submit" id="authButton">Tutorials</button>
+        </div>
+        <div class="col">
+        <button class="btn btn-info btn-block" type="submit" id="authButton">FAQ</button>
+        </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <form>
+            <div class="form-row">
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Client ID" id="clientID">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Client Secret" id="secretID">
+              </div>
+            </div>
+          </form>
+          <button class="btn btn-info btn-block mt-2" type="submit" id="authButton">Save</button>
+          <button class="btn btn-info btn-block" type="submit" id="authButton">Authenicate</button>
+    </div>
+    </div>
+   
+    <div class="row">
+    <div class="col-sm-6 mt-3">
+    <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
+    <p>It was inspired by Scottybot (Rip Mixer). Special thanks to Daddy Robot and Codestics for the help and inspiration. The goal of this bot is to provide an easy to use interface while using minimal resources in server mode.</p>
+    <p>Contributions are always welcome :)</p>
+    </div>
+    <div class="col-sm-6">
+        <div id="chart">
 
+        </div>
+    </div>
     </div>
     
-
-      <div class="row pt-6 mb-2">
-      <div class="col">
-        <div class="container p-4 ml-3 text-white glimPanel">
-           <h1>Welcome to <p style="color: turquoise;">Gleam</p></h1>
-           <p>New? View this guide on Getting Started</p>
-           <p>If you have any bugs be sure to report them on our Forums.</p>
-        </div>
-     </div>
-     <div class="col">
-        <div class="container p-3 ml-3 text-white glimPanel">
-           <h1>My second Bootstrap Page</h1>
-           <p>This part is inside a .container class.</p>
-           <p>The .container class provides a responsive fixed width container.</p>
-        </div>
-     </div>
-      </div>
+    </div>
