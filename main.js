@@ -1,4 +1,4 @@
-const { app, BrowserView, BrowserWindow, screen } = require('electron')
+const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron')
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
@@ -67,12 +67,12 @@ CommandHandle.syncCommands();
 
 
 
-
+var win;
 
 
 function createWindow () {
   const {width,height} = screen.getPrimaryDisplay().workAreaSize
-  const win = new BrowserWindow({
+   win = new BrowserWindow({
     width: width,
     height: height,
     backgroundColor: "#060818",
@@ -83,12 +83,23 @@ function createWindow () {
     icon: __dirname + "UI/Icons/ending.png",
     frame: false
   })
-
   win.loadFile(app.getAppPath() + '/UI/index.html');
   //win.setOverlayIcon('UI/Icons/ending.png', "Gleam");
   win.setIcon('UI/Icons/glimesh.png')
  // win.webContents.openDevTools()
 }
+
+ipcMain.on('createChat', function (evt, message) {
+  if (message.type == 'createNewWindow') {
+      console.log("make a new window");
+      const view = new BrowserView()
+      win.setBrowserView(view);
+       var size = win.getSize()
+      view.setBounds({ x: ((size[0] / 2) - 250), y: ((size[1] / 2) - 250), width: 500, height: 500 })
+      view.setAutoResize({width: true, height: true, horizontal: true, vertical: true})
+      view.webContents.loadURL('https://glimesh.tv/' + message.user + '/chat')
+  }
+});
 
 app.whenReady().then(createWindow)
 

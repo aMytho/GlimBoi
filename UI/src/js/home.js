@@ -12,10 +12,41 @@ function loadCharts() {
     introChart.render();
 }
 
+function rememberID() {
+    console.log("Getting thier stored ID.");
+    try {
+       var possibleID = JSON.parse(fs.readFile(`${app.getAppPath()}/chatbot/data/auth.JSON`, function(err, data) {
+        possibleID = JSON.parse(data)
+        console.log(possibleID)
+        if (possibleID.clientID !== "" && possibleID.clientID !== undefined) {
+            document.getElementById("clientID").setAttribute("disabled", "");
+            document.getElementById("clientID").setAttribute("placeholder", "ID Saved!")
+            document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
+            document.getElementById("saveAuth").innerHTML = "Edit Auth";
+        } else {throw err}
+       } ))
+    } catch(e) {
+        console.log(e)
+        document.getElementById("clientID").removeAttribute("disabled");
+        document.getElementById("saveAuth").setAttribute("onclick", "saveAuth()")
+        document.getElementById("saveAuth").innerHTML = "Save";
+    }
+}
+
 function saveAuth() {
     var replacement = JSON.stringify({token: "", clientID: document.getElementById("clientID").value, refresh: null})
     fs.writeFileSync(`${app.getAppPath()}/chatbot/data/auth.JSON`, replacement);
-    console.log("done")
+    document.getElementById("clientID").setAttribute("disabled", "");
+    document.getElementById("clientID").setAttribute("placeholder", "ID Saved!")
+    document.getElementById("clientID").value = "ID Saved!"
+    document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
+    document.getElementById("saveAuth").innerHTML = "Edit Auth";
+}
+
+function editAuth() {
+    document.getElementById("clientID").removeAttribute("disabled");
+    document.getElementById("saveAuth").setAttribute("onclick", "saveAuth()")
+    document.getElementById("saveAuth").innerHTML = "Save";
 }
 
 function auth() {

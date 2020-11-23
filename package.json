@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js",
-    "package-win": "electron-packager . Gleam --overwrite --platform=win32 --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\""
+    "package-win": "electron-packager . Gleam --overwrite --platform=win32 --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\"",
+    "package-lin": "electron-packager . Gleam --overwrite --platform=linux --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\""
   },
   "author": "Mytho",
   "license": "ISC",

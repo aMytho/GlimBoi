@@ -11,7 +11,11 @@ var path = "./";
 var serverisOn = false;
 
 function startAuthServer(authScheme) {
-  if (serverisOn == true) {console.log('server is already running, if this is a mistake restart glimboi')} else {
+  if (serverisOn == true) {console.log('server is already running, if this is a mistake restart glimboi');
+  open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
+
+
+} else {
     console.log('starting auth server')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

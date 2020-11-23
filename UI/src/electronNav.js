@@ -51,8 +51,10 @@ naviLinks.forEach((linkEl) => {
                 contentEl.innerHTML = "";
                 contentEl.insertAdjacentHTML("beforeend", data);
                 changeNavHighlight(id) //Changes the highlight
-                if (linkEl.id = "Commands") {loadCommandTable();} //Builds the data table
-                if (linkEl.id = "GlimBoiHeader") {loadCharts();} //Builds the homepage charts
+                console.log(linkEl.id)
+                if (linkEl.id == "CommandLink") {loadCommandTable();} //Builds the data table
+                if (linkEl.id == "GlimBoiHeader") {loadCharts();} //Builds the homepage charts
+                if (linkEl.id == "ChatLink") {openWindow()}
                 //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }
