@@ -1,23 +1,23 @@
 var fs = require("fs");
 const { app, BrowserWindow } = require("electron");
 const Datastore = require("nedb");
-const { type } = require("os");
 
 console.log(__dirname);
 var path = "./";
 var otherPath = null;
 
 let quotesDB;
+let userDB;
 //let quotesDBTest = new Datastore({ filename: `${path}data/quotes.db`, autoload: true });
 
 class Quote {
   constructor(quoteName, quoteData) {
     this.quoteName = quoteName; //The person who said the auote
     this.quoteData = quoteData; // No explanation here
-    this.quoteID = generateID(); //Id of the quotes used to edit and delete it from the USER side. The DB has its own ID which is separate.
+    this.quoteID = generateID(quoteName) //ID of the users quotes. The DB ID is different.
     this.date = generateDate(); //Tik toc
   }
-}
+} 
 
 //Updates the file path. Electron and the non electron build use different URLS.
 function updatePath(GUI) {
@@ -27,14 +27,40 @@ function updatePath(GUI) {
     filename: `${path}/chatbot/data/quotes.db`,
     autoload: true,
   });
+  userDB = new Datastore({
+    filename: `${path}/chatbot/data/users.db`,
+    autoload: true,
+  });
+ // userDB.persistence.setAutocompactionInterval( 5000 /*ms*/ )
 }
 
 //Adds a quote
 function addquote(quoteName, quoteData) {
   var newquote = new Quote(quoteName, quoteData);
+  newquote.quoteID.then(data => {
+    newquote.quoteID = data + 1
+    console.log(newquote)
+    try {
+      //inserts a document as a quote. Uses the quote made above.
+      quotesDB.insert(newquote, function (err, doc) {
+        console.log("Inserted", doc.quoteData, "with ID", doc._id, "and quote ID", doc.quoteID);
+        userDB.update({userName:newquote.quoteName}, {$push: {quotes: {quoteID: newquote.quoteID, quoteData:newquote.quoteData, dbID: doc._id}}}, {multi: false, }, function(err,) {
+          console.log("FINALLY DONE ");
+        })
+      });
+      
+    } catch (e) {
+      console.log(e);
+      console.log(
+        "Failure to add quote. Ensure only one instance of the bot is running and check your quotes.db file (in the data folder) for curruption."
+      );
+    }
+  })
+  
+  /*
   try {
     //inserts a document as a quote. Uses the quote made above.
-    quotesDB.insert(newquote, function (err, doc) {
+    userDB.update(newquote, function (err, doc) {
       console.log("Inserted", doc.quoteName, "with ID", doc._id);
     });
   } catch (e) {
@@ -43,6 +69,7 @@ function addquote(quoteName, quoteData) {
       "Failure to add quote. Ensure only one instance of the bot is running and check your quotes.db file (in the data folder) for curruption."
     );
   }
+  */
   return newquote;
 }
 
@@ -70,28 +97,31 @@ function editquote(quoteName, quoteData) {
   );
 }
 
-//Generates the Id of the quotes tha iteracts with users. The DB ID is different and not related to this.
-function generateID() {
+function getAll() {
+  return new Promise(resolve => {
+    quotesDB.find({}, function (err, docs) {
+      console.log(docs)
+      resolve(docs)
+    })
+  })
+}
+
+//Generates the ID of the quote. THis is determined by the users total number of quotes.
+ async function generateID(quoteName) {
   console.log("Generating ID");
-  var ID = Math.floor(Math.random() * 1000); //We limit the quotes to 999. If you need more increase this number.
-  console.log(ID);
-      var isTaken = "invalid";
-    //I give it 1000 tries to get a non used id. If you somehow do not succeed I'm going to laugh
-    /*
-    quotesDB.find({ quoteID: 481 }, function (err, docs,) {
-      console.log("Docs is " + docs);
-      console.log(typeof docs);
-      if (docs == "") {
-          console.log("This ID is open. Adding")
-          isTaken = false;
-      } else {
-        console.log("ID is taken. Retrying");
-        ID = Math.floor(Math.random() * 1000);
-        isTaken = true;
-      }
-    });
-*/
-  return ID = 5;
+  var usedID = await getusedID(quoteName); //Gets the number of quotes of this user.
+  return usedID
+}
+
+ async function getusedID(quoteName) {
+  //Gets the total amount of quotes the user has.
+  var highestID = await new Promise(resolve => {
+    userDB.find({userName: quoteName}, function (err, docs) {
+      var length = docs[0].quotes.length
+      resolve(length)
+    })
+  })
+  return highestID
 }
 
 function generateDate() {
@@ -100,4 +130,4 @@ function generateDate() {
   return theTime;
 }
 
-module.exports = { addquote, editquote, removequote, updatePath }; //Send to the main file.
+module.exports = { addquote, editquote, getAll, removequote, updatePath }; //Send to the main file.

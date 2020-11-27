@@ -3,7 +3,9 @@ var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require("./lib/commands.js") //handles commands
 var QuoteHandle = require("./lib/quotes.js") //handles qoutes
 var AuthHandle = require("./lib/auth.js") //handles qoutes
+var UserHandle = require("./lib/users.js") //handles users
 const readline = require("readline");
+const WebSocket = require("ws");
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -53,10 +55,13 @@ var authScheme = {
   secretID: "b",
   token: "c"
 }
-
+CommandHandle.updatePath("..")
 QuoteHandle.updatePath("..")
-//QuoteHandle.addquote("Mytho", "loads of data");
+UserHandle.updatePath("..")
 
+//QuoteHandle.addquote("Mytho", "loads of data");
+//CommandHandle.addCommand("tetsingthings", null, "aaa", 0, 0,"everyone", null)
+/*
 try{
 let authfile = JSON.parse(fs.readFileSync('data/auth.JSON'))
  var clientID = authfile.clientID;
@@ -85,26 +90,68 @@ let authfile = JSON.parse(fs.readFileSync('data/auth.JSON'))
   });
     //AUTH FUNCTION
 }
-/*
-const WebSocket = require("ws");
-const auth = require("./lib/auth.js");
+*/
+
+//chat("4669ee568985c7371a17e36274b1154f90ba2e14691fe1dadd41bcbf2fe7bb8e") //Connects to chat.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function chat(authString) {
+console.log(authString)
 const url =
   "wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=" + authString;
 const connection = new WebSocket(url);
 
-connection.on("open", function open() {
-  connection.send('["6","6","__absinthe__:control","phx_join",{}]');
-  connection.send(
-    `["6","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: 6) { user { username avatar } message } }","variables":{} }]`
-  );
 
-  setInterval(() => {
+connection.on("open", function open() {
+
+  //connection.send(`["6","7","__absinthe__:control","doc",{"query":"query { channel(username:"Mytho") { id } }","variables":{}}]`)
+
+  connection.send(["6","7","__absinthe__:control","phx_join",{}]);
+  connection.send(
+    `["6","6","__absinthe__:control","doc",{"query":"query{ channel(username: \"clone1018\") { user { username avatar } title } }","variables":{} }]`
+    );
+ // connection.send(`["6","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: 2) { user { username avatar } message } }","variables":{} }]`)
+
+ /* setInterval(() => {
     connection.send('[null,"6","phoenix","heartbeat",{}]');
   }, 30000);
+  */
+  
 });
 
 connection.on("message", function incoming(data) {
-  //console.log(data)
+  console.log(data)
   try {
     //First check for heartbeat message.
     var heartbeat = JSON.parse(data);
@@ -148,7 +195,7 @@ connection.onerror = function (error) {
   console.log(`[error] ${error.message}`);
   console.log("Probably an auth issue. Please reauthenicate");
 };
-
+}
 
 /*
 connection.send(

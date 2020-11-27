@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-1 mt-3 mx-auto">
+     <a class="btn btn-primary btn-block" href="/users/settings/profile " data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
+     <a class="btn btn-success mt-2 btn-block" href="/users/settings/profile " data-toggle="modal" data-target="#modalEditCommand">Edit Users</a>
+     <a class="btn btn-danger mt-2 btn-block" href="/users/settings/profile" data-toggle="modal" data-target="#modalDelete">Purge Users</a>
+  </div>
+  <div class="col-10 glimPanel whiteText mt-3 mx-auto">
+     <table id="userTable" class="display table table-striped" style="width:100%">
+     </table>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 mt-3 mx-auto">
+  <h3 class="whiteText">Note: Watch time, links, teams, and points are currently in dev. They will be enabled in a future update!</h3>
+  </div>
+
+</div>
+
+
+
+
+<div class="modal fade" id="modalUserAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="adduserModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalLabel">Add a command</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body userList">
+          
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="errorMessageAdd"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-primary" onclick="checkNewCommand()" id="addCommandButtonFinish">Add</button>
+        </div>
+     </div>
+  </div>
+</div>

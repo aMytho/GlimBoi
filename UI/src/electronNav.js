@@ -4,7 +4,6 @@ var {
 } = require("electron").remote
 
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
-  console.log(highlight)
   try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
   document.getElementById(highlight).classList.add("active");
 }
@@ -51,10 +50,10 @@ naviLinks.forEach((linkEl) => {
                 contentEl.innerHTML = "";
                 contentEl.insertAdjacentHTML("beforeend", data);
                 changeNavHighlight(id) //Changes the highlight
-                console.log(linkEl.id)
                 if (linkEl.id == "CommandLink") {loadCommandTable();} //Builds the data table
                 if (linkEl.id == "GlimBoiHeader") {loadCharts();} //Builds the homepage charts
                 if (linkEl.id == "ChatLink") {openWindow()}
+                if (linkEl.id == "UsersLink") {loadUsers()}
                 //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }
