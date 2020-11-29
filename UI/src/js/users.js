@@ -99,6 +99,12 @@ function loadUsers() {
           "defaultContent": "<button>Open</button>"
       } ]
       });
+      $('#userTable tbody').on( 'click', 'button', function () {
+        var data = userTable.row( $(this).parents('tr') ).data();
+        //alert( data[0] +"'s salary is: "+ data[ 5 ] );
+        console.log('doing it' + data)
+        makeList(data)
+      } );
     });
 
   }
@@ -134,6 +140,7 @@ function viewQuoteModal(user) {
 }
 
 function makeList(user) {
+  document.getElementsByClassName('userList')[0].innerHTML = ""
   console.log(user)
   // Make a container element for the list
  let listContainer = document.createElement('div'),
