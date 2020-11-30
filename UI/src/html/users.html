@@ -1,8 +1,10 @@
 <div class="row">
   <div class="col-1 mt-3 mx-auto">
      <a class="btn btn-primary btn-block" href="/users/settings/profile " data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
-     <a class="btn btn-success mt-2 btn-block" href="/users/settings/profile " data-toggle="modal" data-target="#modalEditCommand">Edit Users</a>
-     <a class="btn btn-danger mt-2 btn-block" href="/users/settings/profile" data-toggle="modal" data-target="#modalDelete">Purge Users</a>
+     <a class="btn btn-success mt-2 btn-block disabled" href="/users/settings/profile " data-toggle="modal" data-target="#modalEditCommand">Edit Users</a> 
+     <a class="btn btn-danger mt-2 btn-block" href="/users/settings/profile" data-toggle="modal" data-target="#modalUserRemove">Purge Users</a>
+     <a class="btn btn-primary mt-2 btn-block" data-toggle="modal" data-target="#modalQuoteAdd"> Add Quote</a>
+     <a class="btn btn-info mt-2 btn-block" onclick="loadAllQuotes()"> View All Quotes</a>
   </div>
   <div class="col-10 glimPanel whiteText mt-3 mx-auto">
      <table id="userTable" class="display table table-striped" style="width:100%">
@@ -31,13 +33,72 @@
         </div>
         <!--Body-->
         <div class="modal-body">
-          
+         <div class="icon-input-container">
+            <input class="icon-input" type="text" placeholder="Enter the User" id="userAddInput">
+            <p id="addUserMessage" class="errorMessage"></p>
+            <p id="addUserMessageSuccess" class="successMessage"></p>
+        </div>
         </div>
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageAdd"></p>
            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="checkNewCommand()" id="addCommandButtonFinish">Add</button>
+           <button class="btn btn-outline-primary" onclick="addUser()" id="addUserFinish">Add</button>
+        </div>
+     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalUserRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="removeuserModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalLabel2">Remove a User</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+         <div class="icon-input-container">
+            <input class="icon-input" type="text" placeholder="Enter the User" id="userremoveInput">
+            <p>This is irreversible.</p>
+            <p id="removeUserMessage" class="errorMessage"></p>
+            <p id="removeUserMessageSuccess" class="successMessage"></p>
+        </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="errorMessageRemove"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-primary" onclick="removeUser()" id="removeUserFinish">Remove</button>
+        </div>
+     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalQuoteAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="addQuoteModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalLabel3">Add a Quote</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+         <div class="icon-input-container">
+            <input class="icon-input" type="text" placeholder="Enter the User" id="userQuoteInputU">
+            <input class="icon-input" type="text" placeholder="Enter the Quote" id="userQuoteInputQ">
+            <p>If the user does not yet exist it will be created.</p>
+            <p id="addQuoteMessage" class="errorMessage"></p>
+            <p id="addQuoteMessageSuccess" class="successMessage"></p>
+        </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="errorMessageAdd"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-primary" onclick="addQuote()" id="addQuoteFinish">Add</button>
         </div>
      </div>
   </div>

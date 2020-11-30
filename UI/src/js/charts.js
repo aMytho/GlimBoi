@@ -42,18 +42,22 @@ var introChartOptions = {
   ],
 };
 
-function getUsers() {
-    return 56;
+async function getUsers() {
+    var result = await UserHandle.getAll()
+    return result.length
 }
 
-function getQuotes() {
-    return 44;
+async function getQuotes() {
+  var result = await QuoteHandle.getAll()
+  console.log(result.length)
+  return result.length
 }
 
-function getCommands() {
-    return 57;
+async function getCommands() {
+  var result = await CommandHandle.getAll()
+  return result.length
 }
 
 function getPoints() {
-    return 29;
+    return 2;
 }

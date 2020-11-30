@@ -1,21 +1,14 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
 var fs = require("fs"); //File handling
 const Datastore = require("nedb"); // The database module
-
+/*
 let commandsDB = new Datastore({
   filename: `${app.getAppPath()}/chatbot/data/commands.db`,
   autoload: true,
 }); // The DB of commands.
-let quotesDB = new Datastore({
-  filename: `${app.getAppPath()}/chatbot/data/quotes.db`,
-  autoload: true,
-});
-let usersDB = new Datastore({
-  filename: `${app.getAppPath()}/chatbot/data/users.db`,
-  autoload: true,
-});
-console.log(app.getAppPath())
+*/
 var CommandHandle = require(app.getAppPath() + "/chatbot/lib/commands.js");
+CommandHandle.updatePath(app.getAppPath()); //Gives the module the correct path to the DB.
 var arrayOfCommands = []; //An array that stores the commands from the DB so we don't import them every change.
 var tblhasbeenopened = false; //Ensures we don't run this function evey time the table is opened.
 var table; //The physical table for the UI
@@ -25,11 +18,10 @@ var commandToBeEdited; // A global var because I was too lazy to find another so
 //Loads the command table. It is loaded when the page is opened for the first time. After that it is saved to a variable.
 function loadCommandTable() {
   if (tblhasbeenopened == false) {
-    CommandHandle.updatePath(app.getAppPath());
     //  let commandData = fs.readFileSync('chatbot/data/commands.JSON'); //Imports the commands.
     let commandData;
     //Imports all the commands from the DB
-    commandsDB.find({}, function (err, docs) {
+    CommandHandle.getAll().then(docs => { 
       console.log(docs);
       commandData = docs;
       //We push the commands to the arrayofcommands var. The table uses this to build.

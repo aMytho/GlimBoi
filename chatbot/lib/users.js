@@ -24,11 +24,18 @@ class User {
 async function addUser(user) {
     var tempUser = new User(user) //makes the user. L I F E !
     var newUser = await new Promise(done => {
-      usersDB.insert(tempUser, function(err, doc) {
-        console.log(doc);
-        console.log("User created!")
-        done(doc)
-      });
+      usersDB.find({userName:user}, function (err, docs) {
+        if (docs.length == 0) {
+          console.log("No user was found with the name " + user);
+          usersDB.insert(tempUser, function(err, doc) {
+            console.log(doc);
+            console.log("User created!")
+            done(doc)
+          });
+        } else {
+          done("USEREXISTS")
+        }
+      })
     })
     return newUser
 };
@@ -37,9 +44,6 @@ function updatePath(GUI) {
     console.log("User path is " + GUI);
     path = GUI;
     usersDB = new Datastore({ filename: `${path}/chatbot/data/users.db`, autoload: true });
-  
-   //quotesDB = new Datastore({ filename: `${path}data/quotes.db`, autoload: true });
-   //usersDB = new Datastore({ filename: `${path}data/users.db`, autoload: true });
   }
 
 async function findByUserName(name) {
@@ -59,21 +63,23 @@ async function findByUserName(name) {
 return queryResult
 }
 
-async function getAllUsers() {
-  console.log("searching.");
-  const result = await getAll()
-  console.log('test2')
-  console.log(result)
-  return result
-}
 
-function getAll() {
+async function getAll() {
   return new Promise(resolve => {
     usersDB.find({}, function (err, docs) {
       console.log('Returning all users.')
       resolve(docs)
     })
   })
+}
+
+async function removeUser(user) {
+ return new Promise(resolve => {
+  usersDB.remove({ userName: user }, {}, function (err, numRemoved) {
+    console.log("Removed " + user)
+    resolve(user);
+  });
+ }) 
 }
 
 
@@ -84,4 +90,4 @@ function addQuote(quote, id) {
 }
 
 
-module.exports = {addQuote, addUser, findByUserName, getAllUsers, updatePath, User}
+module.exports = {addQuote, addUser, findByUserName, getAll, removeUser, updatePath, User}

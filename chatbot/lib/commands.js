@@ -234,6 +234,15 @@ function importCommands() {
  // console.log(importedCommands);
 }
 
+async function getAll() {
+  return new Promise(resolve => {
+    commandsDB.find({}, function (err, docs) {
+      console.log(docs)
+      resolve(docs)
+    })
+  })
+}
+
 
 
 function getTime() {
@@ -241,4 +250,4 @@ function getTime() {
   return theTime;
 }
 
-module.exports = { addCommand, editCommand, removeCommand, importCommands, checkCommand, syncCommands, updatePath}; //Send to the main file.
+module.exports = { addCommand, checkCommand, editCommand, getAll, importCommands, removeCommand ,syncCommands, updatePath}; //Send to the main file.

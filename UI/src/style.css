@@ -41,6 +41,10 @@ th {
     color: red;
 }
 
+.successMessage {
+    color: green;
+}
+
 .icon-input {
     width: 100%;
     border: 1px solid #E6E6E6;

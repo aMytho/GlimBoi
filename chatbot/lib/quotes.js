@@ -87,7 +87,7 @@ function editquote(quoteName, quoteData) {
   );
 }
 
-function getAll() {
+async function getAll() {
   return new Promise(resolve => {
     quotesDB.find({}, function (err, docs) {
       console.log(docs)
@@ -110,15 +110,10 @@ function generateDate() {
   return theTime;
 }
 
-function test() {
-  
-  userDB.find({}, function (err, docs) {
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaa');
-    console.log(docs);
-    console.log('aaaaaaaaaaaaa')
+function randomQuote() {
+  quotesDB.find({}, function (err, docs) {
+    
   })
-
-
 }
 
 module.exports = { addquote, editquote, getAll, removequote, updatePath }; //Send to the main file.
