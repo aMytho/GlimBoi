@@ -1,5 +1,3 @@
-const { User } = require("../../../chatbot/lib/users");
-
 var UserHandle = require(app.getAppPath() + "/chatbot/lib/users.js"); //Module for Users
 var QuoteHandle = require(app.getAppPath() + "/chatbot/lib/quotes.js"); //Module for quotes
 
