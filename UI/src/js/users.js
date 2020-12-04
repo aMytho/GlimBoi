@@ -1,3 +1,5 @@
+const { User } = require("../../../chatbot/lib/users");
+
 var UserHandle = require(app.getAppPath() + "/chatbot/lib/users.js"); //Module for Users
 var QuoteHandle = require(app.getAppPath() + "/chatbot/lib/quotes.js"); //Module for quotes
 
@@ -297,4 +299,20 @@ function makeList(user) { //Similir to above function, makes a list and displays
       // Add listItem to the listElement
       listElement.appendChild(listItem);
   }
+}
+
+//This is the points section. 
+var arrayOfPoints = [];
+var maxPoints = [];
+function getPoints() {
+  var points = UserHandle.getAll().then(data => {
+    console.log(data);
+    for (const property in data) {
+      var pointValue = [
+        `${data[`${property}`].userName}`,
+        `${data[`${property}`].points}`
+      ];
+      arrayOfPoints.push(pointValue)
+    }
+  })
 }

@@ -1,0 +1,193 @@
+<div class="row">
+
+   <div class="col-3 ml-4 mt-3">
+      <div class="card body glimPanel">
+         <div class="card-body">
+            <h3 class="whiteText text-center" id="pointName">Points</h3>
+            <p class="whiteText text-center">_______________</p>
+            <div class="row">
+               <div class="col-4 whiteText text-nowrap">
+                  <h3>Earning</h3>
+               </div>
+               <div class="col-8 whiteText">
+                  <h4 class="text-right">200,1253,2,4,5,333,0</h4>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-4 whiteText text-nowrap">
+                  <h3>Starting</h3>
+               </div>
+               <div class="col-8 whiteText">
+                  <h4 class="text-right">2,4,5,333,0</h4>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-6">
+                  <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalEditPoints"> Edit Values</a>
+               </div>
+               <div class="col-6 ">
+                  <a class="btn btn-info btn-block" data-toggle="modal" data-target="#modalInfo">More Info</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="col-8 mt-3 mr-2 ml-5">
+      <div class="card body glimPanel">
+         <div class="card-body">
+            <h3 class="whiteText text-center" id="pointName">Top Users</h3>
+            <table class="table whiteText table-hover">
+               <thead>
+                 <tr>
+                   <th scope="col">#</th>
+                   <th scope="col">User</th>
+                   <th scope="col">Team</th>
+                   <th scope="col">Points</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 <tr>
+                   <th scope="row">1</th>
+                   <td>Mark</td>
+                   <td>Otto</td>
+                   <td>@mdo</td>
+                 </tr>
+                 <tr>
+                   <th scope="row">2</th>
+                   <td>Jacob</td>
+                   <td>Thornton</td>
+                   <td>@fat</td>
+                 </tr>
+                 <tr>
+                   <th scope="row">3</th>
+                   <td>Larry</td>
+                   <td>the Bird</td>
+                   <td>@twitter</td>
+                 </tr>
+                 <tr>
+                  <th scope="row">4</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+                <tr>
+                  <th scope="row">6</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+                <tr>
+                  <th scope="row">7</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+                <tr>
+                  <th scope="row">8</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+                <tr>
+                  <th scope="row">9</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+                <tr>
+                  <th scope="row">10</th>
+                  <td>Larry</td>
+                  <td>the Bird</td>
+                  <td>@twitter</td>
+                </tr>
+               </tbody>
+             </table>
+         </div>
+      </div>
+   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="adduserModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalLabel4">Info</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+           <h4 class="text-center">Points</h4>
+         <p>Points are a currency your viewers can earn once they have been added to the DB. You can change "points" to anything you wish. Your viewers can use these points on games and other activities. </p>
+         <h4 class="text-center">Earning Points</h4>
+         <p>Users earn points every 15 minutes they are in your stream. This value can be adjusted on the points tab. You can also earn points by playing games.</p>
+         <p>Although there is not a point limit I would recomend keeping the points earned per minute low. It saves resources and can prevent visual bugs.</p>
+         <h4 class="text-center">Mods</h4>
+         <p>Mods can bestow and remove viewers points. They can also set the amount earned in chat.</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        </div>
+     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditPoints" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="editPointsModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalLabel5">Edit Points</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+           <h4 class="text-center">Points</h4>
+         <p>Points are a currency your viewers can earn once they have been added to the DB. You can change "points" to anything you wish. Your viewers can use these points on games and other activities. </p>
+         <h4 class="text-center">Earning Points</h4>
+         <p>Users earn points every 15 minutes they are in your stream. This value can be adjusted on the points tab. You can also earn points by playing games.</p>
+         <p>Although there is not a point limit I would recomend keeping the points earned per minute low. It saves resources and can prevent visual bugs.</p>
+         <h4 class="text-center">Mods</h4>
+         <p>Mods can bestow and remove viewers points. They can also set the amount earned in chat.</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="editPoints()">Save</button>
+
+        </div>
+     </div>
+  </div>
+</div>
