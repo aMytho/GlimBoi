@@ -214,7 +214,7 @@ function addUser() { //Adds a user
         data.team,
         data.role,
         data.picture,
-        "<button>Open</button>"
+        data.quotes
       ])
       //adds it to the user var.
       var arrayUser = [
@@ -302,15 +302,26 @@ function makeList(user) { //Similir to above function, makes a list and displays
 //This is the points section. 
 var arrayOfPoints = [];
 var maxPoints = [];
+var pointsTable;
 function getPoints() {
+  console.log('sdkjjskl')
   var points = UserHandle.getAll().then(data => {
     console.log(data);
+    pointsTable = document.getElementById("pointsTable");
     for (const property in data) {
       var pointValue = [
         `${data[`${property}`].userName}`,
-        `${data[`${property}`].points}`
+        `${data[`${property}`].points}`,
+        `${data[`${property}`].team}`
       ];
       arrayOfPoints.push(pointValue)
+    }
+    for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
+
+          for (var j = 0; j < arrayOfPoints.length; j++) {
+            pointsTable.rows[i].cells[j].innerHTML = arrayOfPoints[i]
+          }      
+      
     }
   })
 }

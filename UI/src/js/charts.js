@@ -1,5 +1,20 @@
+var userCount,pointCount,commandCount,quoteCount;
+ function getBasicData() {
+  var users = UserHandle.getAll().then( a =>  {
+    userCount = a.length;
+    var points = QuoteHandle.getAll().then( b => {
+      quoteCount = b.length;
+      var commands = CommandHandle.getAll().then( c => {
+        commandCount = c.length;
+        pointCount = 4;
+        var introChart = new ApexCharts(document.querySelector("#chart"), introChartOptions);
+        introChart.render();
+      })
+    })
+  })
+}
 var introChartOptions = {
-  series: [getUsers(), getPoints(), getCommands(), getQuotes(), 50],
+  series: [userCount, pointCount, commandCount, quoteCount, 4],
   labels: ["Users", "Points", "Commands", "Quotes", "Alt"],
   chart: {
     width: 380,
@@ -42,22 +57,3 @@ var introChartOptions = {
   ],
 };
 
-async function getUsers() {
-    var result = await UserHandle.getAll()
-    return result.length
-}
-
-async function getQuotes() {
-  var result = await QuoteHandle.getAll()
-  console.log(result.length)
-  return result.length
-}
-
-async function getCommands() {
-  var result = await CommandHandle.getAll()
-  return result.length
-}
-
-function getPoints() {
-    return 2;
-}
