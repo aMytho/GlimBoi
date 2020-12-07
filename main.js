@@ -1,3 +1,4 @@
+require('update-electron-app')({updateInterval: `30 Minutes`})
 const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron')
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
