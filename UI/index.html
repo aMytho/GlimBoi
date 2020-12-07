@@ -10,11 +10,11 @@
     <script>
     window.jQuery || document.write('<script src="src/js/jquery.js"><\/script>') //Imports it if it failed initially.
     </script>
-    <link rel="stylesheet" href="src/css/bootstrap.css">
+    <link rel="stylesheet" href="src/css/bootstrap.min.css">
     <!-- Popper JS -->
     <script src="src/js/popper.js"></script>
     <!-- Latest compiled JavaScript -->
-    <script src="src/js/bootstrap.js"></script>
+    <script src="src/js/bootstrap/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
@@ -153,8 +153,7 @@
         </div>
         <script>
           //Creates the chart. Only build the first time.
-          var introChart = new ApexCharts(document.querySelector("#chart"), introChartOptions);
-          introChart.render();
+          getBasicData()
         </script>
   </div>
 
