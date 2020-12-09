@@ -89,9 +89,7 @@ function createWindow () {
   win.loadFile(app.getAppPath() + '/UI/index.html');
   //win.setOverlayIcon('UI/Icons/ending.png', "Gleam");
   win.setIcon('UI/Icons/glimesh.png');
-  win.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify();
-  });
  // win.webContents.openDevTools()
 }
 
