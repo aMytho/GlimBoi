@@ -305,7 +305,7 @@ var maxPoints = [];
 var pointsTable;
 function getPoints() {
   console.log('sdkjjskl')
-  var points = UserHandle.getAll().then(data => {
+  var points = UserHandle.getTopPoints().then(data => {
     console.log(data);
     pointsTable = document.getElementById("pointsTable");
     for (const property in data) {
@@ -316,11 +316,16 @@ function getPoints() {
       ];
       arrayOfPoints.push(pointValue)
     }
+    console.log(pointsTable.rows.length);
+    var skipOne = true;
     for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
-
-          for (var j = 0; j < arrayOfPoints.length; j++) {
-            pointsTable.rows[i].cells[j].innerHTML = arrayOfPoints[i]
-          }      
+          pointsTable.rows[i+1].cells[0].innerHTML = i
+          if (arrayOfPoints[i] == undefined) {} else {
+          pointsTable.rows[i+1].cells[1].innerHTML = arrayOfPoints[i][0]
+          pointsTable.rows[i+1].cells[2].innerHTML = arrayOfPoints[i][1]
+          pointsTable.rows[i+1].cells[3].innerHTML = arrayOfPoints[i][2]
+          }
+        
       
     }
   })

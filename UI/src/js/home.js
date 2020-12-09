@@ -8,8 +8,7 @@ var serverisOn = false;
 var AuthHandle = require(app.getAppPath() + "/chatbot/lib/auth.js");
 
 function loadCharts() {
-    var introChart = new ApexCharts(document.querySelector("#chart"), introChartOptions);
-    introChart.render();
+    getBasicData()
 }
 
 function rememberID() {

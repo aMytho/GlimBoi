@@ -112,26 +112,6 @@
          </div>
       </div>
    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 
 
@@ -174,13 +154,12 @@
         </div>
         <!--Body-->
         <div class="modal-body">
-           <h4 class="text-center">Points</h4>
-         <p>Points are a currency your viewers can earn once they have been added to the DB. You can change "points" to anything you wish. Your viewers can use these points on games and other activities. </p>
-         <h4 class="text-center">Earning Points</h4>
-         <p>Users earn points every 15 minutes they are in your stream. This value can be adjusted on the points tab. You can also earn points by playing games.</p>
-         <p>Although there is not a point limit I would recomend keeping the points earned per minute low. It saves resources and can prevent visual bugs.</p>
-         <h4 class="text-center">Mods</h4>
-         <p>Mods can bestow and remove viewers points. They can also set the amount earned in chat.</p>
+           <div class="icon-input-container">
+            <input class="icon-input" type="text" placeholder="Starting Amount" id="editStart">
+            <input class="icon-input" type="text" placeholder="Earning Per 10 Minutes" id="editEarn">
+            <input class="icon-input" type="text" placeholder="Currency Name" id="editName">
+            <p id="editCommandMessage" class="errorMessage"></p>
+        </div>
         </div>
         <!--Footer-->
         <div class="modal-footer">

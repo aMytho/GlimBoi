@@ -89,5 +89,14 @@ function addQuote(quote, id) {
   })
 }
 
+async function getTopPoints() {
+  return new Promise(resolve => {
+    usersDB.find({}).sort({ points: -1 }).exec(function (err, docs) {
+      // docs is [doc1, doc3, doc2];
+      resolve(docs)
+    });
+  })
+}
 
-module.exports = {addQuote, addUser, findByUserName, getAll, removeUser, updatePath, User}
+
+module.exports = {addQuote, addUser, findByUserName, getAll, getTopPoints, removeUser, updatePath, User}

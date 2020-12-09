@@ -54,6 +54,7 @@ naviLinks.forEach((linkEl) => {
                 if (linkEl.id == "GlimBoiHeader") {loadCharts();} //Builds the homepage charts
                 if (linkEl.id == "ChatLink") {openWindow()}
                 if (linkEl.id == "UsersLink") {loadUsers()}
+                if (linkEl.id == "PointsLink") {getPoints()}
                 //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }
