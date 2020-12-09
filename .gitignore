@@ -5,3 +5,5 @@ test.js
 auth.txt
 nodeAPI1.js
 nodeglimeshAPI.MD
+electron-builder.yml
+dist/

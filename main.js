@@ -1,5 +1,5 @@
-require('update-electron-app')({updateInterval: `30 Minutes`})
-const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron')
+const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater');
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
@@ -48,7 +48,9 @@ CommandHandle.syncCommands();
 
 
 
-
+ipcMain.on('app_version', (event) => {
+  event.sender.send('app_version', { version: app.getVersion() });
+});
 
 
 
@@ -86,7 +88,10 @@ function createWindow () {
   })
   win.loadFile(app.getAppPath() + '/UI/index.html');
   //win.setOverlayIcon('UI/Icons/ending.png', "Gleam");
-  win.setIcon('UI/Icons/glimesh.png')
+  win.setIcon('UI/Icons/glimesh.png');
+  win.once('ready-to-show', () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
  // win.webContents.openDevTools()
 }
 
@@ -118,3 +123,12 @@ app.on('activate', () => {
   }
 })
 
+autoUpdater.on('update-available', () => {
+  mainWindow.webContents.send('update_available');
+});
+autoUpdater.on('update-downloaded', () => {
+  mainWindow.webContents.send('update_downloaded');
+});
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
+});
