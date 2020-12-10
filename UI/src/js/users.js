@@ -304,7 +304,9 @@ var arrayOfPoints = [];
 var maxPoints = [];
 var pointsTable;
 function getPoints() {
-  console.log('sdkjjskl')
+    document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
+    document.getElementById("EarningPoints").innerHTML = settings.Points.accumalation;
+    alreadyLoaded = true;
   var points = UserHandle.getTopPoints().then(data => {
     console.log(data);
     pointsTable = document.getElementById("pointsTable");

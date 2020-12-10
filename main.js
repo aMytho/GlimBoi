@@ -1,5 +1,5 @@
-const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron');
-const { autoUpdater } = require('electron-updater');
+const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
+const { autoUpdater } = require('electron-updater'); //handles updates
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
@@ -130,5 +130,3 @@ autoUpdater.on('update-downloaded', () => {
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
-console.log(app.getPath("appData"))
-console.log(app.getPath("userData"))
