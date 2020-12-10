@@ -51,7 +51,7 @@ var importedCommands = []; //Existing Commands
 function updatePath(GUI) {
   console.log("path is " + GUI);
   path = GUI;
- commandsDB = new Datastore({ filename: `${path}/chatbot/data/commands.db`, autoload: true });
+ commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
 
  //quotesDB = new Datastore({ filename: `${path}data/quotes.db`, autoload: true });
  //usersDB = new Datastore({ filename: `${path}data/users.db`, autoload: true });

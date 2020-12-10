@@ -43,7 +43,7 @@ if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
 }
 console.log(__dirname)
 //console.log('Connecting to USER chatroom');
-CommandHandle.updatePath(app.getAppPath());
+CommandHandle.updatePath(app.getPath("userData"));
 CommandHandle.syncCommands();
 
 
@@ -130,3 +130,5 @@ autoUpdater.on('update-downloaded', () => {
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
+console.log(app.getPath("appData"))
+console.log(app.getPath("userData"))

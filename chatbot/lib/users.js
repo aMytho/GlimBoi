@@ -43,7 +43,7 @@ async function addUser(user) {
 function updatePath(GUI) {
     console.log("User path is " + GUI);
     path = GUI;
-    usersDB = new Datastore({ filename: `${path}/chatbot/data/users.db`, autoload: true });
+    usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
   }
 
 async function findByUserName(name) {

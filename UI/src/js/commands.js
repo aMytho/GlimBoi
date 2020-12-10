@@ -8,7 +8,7 @@ let commandsDB = new Datastore({
 }); // The DB of commands.
 */
 var CommandHandle = require(app.getAppPath() + "/chatbot/lib/commands.js");
-CommandHandle.updatePath(app.getAppPath()); //Gives the module the correct path to the DB.
+CommandHandle.updatePath(app.getPath("userData")); //Gives the module the correct path to the DB.
 var arrayOfCommands = []; //An array that stores the commands from the DB so we don't import them every change.
 var tblhasbeenopened = false; //Ensures we don't run this function evey time the table is opened.
 var table; //The physical table for the UI

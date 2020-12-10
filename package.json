@@ -6,7 +6,23 @@
   "main": "main.js",
   "repository": "https://github.com/aMytho/GlimBoi.git",
   "build": {
-    "asar": false
+    "appId": "GlimBoi",
+    "asar": false,
+    "publish": {
+      "provider": "github",
+      "vPrefixedTagName": true,
+       "token": "heh, I am not showing that. Replace with your own token to make your own releases"
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerIcon": "UI/Icons/icon.ico",
+      "allowToChangeInstallationDirectory": true,
+      "installerHeaderIcon": "UI/Icons/icon.ico"
+
+    },
+    "directories": {
+      "buildResources": "UI/Icons"
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

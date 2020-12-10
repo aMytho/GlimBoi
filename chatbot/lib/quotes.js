@@ -23,7 +23,7 @@ function updatePath(GUI) {
   console.log("Quote path is " + GUI);
   path = GUI;
   quotesDB = new Datastore({
-    filename: `${path}/chatbot/data/quotes.db`,
+    filename: `${path}/data/quotes.db`,
     autoload: true,
   });
  /* userDB = new Datastore({

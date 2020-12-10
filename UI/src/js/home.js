@@ -14,7 +14,7 @@ function loadCharts() {
 function rememberID() {
     console.log("Getting thier stored ID.");
     try {
-       var possibleID = JSON.parse(fs.readFile(`${app.getAppPath()}/chatbot/data/auth.JSON`, function(err, data) {
+       var possibleID = JSON.parse(fs.readFile(`${app.getPath("userData")}/data/auth.JSON`, function(err, data) {
         possibleID = JSON.parse(data)
         console.log(possibleID)
         if (possibleID.clientID !== "" && possibleID.clientID !== undefined) {
@@ -34,7 +34,7 @@ function rememberID() {
 
 function saveAuth() {
     var replacement = JSON.stringify({token: "", clientID: document.getElementById("clientID").value, refresh: null})
-    fs.writeFileSync(`${app.getAppPath()}/chatbot/data/auth.JSON`, replacement);
+    fs.writeFileSync(`${app.getPath("userData")}/data/auth.JSON`, replacement);
     document.getElementById("clientID").setAttribute("disabled", "");
     document.getElementById("clientID").setAttribute("placeholder", "ID Saved!")
     document.getElementById("clientID").value = "ID Saved!"
@@ -49,8 +49,8 @@ function editAuth() {
 }
 
 function auth() {
-    let authSchema = JSON.parse(fs.readFileSync(`${app.getAppPath()}/chatbot/data/auth.JSON`))
-    AuthHandle.updatePath(app.getAppPath());
+    let authSchema = JSON.parse(fs.readFileSync(`${app.getPath("userData")}/data/auth.JSON`))
+    AuthHandle.updatePath(app.getPath("userData"));
     AuthHandle.Auth(authSchema) //runs the webserver so we can get the token needed to connect to chat.
 }
 

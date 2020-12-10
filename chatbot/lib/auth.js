@@ -29,7 +29,7 @@ app.get('/success', (req, res) => {
   let code = req.query.code;
   console.log("Auth complete! Code: " + code + 'Causing error to close the server');
   res.send('<p>Auth complete! You can close this now. </p>');
-  fs.writeFileSync(`${path}/chatbot/data/token.JSON`, JSON.stringify(code))
+  fs.writeFileSync(`${path}/data/token.JSON`, JSON.stringify(code))
   //Need to send an auth screen and wait a few seconds before xlosing.
   app.listen(port, () => console.log('Closing auth server on port ' + port))
 });
