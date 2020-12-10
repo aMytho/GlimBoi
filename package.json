@@ -1,7 +1,7 @@
 {
   "name": "glimboi",
   "productName": "GlimBoi",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A chatbot for Glimesh.tv",
   "main": "main.js",
   "repository": "https://github.com/aMytho/GlimBoi.git",
@@ -11,7 +11,7 @@
     "publish": {
       "provider": "github",
       "vPrefixedTagName": true,
-       "token": "removed"
+       "token": "aaaaa"
     },
     "nsis": {
       "oneClick": false,
