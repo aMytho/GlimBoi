@@ -9,12 +9,11 @@ const bodyParser = require('body-parser');
 
 var path = "./";
 var serverisOn = false;
+var tempID = ""
 
 function startAuthServer(authScheme) {
   if (serverisOn == true) {console.log('server is already running, if this is a mistake restart glimboi');
-  open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
-
-
+      open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
 } else {
     console.log('starting auth server')
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +28,8 @@ app.get('/success', (req, res) => {
   let code = req.query.code;
   console.log("Auth complete! Code: " + code + 'Causing error to close the server');
   res.send('<p>Auth complete! You can close this now. </p>');
-  fs.writeFileSync(`${path}/data/token.JSON`, JSON.stringify(code))
+  code = JSON.stringify({token: code, clientID: tempID})
+  fs.writeFileSync(`${path}/data/auth.JSON`, code)
   //Need to send an auth screen and wait a few seconds before xlosing.
   app.listen(port, () => console.log('Closing auth server on port ' + port))
 });
@@ -42,7 +42,9 @@ app.listen(port, () => console.log('App listening on port ' + port), serverisOn 
 //Gets an access token for the user. This lets the Bot control the account so it can respond to commands and do all functions.
 //It also lets the bot to API requests for any user.
 function Auth(authScheme) {
-    // opens the url in the default browser 
+    if (authScheme) {} else {
+      var authScheme = JSON.parse(fs.readFileSync(path + "/data/auth.JSON"));
+    }
     startAuthServer(authScheme)
 }
 
@@ -52,4 +54,23 @@ function updatePath(GUI) {
   path = GUI;
 }
 
-module.exports = { Auth, startAuthServer, updatePath }; //Send to the main file.
+function recieveID(id) {
+  tempID = id;
+}
+
+function checkForAuthFile() {
+  try {
+   var auth = JSON.parse(fs.readFileSync(path + "/data/auth.JSON"));
+   console.log(auth.clientID, auth.token);
+   console.log("File exists ^^")
+  } catch(e) {
+    console.log(e)
+    console.log("File does not exist ^^");
+  }
+}
+
+function checkForAuthWeb() {
+
+}
+
+module.exports = { Auth, checkForAuthFile, recieveID, startAuthServer, updatePath }; //Send to the main file.

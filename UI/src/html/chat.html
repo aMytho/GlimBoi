@@ -1,5 +1,30 @@
-<div>
-    <div class="spinner-border text-info" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
+<div class="row">
+  <div class="col-6 mx-auto mt-3">
+  <div class="card">
+  <div class="card-body glimPanel">
+    <h3 class="whiteText text-center" id="chatName">Chat</h3>
+    <p class="whiteText text-center">_______________</p>
+    <div class="icon-input-container">
+      <input class="icon-input" type="text" placeholder="User" id="userChatSearch">
+      <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="openWindow()">Open</button>
+      <p id="userChat" class="float-right whiteText">Enter the chat you want to view. You may have to log in and relaunch the chat to talk.</p>
+  </div>
+  </div>
+  </div>
+ 
 </div>
+<div class="col-6 mx-auto mt-3">
+ <div class="card">
+  <div class="card-body glimPanel">
+    <h3 class="whiteText text-center" id="chatName">Chat</h3>
+    <p class="whiteText text-center">_______________</p>
+    <div class="icon-input-container">
+      <input class="icon-input" type="text" placeholder="User" id="userChatSearch">
+      <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="ChatHandle.join()">Open</button>
+      <p id="userChat" class="float-right whiteText">Enter the chat you want to view. You may have to log in and relaunch the chat to talk.</p>
+  </div>
+  </div>
+  </div>
+</div>
+</div>
+

@@ -45,7 +45,7 @@
                     <a class="nav-link" href="UI/src/html/points.html" id="PointsLink">Points</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Games">
-                    <a class="nav-link" href="#" id="GamesLink">Games</a>
+                    <a class="nav-link disabled" href="#" id="GamesLink">Games</a>
                 </li>
                 <li class="nav-item glimNavItem" id="DB">
                     <a class="nav-link" href="UI/src/html/users.html" id="UsersLink">Users</a>
@@ -116,6 +116,7 @@
               </form>
               <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
               <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="auth()">Authenicate</button>
+              <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" onclick="document.getElementById('ChatLink').click();">Join Channel</button>
               <script>rememberID() // runs the function to get the id from storage</script>
         </div>
         </div>
@@ -180,33 +181,44 @@
         <script>
           //Creates the chart. Only build the first time.
           getBasicData()
-            const version = document.getElementById('version');
-    
+        const version = document.getElementById('version');
+        console.log(ipcRenderer)
     ipcRenderer.send('app_version');
     ipcRenderer.on('app_version', (event, arg) => {
+      console.log("What is the app version" + arg.version)
       ipcRenderer.removeAllListeners('app_version');
       version.innerText = 'Version ' + arg.version;
     });
     const notification = document.getElementById('notification');
-const message = document.getElementById('message');
-const restartButton = document.getElementById('restart-button');
-ipcRenderer.on('update_available', () => {
-  ipcRenderer.removeAllListeners('update_available');
-  message.innerText = 'A new update is available. Downloading now...';
-  notification.classList.remove('hidden');
+    const message = document.getElementById('message');
+    const restartButton = document.getElementById('restart-button');
+
+    ipcRenderer.on('update_available', () => {
+      ipcRenderer.removeAllListeners('update_available');
+      console.log("Update Avaible")
+      message.innerText = 'A new update is available. Downloading now...';
+      notification.classList.remove('hidden');
 });
+
 ipcRenderer.on('update_downloaded', () => {
+  console.log("Update Downloaded")
   ipcRenderer.removeAllListeners('update_downloaded');
   message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
   restartButton.classList.remove('hidden');
   notification.classList.remove('hidden');
   function closeNotification() {
   notification.classList.add('hidden');
-}
-function restartApp() {
+}});
+  function restartApp() {
+    console.log("trying to restart the app for the update")
   ipcRenderer.send('restart_app');
 }
-});
+  ipcRenderer.on("aaaaaaaaaaaaa", () => {
+  console.log("it happened")
+})
+  ipcRenderer.on("test", data => {
+    console.log(data)
+  })
         </script>
   </div>
 

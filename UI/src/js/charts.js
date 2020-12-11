@@ -9,7 +9,7 @@ var userCount,pointCount,commandCount,quoteCount,introChart
         pointCount = 4;
         var introChartOptions = {
           series: [userCount, pointCount, commandCount, quoteCount, 4],
-          labels: ["Users", "Points", "Commands", "Quotes", "Alt"],
+          labels: ["Users", "Points", "Commands", "Quotes", "PlaceHolder"],
           chart: {
             width: 380,
             type: "donut",

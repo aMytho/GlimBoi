@@ -2,10 +2,11 @@
 var {
     BrowserView, BrowserWindow, app
   } = require("electron").remote
-var fs = require('fs')
+var fs = require('fs');
 
 var serverisOn = false;
 var AuthHandle = require(app.getAppPath() + "/chatbot/lib/auth.js");
+AuthHandle.updatePath(app.getPath("userData"))
 
 function loadCharts() {
     getBasicData()
@@ -18,6 +19,7 @@ function rememberID() {
         possibleID = JSON.parse(data)
         console.log(possibleID)
         if (possibleID.clientID !== "" && possibleID.clientID !== undefined) {
+            AuthHandle.recieveID(possibleID.clientID)
             document.getElementById("clientID").setAttribute("disabled", "");
             document.getElementById("clientID").setAttribute("placeholder", "ID Saved!")
             document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
@@ -40,6 +42,7 @@ function saveAuth() {
     document.getElementById("clientID").value = "ID Saved!"
     document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
     document.getElementById("saveAuth").innerHTML = "Edit Auth";
+    AuthHandle.recieveID(document.getElementById("clientID").value)
 }
 
 function editAuth() {
@@ -53,7 +56,3 @@ function auth() {
     AuthHandle.updatePath(app.getPath("userData"));
     AuthHandle.Auth(authSchema) //runs the webserver so we can get the token needed to connect to chat.
 }
-
-
-
-
