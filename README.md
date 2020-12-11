@@ -2,7 +2,7 @@
 A chatbot for Glimesh.tv
 
 ## Setup
-Download the bot here.
+Download the bot from the releases page.
 Run the installer for your platform. Windows users can use the .exe file. Mac and Linux users can use Wine or build the app manually.
 
 ## Login
@@ -23,6 +23,7 @@ Create your bot in the GUI mode. When you are ready to stream switch to server m
 
 ## Updates
 Windows can recieve automatic updates. Other platforms must manually update. You can download any version of the bot from the releases page. Copy and paste the contents of the DB folder in the new directory if you manually updated the bot.
+This is a work in progress.
 
 ## Platforms
 This works on Windows, Linux (deb), and Mac. Some platforms have restrictions so you may want to use WINE if not on Windows. Windows will always be the main platform followed by Linux and finally Mac.
