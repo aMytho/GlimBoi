@@ -1,5 +1,6 @@
 const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
 const { autoUpdater } = require('electron-updater'); //handles updates
+autoUpdater.autoDownload = true;
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
@@ -38,14 +39,11 @@ if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
     };
     console.log("GlimBot:");
         console.log(" Chat Control: " + "\x1b[38m" + settings.GlimBot.chatControls + "\033[0m");
+        console.log(" Current Version: " + "\x1b[38m" + autoUpdater.currentVersion + "\033[0m");
         console.log("\x1b[38m" + "______________________" + "\033[0m");
     console.log("Logging Completed!");
 }
-console.log(__dirname)
-//console.log('Connecting to USER chatroom');
 CommandHandle.updatePath(app.getPath("userData"));
-CommandHandle.syncCommands();
-
 
 
 ipcMain.on('app_version', (event) => {
@@ -54,18 +52,7 @@ ipcMain.on('app_version', (event) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+console.log(autoUpdater.fullChangelog);
 
 
 
@@ -88,22 +75,11 @@ function createWindow () {
   })
   win.loadFile(app.getAppPath() + '/UI/index.html');
   //win.setOverlayIcon('UI/Icons/ending.png', "Gleam");
-  win.setIcon('UI/Icons/glimesh.png');
+  win.setIcon('UI/Icons/bot.png');
     autoUpdater.checkForUpdatesAndNotify();
  // win.webContents.openDevTools()
 }
 
-ipcMain.on('createChat', function (evt, message) {
-  if (message.type == 'createNewWindow') {
-      console.log("make a new window");
-      const view = new BrowserView()
-      win.setBrowserView(view);
-       var size = win.getSize()
-      view.setBounds({ x: ((size[0] / 2) - 250), y: ((size[1] / 2) - 250), width: 500, height: 500 })
-      view.setAutoResize({width: true, height: true, horizontal: true, vertical: true})
-      view.webContents.loadURL('https://glimesh.tv/' + message.user + '/chat')
-  }
-});
 
 app.whenReady().then(createWindow)
 
@@ -123,10 +99,36 @@ app.on('activate', () => {
 
 autoUpdater.on('update-available', () => {
   win.webContents.send('update_available');
+  console.log("avaible")
 });
 autoUpdater.on('update-downloaded', () => {
   win.webContents.send('update_downloaded');
+  console.log("downloaded")
 });
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
+
+//Creats the chat window for viewing a chat
+ipcMain.on("createChat", (event, arg) => {
+  console.log(arg);
+  var chat = new BrowserWindow({
+    width: 400,
+    height: 700,
+    backgroundColor: "#060818",
+    icon: __dirname + "UI/Icons/ending.png",
+    frame: true,
+    darkTheme: true
+  })
+  chat.loadURL("https://glimesh.tv/" + arg.user + "/chat")
+})
+
+
+
+//This handles the BOT connecting to chat (NOT the User)
+//A non electorn version of this file can be run in the chatbot directory. You need Nodejs.
+
+function joinChatBot() {
+  var chat = require(__dirname + "/chatbot/lib/chat.js");
+
+}
