@@ -1,5 +1,4 @@
 var fs = require("fs");
-const { app, BrowserWindow } = require("electron");
 const Datastore = require("nedb");
 var UserHandle = require("./users.js");
 var path = "./";
@@ -26,11 +25,6 @@ function updatePath(GUI) {
     filename: `${path}/data/quotes.db`,
     autoload: true,
   });
- /* userDB = new Datastore({
-    filename: `${path}/chatbot/data/users.db`,
-    autoload: true,
-  });*/
- // userDB.persistence.setAutocompactionInterval( 5000 /*ms*/ )
 }
 
 //Adds a quote
@@ -111,9 +105,7 @@ function generateDate() {
 }
 
 function randomQuote() {
-  quotesDB.find({}, function (err, docs) {
-    
-  })
+  quotesDB.find({}, function (err, docs) {})
 }
 
 module.exports = { addquote, editquote, getAll, removequote, updatePath }; //Send to the main file.

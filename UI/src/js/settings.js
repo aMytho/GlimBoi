@@ -16,8 +16,8 @@ function updatePoints(value) {
     settings.Points.StartingAmount = value.start;
     settings.Points.accumalation = value.earn;
     settings.Points.name = value.name;
-    settings.Points.enabled = value.enabled;
     fs.writeFileSync(app.getAppPath() + '/chatbot/settings/settings.JSON', JSON.stringify(settings));
+    console.log("Point settings updated!");
 }
 
 

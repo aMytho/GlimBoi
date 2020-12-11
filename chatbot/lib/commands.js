@@ -1,5 +1,4 @@
 var fs = require("fs");
-const app = require('electron')
 const Datastore = require('nedb')
 
 
@@ -52,9 +51,6 @@ function updatePath(GUI) {
   console.log("path is " + GUI);
   path = GUI;
  commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
-
- //quotesDB = new Datastore({ filename: `${path}data/quotes.db`, autoload: true });
- //usersDB = new Datastore({ filename: `${path}data/users.db`, autoload: true });
 }
 
 
@@ -73,53 +69,6 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
   return newCommand;
 }
 
-/*Removes a command from chat. 
-function removeCommand(commandName) {
-  fs.writeFileSync(`${path}data/newCommands.JSON`, JSON.stringify(todaysCommand), function (err) {
-    console.log(`!${commandName} is now a command`)
-    if (err) return console.log(err);
-  });
-  return newCommand;
-}
-*/
-
-//Adds a command from Electron. 
-/*
-function addCommandE(commandName, arguements, commandData, uses, points, rank, special) {
-  var newCommand = new Command(commandName, arguements, commandData, uses, points, rank, special);
-  todaysCommand[`${newCommand.commandName}`] = newCommand //adds it a var which holds all of todays commands. It is written to a file which is later written to the main list.
-  commandAddedToday = true;
-  fs.writeFileSync(`chatbot/data/newCommands.JSON`, JSON.stringify(todaysCommand), function (err) {
-    console.log(`!${commandName} is now a command`)
-    if (err) return console.log(err);
-  });
-  return newCommand;
-}
-*/
-
-//Adds the commands from the previous session to the main list. This is run before the old commands are imported.
-function syncCommands() {/*
-  var importedCommandsDataOld = fs.readFileSync(`${path}data/commands.JSON`, "utf-8");
-  var importedCommandsDataNew = fs.readFileSync(`${path}data/newCommands.JSON`, "utf-8");
-  try {
-    importedCommandsDataOld = JSON.parse(importedCommandsDataOld);
-    importedCommandsDataNew = JSON.parse(importedCommandsDataNew);
-    var test = {...importedCommandsDataOld, ...importedCommandsDataNew}
-    console.log(test);
-    //Write to the main command list.
-    fs.writeFileSync(`${path}data/commands.JSON`, JSON.stringify(test), function (err) {
-      if (err) return console.log(err);
-    });
-    //Deletes the new command list.
-    fs.writeFileSync(`${path}data/newCommands.JSON`, "", function (err) {
-      if (err) return console.log(err);
-    });
-  } catch (error) {
-    console.log(error);
-    console.log("No command to add. Ignore error!")
-  }
-  */
-}
 
 //Removes a command
 function removeCommand(commandName) {
@@ -227,12 +176,6 @@ function replaceVariable(variable) {
   }
 }
 
-function importCommands() {
-  //Imports commands from the commands.JSON file.
- // var importedCommandsData = fs.readFileSync(`${path}data/commands.JSON`, "utf-8");
- // importedCommands = JSON.parse(importedCommandsData);
- // console.log(importedCommands);
-}
 
 async function getAll() {
   return new Promise(resolve => {
@@ -250,4 +193,4 @@ function getTime() {
   return theTime;
 }
 
-module.exports = { addCommand, checkCommand, editCommand, getAll, importCommands, removeCommand ,syncCommands, updatePath}; //Send to the main file.
+module.exports = { addCommand, checkCommand, editCommand, getAll, removeCommand , updatePath}; //Send to the main file.

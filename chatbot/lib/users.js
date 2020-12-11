@@ -1,6 +1,5 @@
 //Controls the User DB
 const Datastore = require('nedb')
-const app = require('electron');
 
 var usersDB;
 var path = "./";

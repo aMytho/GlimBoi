@@ -306,6 +306,7 @@ var pointsTable;
 function getPoints() {
     document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
     document.getElementById("EarningPoints").innerHTML = settings.Points.accumalation;
+    document.getElementById("pointName").innerHTML = settings.Points.name
     alreadyLoaded = true;
   var points = UserHandle.getTopPoints().then(data => {
     console.log(data);
@@ -327,8 +328,21 @@ function getPoints() {
           pointsTable.rows[i+1].cells[2].innerHTML = arrayOfPoints[i][1]
           pointsTable.rows[i+1].cells[3].innerHTML = arrayOfPoints[i][2]
           }
-        
-      
     }
   })
+}
+
+function editPointSettings() {
+ var start = document.getElementById("editStart").value
+ var earn = document.getElementById("editEarn").value
+ var name = document.getElementById("editName").value
+ console.log(name, earn, start)
+ if (isNaN(earn) == true || isNaN(start) == true) {
+   console.log("Not a number");
+   document.getElementById("editPointsMessage").innerHTML = "Starting and earning values must be a number.";
+ } else {
+  updatePoints({start: start, earn: earn, name: name}) //Edits it at settings.js
+  document.getElementById("editPointsMessage").innerHTML = "";
+
+ }
 }
