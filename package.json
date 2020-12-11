@@ -11,14 +11,13 @@
     "publish": {
       "provider": "github",
       "vPrefixedTagName": true,
-       "token": "aaaaa"
+      "token": "redacted"
     },
     "nsis": {
       "oneClick": false,
       "installerIcon": "UI/Icons/icon.ico",
       "allowToChangeInstallationDirectory": true,
       "installerHeaderIcon": "UI/Icons/icon.ico"
-
     },
     "directories": {
       "buildResources": "UI/Icons"
