@@ -51,7 +51,7 @@ naviLinks.forEach((linkEl) => {
                 contentEl.insertAdjacentHTML("beforeend", data);
                 changeNavHighlight(id) //Changes the highlight
                 if (linkEl.id == "CommandLink") {loadCommandTable();} //Builds the data table
-                if (linkEl.id == "GlimBoiHeader") {loadCharts();} //Builds the homepage charts
+                if (linkEl.id == "GlimBoiHeader") {loadCharts(); rememberID();} //Builds the homepage charts and check for auth ino for the buttons
                // if (linkEl.id == "ChatLink") {openWindow()}
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
