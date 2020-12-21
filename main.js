@@ -1,6 +1,11 @@
 const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
+const log = require('electron-log');
 const { autoUpdater } = require('electron-updater'); //handles updates
 autoUpdater.autoDownload = true;
+autoUpdater.allowPrerelease = true;
+autoUpdater.autoInstallOnAppQuit = true;
+autoUpdater.logger = log
+console.log(autoUpdater.currentVersion);
 var fs = require("fs") //handles Files (writing and reading)
 var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
@@ -76,7 +81,9 @@ function createWindow () {
   win.loadFile(app.getAppPath() + '/UI/index.html');
   //win.setOverlayIcon('UI/Icons/ending.png', "Gleam");
   win.setIcon('UI/Icons/bot.png');
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdatesAndNotify().then(data => {
+      console.log(data)
+    })
  // win.webContents.openDevTools()
 }
 
