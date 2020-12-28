@@ -8,6 +8,9 @@
   "build": {
     "appId": "GlimBoi",
     "asar": false,
+    "win": {
+      "icon": "UI/Icon/icon.png"
+    },
     "publish": {
       "provider": "github",
       "vPrefixedTagName": true,
@@ -15,9 +18,9 @@
     },
     "nsis": {
       "oneClick": false,
-      "installerIcon": "UI/Icons/bot.ico",
+      "installerIcon": "UI/Icons/icon.ico",
       "allowToChangeInstallationDirectory": true,
-      "installerHeaderIcon": "UI/Icons/bot.ico"
+      "installerHeaderIcon": "UI/Icons/icon.ico"
     },
     "directories": {
       "buildResources": "UI/Icons"
@@ -27,16 +30,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js",
     "server": "node chatbot/glimbot.js",
-    "package-win": "electron-packager . GlimBoi --overwrite --platform=win32 --arch=x64 --icon=UI/Icons/bot.ico --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"GlmBoi\"",
-    "package-lin": "electron-packager . Gleam --overwrite --platform=linux --arch=ia32 --icon=UI/Icons/glimesh.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\"",
+    "package-win": "electron-packager . GlimBoi --overwrite --platform=win32 --arch=x64 --icon=UI/Icons/icon.ico --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"GlmBoi\"",
+    "package-lin": "electron-packager . Gleam --overwrite --platform=linux --arch=ia32 --icon=UI/Icons/icon.png --prune=true --ignore=chatbot/data --out=release-builds --version-string.FileDescription=CE --version-string.ProductName=\"Glimesh Chatbot\"",
     "build": "electron-builder build  --win --publish never",
     "deploy": "electron-builder build  --win --publish always"
   },
   "author": "Mytho",
   "license": "ISC",
-  "win": {
-    "icon": "UI/Icon/bot.png"
-  },
   "dependencies": {
     "@types/node": "^14.11.2",
     "body-parser": "^1.19.0",
@@ -49,7 +49,8 @@
     "pkginfo": "^0.4.1",
     "request": "^2.88.2",
     "socket.io-client": "^2.3.1",
-    "update-electron-app": "^2.0.1"
+    "update-electron-app": "^2.0.1",
+    "ws": "^7.4.1"
   },
   "devDependencies": {
     "electron": "^10.1.4",
