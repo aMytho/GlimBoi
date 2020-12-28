@@ -122,7 +122,7 @@ async function refreshToken(access_token, refresh_token, client_id, client_secre
     var options = {
       method: 'POST',
       body: "",
-      url: "https://glimesh.tv/api/oauth/token?grant_type=refresh_token&refresh_token=" + refresh_token + "&redirect_uri=http://localhost:3000/success&client_id=" + client_id + "&client_secret=" + client_secret + "&code=" + code
+      url: `https://glimesh.tv/api/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}&redirect_uri=http://localhost:3000/success&client_id=${client_id}&client_secret=${client_secret}`
   };
   //Refreshes the token
   request(options, (error, response, body) => {

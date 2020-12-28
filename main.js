@@ -1,7 +1,9 @@
-const { app, BrowserView, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
+const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
 const log = require('electron-log');
+console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 const { autoUpdater } = require('electron-updater'); //handles updates
 autoUpdater.autoDownload = true;
+autoUpdater.checkForUpdates()
 autoUpdater.allowPrerelease = true;
 autoUpdater.autoInstallOnAppQuit = true;
 autoUpdater.logger = log
@@ -53,11 +55,12 @@ CommandHandle.updatePath(app.getPath("userData"));
 
 ipcMain.on('app_version', (event) => {
   event.sender.send('app_version', { version: app.getVersion() });
+  console.log("The current version is recieved. " + app.getVersion());
 });
 
 
 
-console.log(autoUpdater.fullChangelog);
+//console.log(autoUpdater.fullChangelog);
 
 
 
@@ -106,11 +109,11 @@ app.on('activate', () => {
 
 autoUpdater.on('update-available', () => {
   win.webContents.send('update_available');
-  console.log("avaible")
+  console.log("avaible update!")
 });
 autoUpdater.on('update-downloaded', () => {
   win.webContents.send('update_downloaded');
-  console.log("downloaded")
+  console.log("downloaded the update!")
 });
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();

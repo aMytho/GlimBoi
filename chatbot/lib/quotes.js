@@ -54,7 +54,6 @@ function addquote(quoteName, quoteData) {
     }
   }
   })
-
 }
 
 //Removes a quote

@@ -1,6 +1,6 @@
 //handles sending users to differen to parts of the app
 var {
-  BrowserView, BrowserWindow, app
+  BrowserView, BrowserWindow, app, shell
 } = require("electron").remote
 
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
@@ -76,14 +76,20 @@ naviLinks.forEach((linkEl) => {
   })
   */
 }
-
+/*
 window.onbeforeunload = (e) => {
   /*var answer = confirm('Do you really want to close the application?');
   e.returnValue = answer;  // this will *prevent* the closing no matter what value is passed
   if(answer) { win.destroy(); }  // this will close the app
-  */
+  
  console.log('are you sure?')
  setTimeout(() => {
    
  }, 5000);
 };
+*/
+
+//Opens a link in the users default browser.
+function loadLink(link) {
+  shell.openExternal("https://" + link)
+}

@@ -7,8 +7,9 @@ function updatePath(gui) {
     path = gui;
 }
 
-function join(access_token, refresh_token) {
-   console.log(access_token, refresh_token);
+//Tries to join a channel, if it connects any error will be shown. 
+function join(access_token) {
+   console.log(access_token);
    try {connectToGlimesh({token: access_token})} catch(e) {
       console.log("we caught the error, poggers")
    }
@@ -16,7 +17,7 @@ function join(access_token, refresh_token) {
 
 function connectToGlimesh(auth) {
     const url = "wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&client_id=3c29ea03b4e30d9935b23bf5611c74296c5535d7519f18008963ad6371497df2"
-  //  console.log(auth.token)
+  //
     
     var connection = new WebSocket(url);
 
@@ -33,7 +34,6 @@ function connectToGlimesh(auth) {
       });
 
       connection.on("message", function(data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
-          console.log(data);
           // A normal chat message looks like this: (with non redacted data)
           // [null,null,"__absinthe__:doc:-REDACTED:REDACTED","subscription:data",{"result":{"data":{"chatMessage":{"message":"a","user":{"avatar":"/uploads/avatars/Mytho.png?v=63762672056","username":"Mytho"}}}},"subscriptionId":"__absinthe__:doc:-REDACTED:REDACTED"}]
           //var test = [null,null,"__absinthe__:doc:-576460752302176350:33B2AA3BF7B8F0E158810EF0E0166F5E05840BE57444C92365C921943942A47D","subscription:data",{"result":{"data":{"chatMessage":{"message":"a","user":{"avatar":"/uploads/avatars/Mytho.png?v=63762672056","username":"Mytho"}}}},"subscriptionId":"__absinthe__:doc:-576460752302176350:33B2AA3BF7B8F0E158810EF0E0166F5E05840BE57444C92365C921943942A47D"}];
@@ -52,6 +52,63 @@ function connectToGlimesh(auth) {
                     ": " +
                     chatMessage[4].result.data.chatMessage.message
                   );
+                    if (chatMessage[4].result.data.chatMessage.message.startsWith("!")) { //If it is a command of some sort...
+                      console.log("its a command, scanning and will run if found. ")
+                      switch (chatMessage[4].result.data.chatMessage.message) {
+                        case "!command add":
+
+                          break;
+                          case "!command new":
+                          
+                          break;
+                          case "!command remove":
+                          
+                          break;
+                          case "!command del":
+                          
+                          break;
+                          case "!command edit":
+                          
+                          break;
+                          case "!quote add":
+                          QuoteHandle.addquote("mytho", "needs some sleep")
+                          break;
+                          case "!quote new":
+                          QuoteHandle.addquote("mytho", "needs some sleep")
+                          break;
+                          case "!quote remove":
+                          
+                          break;
+                          case "!quote del":
+                          
+                          break;
+                          case "!quote":
+                          QuoteHandle.
+                          break;
+                          case "!user new":
+                          
+                          break;
+                          case "!user add":
+                          
+                          break;
+                          case "!user remove":
+                          
+                          break;
+                          case "!user del":
+                          
+                          break;
+                          case "!user data":
+                          
+                          break;
+                          case "!user set":
+                            break;
+                          
+                         
+                      
+                        default:
+                          break;
+                      }
+                    }
                 }
               } catch (e2) {
                 console.log(e2);
@@ -97,6 +154,8 @@ function highlightMessage() {
 function archiveMessage(message) {
 
 }
+
+
 
 
 module.exports = {join, connectToGlimesh, sendMessage, updatePath}
