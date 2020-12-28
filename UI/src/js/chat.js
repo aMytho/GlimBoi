@@ -6,6 +6,26 @@ function openWindow () {
     ipcRenderer.send('createChat', { user: document.getElementById("userChatSearch").value});
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// This was a convient place for this, I need to move it later
 function checkForUpdate() {
     const version = document.getElementById('version');
     console.log(ipcRenderer)

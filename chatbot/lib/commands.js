@@ -1,15 +1,11 @@
-var fs = require("fs");
-const Datastore = require('nedb')
-
+var fs = require("fs"); //Reads files
+const Datastore = require('nedb') //Reads commands
 
 var path = "./";
-var otherPath = null;
 
 let commandsDB;
-let quotesDB;
-let usersDB;
-//let commandsDBTest = new Datastore({ filename: `${path}data/commands.db`, autoload: true });
 
+//A normal command. 
 class Command {
   constructor(
     commandName,
@@ -176,7 +172,7 @@ function replaceVariable(variable) {
   }
 }
 
-
+//Gets all the commands. used to show them on the table in the GUI.
 async function getAll() {
   return new Promise(resolve => {
     commandsDB.find({}, function (err, docs) {
@@ -187,7 +183,7 @@ async function getAll() {
 }
 
 
-
+//The time of creation for the command
 function getTime() {
   var theTime = new Date().toTimeString();
   return theTime;

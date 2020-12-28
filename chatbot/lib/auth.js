@@ -15,13 +15,14 @@ var client = "" //Client ID
 var secret = "" //secret ID
 var authDB; //Auth database containing all auth info 
 
-var token = {access_token: "", refresh_token: "", code: "", scope: "", creation: "", expire: ""}
+var token = {access_token: "", refresh_token: "", code: "", scope: "", creation: "", expire: ""} //Can be used for auth purposes
 
+//Starts the server. Clients will be sent to glimesh to auth and then back to Glimboi.
 function startAuthServer(authScheme) {
-  if (serverisOn == true) {console.log('server is already running, if this is a mistake restart glimboi');
+  if (serverisOn == true) {console.log('server is already running, if this is a mistake restart glimboi'); // They have already opened the server. We log it and open it the wbesite again. 
       open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
 } else {
-    console.log('starting auth server')
+    console.log('Starting auth server')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.get('/auth', (req, res) => {
@@ -67,7 +68,7 @@ request(options, (error, response, body) => {
 });
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000; //it runs on port 3000
 app.listen(port, () => console.log('App listening on port ' + port), serverisOn = true, open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`))
   }
 }

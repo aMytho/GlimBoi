@@ -9,9 +9,8 @@ autoUpdater.autoInstallOnAppQuit = true;
 autoUpdater.logger = log
 console.log(autoUpdater.currentVersion);
 var fs = require("fs") //handles Files (writing and reading)
-var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
-console.log("Main js path is " + app.getAppPath())
+console.log("Main js path is " + app.getAppPath()) //Shows us the main path
 let botSettingsRaw = fs.readFileSync(app.getAppPath() + '/chatbot/settings/settings.JSON');
 let settings = JSON.parse(botSettingsRaw);
 
@@ -44,7 +43,7 @@ if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
         console.log(" Chat Errors: " + "\x1b[35m" + settings.Commands.Error + "\033[0m");
         console.log("\x1b[35m" + "______________________" + "\033[0m");
     };
-    console.log("GlimBot:");
+    console.log("GlimBoi:");
         console.log(" Chat Control: " + "\x1b[38m" + settings.GlimBot.chatControls + "\033[0m");
         console.log(" Current Version: " + "\x1b[38m" + autoUpdater.currentVersion + "\033[0m");
         console.log("\x1b[38m" + "______________________" + "\033[0m");
@@ -65,10 +64,10 @@ ipcMain.on('app_version', (event) => {
 
 
 
-var win;
+var win; // The main window
 
 
-function createWindow () {
+function createWindow () { //make Win a window
   const {width,height} = screen.getPrimaryDisplay().workAreaSize
    win = new BrowserWindow({
     width: width,
@@ -78,16 +77,14 @@ function createWindow () {
       nodeIntegration: true,
       enableRemoteModule: true
     },
-    icon: __dirname + "UI/Icons/ending.png",
+    icon: "UI/Icons/icon.ico",
     frame: false
   })
   win.loadFile(app.getAppPath() + '/UI/index.html');
-  //win.setOverlayIcon('UI/Icons/ending.png', "Gleam");
-  win.setIcon('UI/Icons/bot.png');
+  win.setIcon('UI/Icons/icon.png');
     autoUpdater.checkForUpdatesAndNotify().then(data => {
       console.log(data)
     })
- // win.webContents.openDevTools()
 }
 
 
@@ -119,14 +116,14 @@ ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
 
-//Creats the chat window for viewing a chat
+//Creats the chat window for viewing a chat. This is just the glimesh popout chat.
 ipcMain.on("createChat", (event, arg) => {
   console.log(arg);
   var chat = new BrowserWindow({
     width: 400,
     height: 700,
     backgroundColor: "#060818",
-    icon: __dirname + "UI/Icons/ending.png",
+    icon: __dirname + "UI/Icons/icon.png",
     frame: true,
     darkTheme: true
   })
