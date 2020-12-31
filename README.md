@@ -1,5 +1,6 @@
 # GlimBoi
 A chatbot for Glimesh.tv
+![GlimBoi](https://i.imgur.com/EA37ok1t.png)
 
 ## Setup
 Download the bot from the releases page.
