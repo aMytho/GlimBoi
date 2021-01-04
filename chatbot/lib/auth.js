@@ -1,12 +1,10 @@
 //This file handles connecting the users dev app to glimesh.tv
 //It creates an express server so glimesh can redirect the user back to the bot. It is closed when the auth is completed.
-var fs = require("fs")
 const open = require('open'); //Opens the users default browser. hopefully...
 var request = require("request")
 //express
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
 const Datastore = require('nedb'); //Connects to the auth DB
 
 var path = "./";
@@ -23,8 +21,7 @@ function startAuthServer(authScheme) {
       open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
 } else {
     console.log('Starting auth server')
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
 app.get('/auth', (req, res) => {
   // The optional first parameter to `res.redirect()` is a numeric
   // HTTP status.
@@ -36,10 +33,11 @@ app.get('/success', (req, res) => {
   let code = req.query.code; //We use this to request a token
   console.log("Auth complete! Code: " + code + ' Requesting token. Causing error to close the server');
   res.send('<p>Auth complete! You can close this now. </p>'); //tells the users we completed auth. We still need to request a token though
+  console.log(code,client,secret)
   var options = {
     method: 'POST',
     body: "",
-    url: "https://glimesh.tv/api/oauth/token?grant_type=authorization_code&code=" + code + "&redirect_uri=http://localhost:3000/success&client_id=" + client + "&client_secret=" + secret
+    url: `https://glimesh.tv/api/oauth/token?grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:3000/success&client_id=${client}&client_secret=${secret}`
 };
 //Requests a token with the code and other info. Written to the db after. The token var houses it for this session  
 request(options, (error, response, body) => {
@@ -74,7 +72,7 @@ app.listen(port, () => console.log('App listening on port ' + port), serverisOn 
 }
 
 //Gets an access token for the user. This lets the Bot control the account so it can respond to commands and do all functions.
-//It also lets the bot to API requests for any user.
+//It also lets the bot do API requests for any user.
 function Auth() {
     var authscheme = readAuth().then(data => {
       client = data[0].clientID;
@@ -118,7 +116,7 @@ async function makeAuth() {
 }
 
 // We refresh the access token and get a new one. Refresh tokens last for a year. 
-async function refreshToken(access_token, refresh_token, client_id, client_secret, code) {
+async function refreshToken(refresh_token, client_id, client_secret) {
   return new Promise(resolve => {
     var options = {
       method: 'POST',
@@ -137,13 +135,13 @@ async function refreshToken(access_token, refresh_token, client_id, client_secre
          token.creation = data.created_at
          token.expire = data.expires_in
          //Updates the DB with the info
-         authDB.update({}, { $set: { code: code, access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
+         authDB.update({}, { $set: { access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
           console.log("Refreshed a token, ready to connect to chat!")
           resolve("SUCCESS")}) 
         } else {
           console.log(body);
-          console.log(error)
-          resolve(error)
+          console.log(error) //Usually null, the body has the error from glimesh. If error here something is probably wrong with the request.
+          resolve(body)
         }
       
   })
@@ -157,10 +155,16 @@ async function updateID(client, secret) {
   });
 }
 
-function getTokens() {
-  return token;
+//Return the access token
+async function getToken() {
+  return new Promise(resolve => {
+    authDB.find( {}, function (err, docs) {
+      console.log(docs)
+        resolve(docs[0].access_token)
+      })
+  });
 }
 
 
 
-module.exports = { Auth, makeAuth ,readAuth, recieveID, refreshToken, startAuthServer, updateID ,updatePath}; //Send to the main file.
+module.exports = { Auth, getToken, makeAuth ,readAuth, recieveID, refreshToken, startAuthServer, updateID ,updatePath}; //Send to the main file.

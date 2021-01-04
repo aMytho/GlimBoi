@@ -5,8 +5,8 @@
   <div class="introaaa">
       <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
   </div>
-  <p>To get started please authenicate with Glimesh. You need a <span style="color: violet;"> Developer Application</span> for GlimBoi to function properly. This allows the bot to have a custom name.</p>
-  <p>Click below to create an application. It takes less than 5 minutes and gives the bot full functionality. When you are finished, click the button below to authenicate the bot with your application.</p>
+  <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. This also allows the bot to have a custom name.</p>
+        <p> When you are finished enter the client ID and secret ID. Then press authenicate to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
   <div class="row">
       <div class="col">
       <button class="btn btn-info btn-block" type="submit" id="authButton1" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
@@ -31,12 +31,6 @@
             <div class="col">
               <input type="text" class="form-control" placeholder="Secret ID" id="secretID">
           </div>
-            <div class="col">
-              <select class="form-control" disabled>
-                  <option>Account selection coming soon</option>
-                  <option>Coming soon</option>
-                </select>
-            </div>
           </div>
         </form>
         <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
