@@ -1,4 +1,4 @@
-# GlimBoi ![GlimBoi](https://i.imgur.com/EA37ok1s.png)
+# GlimBoi ![Imgur](https://i.imgur.com/EA37ok1s.png)
 
 A chatbot for Glimesh.tv
 
