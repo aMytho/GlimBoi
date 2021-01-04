@@ -2,7 +2,6 @@ var UserHandle = require(app.getAppPath() + "/chatbot/lib/users.js"); //Module f
 var QuoteHandle = require(app.getAppPath() + "/chatbot/lib/quotes.js"); //Module for quotes
 
 var arrayofUsers = []; //Holds users after we leave the page.
-var arrayofQuotes = [] //Unused?
 var userTable; //physical table showing user data
 var usersActive = false; //ensures we only run the start function once. Saves us time querying the DB
 UserHandle.updatePath(app.getPath("userData")); //Updates the filepath to the DB. Tells the moduelw eare in electron not server mode.

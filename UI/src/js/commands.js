@@ -1,12 +1,4 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
-var fs = require("fs"); //File handling
-const Datastore = require("nedb"); // The database module
-/*
-let commandsDB = new Datastore({
-  filename: `${app.getAppPath()}/chatbot/data/commands.db`,
-  autoload: true,
-}); // The DB of commands.
-*/
 var CommandHandle = require(app.getAppPath() + "/chatbot/lib/commands.js");
 CommandHandle.updatePath(app.getPath("userData")); //Gives the module the correct path to the DB.
 var arrayOfCommands = []; //An array that stores the commands from the DB so we don't import them every change.
@@ -18,7 +10,6 @@ var commandToBeEdited; // A global var because I was too lazy to find another so
 //Loads the command table. It is loaded when the page is opened for the first time. After that it is saved to a variable.
 function loadCommandTable() {
   if (tblhasbeenopened == false) {
-    //  let commandData = fs.readFileSync('chatbot/data/commands.JSON'); //Imports the commands.
     let commandData;
     //Imports all the commands from the DB
     CommandHandle.getAll().then(docs => { 
@@ -26,7 +17,6 @@ function loadCommandTable() {
       commandData = docs;
       //We push the commands to the arrayofcommands var. The table uses this to build.
       for (const property in commandData) {
-        console.log(`${property}: ${commandData[`${property}`].commandName}`);
         var tempArray = [
           `${commandData[`${property}`].commandName}`,
           ` ${commandData[`${property}`].arguements}`,
@@ -74,7 +64,7 @@ function loadCommandTable() {
     });*/
 
       $("#example").click(function (event) {
-        //Tells us which column and row they clicked
+        //Tells us which column and row they clicked, currently unused
         var text = $(event.target).text();
         event.target.id = "one";
         console.log(event);
@@ -175,10 +165,6 @@ function checkNewCommand() {
     }
   }
 
-  if (false) {
-    //Arguements
-    console.log("no argue");
-  }
 
   if ($("#addCommandData").html().length > 254) {
     //max length is 255. - 1 for the 0. may be worng, idk

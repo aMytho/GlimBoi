@@ -1,4 +1,3 @@
-var fs = require("fs");
 const Datastore = require("nedb");
 var UserHandle = require("./users.js");
 var path = "./";

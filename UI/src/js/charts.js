@@ -58,5 +58,3 @@ var userCount,pointCount,commandCount,quoteCount,introChart
     })
   })
 }
-
-

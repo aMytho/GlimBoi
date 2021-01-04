@@ -2,7 +2,7 @@
 $(document).ready(function() { //Oh yea, we have jquery. Feel free to use it.
     getSettings()
 });
-
+var fs = require("fs")
 var settings = {}
 
 function getSettings() {

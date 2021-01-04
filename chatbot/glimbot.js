@@ -1,15 +1,10 @@
 var fs = require("fs") //handles Files (writing and reading)
-var request = require("request");//Handles sending requests to the api.
 var CommandHandle = require("./lib/commands.js") //handles commands
 var QuoteHandle = require("./lib/quotes.js") //handles qoutes
-var AuthHandle = require("./lib/auth.js") //handles qoutes
 var UserHandle = require("./lib/users.js") //handles users
 const readline = require("readline");
 const WebSocket = require("ws");
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+
 
 console.log(__dirname)
 let botSettingsRaw = fs.readFileSync('settings/settings.JSON');

@@ -1,6 +1,6 @@
 //handles sending users to differen to parts of the app
 var {
-  BrowserView, BrowserWindow, app, shell
+  BrowserWindow, app, shell
 } = require("electron").remote
 
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
@@ -92,4 +92,20 @@ window.onbeforeunload = (e) => {
 //Opens a link in the users default browser.
 function loadLink(link) {
   shell.openExternal("https://" + link)
+}
+
+
+// Shows an error message to the user in the form of a modal. 
+function errorMessage(errorType, errorMessage) {
+  document.getElementById("errorMessageText").innerHTML = errorType;
+  document.getElementById("errorMessageSolution").innerHTML = errorMessage;
+  $('#modalError').modal("show")
+}
+
+
+// Shows a success message to the user in the form of a modal. 
+function successMessage(messageType, message) {
+  document.getElementById("successMessageText").innerHTML = messageType;
+  document.getElementById("successMessageSolution").innerHTML = message;
+  $('#modalSuccess').modal("show");
 }

@@ -10,7 +10,6 @@ autoUpdater.logger = log
 console.log(autoUpdater.currentVersion);
 var fs = require("fs") //handles Files (writing and reading)
 var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
-console.log("Main js path is " + app.getAppPath()) //Shows us the main path
 let botSettingsRaw = fs.readFileSync(app.getAppPath() + '/chatbot/settings/settings.JSON');
 let settings = JSON.parse(botSettingsRaw);
 
@@ -49,8 +48,6 @@ if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
         console.log("\x1b[38m" + "______________________" + "\033[0m");
     console.log("Logging Completed!");
 }
-CommandHandle.updatePath(app.getPath("userData"));
-
 
 ipcMain.on('app_version', (event) => {
   event.sender.send('app_version', { version: app.getVersion() });
@@ -60,7 +57,6 @@ ipcMain.on('app_version', (event) => {
 
 
 //console.log(autoUpdater.fullChangelog);
-
 
 
 
@@ -115,27 +111,3 @@ autoUpdater.on('update-downloaded', () => {
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
-
-//Creats the chat window for viewing a chat. This is just the glimesh popout chat.
-ipcMain.on("createChat", (event, arg) => {
-  console.log(arg);
-  var chat = new BrowserWindow({
-    width: 400,
-    height: 700,
-    backgroundColor: "#060818",
-    icon: __dirname + "UI/Icons/icon.png",
-    frame: true,
-    darkTheme: true
-  })
-  chat.loadURL("https://glimesh.tv/" + arg.user + "/chat")
-})
-
-
-
-//This handles the BOT connecting to chat (NOT the User)
-//A non electorn version of this file can be run in the chatbot directory. You need Nodejs.
-
-function joinChatBot() {
-  var chat = require(__dirname + "/chatbot/lib/chat.js");
-
-}

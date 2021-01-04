@@ -55,8 +55,6 @@ async function findByUserName(name) {
      } else {
        resolve(docs)
      }
-
-    //resolve(docs)
   })
 })
 return queryResult

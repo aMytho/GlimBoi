@@ -1,8 +1,6 @@
-var fs = require("fs"); //Reads files
 const Datastore = require('nedb') //Reads commands
 
 var path = "./";
-
 let commandsDB;
 
 //A normal command. 

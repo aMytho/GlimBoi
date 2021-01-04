@@ -1,8 +1,5 @@
 //Handles the charts for the homepage and the auth.
-var {
-    BrowserView, BrowserWindow, app
-  } = require("electron").remote
-var fs = require('fs');
+var {app} = require("electron").remote
 
 var serverisOn = false;
 var authSaved = false;
@@ -12,7 +9,6 @@ AuthHandle.updatePath(app.getPath("userData"));
 
 
 function rememberID() { // checks if an id has been entered for auth
-    console.log("Getting thier stored auth information.");
        var auth = AuthHandle.readAuth();
        auth.then( data => {
            //Checks if any data is there, this is seeing if a file even exists.
@@ -44,10 +40,13 @@ function rememberID() { // checks if an id has been entered for auth
               document.getElementById("saveAuth").innerHTML = "Edit Auth";
               if (data[0].access_token.length > 5 && refreshed == false) { // They have a token as well as the other info, we need to refresh it.
                     console.log("They alread have an access token, we will begin refreshing it.")
-                    AuthHandle.refreshToken(data[0].access_token, data[0].refresh_token, data[0].clientID, data[0].secret, data[0].code).then(refresh => {
+                    AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(refresh => {
                         if (refresh == "SUCCESS") {
                                 refreshed = true;
                                 document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. ";
+                                successMessage(refresh, "Auth has been refreshed. Ready to join chat.")
+                        } else {
+                                errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
                         }
                     })
               }
@@ -83,14 +82,11 @@ function editAuth() { //Sets the state to editable
     document.getElementById("secretID").value = "";
     document.getElementById("clientID").setAttribute("placeholder", "Enter Client ID")
     document.getElementById("secretID").setAttribute("placeholder", "Enter Secret ID")
-
 }
 
 function auth() {
     AuthHandle.Auth() //runs the webserver so we can get the token needed to connect to chat. It will refresh if a token is avaible. 
-
 }
-
 
 
 
