@@ -1,24 +1,40 @@
 var {ipcRenderer} = require('electron')
-var ChatHandle = require(app.getAppPath() + "/chatbot/lib/chat.js")
-ChatHandle.updatePath(app.getPath("userData"))
+var ChatHandle = require(app.getAppPath() + "/chatbot/lib/chat.js");
+var ApiHandle = require(app.getAppPath() + "/chatbot/lib/api.js")
+ChatHandle.updatePath(app.getPath("userData"));
 
-function openWindow () {
-    ipcRenderer.send('createChat', { user: document.getElementById("userChatSearch").value});
+
+
+
+function joinChat() {
+  var chatToJoin = document.getElementById("whichChannel").value
+  AuthHandle.getToken().then(data => {
+    if (data.length == 0 || data == undefined) {
+      errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and auth again.")
+    } else {
+      ApiHandle.updatePath(data); //Sends the API module our access token.
+      ApiHandle.getChannelID(chatToJoin).then(response => {
+        if (response == null) {
+          errorMessage(response, "Please make sure that the channel exists. Check your spelling.")
+        } else if (response.status == "AUTHNEEDED") {
+          errorMessage(response.data, "You need to authenticate again.")
+        }
+         else {
+          //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
+          console.log("Connected to chat!");
+          ChatHandle.join(data, response);
+          successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!")
+        }
+      })
+    }
+  })
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+function sendMessage() {
+  var message = document.getElementById("messageArea").value;
+  ChatHandle.sendMessage(message)
+}
 
 
 
@@ -28,7 +44,6 @@ function openWindow () {
 // This was a convient place for this, I need to move it later
 function checkForUpdate() {
     const version = document.getElementById('version');
-    console.log(ipcRenderer)
     ipcRenderer.send('app_version');
     ipcRenderer.on('app_version', (event, arg) => {
       console.log("Recieved app_version with : " + arg.version)
@@ -55,15 +70,17 @@ ipcRenderer.on('update_downloaded', () => {
   notification.classList.remove('hidden');
   function closeNotification() {
   notification.classList.add('hidden');
-}});
-  function restartApp() {
-    console.log("trying to restart the app for the update")
-  ipcRenderer.send('restart_app');
-}
+}})
+  
   ipcRenderer.on("aaaaaaaaaaaaa", () => {
   console.log("it happened")
 })
   ipcRenderer.on("test", data => {
     console.log(data)
   })
+}
+
+function restartApp() {
+  console.log("trying to restart the app for the update")
+ipcRenderer.send('restart_app');
 }

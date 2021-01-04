@@ -15,7 +15,7 @@
     <script src="src/js/popper.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="src/js/bootstrap/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/8e62aaf2f3.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <!--Apex Charts-->
@@ -72,10 +72,11 @@
             </ul>
         </div>
   </nav>
+  <!--End of Navbar-->
 
   
-  <!-- Or let Bootstrap automatically handle the layout -->
-  <div class="pane">
+  <!-- Layout for home page -->
+  <div class="pane h-100">
     <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
         
         <div class="row">
@@ -83,8 +84,8 @@
         <div class="introaaa">
             <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
         </div>
-        <p>To get started please authenicate with Glimesh. You need a <span style="color: violet;"> Developer Application</span> for GlimBoi to function properly. This allows the bot to have a custom name.</p>
-        <p>Click below to create an application. It takes less than 5 minutes and gives the bot full functionality. When you are finished, click the button below to authenicate the bot with your application.</p>
+        <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. This also allows the bot to have a custom name.</p>
+        <p> When you are finished enter the client ID and secret ID. Then press authenicate to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
         <div class="row">
             <div class="col">
             <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
@@ -109,18 +110,12 @@
                   <div class="col">
                     <input type="text" class="form-control" placeholder="Secret ID" id="secretID">
                 </div>
-                  <div class="col">
-                    <select class="form-control" disabled>
-                        <option>Account selection coming soon</option>
-                        <option>Coming soon</option>
-                      </select>
-                  </div>
                 </div>
               </form>
               <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
               <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="auth()">Authenicate</button>
               <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" onclick="document.getElementById('ChatLink').click();">Join Channel</button>
-              <script>rememberID() // runs the function to get the id from storage</script>
+              <script>/*rememberID()*/ // runs the function to get the id from storage</script>
         </div>
         </div>
        
@@ -149,30 +144,30 @@
         
         </div>
   </div>
-  <p id="version" class="whiteText"></p>
-  <div id="notification" class="hidden">
-      <p id="message"></p>
-      <button id="close-button" onClick="closeNotification()">
+  <p id="version" class="whiteText ml-3"></p>
+  <div id="notification" class="hidden glimPanel">
+      <p id="message" class="whiteText"></p>
+      <button id="close-button" onClick="closeNotification()" class="hidden btn btn-outline-primary">
         Close
       </button>
-      <button id="restart-button" onClick="restartApp()" class="hidden">
+      <button id="restart-button" onClick="restartApp()" class="hidden btn btn-outline-success">
         Restart
       </button>
     </div>
     <style>
         #notification {
-position: fixed;
-bottom: 20px;
-left: 20px;
-width: 200px;
-padding: 20px;
-border-radius: 5px;
-background-color: white;
-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-}
-.hidden {
-display: none;
-}
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: 200px;
+        padding: 20px;
+        border-radius: 5px;
+        background-color: white;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .hidden {
+        display: none;
+        }
     </style>
 <script>
   //Creates the chart. Only build the first time. Also checks for updates
@@ -181,3 +176,51 @@ display: none;
       </script>
 </body>
 </html>
+
+
+<!-- Modal: Error Message -->
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="error modal"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="errorModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalError">Error</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalErrorBody">
+        <p id="errorMessageText"></p>
+        <p id="errorMessageSolution"></p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: Error Message -->
+
+<!-- Modal: Success Message -->
+<div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="success modal"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="successModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="myModalSuccess">Info</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalSuccessBody">
+        <p id="successMessageText"></p>
+        <p id="successMessageSolution"></p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="otherMessageAdd"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: Success Message -->
