@@ -3,6 +3,7 @@
      <a class="btn btn-primary btn-block" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
      <a class="btn btn-success mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
      <a class="btn btn-danger mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
+     <a class="btn btn-info mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalVar">View Variables</a>
   </div>
   <div class="col-10 glimPanel whiteText mt-3 mx-auto">
      <table id="example" class="display table table-striped" style="width:100%">
@@ -38,7 +39,7 @@
                  </tr>
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
-                    <td contenteditable="true" id="addCommandData">Follow me on Glimesh at https://glimesh.tv/Mytho</td>
+                    <td contenteditable="true" id="addCommandData">Enter command response</td>
                  </tr>
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
@@ -123,6 +124,36 @@
            <p id="errorMessageAdd"></p>
            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="checkRemoveCommand()">Remove</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: modalCart -->
+
+<!--Modal variables-->
+<div class="modal fade" id="modalVar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100">Variables Info</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+        <p class="whiteText mx-auto ">Variables are like a map for your commands. They tell the commands how to get certain information.</p>
+        <p class="whiteText mx-auto">Let's say you wanted a command to show the current game. You could manually update the command every stream. Instead you can use a variable.</p>
+        <p class="whiteText mx-auto">Variables will search for the data that they are supposed to hold and insert themselves into the command. A complete list of them is found below.</p>
+        <ul>
+           <li>$target : The first word after the command. ex. !so Mytho : Go follow Mytho at glimesh.tv/Mytho</li>
+           <li>$user : The user who said the command</li>
+           <li>$cmdcount : The number of times the command has been used.</li>
+        </ul>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p>Need more info? View the Glimboi Tutorials!</p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
         </div>
      </div>
   </div>
