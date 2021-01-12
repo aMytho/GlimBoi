@@ -22,6 +22,9 @@ th {
 .dataTables_wrapper label, .dataTables_wrapper select, .dataTables_wrapper input, .dataTables_wrapper #example_info, .dataTables_wrapper #userTable_info, .dataTables_wrapper #example_next, .dataTables_wrapper #example_previous, .dataTables_wrapper #userTable_next, .dataTables_wrapper #userTable_previous{
   color: aliceblue;
 }
+#userTable_previous {
+  color: aliceblue;
+}
 
 .table-hover th {
     color: rgb(255, 255, 255);
@@ -167,6 +170,7 @@ th {
   }
   
   .message_write textarea.form-control {
+    color: aliceblue;
     height: 70px;
     padding: 10px;
   }

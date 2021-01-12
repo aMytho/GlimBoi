@@ -1,11 +1,6 @@
 const Datastore = require("nedb");
-var UserHandle = require("./users.js");
 var path = "./";
-var otherPath = null;
-
 let quotesDB;
-let userDB;
-//let quotesDBTest = new Datastore({ filename: `${path}data/quotes.db`, autoload: true });
 
 class Quote {
   constructor(quoteName, quoteData) {
@@ -34,7 +29,12 @@ function addquote(quoteName, quoteData) {
       console.log("Creating user " + quoteName);
       var newUser = UserHandle.addUser(quoteName);
       newUser.then(user => {
+        if (user == "INVALIDUSER") {
+          console.log("User not found, failed to create quote");
+          document.getElementById("errorMessageAddQuote").innerText = "The user does not exist on glimesh so the quote can't be created."
+        } else {
         addquote(quoteName, quoteData);
+        }
       })
        return
     } else {
@@ -43,7 +43,8 @@ function addquote(quoteName, quoteData) {
     try {
       quotesDB.insert(newquote, function (err, doc) {
         console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
-        UserHandle.addQuote(newquote, doc._id)
+        UserHandle.addQuote(newquote, doc._id);
+        document.getElementById('errorMessageAddQuote').innerText = `Quote Created!`
       });
     } catch (e) {
       console.log(e);

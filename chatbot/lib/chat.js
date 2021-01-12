@@ -1,11 +1,8 @@
 //This file handles connecting the bot to a chat.
 const WebSocket = require("ws");
 var connection;
-var path = "./"
+var chatID = ""
 
-function updatePath(gui) {
-    path = gui;
-}
 
 //Tries to join a channel, if it disconnects any error will be shown. 
 function join(access_token, channelID) {
@@ -18,17 +15,26 @@ function join(access_token, channelID) {
 function connectToGlimesh(access_token, channelID) {
     const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}`
     connection = new WebSocket(url);
+    chatID = channelID
 
     connection.on("open", function open() {
       console.log("Connected to the Glimesh API");
         connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
         connection.send(
-          `["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { user { username avatar } message } }","variables":{} }]`
+          `["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { user { username avatarUrl } message } }","variables":{} }]`
         ); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
       
         setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
           connection.send('[null,"6","phoenix","heartbeat",{}]'); 
         }, 30000);
+        setInterval(() => { //every 5 minutes get the current view count
+          ApiHandle.getViewCount().then(data => {
+            console.log(data);
+            if (data == null) {
+              
+            }
+          })
+        }, 180000);
       });
       connection.on("message", function(data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
           // A normal chat message looks like this: (with non redacted data)
@@ -53,8 +59,9 @@ function connectToGlimesh(access_token, channelID) {
                   );
                     
                     if (chatMessage[4].result.data.chatMessage.message.startsWith("!")) { //If it is a command of some sort...
-                      console.log("its a command, scanning and will run if found. ")
-                      switch (chatMessage[4].result.data.chatMessage.message) {
+                      console.log("its a command, scanning and will run if found. ");
+                      var message = chatMessage[4].result.data.chatMessage.message.split(" ")
+                      switch (message[0]) {
                         case "!command add":
 
                           break;
@@ -80,38 +87,39 @@ function connectToGlimesh(access_token, channelID) {
                           
                           break;
                           case "!quote del":
-                          que
                           break;
                           case "!test":
                            // connection.send('["null","6","__absinthe__:control","doc",{"query":"mutation {createChatMessage(channelId:6, message: {message: \"Hello world!\"}) {message}}","variables":null}]')
-                            connection.send(JSON.stringify(["6","7","__absinthe__:control","doc",{"query":"mutation {createChatMessage(channelId:6, message: {message: \"test complete!\"}) {message }}","variables":{}}]))
-                       //   QuoteHandle.
+                          glimboiMessage("Test complete")
                           break;
-                          case "!user new":
-                          
+                          case "!user":
+                            switch (message[1]) {
+                              case "new":
+                                addUserChat(message[2])
+                                break;
+                              case "add":
+                                addUserChat(message[2])
+                              break;
+                              case "remove":
+                                delUserChat(message[2])
+                              break;
+                              case "del":
+                                delUserChat(message[2])
+                              break;
+                              case "delete":
+                                delUserChat(message[2])
+                              break;
+
+                              default:
+                                break;
+                            }
                           break;
-                          case "!user add":
-                          
-                          break;
-                          case "!user remove":
-                          
-                          break;
-                          case "!user del":
-                          
-                          break;
-                          case "!user data":
-                          
-                          break;
-                          case "!user set":
-                            break;
-                          
-                         
-                      
-                        default:
+                        default: //its not a glimboi command, may be a stream command. We need to check and do the output.
+                        CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
                           break;
                       }
                     }                    
-                    try {logMessage(chatMessage[4].result.data.chatMessage.user.username, chatMessage[4].result.data.chatMessage.message, chatMessage[4].result.data.chatMessage.user.avatar )}
+                    try {logMessage(chatMessage[4].result.data.chatMessage.user.username, chatMessage[4].result.data.chatMessage.message, chatMessage[4].result.data.chatMessage.user.avatarUrl )}
                     catch(e3) {
                       console.log(e3)
                     }
@@ -147,7 +155,7 @@ function connectToGlimesh(access_token, channelID) {
 
 function sendMessage(data) {
   var msgArray = ["6","7","__absinthe__:control","doc"];
-  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:6, message: {message: \"" + data +" \"}) {message }}","variables":{}});
+  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\" , message: {message: \"" + data +" \"}) {message }}","variables":{}});
   var test = JSON.stringify(msgArray);
   console.log(test)
   connection.send(test)
@@ -163,6 +171,15 @@ function disconnect() {
   }
 }
 
+//Sends a system message to chat. This is not a normal messgage such as a command response
+function glimboiMessage(data) {
+  var msgArray = ["6","7","__absinthe__:control","doc"];
+  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message: {message: \"" + data +" \"}) {message }}","variables":{}});
+  var test = JSON.stringify(msgArray);
+  console.log(test)
+  connection.send(test)
+}
+
 function highlightMessage() {
 
 }
@@ -171,13 +188,18 @@ function archiveMessage(message) {
 
 }
 
-function logMessage(user, message, avatar) {
+function test() {
+  var test = JSON.stringify(["1","1","__absinthe__:control","doc",{"query": "subscription{ chatMessage { user { username avatar } message } }"}])
+  connection.send(test);
+  console.log(test)
+}
 
+function logMessage(user, message, avatar) {
   $("#chatList").prepend(`
     <li class="left clearfix admin_chat">
                      <div class="chat-body1 clearfix">
                         <span class="chat-img1 pull-left">
-                           <img src="https://glimesh.tv${avatar}" alt="User Avatar" class="img-circle">
+                           <img src="${avatar}" alt="User Avatar" class="img-circle">
                         </span>
                         <p><span id="chatUser">${user}: </span> ${message}</p>
                         <!--<div class="whiteText pull-left">09:40PM</div> -->
@@ -187,5 +209,30 @@ function logMessage(user, message, avatar) {
   )
 }
 
+function addUserChat(user) {
+  UserHandle.addUser(user).then(data => {
+    if (data == "USEREXISTS") {
+      glimboiMessage("That user is already added to GlimBoi.")
+    } else if (data == "INVALIDUSER") {
+      glimboiMessage("That user does not exist on Glimesh.")
+    } else {
+      glimboiMessage("User addded to GlimBoi!")
+    }
+  })
+}
 
-module.exports = { connectToGlimesh, disconnect, join, logMessage, sendMessage, updatePath}
+function delUserChat(user) {
+  var exists = UserHandle.findByUserName(user);
+  exists.then(data => {
+    if (data == "ADDUSER") {
+      glimboiMessage("No user was found with that name in GlimBoi.")
+    } else {
+      UserHandle.removeUser(user).then(deletedUser => { //removes the user from the db. Shows us afterwords
+        removeUserFromTable(deletedUser);
+        glimboiMessage("User removed!")
+      })
+    }
+  })
+}
+
+module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, logMessage, sendMessage, test}

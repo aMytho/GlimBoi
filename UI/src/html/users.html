@@ -1,12 +1,11 @@
 <div class="row">
   <div class="col-1 mt-3 mx-auto">
      <a class="btn btn-primary btn-block" href="#" data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
-     <a class="btn btn-primary mt-2 btn-block" data-toggle="modal" data-target="#modalQuoteAdd"> Add Quote</a>
+     <a class="btn btn-primary mt-2 btn-block" data-toggle="modal" data-target="#modalQuoteAdd" onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
      <a class="btn btn-success mt-2 btn-block disabled" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Users</a> 
      <a class="btn btn-info mt-2 btn-block" onclick="loadAllQuotes()"> View All Quotes</a>
      <a class="btn btn-danger mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalUserRemove">Purge Users</a>
      <a class="btn btn-danger mt-2 btn-block disabled" href="#" data-toggle="modal" data-target="#modalUserRemove" >Remove Quote</a>
-
   </div>
   <div class="col-10 glimPanel whiteText mt-3 mx-auto">
      <table id="userTable" class="display table table-striped" style="width:100%">
@@ -98,7 +97,7 @@
         </div>
         <!--Footer-->
         <div class="modal-footer">
-           <p id="errorMessageAdd"></p>
+           <p id="errorMessageAddQuote"></p>
            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="addQuote()" id="addQuoteFinish">Add</button>
         </div>

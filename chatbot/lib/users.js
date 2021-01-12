@@ -6,7 +6,7 @@ var path = "./";
 
 class User {
     constructor(
-      userName
+      userName, ID
     ) {
       this.userName = userName;
       this.points = 0;
@@ -16,21 +16,31 @@ class User {
       this.inventory = [];
       this.picture = "link";
       this.quotes = []
+      this.id = ID
     }
+
   }
 
 
 async function addUser(user) {
-    var tempUser = new User(user) //makes the user. L I F E !
     var newUser = await new Promise(done => {
       usersDB.find({userName:user}, function (err, docs) {
         if (docs.length == 0) {
           console.log("No user was found with the name " + user);
-          usersDB.insert(tempUser, function(err, doc) {
-            console.log(doc);
-            console.log("User created!")
-            done(doc)
-          });
+          ApiHandle.getUserID(user).then(ID => {
+            if (isNaN(ID) == true || ID == null || typeof ID == Object) {
+              console.log(ID);
+                done("INVALIDUSER")
+            } else {
+                console.log(ID)
+                var tempUser = new User(user, ID) //makes the user. L I F E !
+                usersDB.insert(tempUser, function(err, doc) {
+                  console.log(doc);
+                  console.log("User created!");
+                  done(doc)
+                });
+            }            
+          })
         } else {
           done("USEREXISTS")
         }

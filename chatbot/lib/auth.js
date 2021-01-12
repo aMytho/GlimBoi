@@ -1,12 +1,8 @@
 //This file handles connecting the users dev app to glimesh.tv
 //It creates an express server so glimesh can redirect the user back to the bot. It is closed when the auth is completed.
-const open = require('open'); //Opens the users default browser. hopefully...
-var request = require("request")
-//express
 const express = require('express');
 const app = express();
 const Datastore = require('nedb'); //Connects to the auth DB
-
 var path = "./";
 var serverisOn = false; // tells us if the user started but didn't complete the auth. 
 var client = "" //Client ID
@@ -18,7 +14,7 @@ var token = {access_token: "", refresh_token: "", code: "", scope: "", creation:
 //Starts the server. Clients will be sent to glimesh to auth and then back to Glimboi.
 function startAuthServer(authScheme) {
   if (serverisOn == true) {console.log('server is already running, if this is a mistake restart glimboi'); // They have already opened the server. We log it and open it the wbesite again. 
-      open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
+      shell.openExternal(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`)
 } else {
     console.log('Starting auth server')
 
@@ -34,40 +30,36 @@ app.get('/success', (req, res) => {
   console.log("Auth complete! Code: " + code + ' Requesting token. Causing error to close the server');
   res.send('<p>Auth complete! You can close this now. </p>'); //tells the users we completed auth. We still need to request a token though
   console.log(code,client,secret)
-  var options = {
-    method: 'POST',
-    body: "",
-    url: `https://glimesh.tv/api/oauth/token?grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:3000/success&client_id=${client}&client_secret=${secret}`
-};
-//Requests a token with the code and other info. Written to the db after. The token var houses it for this session  
-request(options, (error, response, body) => {
-    if (!error && response.statusCode == 200) { //If all is as it should be
-        console.log(body); //The unfiltered response
-        var data = JSON.parse(body);
-        console.log(data)
-       //Sets the token info to match the var. We use the var to authenicate.
-       token.access_token = data.access_token;
+//Requests a token with the code and other info. Written to the db after. The token var houses it for this session
+  var url = new URL("https://glimesh.tv/api/oauth/token");
+  var params = {grant_type: "authorization_code", code: code, redirect_uri: "http://localhost:3000/success", client_id: client, client_secret: secret }
+  url.search = new URLSearchParams(params).toString();
+  fetch(url, {method: "POST"})
+.then((res) => {
+  res.json().then((data) => {
+    try {
+      console.log(data)
+      token.access_token = data.access_token;
        token.refresh_token = data.refresh_token
        token.scope = data.scope
        token.creation = data.created_at
        token.expire = data.expires_in
        //Updates the DB with the info
        authDB.update({}, { $set: { code: code, access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
-        console.log("Got the tokens, ready to connect to glimesh")
-      });
-     //Kills the server with an error.
+        console.log("Got the tokens, ready to connect to glimesh");
+      //Kills the server with an error.
        app.listen(port, () => console.log('Closing auth server on port ' + port))
-    } else {
-        console.log(error) //log any errors
-        console.log(response.statusCode)
-        console.log(body)
+      });
+    } catch (e) {
+    console.log(e)
     }
-});
+  });
+})
 });
 
 
 const port = process.env.PORT || 3000; //it runs on port 3000
-app.listen(port, () => console.log('App listening on port ' + port), serverisOn = true, open(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`))
+app.listen(port, () => console.log('App listening on port ' + port), serverisOn = true, shell.openExternal(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20email%20chat%20streamkey&redirect_uri=http://localhost:3000/success`))
   }
 }
 
@@ -118,41 +110,40 @@ async function makeAuth() {
 // We refresh the access token and get a new one. Refresh tokens last for a year. 
 async function refreshToken(refresh_token, client_id, client_secret) {
   return new Promise(resolve => {
-    var options = {
-      method: 'POST',
-      body: "",
-      url: `https://glimesh.tv/api/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}&redirect_uri=http://localhost:3000/success&client_id=${client_id}&client_secret=${client_secret}`
-  };
-  //Refreshes the token
-  request(options, (error, response, body) => {
-      if (!error && response.statusCode == 200) { //If all is as it should be
-          var data = JSON.parse(body);
-          console.log(data)
-         //Sets the token info to match the var. We use the var to authenicate.
-         token.access_token = data.access_token;
-         token.refresh_token = data.refresh_token
-         token.scope = data.scope
-         token.creation = data.created_at
-         token.expire = data.expires_in
-         //Updates the DB with the info
-         authDB.update({}, { $set: { access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
-          console.log("Refreshed a token, ready to connect to chat!")
-          resolve("SUCCESS")}) 
-        } else {
-          console.log(body);
-          console.log(error) //Usually null, the body has the error from glimesh. If error here something is probably wrong with the request.
-          resolve(body)
-        }
-      
+  var url = new URL("https://glimesh.tv/api/oauth/token");
+  var params = {grant_type: "refresh_token", refresh_token: refresh_token, redirect_uri: "http://localhost:3000/success", client_id: client_id, client_secret: client_secret }
+  url.search = new URLSearchParams(params).toString();
+  fetch(url, {method: "POST"})
+  .then((res) => {
+    res.json().then((data) => {
+      try {
+        token.access_token = data.access_token;
+        token.refresh_token = data.refresh_token
+        token.scope = data.scope
+        token.creation = data.created_at
+        token.expire = data.expires_in
+        //Updates the DB with the info
+        authDB.update({}, { $set: { access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
+         console.log("Refreshed a token, ready to connect to chat!")
+         resolve("SUCCESS")})
+      } catch(e) {
+        console.log(e);
+        resolve(data)
+        errorMessage(e, "Refresh error")
+      }
+    });
   })
 
   })
   }
 
 async function updateID(client, secret) {
+ return new Promise(resolve => {
   authDB.update({}, { $set: { clientID: client, secret: secret } }, { multi: true }, function (err, numReplaced) {
     console.log("Updated the auth IDs.");
+    resolve("UPDATEDID")
   });
+ }) 
 }
 
 //Return the access token
@@ -165,6 +156,15 @@ async function getToken() {
   });
 }
 
+async function getID() {
+  return new Promise(resolve => {
+    authDB.find( {}, function (err, docs) {
+      console.log(docs);
+      resolve(docs[0].clientID)
+    })
+  })
+}
 
 
-module.exports = { Auth, getToken, makeAuth ,readAuth, recieveID, refreshToken, startAuthServer, updateID ,updatePath}; //Send to the main file.
+
+module.exports = { Auth, getID, getToken, makeAuth ,readAuth, recieveID, refreshToken, startAuthServer, updateID ,updatePath}; //Send to the main file.
