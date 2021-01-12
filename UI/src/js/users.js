@@ -1,11 +1,12 @@
-var UserHandle = require(app.getAppPath() + "/chatbot/lib/users.js"); //Module for Users
-var QuoteHandle = require(app.getAppPath() + "/chatbot/lib/quotes.js"); //Module for quotes
+var UserHandle = require(appData[0] + "/chatbot/lib/users.js"); 
+UserHandle.updatePath(appData[1]);
+
+var QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js"); 
+QuoteHandle.updatePath(appData[1]); 
 
 var arrayofUsers = []; //Holds users after we leave the page.
 var userTable; //physical table showing user data
 var usersActive = false; //ensures we only run the start function once. Saves us time querying the DB
-UserHandle.updatePath(app.getPath("userData")); //Updates the filepath to the DB. Tells the moduelw eare in electron not server mode.
-QuoteHandle.updatePath(app.getPath("userData")); //^^
 
 function loadUsers() { //Runs at startup (on page load (on page click (only the first time )))
   if(usersActive == false) {
@@ -64,7 +65,7 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
               //alert( data[0] +"'s salary is: "+ data[ 5 ] ); Keep this as an example
               console.log('Build table with ' + data)
               makeList(data) //Builds the list of the users quotes.
-            } );
+            });
           });
           usersActive = true; //ensures we don't run this again.
     })
@@ -155,11 +156,6 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
 
 
 
-//Unused ?
-function viewQuoteModal(user) {
-  console.log("Showing " + user + "s quotes");
-};
-
 function addQuote() { //Adds a quote to the db,table, and arrayofUsers variable.
   var quoteName = document.getElementById("userQuoteInputU").value.toLowerCase(); //All db values are lower case
   var quoteData = document.getElementById("userQuoteInputQ").value.toLowerCase(); //^^
@@ -203,6 +199,9 @@ function addUser() { //Adds a user
           console.log(e)
         }
       }, 4000);
+    } else if (data == "INVALIDUSER") {
+      console.log("The user cannot be created because the user doesn't exist on glimesh.");
+      document.getElementById("addUserMessage").innerHTML = "The user does not exist on Glimesh. Ensure the username is correct."
     } else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
       document.getElementById("addUserMessageSuccess").innerHTML = "Success! User has been created!";
       //adds it to the table
@@ -244,7 +243,7 @@ function removeUser() { //remoes the user
       setTimeout(() => {
         document.getElementById("removeUserMessage").innerHTML = ""
       }, 4000);
-    } else  {
+    } else {
        UserHandle.removeUser(user).then(deletedUser => { //removes the user from the db. Shows us afterwords
          document.getElementById("removeUserMessage").innerHTML = "User Removed.";
          for (let i = 0; i < arrayofUsers.length; i++) {
@@ -268,6 +267,24 @@ function removeUser() { //remoes the user
        })
     }
   })
+}
+
+function removeUserFromTable(deletedUser) {
+  for (let i = 0; i < arrayofUsers.length; i++) {
+    if (arrayofUsers[i][0] == deletedUser) {
+      console.log(
+        "The user " + deletedUser + " will now be deleted"
+      );
+      arrayofUsers.splice(i, 1); //Removes it from the array.
+      var filteredData = userTable
+        .rows()
+        .indexes()
+        .filter(function (value, index) {
+          return userTable.row(value).data()[0] == deletedUser;
+        });
+      userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
+    }
+  }
 }
 
 function makeList(user) { //Similir to above function, makes a list and displays it under the table.
@@ -300,7 +317,6 @@ function makeList(user) { //Similir to above function, makes a list and displays
 
 //This is the points section. 
 var arrayOfPoints = [];
-var maxPoints = [];
 var pointsTable;
 function getPoints() {
     document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
@@ -342,6 +358,5 @@ function editPointSettings() {
  } else {
   updatePoints({start: start, earn: earn, name: name}) //Edits it at settings.js
   document.getElementById("editPointsMessage").innerHTML = "";
-
  }
 }

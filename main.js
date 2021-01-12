@@ -2,14 +2,7 @@ const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron 
 const log = require('electron-log');
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 const { autoUpdater } = require('electron-updater'); //handles updates
-autoUpdater.autoDownload = true;
-autoUpdater.checkForUpdates()
-autoUpdater.allowPrerelease = true;
-autoUpdater.autoInstallOnAppQuit = true;
-autoUpdater.logger = log
-console.log(autoUpdater.currentVersion);
 var fs = require("fs") //handles Files (writing and reading)
-var CommandHandle = require(__dirname + "/chatbot/lib/commands.js") //handles commands
 let botSettingsRaw = fs.readFileSync(app.getAppPath() + '/chatbot/settings/settings.JSON');
 let settings = JSON.parse(botSettingsRaw);
 
@@ -54,11 +47,7 @@ ipcMain.on('app_version', (event) => {
   console.log("The current version is recieved. " + app.getVersion());
 });
 
-
-
 //console.log(autoUpdater.fullChangelog);
-
-
 
 var win; // The main window
 
@@ -71,20 +60,36 @@ function createWindow () { //make Win a window
     backgroundColor: "#060818",
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true
     },
     icon: "UI/Icons/icon.ico",
     frame: false
   })
   win.loadFile(app.getAppPath() + '/UI/index.html');
   win.setIcon('UI/Icons/icon.png');
-    autoUpdater.checkForUpdatesAndNotify().then(data => {
-      console.log(data)
-    })
 }
-
-
 app.whenReady().then(createWindow)
+
+// send info to the renderer so it can use glimboi modules. This MUST come first and it needs to be very fast.
+ipcMain.on("appDataRequest", (event) => {
+  event.returnValue = [app.getAppPath(), app.getPath("userData")]
+})
+
+ipcMain.on("pleaseClose", (event) => {
+  win.close();
+  console.log("Recieved close request, closing.")
+})
+
+ipcMain.on("pleaseMaximize", (event) => {
+  win.maximize();
+  console.log("Maximizing window")
+})
+
+ipcMain.on("pleaseMinimize", (event) => {
+  win.minimize();
+  console.log("Minimizing Window")
+})
+
+
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -111,3 +116,10 @@ autoUpdater.on('update-downloaded', () => {
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
 });
+
+autoUpdater.logger = log
+autoUpdater.autoDownload = true;
+autoUpdater.allowPrerelease = true;
+autoUpdater.autoInstallOnAppQuit = true;
+console.log(autoUpdater.currentVersion);
+autoUpdater.checkForUpdates()
