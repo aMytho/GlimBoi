@@ -33,7 +33,7 @@
     "deploy": "electron-builder build  --win --publish always"
   },
   "author": "Mytho",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@types/node": "^14.11.2",
     "electron-log": "^4.3.1",
