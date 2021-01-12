@@ -1,7 +1,8 @@
-const Datastore = require('nedb') //Reads commands
+const Datastore = require('nedb'); //Reads commands
 
 var path = "./";
 let commandsDB;
+var commands = []; //Array that contains all the commands. The bot reads this 
 
 //A normal command. 
 class Command {
@@ -36,9 +37,6 @@ var listofvariables = [
   "$game",
 ];
 
-var todaysCommand = {}; //New commands
-var commandAddedToday = false;
-var importedCommands = []; //Existing Commands
 
 //Updates the file path. Electron and the non electron build use different URLS.
 function updatePath(GUI) {
@@ -50,11 +48,12 @@ function updatePath(GUI) {
 
 //Adds a command
 function addCommand(commandName, arguements, commandData, uses, points, rank, special) {
-  var newCommand = new Command(commandName, arguements, commandData, uses, points, rank, special);
+  var newCommand = new Command(commandName, arguements, commandData, Number(uses), Number(points), rank, special);
   try {
     //inserts a document as a command. Uses the command made above.
     commandsDB.insert(newCommand, function(err, doc) {
     console.log('Inserted', doc.commandName, 'with ID', doc._id);
+    getAll()
   });
   } catch(e) {
     console.log(e);
@@ -67,42 +66,62 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
 //Removes a command
 function removeCommand(commandName) {
   commandsDB.remove({ commandName: commandName }, {}, function (err, numRemoved) {
-    console.log(commandName + " was removed from the db")
+    console.log(commandName + " was removed from the db");
+    getAll()
   });
 }
 
 //Edits a command
 function editCommand(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special) {
   console.log(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special)
-  commandsDB.update({ commandName: commandName }, { $set: {arguements : arguements, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank, special: special} }, {}, function (err, numReplaced) {
+  commandsDB.update({ commandName: commandName }, { $set: {arguements : arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special} }, {}, function (err, numReplaced) {
     console.log("Replacing " + commandName);
+    getAll()
 });
 }
 
+async function findCommand(command) {
+  return new Promise(resolve => {
+    commandsDB.find({commandName: command}, function (err, docs) {
+      console.log(docs)
+      resolve(docs[0]) //
+    })
+  })
+}
+
 //Checks if a command exists and runs it if it does.
-function checkCommand(arguements, messageContent) {
+function checkCommand(data) {
+  var message = data.message.split(" "); //splits by space
+  console.log(data);
+  console.log(commands)
+  message[0] = message[0].substring(1)
+  console.log(message)
+
   try {
-    if (importedCommands[`${arguements[0].toLowerCase()}`] !== undefined) {
-      //Search the Command List.
-      runCommand(arguements, messageContent, false); //Runs the command.
-    } else if (todaysCommand[`${arguements[0].toLowerCase()}`] !== undefined) {
-      //Search the newly added Command List.
-      runCommand(arguements, messageContent, true); //Runs the command.
-    } else {
-      console.log("!" + arguements[0] + " is not a command");
+    var commandExists = false;
+    for (let index = 0; index < commands.length; index++) {
+      try {
+        if (commands[index].commandName == message[0]) { 
+        commandExists = true
+        runCommand(message, index, data.user);
+        break
+        }
+      } catch(e) {}
     }
+    if (commandExists == false) { //if the command does exist...
+      console.log(message[0] + " is not a command");
+    }
+  
   } catch (error) {
-    console.log(arguements[0] + "is not a command!");
+    console.log("Error running command");
     console.log(error);
   }
 }
 
 //Runs the command
-function runCommand(arguements, messageContent, isNew) {
+async function runCommand(arguements, index, user) {
   console.log("Running !" + arguements[0]);
-  console.log(" Message:" + messageContent);
-  if (isNew == true) {
-    var chatMessage = todaysCommand[`${arguements[0].toLowerCase()}`].message;
+  var chatMessage = commands[index].message; //The command response
     //Check the command to see if it has any variables.
     variableList[0] = chatMessage.includes("$target");
     variableList[1] = chatMessage.includes("$user");
@@ -110,59 +129,56 @@ function runCommand(arguements, messageContent, isNew) {
     variableList[3] = chatMessage.includes("$watchtime");
     variableList[4] = chatMessage.includes("$cmdcount");
     variableList[5] = chatMessage.includes("$game");
-  } else {
-  var chatMessage = importedCommands[`${arguements[0].toLowerCase()}`].message;
-  //Check the command to see if it has any variables.
-  variableList[0] = chatMessage.includes("$target");
-  variableList[1] = chatMessage.includes("$user");
-  variableList[2] = chatMessage.includes("$time");
-  variableList[3] = chatMessage.includes("$watchtime");
-  variableList[4] = chatMessage.includes("$cmdcount");
-  variableList[5] = chatMessage.includes("$game");}
   //We check if the command has variables against the variable list.
-  variableList.forEach(function (element, i) {
+  for (let i = 0; i < variableList.length; i++) {
     //For every variable we check if it is in the messageContent
     if (variableList[`${i}`] == true && variableList[`${i}`] !== undefined) {
       //If the var is in the string
       console.log(listofvariables[`${i}`] + " is in the command.");
-      replaceVariable(listofvariables[`${i}`]); //Tempororilay replace the variabel with its value. Will be reset when finished.
-      console.log(
-        "Replacing " + listofvariables[i] + " with " + variableList[i]
-      );
-      messageContent = chatMessage.replace(
-        `${listofvariables[i]}`,
-        variableList[i]
-      ); //Replace the variabel with its value in the chatmessage.
-      variableList[i] = false; //Reset its value
-    } else {
-      //element[i] = '';
-      // console.log(listofvariables[`${i}`] + " is not in the command");
+      await replaceVariable(listofvariables[`${i}`], arguements, user) //Tempororilay replace the variable with its value. Will be reset when finished.
+        console.log("Replacing " + listofvariables[i] + " with " + variableList[i]);
+        chatMessage = chatMessage.replaceAll(
+          `${listofvariables[i]}`, //Replace this
+           variableList[i] // With this
+        ); //Replace the variabel with its value in the chatmessage.
+        variableList[i] = false; //Reset its value
+      }
     }
-  });
+    console.log(chatMessage + " is the final message");
+    ChatHandle.sendMessage(chatMessage);
+    addCommandCount(arguements[0])
+  }
+    
 
-  console.log(messageContent + " is the final message");
-}
+ 
 
-function replaceVariable(variable) {
+
+async function replaceVariable(variable, arguements, user) {
   //Checks the variable and replaces it with its new value.
+  console.log(user)
   switch (variable) {
-    case "$target":
-      variableList[0] = "";
+    case "$target": //The first word after the command
+      variableList[0] = arguements[1];
 
       break;
-    case "$user":
-      variableList[1] = "Mytho";
+    case "$user": //The user who said the message. 
+     variableList[1] = user.username
 
       break;
-    case "$time":
+    case "$time": //Current time
       variableList[2] = getTime();
 
       break;
     case "$watchtime":
       break;
     case "$cmdcount":
+      var count = await findCommand(arguements[0])
+      variableList[4] = count.uses
       break;
     case "$game":
+      user = await ApiHandle.getUserID(user.username)
+      variableList[5] = user
+      
       break;
 
     default:
@@ -170,12 +186,15 @@ function replaceVariable(variable) {
   }
 }
 
-//Gets all the commands. used to show them on the table in the GUI.
+//Gets all the commands. used to show them on the table in the GUI. Also used for acutal command input. 
+//Performance wise it may not seem smart but its speed is crazy so its ok for now.
+//eventually may import at start and add to a js array instead.
 async function getAll() {
   return new Promise(resolve => {
     commandsDB.find({}, function (err, docs) {
       console.log(docs)
-      resolve(docs)
+      commands = docs //The bot knows all the commands now. This is the bot, not the UI
+      resolve(docs) //UI probably knows after this
     })
   })
 }
@@ -185,6 +204,15 @@ async function getAll() {
 function getTime() {
   var theTime = new Date().toTimeString();
   return theTime;
+}
+
+// Increases the command uses by one. 
+async function addCommandCount(command) {
+  commandsDB.update({ commandName: command }, { $inc: {uses: 1} }, {}, function (err, numReplaced) {
+    console.log("Updating uses of " + command);
+    err ? console.log(err) : null; // if error log it
+    getAll()
+});
 }
 
 module.exports = { addCommand, checkCommand, editCommand, getAll, removeCommand , updatePath}; //Send to the main file.

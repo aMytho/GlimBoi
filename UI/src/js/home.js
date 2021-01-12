@@ -1,11 +1,7 @@
 //Handles the charts for the homepage and the auth.
-var {app} = require("electron").remote
-
-var serverisOn = false;
-var authSaved = false;
 var refreshed = false;
-var AuthHandle = require(app.getAppPath() + "/chatbot/lib/auth.js");
-AuthHandle.updatePath(app.getPath("userData"));
+var AuthHandle = require(appData[0] + "/chatbot/lib/auth.js");
+AuthHandle.updatePath(appData[1]);
 
 
 function rememberID() { // checks if an id has been entered for auth
@@ -67,7 +63,7 @@ function saveAuth() { //sets the state to saved
     document.getElementById("secretID").setAttribute("disabled", "");
     document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
     document.getElementById("saveAuth").innerHTML = "Edit Auth";
-    AuthHandle.updateID(document.getElementById("clientID").value, document.getElementById("secretID").value)
+    AuthHandle.updateID(document.getElementById("clientID").value, document.getElementById("secretID").value).then(ApiHandle.updateID())
     // We set the value to "ID SAVED" because we don't want the ID showing, streamers would probably show it accidentally. 
     document.getElementById("clientID").value = "ID Saved";
     document.getElementById("secretID").value = "ID Saved";
@@ -86,11 +82,4 @@ function editAuth() { //Sets the state to editable
 
 function auth() {
     AuthHandle.Auth() //runs the webserver so we can get the token needed to connect to chat. It will refresh if a token is avaible. 
-}
-
-
-
-// Charts
-function loadCharts() {
-    getBasicData()
 }

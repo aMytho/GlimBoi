@@ -1,8 +1,4 @@
-var {ipcRenderer} = require('electron')
-var ChatHandle = require(app.getAppPath() + "/chatbot/lib/chat.js");
-var ApiHandle = require(app.getAppPath() + "/chatbot/lib/api.js")
-ChatHandle.updatePath(app.getPath("userData"));
-
+var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js");
 
 
 

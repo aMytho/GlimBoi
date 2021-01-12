@@ -1,6 +1,6 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
-var CommandHandle = require(app.getAppPath() + "/chatbot/lib/commands.js");
-CommandHandle.updatePath(app.getPath("userData")); //Gives the module the correct path to the DB.
+var CommandHandle = require(appData[0] + "/chatbot/lib/commands.js");
+CommandHandle.updatePath(appData[1]); 
 var arrayOfCommands = []; //An array that stores the commands from the DB so we don't import them every change.
 var tblhasbeenopened = false; //Ensures we don't run this function evey time the table is opened.
 var table; //The physical table for the UI
@@ -28,7 +28,6 @@ function loadCommandTable() {
         ];
         arrayOfCommands.push(tempArray); //Pushes the commands to a variable which we use to build the table
       }
-      console.log(arrayOfCommands);
 
       $(document).ready(function () {
         table = $("#example").DataTable({
@@ -63,12 +62,12 @@ function loadCommandTable() {
         console.log('Hey, somebody changed something in my text!');
     });*/
 
-      $("#example").click(function (event) {
+     /* $("#example").click(function (event) {
         //Tells us which column and row they clicked, currently unused
         var text = $(event.target).text();
         event.target.id = "one";
         console.log(event);
-      });
+      });*/
 
       tblhasbeenopened = true;
     });
@@ -336,19 +335,19 @@ function checkEditCommand() {
                       <tbody>
                          <tr>
                             <td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
-                            <td contenteditable="true" id="editCommandArguements">null</td>
+                            <td contenteditable="true" id="editCommandArguements">${arrayOfCommands[i][1]}</td>
                          </tr>
                          <tr>
                             <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
-                            <td contenteditable="true" id="editCommandData">Follow me on Glimesh at https://glimesh.tv/Mytho</td>
+                            <td contenteditable="true" id="editCommandData">${arrayOfCommands[i][2]}</td>
                          </tr>
                          <tr>
                             <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
-                            <td contenteditable="true" id="editCommandPoints">0</td>
+                            <td contenteditable="true" id="editCommandPoints">${arrayOfCommands[i][4]}</td>
                          </tr>
                          <tr>
                             <td data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
-                            <td contenteditable="true" id="editCommandUses">0</td>
+                            <td contenteditable="true" id="editCommandUses">${arrayOfCommands[i][3]}</td>
                          </tr>
                          <tr>
                             <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
@@ -387,10 +386,6 @@ function editCommand() {
   var isvalid = 0;
   console.log("Checking if command is valid.");
   var commandData, commandPoints, commandUses, commandRank;
-  if (false) {
-    //Arguements
-    console.log("no argue");
-  }
 
   if ($("#editCommandData").html().length > 254) {
     //max length is 255. - 1 for the 0. may be worng, idk
