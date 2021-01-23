@@ -15,7 +15,7 @@
     <script src="src/js/popper.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="src/js/bootstrap/bootstrap.min.js"></script>
-    <script src="https://kit.fontawesome.com/8e62aaf2f3.js" crossorigin="anonymous"></script>
+    <link href="src/css/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <!--Apex Charts-->
@@ -39,7 +39,7 @@
           <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item glimNavItem" id="Commands">
-                    <a class="nav-link" href="UI/src/html/commands.html" id="CommandLink">Commands</a>
+                    <a class="nav-link disabled" href="UI/src/html/commands.html" id="CommandLink">Commands</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Quotes">
                     <a class="nav-link" href="UI/src/html/points.html" id="PointsLink">Points</a>
@@ -48,13 +48,13 @@
                     <a class="nav-link disabled" href="#" id="GamesLink">Games</a>
                 </li>
                 <li class="nav-item glimNavItem" id="DB">
-                    <a class="nav-link" href="UI/src/html/users.html" id="UsersLink">Users</a>
+                    <a class="nav-link disabled" href="UI/src/html/users.html" id="UsersLink">Users</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Settings">
-                    <a class="nav-link" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
+                    <a class="nav-link disabled" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
                 </li>
                 <li class="nav-item glimNavItem" id="Chat">
-                  <a class="nav-link" href="UI/src/html/chat.html" id="ChatLink">Chat</a>
+                  <a class="nav-link disabled" href="UI/src/html/chat.html" id="ChatLink">Chat</a>
               </li>
             </ul>
         </div>
@@ -173,6 +173,7 @@
   //Creates the chart. Only build the first time. Also checks for updates
   getBasicData()
   checkForUpdate();
+  getSettings()
       </script>
 </body>
 </html>
