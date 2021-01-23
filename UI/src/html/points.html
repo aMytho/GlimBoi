@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                <div class="col-6">
-                  <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalEditPoints"> Edit Values</a>
+                  <a class="btn btn-primary btn-block" onclick="document.getElementById('SettingsLink').click()"> Edit Values</a>
                </div>
                <div class="col-6 ">
                   <a class="btn btn-info btn-block" data-toggle="modal" data-target="#modalInfo">More Info</a>
@@ -116,8 +116,6 @@
 
 
 
-
-
 <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
@@ -139,33 +137,6 @@
         <!--Footer-->
         <div class="modal-footer">
            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-        </div>
-     </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modalEditPoints" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText" id="editPointsModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="myModalLabel5">Edit Points</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body">
-           <div class="icon-input-container">
-            <input class="icon-input" type="text" placeholder="Starting Amount" id="editStart">
-            <input class="icon-input" type="text" placeholder="Earning Per 10 Minutes" id="editEarn">
-            <input class="icon-input" type="text" placeholder="Currency Name" id="editName">
-            <p id="editPointsMessage" class="errorMessage"></p>
-        </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="editPointSettings()">Save</button>
-
         </div>
      </div>
   </div>

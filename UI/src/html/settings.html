@@ -1,68 +1,137 @@
 <div class="row justify-content-md-center pt-3">
-    <div class="col-3 ml-2">
-      <div class="card text-center glimPanel w-75" style="width: 18rem;">
-        <div class="card-header whiteText">Commands</div>
+    <div class="col-12 mx-auto">
+      <div class="card glimPanel mx-auto" style="width: 18rem;width: 97%;">
         <div class="card-body">
-          <div class="form-check card-text">
-            <input class="form-check-input" type="checkbox" value="" id="commandsEnabled">
-            <label class="form-check-label whiteText" for="defaultCheck1">
-              Enabled
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="lolwwwww">
-            <label class="form-check-label whiteText" for="defaultCheck2">
-              Disabled checkbox
-            </label>
+          <div class="row">
+            <div class="col whiteText">
+              <h2>Commands</h2>
+              <hr style="border-color: aliceblue;">
+              <h3>Cooldown</h3>
+              <p>Adds a delay between a command being activated. Helps to prevent spam.</p>
+              <form>
+                <div class="form-group mt-n1">
+                  <label for="sel1">Cooldown:</label>
+                  <select class="form-control" id="sel1" style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                    <option id="cdNone">None (default)</option>
+                    <option id="cd30">30 seconds</option>
+                    <option id="cd60">1 Minute</option>
+                    <option id="cd180">3 Minutes</option>
+                    <option id="cd300">5 Minutes</option>
+                  </select>
+                </div>
+              </form>
+              <h2 class="mt-1">Chat</h2>
+              <hr style="border-color: aliceblue;">
+              <h3>Log Messages</h3>
+              <p>Logs chat messages to a text file.</p>
+              <div class="row">
+                <div class="col-1">
+              <label class="switch">
+                <input type="checkbox" id="loggingEnabled">
+                <span class="slider round"></span>
+              </label>
+              </div>
+              <div class="col-11">
+                <p class="text-left">Enabled / Disabled</p>
+              </div>
+              </div>
+              
+            </div>
+            <div class="col whiteText">
+              <h2>Points</h2>
+              <hr style="border-color: aliceblue;">
+              <h3>Initial Value</h3>
+              <p>The amount of points a new user starts with.</p>
+              <form>
+                <div class="form-group">
+                  <label for="initialValueSlider">Initial</label>
+                  <input type="range" class="form-control-range" id="initialValueSlider" min="0" max="500" step="5">
+                  <p id="initialValueOutput"></p>
+                </div>
+              </form>
+              <h3>Rate</h3>
+              <p>The amount of points earned per 15 minutes.</p>
+              <form>
+                <div class="form-group">
+                  <label for="rateValueSlider">Rate</label>
+                  <input type="range" class="form-control-range" id="rateValueSlider">
+                  <p id="rateValueOutput"></p>
+                </div>
+              </form>
+              <h3>Name</h3>
+              <p>The name of your currency.</p>
+              <div class="icon-input-container">
+                <input class="icon-input aInput" type="text" placeholder="Name" id="pointsNewName" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+            </div>
+              
+            </div>
           </div>
 
 
         </div>
-        <div class="card-footer">Footer</div>
+        <div class="card-footer"><a class="btn btn-warning" href="#" onclick="resetSettings()">Reset to Default</a> <a class="btn btn-info" href="#" onclick="saveSettings()">Save</a></div>
       </div>
     </div>
-    <div class="col-3">
-      <div class="card text-center glimPanel w-75" style="width: 18rem;">
-        <div class="card-header whiteText">Quotes</div>
-        <div class="card-body">
-          <div class="form-check card-text">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-            <label class="form-check-label whiteText" for="defaultCheck1">
-              Default checkbox
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
-            <label class="form-check-label whiteText" for="defaultCheck2">
-              Disabled checkbox
-            </label>
-          </div>
 
-
-        </div>
-        <div class="card-footer">Footer</div>
-      </div>
-    </div>
-    <div class="col-3 mr-2">
-      <div class="card text-center glimPanel w-75" style="width: 18rem;">
-        <div class="card-header whiteText">Games</div>
-        <div class="card-body">
-          <div class="form-check card-text">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-            <label class="form-check-label whiteText" for="defaultCheck1">
-              Default checkbox
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
-            <label class="form-check-label whiteText" for="defaultCheck2">
-              Disabled checkbox
-            </label>
-          </div>
-
-
-        </div>
-        <div class="card-footer">Footer</div>
-      </div>
-    </div>
   </div>
+  <style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+    
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    </style>
