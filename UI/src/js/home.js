@@ -45,7 +45,7 @@ function rememberID() { // checks if an id has been entered for auth
                                 errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
                         }
                     })
-              }
+              } else {errorMessage("test", "fial")}
 
              if (data[0].access_token.length > 5 && refreshed == true) {
                 document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. Ready to join chat.";
@@ -63,7 +63,8 @@ function saveAuth() { //sets the state to saved
     document.getElementById("secretID").setAttribute("disabled", "");
     document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
     document.getElementById("saveAuth").innerHTML = "Edit Auth";
-    AuthHandle.updateID(document.getElementById("clientID").value, document.getElementById("secretID").value).then(ApiHandle.updateID())
+    AuthHandle.createID(document.getElementById("clientID").value, document.getElementById("secretID").value).then(ApiHandle.updateID());
+    console.log(document.getElementById("clientID").value, document.getElementById("secretID").value)
     // We set the value to "ID SAVED" because we don't want the ID showing, streamers would probably show it accidentally. 
     document.getElementById("clientID").value = "ID Saved";
     document.getElementById("secretID").value = "ID Saved";

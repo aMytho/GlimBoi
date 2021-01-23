@@ -41,7 +41,6 @@ naviLinks.forEach((linkEl) => {
         var id = linkEl.id
         if (href) {
             // Use node.js fs-module to read the file
-            const fs = require("fs");
             fs.readFile(`${appData[0]}/${href}`, (err, data) => {
                 if (err) {
                     throw err;
@@ -50,11 +49,12 @@ naviLinks.forEach((linkEl) => {
                 contentEl.innerHTML = "";
                 contentEl.insertAdjacentHTML("beforeend", data);
                 changeNavHighlight(id) //Changes the highlight
-                if (linkEl.id == "CommandLink") {loadCommandTable();} //Builds the data table
+                if (linkEl.id == "CommandLink") {loadCommandTable()} //Builds the data table
                 if (linkEl.id == "GlimBoiHeader") {getBasicData(); rememberID();} //Builds the homepage charts and check for auth ino for the buttons
                // if (linkEl.id == "ChatLink") {openWindow()}
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
+                if (linkEl.id == "SettingsLink") {showSettings()}
                 //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }

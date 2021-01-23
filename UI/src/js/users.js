@@ -346,17 +346,3 @@ function getPoints() {
     }
   })
 }
-
-function editPointSettings() {
- var start = document.getElementById("editStart").value
- var earn = document.getElementById("editEarn").value
- var name = document.getElementById("editName").value
- console.log(name, earn, start)
- if (isNaN(earn) == true || isNaN(start) == true) {
-   console.log("Not a number");
-   document.getElementById("editPointsMessage").innerHTML = "Starting and earning values must be a number.";
- } else {
-  updatePoints({start: start, earn: earn, name: name}) //Edits it at settings.js
-  document.getElementById("editPointsMessage").innerHTML = "";
- }
-}

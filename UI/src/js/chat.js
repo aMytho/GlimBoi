@@ -5,7 +5,7 @@ var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js");
 function joinChat() {
   var chatToJoin = document.getElementById("whichChannel").value
   AuthHandle.getToken().then(data => {
-    if (data.length == 0 || data == undefined) {
+    if (data == undefined || data.length == 0 ) {
       errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and auth again.")
     } else {
       ApiHandle.updatePath(data); //Sends the API module our access token.
