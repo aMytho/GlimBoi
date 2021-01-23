@@ -2,6 +2,7 @@
 const WebSocket = require("ws");
 var connection;
 var chatID = ""
+var logging = true;
 
 
 //Tries to join a channel, if it disconnects any error will be shown. 
@@ -19,47 +20,59 @@ function connectToGlimesh(access_token, channelID) {
 
     connection.on("open", function open() {
       console.log("Connected to the Glimesh API");
-        connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
-        connection.send(
-          `["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { user { username avatarUrl } message } }","variables":{} }]`
-        ); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
-      
-        setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
-          connection.send('[null,"6","phoenix","heartbeat",{}]'); 
-        }, 30000);
-        setInterval(() => { //every 5 minutes get the current view count
-          ApiHandle.getViewCount().then(data => {
-            console.log(data);
-            if (data == null) {
-              
-            }
+      connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
+      connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { user { username avatarUrl } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
+      if (logging == true) {
+          setTimeout(() => {
+              ipcRenderer.send("startLogging", ""); // Tells the main process to start logging messages.
+              ipcRenderer.once("startedLogging", (event, args) => {
+                  console.log("Started to log chat messages.");
+                  successMessage("Logging has begun.", "All messages will be saved.")
+              });
+              ipcRenderer.once("noLogSelected", (event, args) => {
+                  errorMessage("Logging Error", "No file was selected. Messages will not be saved.")
+              });
+              ipcRenderer.once("endedLog", (event, args) => {
+                  console.log("Logging has ended."), successMessage("Logging has ended", "Finished.")
+              })
+          }, 3000);
+      }
+      setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
+          connection.send('[null,"6","phoenix","heartbeat",{}]');
+      }, 30000);
+      setInterval(() => { //every 5 minutes get the current view count
+          ApiHandle.getStats().then(data => {
+              console.log(data);
+              if (data == null) {
+                  console.log("Something is wrong with the channel or follow count thingy from function geetStats()")
+              } else {
+                  if (data.channel.stream.countViewers !== undefined && data.channel.stream.countViewers !== null) {
+                      document.getElementById("fasUsers").innerHTML = `<span><i class="fas fa-users"></i></span> ${data.channel.stream.countViewers}`
+                  }
+                  if (data.followers.length !== undefined && data.followers.length !== null) {
+                      document.getElementById("fasHeart").innerHTML = `<span><i class="fas fa-heart"></i></span> ${data.followers.length}`
+                  }
+                  if (data.channel.stream.newSubscribers !== undefined && data.channel.stream.newSubscribers !== null) {
+                      document.getElementById("fasStar").innerHTML = `<span><i class="fas fa-star"></i></span> ${data.channel.stream.newSubscribers}`
+                  }
+              }
           })
-        }, 180000);
-      });
+      }, 180000);
+  });
       connection.on("message", function(data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
-          // A normal chat message looks like this: (with non redacted data)
-          // [null,null,"__absinthe__:doc:-REDACTED:REDACTED","subscription:data",{"result":{"data":{"chatMessage":{"message":"a","user":{"avatar":"/uploads/avatars/Mytho.png?v=63762672056","username":"Mytho"}}}},"subscriptionId":"__absinthe__:doc:-REDACTED:REDACTED"}]
-          //var test = [null,null,"__absinthe__:doc:-576460752302176350:33B2AA3BF7B8F0E158810EF0E0166F5E05840BE57444C92365C921943942A47D","subscription:data",{"result":{"data":{"chatMessage":{"message":"a","user":{"avatar":"/uploads/avatars/Mytho.png?v=63762672056","username":"Mytho"}}}},"subscriptionId":"__absinthe__:doc:-576460752302176350:33B2AA3BF7B8F0E158810EF0E0166F5E05840BE57444C92365C921943942A47D"}];
-          console.log(data)
           try {
             //First check for heartbeat message.
-            var heartbeat = JSON.parse(data);
-            if (heartbeat[4].status !== undefined) {
-              console.log("Status: " + heartbeat[4].status);
+            var chatMessage = JSON.parse(data);
+            if (chatMessage[4].status !== undefined) {
+              console.log("Status: " + chatMessage[4].status);
             } else {
               //Its probably a chat message
               try {
-                var chatMessage = JSON.parse(data);
                 console.log(chatMessage)
                 if (chatMessage[4].result.data !== undefined) {
-                  console.log(
-                    chatMessage[4].result.data.chatMessage.user.username +
-                    ": " +
-                    chatMessage[4].result.data.chatMessage.message
-                  );
-                    
+                  console.log(chatMessage[4].result.data.chatMessage.user.username +": " + chatMessage[4].result.data.chatMessage.message);
                     if (chatMessage[4].result.data.chatMessage.message.startsWith("!")) { //If it is a command of some sort...
-                      console.log("its a command, scanning and will run if found. ");
+                      console.log("Searching for command");
                       var message = chatMessage[4].result.data.chatMessage.message.split(" ")
                       switch (message[0]) {
                         case "!command add":
@@ -77,28 +90,17 @@ function connectToGlimesh(access_token, channelID) {
                           case "!command edit":
                           
                           break;
-                          case "!quote add":
-                          QuoteHandle.addquote("mytho", "needs some sleep")
-                          break;
-                          case "!quote new":
-                          QuoteHandle.addquote("mytho", "needs some sleep")
-                          break;
-                          case "!quote remove":
-                          
-                          break;
-                          case "!quote del":
-                          break;
-                          case "!test":
-                           // connection.send('["null","6","__absinthe__:control","doc",{"query":"mutation {createChatMessage(channelId:6, message: {message: \"Hello world!\"}) {message}}","variables":null}]')
-                          glimboiMessage("Test complete")
-                          break;
-                          case "!user":
+                          case "!quote":
                             switch (message[1]) {
-                              case "new":
-                                addUserChat(message[2])
+                              case "" :
+                              case " ":
+                              case null:
+                              case undefined:
+                                randomQuoteChat()
                                 break;
                               case "add":
-                                addUserChat(message[2])
+                              case "new":
+                                addQuoteChat(chatMessage[4].result.data.chatMessage, message[2])
                               break;
                               case "remove":
                                 delUserChat(message[2])
@@ -110,6 +112,24 @@ function connectToGlimesh(access_token, channelID) {
                                 delUserChat(message[2])
                               break;
 
+                              default:
+                                break;
+                            }
+                          break;
+                          case "!test":
+                          glimboiMessage("Test complete. If you have a command called test this replaced it.")
+                          break;
+                          case "!user":
+                            switch (message[1]) {
+                              case "new":
+                              case "add":
+                                addUserChat(message[2])
+                              break;
+                              case "remove":
+                              case "del":
+                              case "delete":
+                                delUserChat(message[2])
+                              break;
                               default:
                                 break;
                             }
@@ -139,8 +159,6 @@ function connectToGlimesh(access_token, channelID) {
             `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`
           );
         } else {
-          // e.g. server process killed or network down
-          // event.code is usually 1006 in this case
           console.log("[close] Connection died");
           errorMessage([event.code, event.reason], "Chat Error")
         }
@@ -165,7 +183,12 @@ function sendMessage(data) {
 function disconnect() {
   try {
   connection.close(1001, "So long and thanks for all the fish.")
-  successMessage("Chat has been successfully disconnected!", "You can close this now.")
+  successMessage("Chat has been successfully disconnected!", "You can close this now.");
+  if (logging == true) {
+  setTimeout(() => {
+    ipcRenderer.send("logEnd")
+  }, 3000);
+}
   } catch(e) {
     errorMessage(e, "Error disconnecting from the chat")
   }
@@ -180,13 +203,6 @@ function glimboiMessage(data) {
   connection.send(test)
 }
 
-function highlightMessage() {
-
-}
-
-function archiveMessage(message) {
-
-}
 
 function test() {
   var test = JSON.stringify(["1","1","__absinthe__:control","doc",{"query": "subscription{ chatMessage { user { username avatar } message } }"}])
@@ -206,7 +222,10 @@ function logMessage(user, message, avatar) {
                         </div>
                   </li>
                   `
-  )
+  );
+  if (logging == true) {
+  ipcRenderer.send("logMessage", {message: message, user: user})
+  }
 }
 
 function addUserChat(user) {
@@ -235,4 +254,25 @@ function delUserChat(user) {
   })
 }
 
-module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, logMessage, sendMessage, test}
+function loggingEnabled(enabled) {
+  if (enabled == true) {
+    logging = true
+  } else {
+    logging = false
+  }
+}
+
+function randomQuoteChat() {
+  QuoteHandle.randomQuote().then(data => {
+    glimboiMessage(`@${data.user} - ${data.data}`)
+  })
+}
+
+function addQuoteChat(data, user) {
+  console.log(user, data.message);
+  console.log(data.message.substring(10))
+  var trimMessage = 10 + user.length + 2
+  QuoteHandle.addquote(user, data.message.substring(trimMessage))
+}
+
+module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, loggingEnabled, logMessage, sendMessage, test}

@@ -2,10 +2,9 @@ const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron 
 const log = require('electron-log');
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 const { autoUpdater } = require('electron-updater'); //handles updates
-var fs = require("fs") //handles Files (writing and reading)
-let botSettingsRaw = fs.readFileSync(app.getAppPath() + '/chatbot/settings/settings.JSON');
-let settings = JSON.parse(botSettingsRaw);
 
+
+function logSettings(settings) {
 if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
     console.log(`Auth: ${settings.Auth.Oauth}`);
     console.log("Mods:")
@@ -40,6 +39,7 @@ if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
         console.log(" Current Version: " + "\x1b[38m" + autoUpdater.currentVersion + "\033[0m");
         console.log("\x1b[38m" + "______________________" + "\033[0m");
     console.log("Logging Completed!");
+}
 }
 
 ipcMain.on('app_version', (event) => {
@@ -104,6 +104,41 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+
+
+var loggingFile;
+
+ipcMain.on("startLogging", event => {
+  var { dialog } = require("electron");
+  var fs = require("fs") //handles Files (writing and reading)
+  dialog.showSaveDialog(win, {title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation', 'promptToCreate ', ], filters: [{name: "Chat Logs", extensions: ["txt"]}]}).then(data => {
+    console.log(data)
+    if (data == undefined || data.canceled == true) {
+      console.log("They did not select a file.");
+      event.reply("noLogSelected", "No file was selected.")
+    } else {
+      loggingFile = fs.createWriteStream(data.filePath)
+      event.reply("startedLogging", "Logging has begun");
+      console.log("Started logging chat messages.")
+    }
+  })
+})
+
+ipcMain.on("logMessage", (event, arg) => {
+  try {
+  loggingFile.write(`
+  ${arg.user}: ${arg.message}`, "utf-8")
+  } catch(e) {
+    console.log(e);
+  }
+})
+  
+ipcMain.on("logEnd", event => {
+  try {loggingFile.end(); console.log("Finishes chat logs.");} catch(e) {console.log(e); event.reply("endedLog", e)}
+  event.reply("endedLog", "The log has been ended.")
+})
+
 
 autoUpdater.on('update-available', () => {
   win.webContents.send('update_available');

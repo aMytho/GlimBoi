@@ -7,7 +7,7 @@ const WebSocket = require("ws");
 
 
 console.log(__dirname)
-let botSettingsRaw = fs.readFileSync('settings/settings.JSON');
+let botSettingsRaw = fs.readFileSync('settings/settings.json');
 let settings = JSON.parse(botSettingsRaw);
 
 if (settings.GlimBot.startLog == true) { //Runs at startup to show your config

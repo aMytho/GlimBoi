@@ -3,6 +3,8 @@ const Datastore = require('nedb'); //Reads commands
 var path = "./";
 let commandsDB;
 var commands = []; //Array that contains all the commands. The bot reads this 
+var cooldown = 0;
+var startCD, timeCD;
 
 //A normal command. 
 class Command {
@@ -92,11 +94,12 @@ async function findCommand(command) {
 //Checks if a command exists and runs it if it does.
 function checkCommand(data) {
   var message = data.message.split(" "); //splits by space
-  console.log(data);
-  console.log(commands)
   message[0] = message[0].substring(1)
   console.log(message)
-
+  timeCD = new Date();
+  var CD = timeCD - startCD
+  console.log(CD)
+  if (CD < cooldown) {} else {
   try {
     var commandExists = false;
     for (let index = 0; index < commands.length; index++) {
@@ -116,6 +119,7 @@ function checkCommand(data) {
     console.log("Error running command");
     console.log(error);
   }
+}
 }
 
 //Runs the command
@@ -146,7 +150,8 @@ async function runCommand(arguements, index, user) {
     }
     console.log(chatMessage + " is the final message");
     ChatHandle.sendMessage(chatMessage);
-    addCommandCount(arguements[0])
+    addCommandCount(arguements[0]);
+    startCD = new Date();
   }
     
 
@@ -215,4 +220,8 @@ async function addCommandCount(command) {
 });
 }
 
-module.exports = { addCommand, checkCommand, editCommand, getAll, removeCommand , updatePath}; //Send to the main file.
+function cooldownChange(cd) {
+  cooldown = cd*1000;
+  console.log(cooldown)
+}
+module.exports = { addCommand, checkCommand, cooldownChange, editCommand, getAll, removeCommand , updatePath}; //Send to the main file.

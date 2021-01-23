@@ -33,7 +33,7 @@ async function addUser(user) {
                 done("INVALIDUSER")
             } else {
                 console.log(ID)
-                var tempUser = new User(user, ID) //makes the user. L I F E !
+                var tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
                 usersDB.insert(tempUser, function(err, doc) {
                   console.log(doc);
                   console.log("User created!");

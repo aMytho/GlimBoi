@@ -2,6 +2,7 @@
 var clientID = ""
 var token = ""
 var channelID = ""
+var streamer = "";
 
 //Updates the token so we can send requests as the user. 
 function updatePath(accessToken) {
@@ -10,7 +11,12 @@ function updatePath(accessToken) {
 
 function updateID() {
   AuthHandle.getID().then(data => {
+    if (data == null) {
+      console.log("No ID exists yet.");
+      errorMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannont use the API without the proper authentication")
+    } else {
     clientID = data
+    }
   })
 }
 
@@ -18,12 +24,13 @@ function updateID() {
 //Gets the channel ID.
 async function getChannelID(channel) {
   var ID = await new Promise(resolve => {
-    fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel (username: "${channel}"){id}}`, headers: { Authorization: `Bearer ${token}` }})
+    fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel (username: "${channel}"){id, streamer {displayname}}}`, headers: { Authorization: `Bearer ${token}` }})
       .then((res) => {
         res.json().then((data) => {
           try {
             console.log(data);
             channelID = data.data.channel.id;
+            streamer = data.data.channel.streamer.displayname; // We can use the streamer name now.
             resolve(data.data.channel.id);
           } catch (e) {
             try {
@@ -88,14 +95,15 @@ return category
 
 
 
-async function getViewCount() {
+async function getStats() {
   var viewers = await new Promise(resolve => {
-    fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(id: ${channelID}) {stream {countViewers}}}`, headers: { Authorization: `Client-ID ${clientID}` }})
+    fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(id:${channelID}) {stream {countViewers,newSubscribers}},followers(streamerUsername: "${streamer}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
       .then((res) => {
         res.json().then((data) => {
           try { //if it is null and nested this will prevent a crash.
-            console.log("Current viewcount:" + data.data.channel.stream.countViewers)
-            resolve(data.data.channel.channel.stream.countViewers)
+            console.log(data)
+            console.log("Current viewcount:" + data.data.channel.stream.countViewers + " Subscribers: " + data.data.channel.stream.newSubscribers + " Followers: " + data.data.followers.length)
+            resolve(data.data)
             } catch(e) {
               try {
                 resolve({data: data.errors[0].message, status: "NOSTREAMFOUND"})
@@ -110,4 +118,4 @@ async function getViewCount() {
 return viewers
 }
 
-module.exports = { getChannelID, getUserID, getViewCount, updateID, updatePath}
+module.exports = { getChannelID, getStats, getUserID, updateID, updatePath}

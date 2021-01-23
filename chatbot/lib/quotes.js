@@ -103,8 +103,14 @@ function generateDate() {
   return theTime;
 }
 
-function randomQuote() {
-  quotesDB.find({}, function (err, docs) {})
+async function randomQuote() {
+  return new Promise(resolve => {
+    quotesDB.find({}, function (err, docs) {
+      var randomQuote = Math.floor(Math.random() * docs.length);
+      console.log(docs[randomQuote].quoteName, docs[randomQuote].quoteData);
+      resolve({user:docs[randomQuote].quoteName, data: docs[randomQuote].quoteData})
+    })
+  })
 }
 
-module.exports = { addquote, editquote, getAll, removequote, updatePath }; //Send to the main file.
+module.exports = { addquote, editquote, getAll, randomQuote, removequote, updatePath }; //Send to the main file.
