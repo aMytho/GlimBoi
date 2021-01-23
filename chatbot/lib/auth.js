@@ -70,6 +70,7 @@ function startAuthServer(authScheme) {
                                   multi: true
                               }, function(err, numReplaced) {
                                   console.log("Got the tokens, ready to connect to glimesh");
+                                  successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!")
                                   server.close()
                               });
                           } catch (e) {
@@ -118,16 +119,6 @@ async function readAuth() {
    })
 }
 
-//makes an auth file with content so it actually saves, still blank though
-async function makeAuth() {
-  return new Promise(resolve => {
-    authDB.insert({clientID: "", secret: "", code: "", access_token: "", refresh_token: "", created_at: "", expire: ""}, function (err, newDocs) {
-      console.log(newDocs)
-      resolve("finished!")
-    });
-  })
-  
-}
 
 // We refresh the access token and get a new one. Refresh tokens last for a year. 
 async function refreshToken(refresh_token, client_id, client_secret) {
@@ -146,7 +137,7 @@ async function refreshToken(refresh_token, client_id, client_secret) {
         token.expire = data.expires_in
         //Updates the DB with the info
         authDB.update({}, { $set: { access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
-         console.log("Refreshed a token, ready to connect to chat!")
+         console.log("Refreshed a token, ready to connect to chat!");
          resolve("SUCCESS")})
       } catch(e) {
         console.log(e);
@@ -200,4 +191,4 @@ async function getID() {
 
 
 
-module.exports = { Auth, createID ,getID, getToken, makeAuth ,readAuth, recieveID, refreshToken, startAuthServer, updateID ,updatePath}; //Send to the main file.
+module.exports = { Auth, createID ,getID, getToken ,readAuth, recieveID, refreshToken, startAuthServer, updateID ,updatePath}; //Send to the main file.

@@ -9,8 +9,7 @@ function rememberID() { // checks if an id has been entered for auth
        auth.then( data => {
            //Checks if any data is there, this is seeing if a file even exists.
            if (data.length == 0) {
-               console.log("The auth file does not yet exist, creating it.")
-               AuthHandle.makeAuth() //Create the file with blank data. 
+               console.log("The auth file does not yet exist.")
                //Now we set the buttons/ inputs on the home page to be empty.
                document.getElementById("clientID").removeAttribute("disabled");
                document.getElementById("secretID").removeAttribute("disabled");
