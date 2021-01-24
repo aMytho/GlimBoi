@@ -3,6 +3,19 @@ ApiHandle.updateID()
 var fs = require("fs");
 var settings = {}
 
+// removes the disable class on the navbar
+function unlockBot() {
+    try {
+    document.getElementById("CommandLink").classList.remove("disabled")
+    document.getElementById("PointsLink").classList.remove("disabled")
+    document.getElementById("UsersLink").classList.remove("disabled")
+    document.getElementById("SettingsLink").classList.remove("disabled")
+    document.getElementById("ChatLink").classList.remove("disabled")
+    } catch(e) {
+        console.log("error unlocking bot. It may already be unlocked.")
+        errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
+    }
+}
 // Ran at startup and to get data for settings page
 function getSettings() {
     try { // Check if the file exists.
@@ -12,7 +25,7 @@ function getSettings() {
         var dataTemplate = JSON.stringify({
                 Points: {
                     enabled: true,
-                    name: "MEMES",
+                    name: "Points",
                     StartingAmount: 0,
                     accumalation: 15
                 },
@@ -27,14 +40,28 @@ function getSettings() {
                 }
             })
     
-        fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate)
+        fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time th ebot runs.
+        // for now we use the settings variable
+        settings = {
+            Points: {
+                enabled: true,
+                name: "Points",
+                StartingAmount: 0,
+                accumalation: 15
+            },
+            Commands: {
+                enabled: true,
+                cooldown: 0,
+                Prefix: "!",
+                Error: true
+            },
+            chat: {
+                logging: false
+            }
+        }
     }
     updateSettings()
-    document.getElementById("CommandLink").classList.remove("disabled")
-    document.getElementById("PointsLink").classList.remove("disabled")
-    document.getElementById("UsersLink").classList.remove("disabled")
-    document.getElementById("SettingsLink").classList.remove("disabled")
-    document.getElementById("ChatLink").classList.remove("disabled")
+    unlockBot()
 }
 
 
