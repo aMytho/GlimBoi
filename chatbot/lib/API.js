@@ -1,4 +1,4 @@
-// Handles some of the API requests to GLimesh. 
+// Handles some of the API requests to GLimesh and other services.
 var clientID = ""
 var token = ""
 var channelID = ""
@@ -13,7 +13,7 @@ function updateID() {
   AuthHandle.getID().then(data => {
     if (data == null) {
       console.log("No ID exists yet.");
-      successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannont use the API without the proper authentication")
+      successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot use the API without the proper authentication")
     } else {
     clientID = data
     }
@@ -118,4 +118,28 @@ async function getStats() {
 return viewers
 }
 
-module.exports = { getChannelID, getStats, getUserID, updateID, updatePath}
+//Returns the name of the bot
+async function getBotAccount() {
+  var bot = await new Promise(resolve => {
+   fetch("https://glimesh.tv/api", { method: "POST", body: `query {myself {username}}`, headers: { Authorization: `bearer ${token}` }})
+   .then((res) => {
+     res.json().then((data) => {
+       try {
+         console.log("The bot has a username of " + data.data.myself.username)
+         resolve(data.data.myself.username)
+         } catch(e) {
+           try {
+             resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
+           } catch(e2) {
+             resolve(null)
+           }
+         }
+     });
+   })
+   .catch((err) => console.error(err));
+  });
+  console.log("Completed bot username request");
+ return bot
+ }
+
+module.exports = { getBotAccount, getChannelID, getStats, getUserID, updateID, updatePath}

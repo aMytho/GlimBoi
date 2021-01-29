@@ -173,7 +173,10 @@ async function getToken() {
   return new Promise(resolve => {
     authDB.find( {}, function (err, docs) {
       console.log(docs)
+      if (docs == undefined || docs.length == 0) {
+        resolve(undefined)} else {
         resolve(docs[0].access_token)
+        }
       })
   });
 }

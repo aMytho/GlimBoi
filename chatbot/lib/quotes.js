@@ -2,6 +2,11 @@ const Datastore = require("nedb");
 var path = "./";
 let quotesDB;
 
+/**
+ * A quote. 
+ * @constructor quotename - User who said the quote
+ * @constructor quotedata - The quote itself
+ */
 class Quote {
   constructor(quoteName, quoteData) {
     this.quoteName = quoteName; //The person who said the auote
@@ -11,7 +16,9 @@ class Quote {
   }
 } 
 
-//Updates the file path. Electron and the non electron build use different URLS.
+/**
+ * Updates the path to the DB. The path variable is updated
+ */
 function updatePath(GUI) {
   console.log("Quote path is " + GUI);
   path = GUI;
@@ -21,7 +28,11 @@ function updatePath(GUI) {
   });
 }
 
-//Adds a quote
+/**
+ * Adds a quote
+ * @param {string} quoteName The user who said the quote
+ * @param {string} quoteData The data of the quote. (message)
+ */
 function addquote(quoteName, quoteData) {
   var newquote = new Quote(quoteName, quoteData);
   newquote.quoteID.then(data => {
@@ -56,7 +67,11 @@ function addquote(quoteName, quoteData) {
   })
 }
 
-//Removes a quote
+/**
+ * Removes a quote
+ * @param {string} quoteName The wuote data
+ * @todo This is not yet used due to errors.
+ */
 function removequote(quoteName) {
   try {
     quotesDB.remove({ quoteName: quoteName }, {}, function (err, numRemoved) {
@@ -67,7 +82,11 @@ function removequote(quoteName) {
   }
 }
 
-//Edits a quote
+/**
+ * Edits an existing quote
+ * @param {string} quoteName The user who said the quote
+ * @param {string} quoteData The quote itself
+ */
 function editquote(quoteName, quoteData) {
   console.log(quoteName, quoteData);
   quotesDB.update(
@@ -80,6 +99,9 @@ function editquote(quoteName, quoteData) {
   );
 }
 
+/**
+ * Returns all quotes
+ */
 async function getAll() {
   return new Promise(resolve => {
     quotesDB.find({}, function (err, docs) {
@@ -89,26 +111,38 @@ async function getAll() {
   })
 }
 
-//Generates the ID of the quote. THis is determined by the users total number of quotes.
+/**
+ * Generates the quote ID. Determined by the amount of quotes that the user has
+ * @param {string} quotename the name of the quote
+ */
  async function generateID(quoteName) {
   console.log("Generating ID");
   var usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
   return usedID
 }
 
-
+/**
+ * Generates the Date.
+ */
 function generateDate() {
   var theTime = new Date().toTimeString();
   console.log(theTime);
   return theTime;
 }
 
+/**
+ * Returns a random quote from the DB. Null if none exist
+ */
 async function randomQuote() {
   return new Promise(resolve => {
     quotesDB.find({}, function (err, docs) {
+      if (docs.length == 0 || docs == undefined) {
+        resolve(null)
+      } else {
       var randomQuote = Math.floor(Math.random() * docs.length);
       console.log(docs[randomQuote].quoteName, docs[randomQuote].quoteData);
       resolve({user:docs[randomQuote].quoteName, data: docs[randomQuote].quoteData})
+      }
     })
   })
 }
