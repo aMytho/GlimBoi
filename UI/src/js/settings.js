@@ -2,6 +2,25 @@ var ApiHandle = require(appData[0] + "/chatbot/lib/API.js");
 ApiHandle.updateID()
 var fs = require("fs");
 var settings = {}
+var updatedSettings = {
+    Points: {
+        enabled: true,
+        name: "Points",
+        StartingAmount: 0,
+        accumalation: 15
+    },
+    Commands: {
+        enabled: true,
+        cooldown: 0,
+        Prefix: "!",
+        Error: true,
+        repeatDelay: 10, 
+        repeatSpamProtection: 15
+    },
+    chat: {
+        logging: false
+    }
+}
 
 // removes the disable class on the navbar
 function unlockBot() {
@@ -33,7 +52,9 @@ function getSettings() {
                     enabled: true,
                     cooldown: 0,
                     Prefix: "!",
-                    Error: true
+                    Error: true,
+                    repeatDelay: 10, 
+                    repeatSpamProtection: 15
                 },
                 chat: {
                     logging: false
@@ -53,13 +74,17 @@ function getSettings() {
                 enabled: true,
                 cooldown: 0,
                 Prefix: "!",
-                Error: true
+                Error: true,
+                repeatDelay: 10, 
+                repeatSpamProtection: 15
             },
             chat: {
                 logging: false
             }
         }
     }
+    settings = $.extend(true, updatedSettings, settings) // merges the settings together, adds new values if any
+    console.log(settings)
     updateSettings()
     unlockBot()
 }
@@ -75,6 +100,7 @@ function showSettings() {
     slider.oninput = function() {
     output.innerHTML = this.value;
     }
+    document.getElementById("pointsNewName").value = settings.Points.name
     var rateSlider = document.getElementById("rateValueSlider");
     rateSlider.value = settings.Points.accumalation
     var rateOutput = document.getElementById("rateValueOutput");
@@ -107,8 +133,35 @@ function showSettings() {
         default:
             break;
     }
-    document.getElementById("pointsNewName").value = settings.Points.name
-}
+        // repeat handlers
+        var repeatDelay = document.getElementById("repeatDelaySlider");
+        repeatDelay.value = settings.Commands.repeatDelay;
+        var repeatDelayValue = document.getElementById("repeatDelayValue")
+        repeatDelayValue.innerHTML = repeatDelay.value;
+        repeatDelay.oninput = function() {
+        repeatDelayValue.innerHTML = this.value
+        }
+        switch (settings.Commands.repeatSpamProtection) {
+            case 5:
+                    document.getElementById("rp5").toggleAttribute("selected")
+                break;
+                case 15:
+                    document.getElementById("rp15").toggleAttribute("selected")
+                break;
+                case 30:
+                    document.getElementById("rp30").toggleAttribute("selected")
+                break;
+                case 60:
+                    document.getElementById("rp60").toggleAttribute("selected")
+                break;
+            default:
+                break;
+        }
+
+    }
+    
+
+
 
 // saves the settings. 
 function saveSettings() {
@@ -132,6 +185,23 @@ function saveSettings() {
                 break;
         }
     }
+    function getRepeatProtection() {
+        var value = document.getElementById("repeatProtect").value
+        switch (value) {
+            case "5 (not recommended)":
+                return 5
+                break;
+                case "15 (default)":
+                return 15
+                break;
+                case "30":
+                return 30
+                break;
+                case "60":
+                return 60
+                break;
+        }
+    }
     settings = {
         Points: {
             enabled: true,
@@ -143,7 +213,9 @@ function saveSettings() {
             enabled: true,
             cooldown: getCooldown(),
             Prefix: "!",
-            Error: true
+            Error: true,
+            repeatDelay: Number(document.getElementById("repeatDelayValue").innerText), 
+            repeatSpamProtection: getRepeatProtection()
         },
         chat: {
             logging: document.getElementById("loggingEnabled").checked
@@ -166,7 +238,9 @@ function resetSettings() {
             enabled: true,
             cooldown: 0,
             Prefix: "!",
-            Error: true
+            Error: true,
+            repeatDelay: 10, 
+            repeatSpamProtection: 15
         },
         chat: {
             logging: false
@@ -181,4 +255,5 @@ function resetSettings() {
 function updateSettings() {
     ChatHandle.loggingEnabled(settings.chat.logging);
     CommandHandle.cooldownChange(settings.Commands.cooldown)
+    ChatHandle.repeatSettings(settings)
 }

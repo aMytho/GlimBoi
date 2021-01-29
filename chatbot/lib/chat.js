@@ -2,7 +2,15 @@
 const WebSocket = require("ws");
 var connection;
 var chatID = ""
+
 var logging = true;
+
+var heartbeat, stats; //heartbeat and stats intervals
+
+var recentUserMessages = 0; //a count of user messages to compare against repeatable bot messages
+var botName; //The username of the bot in normal caps
+var repeatCommand; // A timer that sends a repeatable message to chat on a set interval
+var repeatSpamProtection = 15, repeatDelay = 600000 // The users repeat settings. Default is at least 5 messages between repeats, attempt every 5 min
 
 
 //Tries to join a channel, if it disconnects any error will be shown. 
@@ -37,10 +45,10 @@ function connectToGlimesh(access_token, channelID) {
               })
           }, 3000);
       }
-      setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
+      heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
           connection.send('[null,"6","phoenix","heartbeat",{}]');
       }, 30000);
-      setInterval(() => { //every 5 minutes get the current view count
+      stats = setInterval(() => { //every 5 minutes get the current view count
           ApiHandle.getStats().then(data => {
               console.log(data);
               if (data == null) {
@@ -58,6 +66,30 @@ function connectToGlimesh(access_token, channelID) {
               }
           })
       }, 180000);
+      ApiHandle.getBotAccount().then(data => {
+          try {
+              console.log(data)
+              console.log(data.status)
+              if (data == null) {
+                  console.log("Error getting bot username.");
+                  botName = "GlimBoi"
+              } else if (data.status !== undefined) {
+                  console.log("Auth error");
+                  botName = "GlimBoi"
+              } else {
+                  botname = data
+              }
+          } catch (e) {
+              console.log(e)
+          }
+      })
+      repeatCommand = setInterval(() => { //Sends a random repeatable message to chat based on the user setting.
+        if (recentUserMessages < repeatSpamProtection) {
+          console.log("There is not enough non bot messages to send a repeat message. Waitng till next time.");
+        } else {
+          CommandHandle.randomRepeatCommand()
+        }
+      }, repeatDelay);
   });
       connection.on("message", function(data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
           try {
@@ -117,7 +149,8 @@ function connectToGlimesh(access_token, channelID) {
                             }
                           break;
                           case "!test":
-                          glimboiMessage("Test complete. If you have a command called test this replaced it.")
+                         // glimboiMessage("Test complete. If you have a command called test this replaced it.");
+                          CommandHandle.randomRepeatCommand()
                           break;
                           case "!user":
                             switch (message[1]) {
@@ -138,11 +171,13 @@ function connectToGlimesh(access_token, channelID) {
                         CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
                           break;
                       }
-                    }                    
+                    }
                     try {logMessage(chatMessage[4].result.data.chatMessage.user.username, chatMessage[4].result.data.chatMessage.message, chatMessage[4].result.data.chatMessage.user.avatarUrl )}
                     catch(e3) {
                       console.log(e3)
                     }
+                    // Add a user message counter if it isn't the bot
+                    if (chatMessage[4].result.data.chatMessage.user.username !== botname) {recentUserMessages++}
                 }
               } catch (e2) {
                 console.log(e2);
@@ -154,6 +189,11 @@ function connectToGlimesh(access_token, channelID) {
       })
 
       connection.onclose = function (event) { //The connection closed, if error the error will be triggered too
+        try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
+        clearInterval(heartbeat) // stops the hearbteat
+        clearInterval(stats) // stops the polling
+        clearInterval(repeatCommand)
+        } catch(e) {console.log(e)}
         if (event.wasClean) {
           console.log(
             `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`
@@ -175,8 +215,12 @@ function sendMessage(data) {
   var msgArray = ["6","7","__absinthe__:control","doc"];
   msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\" , message: {message: \"" + data +" \"}) {message }}","variables":{}});
   var test = JSON.stringify(msgArray);
+  try {
   console.log(test)
   connection.send(test)
+  } catch(e) {
+    errorMessage("Auth Error", "The bot must be authenticated for this feature to work.")
+  }
 }
 
 
@@ -262,9 +306,75 @@ function loggingEnabled(enabled) {
   }
 }
 
+function repeatSettings(settings) {
+  console.log(settings.Commands.repeatDelay)
+  switch (settings.Commands.repeatDelay) {
+    case 5:
+      repeatDelay = 300000
+      break;
+      case 10:
+        repeatDelay = 600000
+      break;
+      case 15:
+      repeatDelay = 900000
+      break;
+      case 20:
+        repeatDelay = 1200000
+      break;
+      case 25:
+        repeatDelay = 1500000 
+      break;
+      case 30:
+        repeatDelay = 1800000
+      break;
+      case 35:
+        repeatDelay = 2100000 
+      break;
+      case 40:
+        repeatDelay = 2400000
+      break;
+      case 45:
+        repeatDelay = 2400000 
+      break;
+      case 50:
+        repeatDelay = 3000000
+      break;
+      case 55:
+        repeatDelay = 3300000 
+      break;
+      case 60:
+        repeatDelay = 3600000
+      break;
+  
+    default:repeatDelay = 600000
+      break;
+  }
+  switch (settings.Commands.repeatSpamProtection) {
+    case 5:
+      repeatSpamProtection = 5
+      break;
+      case 15:
+      repeatSpamProtection = 15
+      break;
+      case 30:
+      repeatSpamProtection = 30
+      break;
+      case 60:
+      repeatSpamProtection = 60
+      break;
+  
+    default:repeatSpamProtection = 15
+      break;
+  }
+}
+
 function randomQuoteChat() {
   QuoteHandle.randomQuote().then(data => {
+    if (data == null) {
+      glimboiMessage(`No quotes exist.`)
+    } else {
     glimboiMessage(`@${data.user} - ${data.data}`)
+    }
   })
 }
 
@@ -275,4 +385,9 @@ function addQuoteChat(data, user) {
   QuoteHandle.addquote(user, data.message.substring(trimMessage))
 }
 
-module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, loggingEnabled, logMessage, sendMessage, test}
+//adds a counter to repeat messages, we use this to make sure there isn't a chat full of only repeated messages
+function resetUserMessageCounter() {
+  recentUserMessages = 0
+}
+
+module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

@@ -20,6 +20,30 @@
                   </select>
                 </div>
               </form>
+              <h3>Repeat Delay</h3>
+              <hr style="border-color: aliceblue;">
+              <p>The amount of time that must pass until the next repeatable command is sent to chat.</p>
+              <form>
+                <div class="form-group">
+                  <label for="initialValueSlider">Initial</label>
+                  <input type="range" class="form-control-range" id="repeatDelaySlider" min="5" max="60" step="5">
+                  <p id="repeatDelayValue"></p>
+                </div>
+              </form>
+              <h3>Repeat Protection</h3>
+              <hr style="border-color: aliceblue;">
+              <p>The amount of non bot messages for the next repeatable message to go through.</p>
+              <form>
+                <div class="form-group mt-n1">
+                  <label for="sel1">Cooldown:</label>
+                  <select class="form-control" id="repeatProtect" style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                    <option id="rp15">15 (default)</option>
+                    <option id="rp5">5 (not recommended)</option>
+                    <option id="rp30">30</option>
+                    <option id="rp60">60</option>
+                  </select>
+                </div>
+              </form>
               <h2 class="mt-1">Chat</h2>
               <hr style="border-color: aliceblue;">
               <h3>Log Messages</h3>

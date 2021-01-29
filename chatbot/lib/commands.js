@@ -5,6 +5,7 @@ let commandsDB;
 var commands = []; //Array that contains all the commands. The bot reads this 
 var cooldown = 0;
 var startCD, timeCD;
+var repeatableArray = [], repeatDelay = 0;
 
 //A normal command. 
 class Command {
@@ -15,7 +16,8 @@ class Command {
     uses,
     points,
     rank,
-    special
+    special,
+    repeat
   ) {
     this.commandName = commandName; //The name of the command
     this.arguements = arguements; //Paramaters to send to the command
@@ -24,6 +26,7 @@ class Command {
     this.points = points; //Points required per command
     this.rank = rank; //Default is everyone
     this.special = special; //oooo
+    this.repeat = repeat; // should this command be repeatable?
   }
 }
 
@@ -49,8 +52,8 @@ function updatePath(GUI) {
 
 
 //Adds a command
-function addCommand(commandName, arguements, commandData, uses, points, rank, special) {
-  var newCommand = new Command(commandName, arguements, commandData, Number(uses), Number(points), rank, special);
+function addCommand(commandName, arguements, commandData, uses, points, rank, special, repeat) {
+  var newCommand = new Command(commandName, arguements, commandData, Number(uses), Number(points), rank, special, repeat);
   try {
     //inserts a document as a command. Uses the command made above.
     commandsDB.insert(newCommand, function(err, doc) {
@@ -74,9 +77,9 @@ function removeCommand(commandName) {
 }
 
 //Edits a command
-function editCommand(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special) {
-  console.log(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special)
-  commandsDB.update({ commandName: commandName }, { $set: {arguements : arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special} }, {}, function (err, numReplaced) {
+function editCommand(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special, repeat) {
+  console.log(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special, repeat)
+  commandsDB.update({ commandName: commandName }, { $set: {arguements : arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat} }, {}, function (err, numReplaced) {
     console.log("Replacing " + commandName);
     getAll()
 });
@@ -200,10 +203,34 @@ async function getAll() {
       console.log(docs)
       commands = docs //The bot knows all the commands now. This is the bot, not the UI
       resolve(docs) //UI probably knows after this
+      loadRepeats(docs)
     })
   })
 }
 
+function loadRepeats(command) {
+  repeatableArray = [] // reset the array, we don't want duplicates
+  var repeatCount = 0
+  for (let i = 0; i < command.length; i++) {
+    if (command[i] !== undefined && command[i].repeat == true) {
+      repeatableArray.push(command[i]) // adds it to the array
+      repeatCount++
+    }
+  }
+  console.log("Added " + repeatCount + " repeatable commands");
+  console.log(repeatableArray);
+}
+
+// picks a random repeatable command
+function randomRepeatCommand() {
+  var index = Math.floor(Math.random()*repeatableArray.length)
+  console.log(repeatableArray[index]);
+  if (repeatableArray[index] !== undefined) {
+  console.log(repeatableArray[index].message);
+  checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
+  ChatHandle.resetUserMessageCounter()
+  }
+}
 
 //The time of creation for the command
 function getTime() {
@@ -224,4 +251,5 @@ function cooldownChange(cd) {
   cooldown = cd*1000;
   console.log(cooldown)
 }
-module.exports = { addCommand, checkCommand, cooldownChange, editCommand, getAll, removeCommand , updatePath}; //Send to the main file.
+
+module.exports = { addCommand, checkCommand, cooldownChange, editCommand, getAll, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.

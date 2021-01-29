@@ -223,6 +223,9 @@ function checkNewCommand() {
     }
   }
 
+  var repeat = document.getElementById("commandRepeatableChoice").value
+  if (repeat == "false") {repeat = false} else {repeat = true}
+
   commandRank = document.getElementById("rankChoiceAdd").value;
   commandName = commandName.toLowerCase();
   if (isvalid == 4) {
@@ -231,7 +234,9 @@ function checkNewCommand() {
       commandData,
       commandPoints,
       commandUses,
-      commandRank
+      commandRank,
+      null,
+      repeat
     );
     CommandHandle.addCommand(
       commandName,
@@ -240,7 +245,8 @@ function checkNewCommand() {
       commandUses,
       commandPoints,
       commandRank,
-      null
+      null,
+      repeat
     ); //Adds a command to the DB
     //adds a row to the table with the new command info
     table.row.add([
@@ -360,6 +366,15 @@ function checkEditCommand() {
                                </select>
                             </td>
                          </tr>
+                         <tr>
+                  <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
+                  <td id="commandRepeat">
+                     <select name="repeatableCommand" id="commandRepeatableChoiceEdit">
+                        <option value="false">Disabled (Defualt)</option>
+                        <option value="true">Enabled</option>
+                     </select>
+                  </td>
+               </tr>
                       </tbody>
                    </table>
                 </div>
@@ -447,6 +462,10 @@ function editCommand() {
 
   commandRank = document.getElementById("rankChoiceEdit").value;
   commandToBeEdited = commandToBeEdited.toLowerCase();
+
+  var repeat = document.getElementById("commandRepeatableChoiceEdit").value
+  if (repeat == "false") {repeat = false} else {repeat = true}
+
   if (commandToBeEdited.startsWith("!")) {
     commandToBeEdited = commandToBeEdited.substring(1);
   }
@@ -461,7 +480,8 @@ function editCommand() {
       commandUses,
       commandPoints,
       commandRank,
-      null
+      null,
+      repeat
     ); //Edit the DB
     for (let i = 0; i < arrayOfCommands.length; i++) {
       //Find the right command on the table
