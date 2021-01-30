@@ -40,6 +40,8 @@ var listofvariables = [
   "$watchtime",
   "$cmdcount",
   "$game",
+  "$advice",
+  "$dadjoke"
 ];
 
 
@@ -136,6 +138,8 @@ async function runCommand(arguements, index, user) {
     variableList[3] = chatMessage.includes("$watchtime");
     variableList[4] = chatMessage.includes("$cmdcount");
     variableList[5] = chatMessage.includes("$game");
+    variableList[6] = chatMessage.includes("$advice");
+    variableList[7] = chatMessage.includes("$dadjoke");
   //We check if the command has variables against the variable list.
   for (let i = 0; i < variableList.length; i++) {
     //For every variable we check if it is in the messageContent
@@ -185,10 +189,16 @@ async function replaceVariable(variable, arguements, user) {
       break;
     case "$game":
       user = await ApiHandle.getUserID(user.username)
-      variableList[5] = user
-      
+      variableList[5] = user    
       break;
-
+    case "$advice":
+      var advice = await ApiHandle.getAdvice();
+      variableList[6] = advice
+      break;
+    case "$dadjoke":
+      var joke = await ApiHandle.getDadJoke();
+      variableList[7] = joke
+      break;
     default:
       break;
   }

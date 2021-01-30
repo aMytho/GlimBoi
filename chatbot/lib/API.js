@@ -142,4 +142,46 @@ async function getBotAccount() {
  return bot
  }
 
-module.exports = { getBotAccount, getChannelID, getStats, getUserID, updateID, updatePath}
+ //Returns random advice
+async function getAdvice() {
+  var advice = await new Promise(resolve => {
+   fetch("https://api.adviceslip.com/advice", { method: "GET"})
+   .then((res) => {
+     res.json().then((data) => {
+       try {
+         console.log(data.slip.advice + data.slip.id)
+         resolve(data.slip.advice)
+         } catch(e) {
+           resolve("Advice Failed :glimsad:")
+         }
+     });
+   })
+   .catch((err) => console.error(err));
+  });
+  console.log("Completed advice request");
+ return advice
+ }
+
+  //Returns a dad joke
+async function getDadJoke() {
+  var joke = await new Promise(resolve => {
+   fetch("https://icanhazdadjoke.com/", { method: "GET", headers: {'User-Agent': `https://github.com/aMytho/GlimBoi Look at the readme file for contact info`, Accept: "application/json"}})
+   .then((res) => {
+     res.json().then((data) => {
+       try {
+         console.log(data)
+         resolve(data.joke)
+         } catch(e) {
+           resolve("Joke Failed :glimsad:")
+         }
+     });
+   })
+   .catch((err) => console.error(err));
+  });
+  console.log("Completed joke request");
+ return joke
+ }
+
+
+
+module.exports = { getAdvice, getBotAccount, getChannelID, getDadJoke, getStats, getUserID, updateID, updatePath}
