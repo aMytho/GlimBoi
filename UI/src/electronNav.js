@@ -13,8 +13,6 @@ function changeNavHighlight(highlight) { //Removes the old and highlights the ne
 
 window.onload = function() {
 
-  var homePage = document.getElementsByClassName("pane")[0].innerHTML;
-
   document.getElementById("close").addEventListener("click", function(e) { //Closes the App.
     ipcRenderer.send("pleaseClose");
   });
@@ -25,6 +23,10 @@ window.onload = function() {
 
   document.getElementById("minimize").addEventListener("click", function(e) { //Closes the App.
     ipcRenderer.send("pleaseMinimize");
+  });
+
+  document.getElementById("refresh").addEventListener("click", function(e) { //Closes the App.
+    ipcRenderer.send("pleaseRefresh");
   });
 
   // Get all the navigation links to an array

@@ -89,6 +89,10 @@ ipcMain.on("pleaseMinimize", (event) => {
   console.log("Minimizing Window")
 })
 
+ipcMain.on("pleaseRefresh", (event) => {
+  win.reload();
+  console.log("Reloading Window")
+})
 
 
 app.on('window-all-closed', () => {

@@ -41,6 +41,7 @@ function getSettings() {
     var raw = fs.readFileSync(appData[1] + '/data/settings.json');
     settings = JSON.parse(raw)
     } catch(e) { // if not create the file
+        console.log("no settings file exists, creating it")
         var dataTemplate = JSON.stringify({
                 Points: {
                     enabled: true,
@@ -60,8 +61,12 @@ function getSettings() {
                     logging: false
                 }
             })
-    
-        fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time th ebot runs.
+            try {
+        fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time the bot runs.
+            } catch(e) {
+                fs.mkdirSync(appData[1] + '/data'); // Makes the folder
+                fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes the file
+            }
         // for now we use the settings variable
         settings = {
             Points: {
