@@ -107,6 +107,9 @@ function connectToGlimesh(access_token, channelID) {
                       console.log("Searching for command");
                       var message = chatMessage[4].result.data.chatMessage.message.split(" ")
                       switch (message[0]) {
+                        case "!commands":
+                          commandList();
+                          break;
                         case "!command add":
 
                           break;
@@ -181,6 +184,7 @@ function connectToGlimesh(access_token, channelID) {
                 }
               } catch (e2) {
                 console.log(e2);
+                disconnectError()
               }
             }
           } catch (e1) {
@@ -219,7 +223,7 @@ function sendMessage(data) {
   console.log(test)
   connection.send(test)
   } catch(e) {
-    errorMessage("Auth Error", "The bot must be authenticated for this feature to work.")
+    errorMessage("Auth Error", "The bot must be authenticated for this feature to work. You must be in a chat to send a message.")
   }
 }
 
@@ -228,6 +232,20 @@ function disconnect() {
   try {
   connection.close(1001, "So long and thanks for all the fish.")
   successMessage("Chat has been successfully disconnected!", "You can close this now.");
+  if (logging == true) {
+  setTimeout(() => {
+    ipcRenderer.send("logEnd")
+  }, 3000);
+}
+  } catch(e) {
+    errorMessage(e, "Error disconnecting from the chat")
+  }
+}
+
+function disconnectError() {
+  try {
+  connection.close(1001, "So long and thanks for all the fish.")
+  errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
   if (logging == true) {
   setTimeout(() => {
     ipcRenderer.send("logEnd")
@@ -388,6 +406,17 @@ function addQuoteChat(data, user) {
 //adds a counter to repeat messages, we use this to make sure there isn't a chat full of only repeated messages
 function resetUserMessageCounter() {
   recentUserMessages = 0
+}
+
+function commandList() {
+  var cmdList = []
+  CommandHandle.getAll().then(data => {
+    for (let index = 0; index < data.length; index++) {
+      cmdList.push(data[index].commandName)
+    }
+    var cmdmsg = cmdList.toString()
+    glimboiMessage(cmdmsg);
+  })
 }
 
 module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

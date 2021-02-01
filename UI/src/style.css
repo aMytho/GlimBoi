@@ -179,3 +179,9 @@ th {
     margin-top: 13px;
     width: 100%;
   }
+  [contentEditable=true]:empty:not(:focus):before{
+    content:attr(data-text)
+  }
+  [contenteditable] {
+    outline: 0px solid transparent;
+  }

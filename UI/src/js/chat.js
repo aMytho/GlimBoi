@@ -28,8 +28,8 @@ function joinChat() {
 
 
 function sendMessage() {
-  var message = document.getElementById("messageArea").value;
-  ChatHandle.sendMessage(message)
+  ChatHandle.sendMessage(document.getElementById("messageArea").value);
+  document.getElementById("messageArea").value = ""
 }
 
 

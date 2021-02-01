@@ -24,22 +24,22 @@
            <table class="table table-hover">
               <thead>
                  <tr>
-                    <th >Command</th>
+                    <th>Command</th>
                     <th>Data</th>
                  </tr>
               </thead>
               <tbody>
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="Name of command">Name</td>
-                    <td contenteditable="true" id="addCommandName">ex. !follow</td>
+                    <td><div id="addCommandName" contentEditable="true" data-text="ex. !follow"></div></td>
                  </tr>
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
-                    <td contenteditable="true" id="addCommandArguements">null</td>
+                    <td><div id="addCommandArguements" contentEditable="true" data-text="null"></div></td>
                  </tr>
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
-                    <td contenteditable="true" id="addCommandData">Enter command response</td>
+                    <td placeholder="test"><div id="addCommandData" contentEditable="true" data-text="Command response"></div></td>
                  </tr>
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
@@ -158,7 +158,7 @@
            <li>$user : The user who said the command</li>
            <li>$cmdcount : The number of times the command has been used.</li>
            <li>$advice : Returns random advice.</li>
-           <li>$dadjoke : Returns a dad joke. These may be more than the message limit.</li>
+           <li>$dadjoke : Returns a dad joke. These may be longer than the message limit.</li>
         </ul>
         </div>
         <!--Footer-->
