@@ -317,6 +317,7 @@ function delUserChat(user) {
 }
 
 function loggingEnabled(enabled) {
+  console.log("Logging is set to " + enabled)
   if (enabled == true) {
     logging = true
   } else {

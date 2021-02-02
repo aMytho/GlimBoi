@@ -228,6 +228,7 @@ function saveSettings() {
     }
     console.log(settings);
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function() {})
+    updateSettings()
 }
 
 // resets the settings.
