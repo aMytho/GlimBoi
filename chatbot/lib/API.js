@@ -1,14 +1,23 @@
-// Handles some of the API requests to GLimesh and other services.
+// Handles some of the API requests to Glimesh and other services.
+// Be aware that some non glimesh services may have rate limits in place.
+// If you fork this change the user agent from glimboi to your own project please :)
 var clientID = ""
 var token = ""
 var channelID = ""
-var streamer = "";
+var streamer = ""; // Streamer name
 
-//Updates the token so we can send requests as the user. 
+/**
+ * This function updates the access token so we can make glimesh API requests with full permissions.
+ * @param {string} accessToken The access token for this session.
+ */
 function updatePath(accessToken) {
   token = accessToken;  
 }
 
+/**
+ * Tries to update the client ID. This var is only used in the API file, this does not affect the ID in the database.
+ * If no ID is found we alert the user.
+ */
 function updateID() {
   AuthHandle.getID().then(data => {
     if (data == null) {
@@ -21,7 +30,13 @@ function updateID() {
 }
 
 
-//Gets the channel ID.
+/**
+ * Returns a promise that contains the channel ID of the user we are about to join.
+ * If no auth token is ready this will return null
+ * @async
+ * @param {string} channel The channel name
+ * @returns The ID or null if unsuccessful.
+ */
 async function getChannelID(channel) {
   var ID = await new Promise(resolve => {
     fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel (username: "${channel}"){id, streamer {displayname}}}`, headers: { Authorization: `Bearer ${token}` }})
@@ -46,7 +61,13 @@ async function getChannelID(channel) {
 return ID
 }
 
-//Returns the user ID
+
+/**
+ * Requests a user ID.
+ * @async
+ * @param {string} user The user we request the ID from
+ * @returns {Promise<number>} The user ID. If failed returns null
+ */
 async function getUserID(user) {
  var ID = await new Promise(resolve => {
   fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${user}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
@@ -70,7 +91,11 @@ async function getUserID(user) {
 return ID
 }
 
-
+/**
+ * @async
+ * Currently unused
+ * @returns {Promise} The category. If failed returns null
+ */
 async function getCurrentGame() {
   var category = await new Promise(resolve => {
     fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(username: "mytho") {stream {category {slug}}}}`, headers: { Authorization: `Client-ID ${clientID}` }})
@@ -94,7 +119,11 @@ return category
 }
 
 
-
+/**
+ * Returns the viewcount, subscribers (this session), and followers. If failed returns null
+ * @async
+ * @returns {Promise}
+ */
 async function getStats() {
   var viewers = await new Promise(resolve => {
     fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(id:${channelID}) {stream {countViewers,newSubscribers}},followers(streamerUsername: "${streamer}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
@@ -118,7 +147,12 @@ async function getStats() {
 return viewers
 }
 
-//Returns the name of the bot
+
+/**
+ * @async
+ * Requests the name of the bot account
+ * @returns {Promise} The name of the bot account. If failed returns null.
+ */
 async function getBotAccount() {
   var bot = await new Promise(resolve => {
    fetch("https://glimesh.tv/api", { method: "POST", body: `query {myself {username}}`, headers: { Authorization: `bearer ${token}` }})
@@ -142,7 +176,12 @@ async function getBotAccount() {
  return bot
  }
 
- //Returns random advice
+
+ /**
+  * @async
+  * Requests random advice
+  * @returns {Promise} Returns random advice. If fails returns- "Advice Failed :glimsad:"
+  */
 async function getAdvice() {
   var advice = await new Promise(resolve => {
    fetch("https://api.adviceslip.com/advice", { method: "GET"})
@@ -162,7 +201,12 @@ async function getAdvice() {
  return advice
  }
 
-  //Returns a dad joke
+
+/**
+ * @async
+ * Requests a dad joke
+ * @returns Returns a dad joke. If failed returns- "Joke Failed :glimsad:"
+ */
 async function getDadJoke() {
   var joke = await new Promise(resolve => {
    fetch("https://icanhazdadjoke.com/", { method: "GET", headers: {'User-Agent': `https://github.com/aMytho/GlimBoi Look at the readme file for contact info`, Accept: "application/json"}})
@@ -181,7 +225,6 @@ async function getDadJoke() {
   console.log("Completed joke request");
  return joke
  }
-
 
 
 module.exports = { getAdvice, getBotAccount, getChannelID, getDadJoke, getStats, getUserID, updateID, updatePath}

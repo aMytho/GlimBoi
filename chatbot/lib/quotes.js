@@ -100,7 +100,7 @@ function editquote(quoteName, quoteData) {
 }
 
 /**
- * Returns all quotes
+ * Returns all quotes as an array
  */
 async function getAll() {
   return new Promise(resolve => {
