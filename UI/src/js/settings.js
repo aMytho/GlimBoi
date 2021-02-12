@@ -229,6 +229,7 @@ function saveSettings() {
     console.log(settings);
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function() {})
     updateSettings()
+    successMessage("Settings Saved", " Your new settings have been applied and saved.")
 }
 
 // resets the settings.
@@ -255,6 +256,7 @@ function resetSettings() {
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function() {});
     showSettings() // shows the sldiers as the normal values.
     updateSettings()
+    successMessage("Settings Reset", "Your settings have been set to their original values.")
 }
 
 //applies the settings. THis is ran at launch after the file is read. Once finished the bot is fully ready

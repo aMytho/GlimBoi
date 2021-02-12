@@ -3,7 +3,6 @@ var refreshed = false;
 var AuthHandle = require(appData[0] + "/chatbot/lib/auth.js");
 AuthHandle.updatePath(appData[1]);
 
-
 function rememberID() { // checks if an id has been entered for auth
        var auth = AuthHandle.readAuth();
        auth.then( data => {
@@ -44,7 +43,7 @@ function rememberID() { // checks if an id has been entered for auth
                                 errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
                         }
                     })
-              } else {errorMessage("test", "fial")}
+              } else {errorMessage("Possbile Error", "You have already been authenticated. If you belive this to be false you can restart GlimBoi.")}
 
              if (data[0].access_token.length > 5 && refreshed == true) {
                 document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. Ready to join chat.";
@@ -80,6 +79,75 @@ function editAuth() { //Sets the state to editable
     document.getElementById("secretID").setAttribute("placeholder", "Enter Secret ID")
 }
 
-function auth() {
-    AuthHandle.Auth() //runs the webserver so we can get the token needed to connect to chat. It will refresh if a token is avaible. 
+
+
+// The below functions sync database functions with the UI. Some of these achanges are also sent to chat. 
+function syncQuotes(user, quote, action) {
+  // removes it from the list as well as the user quote list.
+  try {
+    if (action == "remove") {
+      for (let i = 0; i < arrayofUsers.length; i++) {
+        if (arrayofUsers[i][0] == user) {
+          arrayofUsers[i][6] = quote;
+          makeList(user);
+          break;
+        }
+      }
+    } else if (action == "add") {
+      for (let i = 0; i < arrayofUsers.length; i++) {
+        if (arrayofUsers[i][0] == user) {
+          arrayofUsers[i][6].push(quote);
+          console.log(user);
+          var filteredData = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+              if (userTable.row(value).data()[0] == user) {
+                makeList(userTable.row(value).data());
+                return;
+              }
+            });
+          break;
+        }
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+function syncUsers(data, action) {
+  try {
+  if (action == "add") {
+  var arrayUser = [
+    data.userName,
+    data.points,
+    data.watchTime,
+    data.team,
+    data.role,
+    data.picture,
+    data.quotes,
+  ];
+  arrayofUsers.push(arrayUser); //^
+  addUserTable(data);
+} else {
+    for (let i = 0; i < arrayofUsers.length; i++) {
+        if (arrayofUsers[i][0] == data) {
+          console.log(
+            "The user " + data + " will now be deleted"
+          );
+          arrayofUsers.splice(i, 1); //Removes it from the array.
+          var filteredData = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+              return userTable.row(value).data()[0] == data;
+            });
+          userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
+        }
+      }
+}
+  } catch(e) {
+      console.log(e)
+  }
 }

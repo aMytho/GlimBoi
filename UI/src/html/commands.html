@@ -4,6 +4,7 @@
      <a class="btn btn-success mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
      <a class="btn btn-danger mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
      <a class="btn btn-info mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalVar">View Variables</a>
+     <a class="btn btn-info mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalCMD">GlimBoi Commands</a>
   </div>
   <div class="col-10 glimPanel whiteText mt-3 mx-auto">
      <table id="example" class="display table table-striped" style="width:100%">
@@ -159,6 +160,35 @@
            <li>$cmdcount : The number of times the command has been used.</li>
            <li>$advice : Returns random advice.</li>
            <li>$dadjoke : Returns a dad joke. These may be longer than the message limit.</li>
+        </ul>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p>Need more info? View the Glimboi Tutorials!</p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: modalCart -->
+
+<div class="modal fade" id="modalCMD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100">System Commands</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+        <p class="whiteText mx-auto ">GlimBoi has built in commands (system commands). These commands cannot be deleted or modified.</p>
+        <p class="whiteText mx-auto">You should avoid having commands with conflicting names. A system command will take priority.</p>
+        <p class="whiteText mx-auto">System commands help the bot and inform your viewers about its capabilities. A complete list of them is found below.</p>
+        <ul>
+           <li>!commands : A list of commands</li>
+           <li>!quote : Sends a random quote.</li>
+           <li>!user (add/new, remove/del/delete) : User functions. Ex '!user new Mytho' would add Mytho to the user list.</li>
         </ul>
         </div>
         <!--Footer-->

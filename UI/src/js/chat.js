@@ -28,7 +28,7 @@ function joinChat() {
 
 
 function sendMessage() {
-  ChatHandle.sendMessage(document.getElementById("messageArea").value);
+  ChatHandle.filterMessage(document.getElementById("messageArea").value, "user");
   document.getElementById("messageArea").value = ""
 }
 
@@ -79,4 +79,34 @@ ipcRenderer.on('update_downloaded', () => {
 function restartApp() {
   console.log("trying to restart the app for the update")
 ipcRenderer.send('restart_app');
+}
+
+function readyChat() {
+$('.testing').on('contextmenu', function(e) {
+  var top = e.pageY - 10;
+  var left = e.pageX - 20;
+  $("#context-menu").css({
+    display: "block",
+    top: top,
+    left: left
+  }).addClass("show");
+  return false; //blocks default Webbrowser right click menu
+}).on("click", function() {
+  $("#context-menu").removeClass("show").hide();
+});
+
+$("#context-menu a").on("click", function() {
+  $(this).parent().removeClass("show").hide();
+});
+}
+
+function testingStuff(e) {
+  console.log(e)
+  var top = e.pageY - 110;
+  var left = e.pageX + 10;
+  $("#context-menu").css({
+    display: "block",
+    top: top,
+    left: left
+  }).addClass("show");
 }
