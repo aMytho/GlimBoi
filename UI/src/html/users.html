@@ -2,10 +2,10 @@
   <div class="col-1 mt-3 mx-auto">
      <a class="btn btn-primary btn-block" href="#" data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
      <a class="btn btn-primary mt-2 btn-block" data-toggle="modal" data-target="#modalQuoteAdd" onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
-     <a class="btn btn-success mt-2 btn-block disabled" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Users</a> 
+     <a class="btn btn-success mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit Users</a> 
      <a class="btn btn-info mt-2 btn-block" onclick="loadAllQuotes()"> View All Quotes</a>
      <a class="btn btn-danger mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalUserRemove">Purge Users</a>
-     <a class="btn btn-danger mt-2 btn-block disabled" href="#" data-toggle="modal" data-target="#modalUserRemove" >Remove Quote</a>
+     <a class="btn btn-danger mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove Quote</a>
   </div>
   <div class="col-10 glimPanel whiteText mt-3 mx-auto">
      <table id="userTable" class="display table table-striped" style="width:100%">
@@ -104,3 +104,57 @@
      </div>
   </div>
 </div>
+
+<!-- Modal: edit user -->
+<div class="modal fade" id="modalUserEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="editUserModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100">Edit User</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalEditBody">
+         <div class="icon-input-container">
+            <input class="icon-input" type="text" placeholder="Username" id="userEditSearch">
+            <p id="editUserMessage" class="errorMessage"></p>
+        </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="errorUserEdit"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-primary" onclick="userSearch(document.getElementById('userEditSearch').value)" id="userEditSearchButton">Search</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: modalCart -->
+
+<!-- Modal: edit user -->
+<div class="modal fade" id="modalQuoteRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="removeQuoteModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100">Remove Quote</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalRemoveQuote">
+         <div class="icon-input-container">
+            <input class="icon-input" type="text" placeholder="Username" id="userQuoteSearch">
+            <p id="editQuoteError" class="errorMessage"></p>
+        </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="errorQuoteExit"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-primary" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: modalCart -->

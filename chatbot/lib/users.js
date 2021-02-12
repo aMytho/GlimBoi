@@ -1,9 +1,6 @@
 //Controls the User DB
-const Datastore = require('nedb')
-
 var usersDB;
 var path = "./";
-
 /**
  * A GlimBoi user
  */
@@ -12,7 +9,7 @@ class User {
       userName, ID
     ) {
       this.userName = userName;
-      this.points = 0;
+      this.points = Number(settings.Points.StartingAmount)
       this.watchTime = 0;
       this.team = null;
       this.role = "user";
@@ -30,7 +27,7 @@ class User {
  * @returns If the user doesn't exist on GLimesh returns code INVALIDUSER
  * @returns If the exists returns USEREXISTS
  */
-async function addUser(user) {
+async function addUser(user, inModal) {
     var newUser = await new Promise(done => {
       usersDB.find({userName:user}, function (err, docs) {
         if (docs.length == 0) {
@@ -45,11 +42,15 @@ async function addUser(user) {
                 usersDB.insert(tempUser, function(err, doc) {
                   console.log(doc);
                   console.log("User created!");
+                  if (inModal == false) {
+                    syncUsers(doc, "add")
+                  }
                   done(doc)
                 });
             }            
           })
         } else {
+          console.log(user + " already exists in the database.")
           done("USEREXISTS")
         }
       })
@@ -104,10 +105,14 @@ async function getAll() {
  * @param {string} user The user you are removing.
  * @returns {array} The user that was removed
  */
-async function removeUser(user) {
+async function removeUser(user, inModal) {
  return new Promise(resolve => {
   usersDB.remove({ userName: user }, {}, function (err, numRemoved) {
-    console.log("Removed " + user)
+    console.log("Removed " + user);
+    if (inModal == false) {
+      syncUsers(user, "remove")
+    }
+    QuoteHandle.removeAllQuotes(user);
     resolve(user);
   });
  }) 
@@ -118,9 +123,47 @@ async function removeUser(user) {
  * @param {string} quote 
  * @param {number} id 
  */
-function addQuote(quote, id) {
-  usersDB.update({userName:quote.quoteName}, {$push: {quotes: {quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id}}}, {multi: false, }, function(err,) {
-    console.log("Quote linked to " + quote.quoteName + ". Quote Complete.");
+async function addQuote(quote, id) {
+  return new Promise(resolve => {
+    usersDB.update({userName:quote.quoteName}, {$push: {quotes: {quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id}}}, {multi: false, }, function(err,) {
+      console.log("Quote linked to " + quote.quoteName + ". Quote Complete.");
+      syncQuotes(quote.quoteName, quote, "add");
+      resolve("USERQUOTEADDED")
+    })
+  })
+}
+
+/**
+ * Removes a quote from the users collection and from the quote collection. Attempts to update the user table.
+ * @param {Number} id The quote ID (quote id, not database id)
+ * @param {*} user The user who the quote belongs to. Lowercase please!
+ * @async
+ */
+async function removeQuoteByID(id, user) {
+  return new Promise(resolve => {
+  usersDB.find({$and: [{userName: user}, {quotes: {$elemMatch: {quoteID: id}}}]}, function (err, docs) {
+    console.log(docs);
+    if (docs.length < 1) {
+      resolve("NOQUOTEFOUND")
+      return;
+    } else {
+      for (let index = 0; index < docs[0].quotes.length; index++) {
+        if (docs[0].quotes[index].quoteID == id) {
+          console.log("Found the quote in the user DB");
+          console.log(index);
+          console.log(docs)
+          docs[0].quotes.splice(index, 1)
+          console.log(docs[0].quotes)
+          usersDB.update({$and: [{userName: user}, {quotes: {$elemMatch: {quoteID: id}}}]}, {$set: {quotes: docs[0].quotes}}, {returnUpdatedDocs: true}, function(affectedDocuments) {
+            console.log(affectedDocuments);
+            QuoteHandle.removeQuote(id, user);
+            syncQuotes(user, docs[0].quotes, "remove")
+            resolve(affectedDocuments);
+          })
+        }
+      }
+    }
+  })    
   })
 }
 
@@ -137,5 +180,25 @@ async function getTopPoints() {
   })
 }
 
+async function editUser(userName, role, points) {
+  return new Promise(resolve => {
+    console.log(userName, role, points)
+    usersDB.update({ userName: userName }, { $set: { role: role, points: Number(points) } }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
+      console.log("Edited " + userName);
+      console.log(affectedDocuments)
+      resolve(affectedDocuments);
+    });
+  })
+}
 
-module.exports = {addQuote, addUser, findByUserName, getAll, getTopPoints, removeUser, updatePath, User}
+/**
+ * Adds points and watch time to the users who are active
+ * @param {Array} users 
+ */
+function earnPointsWT(users) {
+  usersDB.update({ $or: users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err, numReplaced, affectedDocuments) {
+    console.log("Adding " + settings.Points.accumalation + " points to " + numReplaced + " users.");
+  });
+}
+
+module.exports = {addQuote, addUser, earnPointsWT, editUser, findByUserName, getAll, getTopPoints, removeUser, removeQuoteByID, updatePath, User}

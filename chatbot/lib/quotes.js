@@ -1,4 +1,3 @@
-const Datastore = require("nedb");
 var path = "./";
 let quotesDB;
 
@@ -9,6 +8,7 @@ let quotesDB;
  */
 class Quote {
   constructor(quoteName, quoteData) {
+    console.log(quoteName, quoteData)
     this.quoteName = quoteName; //The person who said the auote
     this.quoteData = quoteData; // No explanation here
     this.quoteID = generateID(quoteName) //ID of the users quotes. The DB ID is different.
@@ -33,49 +33,79 @@ function updatePath(GUI) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-function addquote(quoteName, quoteData) {
-  var newquote = new Quote(quoteName, quoteData);
-  newquote.quoteID.then(data => {
-    if (data == "ADDUSER") {
-      console.log("Creating user " + quoteName);
-      var newUser = UserHandle.addUser(quoteName);
-      newUser.then(user => {
-        if (user == "INVALIDUSER") {
-          console.log("User not found, failed to create quote");
-          document.getElementById("errorMessageAddQuote").innerText = "The user does not exist on glimesh so the quote can't be created."
+async function addquote(quoteName, quoteData) {
+  return new Promise(resolve => {
+    var newquote = new Quote(quoteName, quoteData);
+    newquote.quoteID.then(data => {
+      console.log('ID should be made now')
+      console.log(data)
+      if (data == "ADDUSER") {
+        console.log("Creating user " + quoteName);
+        var newUser = UserHandle.addUser(quoteName);
+        newUser.then(user => {
+          if (user == "INVALIDUSER") {
+            console.log("User not found, failed to create quote");
+            try {document.getElementById("errorMessageAddQuote").innerText = "The user does not exist on glimesh so the quote can't be created."} catch(e) {}
+            resolve("USERNOTEXIST")
+          } else {
+          addquote(quoteName, quoteData);
+          }
+        })
+         return
+      } else {
+        if (data[0].quotes.length == 0) {
+          newquote.quoteID = 1
         } else {
-        addquote(quoteName, quoteData);
+          var count = data[0].quotes.length - 1;
+          console.log(count)
+          console.log(data[0].quotes[count])
+          newquote.quoteID = Number(data[0].quotes[count].quoteID) + 1
         }
-      })
-       return
-    } else {
-    newquote.quoteID = data[0].quotes.length + 1
-    console.log(newquote)
-    try {
-      quotesDB.insert(newquote, function (err, doc) {
-        console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
-        UserHandle.addQuote(newquote, doc._id);
-        document.getElementById('errorMessageAddQuote').innerText = `Quote Created!`
-      });
-    } catch (e) {
-      console.log(e);
-      console.log(
-        "Failure to add quote. Ensure only one instance of the bot is running and check your quotes.db file (in the data folder) for curruption."
-      );
+      console.log(newquote)
+      try {
+        quotesDB.insert(newquote, function (err, doc) {
+          console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
+          UserHandle.addQuote(newquote, doc._id).then(data => {
+            try { document.getElementById('errorMessageAddQuote').innerText = `Quote Created!`} catch(e) {}
+            resolve("QUOTEFINISHED")
+          })    
+        });
+      } catch (e) {
+        console.log(e);
+        console.log(
+          "Failure to add quote. Ensure only one instance of the bot is running and check your quotes.db file (in the data folder) for curruption."
+        );
+      }
     }
-  }
+    })
   })
 }
 
 /**
  * Removes a quote
- * @param {string} quoteName The wuote data
- * @todo This is not yet used due to errors.
+ * @param {string} quoteName The quote data
  */
-function removequote(quoteName) {
+function removeQuote(id, user) {
+  console.log(id,user)
   try {
-    quotesDB.remove({ quoteName: quoteName }, {}, function (err, numRemoved) {
-      console.log(quoteName + " was removed from the db");
+    quotesDB.remove({ $and: [{quoteID: id}, {quoteName: user}] }, {}, function (err, numRemoved) {
+      console.log("Quote " + id + " was removed from the db");
+      console.log(numRemoved)
+    });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/**
+ * Removes all of the users quotes
+ * @param {string} user The user who owns the quotes that will be deleted
+ */
+function removeAllQuotes(user) {
+  console.log(user)
+  try {
+    quotesDB.remove({ quoteName: user }, {multi: true}, function (err, numRemoved) {
+      console.log(numRemoved + " quotes were removed from " + user)
     });
   } catch (e) {
     console.log(e);
@@ -147,4 +177,4 @@ async function randomQuote() {
   })
 }
 
-module.exports = { addquote, editquote, getAll, randomQuote, removequote, updatePath }; //Send to the main file.
+module.exports = { addquote, editquote, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath }; //Send to the main file.

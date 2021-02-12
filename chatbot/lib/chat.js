@@ -12,6 +12,8 @@ var botName; //The username of the bot in normal caps
 var repeatCommand; // A timer that sends a repeatable message to chat on a set interval
 var repeatSpamProtection = 15, repeatDelay = 600000 // The users repeat settings. Default is at least 5 messages between repeats, attempt every 5 min
 
+var currentUsers = [] // Array of current users. 
+var checkForUsers;
 
 /**
  * Tries to join a glimesh chat. Returns an error if the attempt failed.
@@ -75,12 +77,11 @@ function connectToGlimesh(access_token, channelID) {
                   }
               }
           })
-      }, 180000);
+      }, 900000);
       // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
       ApiHandle.getBotAccount().then(data => {
           try {
-              console.log(data)
-              console.log(data.status)
+              console.log(`GlimBoi is acting as ${data} and the status is ${data.status}`)
               if (data == null) {
                   console.log("Error getting bot username.");
                   botName = "GlimBoi"
@@ -102,6 +103,22 @@ function connectToGlimesh(access_token, channelID) {
           CommandHandle.randomRepeatCommand() // Gets a repeatable command
         }
       }, repeatDelay);
+      // Checks for new users
+      checkForUsers = setInterval(() => {
+        console.log("Searching for new users and applying points to them.");
+        var currentUsersFiltered = [...new Set(currentUsers)];
+        currentUsers = [];
+        console.log(currentUsersFiltered);
+        if (currentUsersFiltered.length == 0) {
+          console.log("No users in chat. No points will be sent out.")
+        } else {
+          currentUsersFiltered.forEach(function(value, index) {
+            currentUsersFiltered[index] = {userName: value.toLowerCase()}
+          })
+          console.log(currentUsersFiltered)
+        UserHandle.earnPointsWT(currentUsersFiltered);
+        }
+      }, 900000);
   });
       connection.on("message", function(data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
           try {
@@ -115,6 +132,7 @@ function connectToGlimesh(access_token, channelID) {
                 console.log(chatMessage)
                 if (chatMessage[4].result.data !== undefined) {
                   console.log(chatMessage[4].result.data.chatMessage.user.username +": " + chatMessage[4].result.data.chatMessage.message);
+                  currentUsers.push(chatMessage[4].result.data.chatMessage.user.username.toLowerCase()) // adds to the user array
                     if (chatMessage[4].result.data.chatMessage.message.startsWith("!")) { //If it is a command of some sort...
                       console.log("Searching for command");
                       var message = chatMessage[4].result.data.chatMessage.message.split(" ")
@@ -150,22 +168,32 @@ function connectToGlimesh(access_token, channelID) {
                                 addQuoteChat(chatMessage[4].result.data.chatMessage, message[2])
                               break;
                               case "remove": // removes a quote
-                                delUserChat(message[2])
-                              break;
-                              case "del": // removes a quote
-                                delUserChat(message[2])
-                              break;
                               case "delete": // removes a quote
-                                delUserChat(message[2])
-                              break;
-
+                              case "del": // removes a quote
+                                delQuoteChat(message[2], message[3]);
+                                break;
                               default:
                                 break;
                             }
                           break;
+                          case "!points":
+                            switch (message[1]) {
+                              case "" :
+                              case " ":
+                              case null:
+                              case undefined: 
+                                UserHandle.findByUserName(chatMessage[4].result.data.chatMessage.user.username.toLowerCase()).then(data => {
+                                  if (data == "ADDUSER") {filterMessage("That user does not exist in the database yet. Type !user new " + chatMessage[4].result.data.chatMessage.user.username.toLowerCase(), "Glimboi")} else {
+                                    filterMessage(chatMessage[4].result.data.chatMessage.user.username.toLowerCase() + " has " + data[0].points + " " + settings.Points.name, "Glimboi")
+                                  }
+                                })
+                                break;                            
+                              default:
+                                break;
+                            }
+                            break;
                           case "!test":
-                         // glimboiMessage("Test complete. If you have a command called test this replaced it.");
-                          CommandHandle.randomRepeatCommand()
+                          glimboiMessage("Test complete. If you have a command called test this replaced it.");
                           break;
                           case "!user":
                             switch (message[1]) {
@@ -211,6 +239,7 @@ function connectToGlimesh(access_token, channelID) {
         clearInterval(heartbeat) // stops the hearbteat
         clearInterval(stats) // stops the polling
         clearInterval(repeatCommand)
+        clearInterval(checkForUsers)
         } catch(e) {console.log(e)}
         if (event.wasClean) {
           console.log(
@@ -227,23 +256,6 @@ function connectToGlimesh(access_token, channelID) {
         console.log("Probably an auth issue. Please reauthenicate");
         throw "error, it crashed. p l e a s e f i x n o w"
       };
-}
-
-/**
- * Sends a message to chat. This function is called when a user presses send.
- * @param {string} data A message to be sent to chat
- */
-function sendMessage(data) {
-  var msgArray = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
-  // adds the message to it.
-  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\" , message: {message: \"" + data +" \"}) {message }}","variables":{}});
-  var test = JSON.stringify(msgArray); // make it sendable (json)
-  try {
-  console.log(test)
-  connection.send(test) // sends it to chat!
-  } catch(e) {
-    errorMessage("Auth Error", "The bot must be authenticated for this feature to work. You must be in a chat to send a message.")
-  }
 }
 
 /**
@@ -281,12 +293,53 @@ function disconnectError() {
 }
 
 /**
+ * Filters a message to prepare it for sending. If it cannot be sent we send a message to chat notifying the stream.
+ * @param {string} message The chat message to be sent to chat
+ * @param {string} source Where the emssage is coming from. Either user or glimboi
+ */
+function filterMessage(message, source) {
+  if (source == "user") {
+    if (message.length > 255) {
+      sendMessage("The command/message was too long to send.");
+    } else {
+      message = message.replace(/[\t\r\n""]+/g, "");
+      sendMessage(message);
+    }
+  } else {
+    if (message.length > 255) {
+      glimboiMessage("The command/message was too long to send.");
+    } else {
+      message = message.replace(/[\t\r\n""]+/g, "");
+      glimboiMessage(message);
+    }
+  }
+}
+
+
+/**
+ * Sends a message to chat. This function is called when a user presses send.
+ * @param {string} data A message to be sent to chat
+ */
+function sendMessage(data) {
+  var msgArray = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
+  // adds the message to it.
+  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\""+chatID+"\",message:{message:\""+data+"\"}) {message }}","variables":{}});
+  var test = JSON.stringify(msgArray); // make it sendable (json)
+  try {
+  console.log(test)
+  connection.send(test) // sends it to chat!
+  } catch(e) {
+    errorMessage("Auth Error", "The bot must be authenticated for this feature to work. You must be in a chat to send a message.")
+  }
+}
+
+/**
  * Sends a message to chat as the bot. This is not from a user pressing send. 
  * @param {string} data The message to be sent to chat
  */
-function glimboiMessage(data) { // code is the same as the sendMessage command above
+function glimboiMessage(data) {
   var msgArray = ["6","7","__absinthe__:control","doc"];
-  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message: {message: \"" + data +" \"}) {message }}","variables":{}});
+  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message:{message:\""+data+"\"}) {message }}","variables":{}});
   var test = JSON.stringify(msgArray);
   console.log(test)
   connection.send(test)
@@ -300,6 +353,7 @@ function test() {
   connection.send(test);
   console.log(test)
 }
+
 
 /**
  * 
@@ -331,7 +385,7 @@ function logMessage(user, message, avatar) {
  * @param {string} user The user who will be added
  */
 function addUserChat(user) {
-  UserHandle.addUser(user).then(data => {
+  UserHandle.addUser(user, false).then(data => {
     if (data == "USEREXISTS") {
       glimboiMessage("That user is already added to GlimBoi.")
     } else if (data == "INVALIDUSER") {
@@ -449,7 +503,7 @@ function randomQuoteChat() {
     if (data == null) {
       glimboiMessage(`No quotes exist.`)
     } else {
-    glimboiMessage(`@${data.user} - ${data.data}`)
+    filterMessage(`@${data.user} - ${data.data}`, "glimboi")
     }
   })
 }
@@ -463,7 +517,35 @@ function addQuoteChat(data, user) {
   console.log(user, data.message);
   console.log(data.message.substring(10))
   var trimMessage = 10 + user.length + 2
-  QuoteHandle.addquote(user, data.message.substring(trimMessage))
+  QuoteHandle.addquote(user.toLowerCase(), data.message.substring(trimMessage)).then(data => {
+    if (data == "QUOTEFINISHED") {
+      glimboiMessage(`Quote added.`)
+    } else {
+      glimboiMessage(`That user does not exist.`)
+    }
+  })
+}
+
+/**
+ * Removes a quote by username and ID. The paramaters are converted just to be safe.
+ * @param {String} user The user who said the quote
+ * @param {Number} id The ID of the quote.
+ */
+function delQuoteChat(user, id) {
+  console.log(user, id);
+  console.log(typeof id)
+  console.log(id)
+  if (user == "" || user == " " || id == "" || id == " " || user == undefined || id == undefined) {
+    glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
+  } else {
+  UserHandle.removeQuoteByID(Number(id), user.toLowerCase()).then(data => {
+    if (data == "NOQUOTEFOUND") {
+      glimboiMessage("No quote was found with that ID.")
+    } else {
+      glimboiMessage("Quote removed.")
+    }
+  })
+}
 }
 
 /**
@@ -483,8 +565,8 @@ function commandList() {
       cmdList.push(data[index].commandName)
     }
     var cmdmsg = cmdList.toString()
-    glimboiMessage(cmdmsg);
+    filterMessage(cmdmsg);
   })
 }
 
-module.exports = { connectToGlimesh, disconnect, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { connectToGlimesh, disconnect, filterMessage, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

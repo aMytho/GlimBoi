@@ -185,3 +185,4 @@ th {
   [contenteditable] {
     outline: 0px solid transparent;
   }
+  .dropdown-item:focus,.dropdown-item:hover{color:#16181b;text-decoration:none;background-color:#1672ce !important}
