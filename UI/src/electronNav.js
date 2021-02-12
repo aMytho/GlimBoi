@@ -1,10 +1,9 @@
-//handles sending users to differen to parts of the app
+//handles sending users to different to parts of the app
 var {
   shell, ipcRenderer
 } = require("electron");
-var appData;
-
-appData = ipcRenderer.sendSync("appDataRequest", null)   //Ask main process for app data
+var Datastore = require('nedb')
+var appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
   try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}

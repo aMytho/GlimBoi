@@ -1,5 +1,3 @@
-const Datastore = require('nedb'); //Reads commands
-
 var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 let commandsDB; //Database of commands.
 var commands = []; //Array that contains all the commands. The bot reads this 
@@ -208,7 +206,7 @@ async function runCommand(arguements, index, user) {
       }
     }
     console.log(chatMessage + " is the final message");
-    ChatHandle.sendMessage(chatMessage); // Sends the message to the chat.
+    ChatHandle.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
     addCommandCount(arguements[0]); // Increments the command uses by one.
     startCD = new Date(); // We save the time, use to determine if enough time has passed (cooldowns)
   }

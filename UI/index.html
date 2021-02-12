@@ -16,10 +16,10 @@
     <!-- Latest compiled JavaScript -->
     <script src="src/js/bootstrap/bootstrap.min.js"></script>
     <link href="src/css/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="src/js/dataTables/dataTables.css">
+    <script src="src/js/dataTables/dataTables.js"></script>
     <!--Apex Charts-->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="src/js/apexCharts/apexCharts.js"></script>
     <!--custom scripts-->
     <script src="src/electronNav.js"></script>
     <script src="src/js/home.js"></script>
@@ -114,7 +114,7 @@
                 </div>
               </form>
               <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-              <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="auth()">Authenicate</button>
+              <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authenicate</button>
               <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" onclick="document.getElementById('ChatLink').click();">Join Channel</button>
               <script>/*rememberID()*/ // runs the function to get the id from storage</script>
         </div>

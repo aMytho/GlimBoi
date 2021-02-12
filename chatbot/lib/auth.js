@@ -1,6 +1,5 @@
 //This file handles connecting the users dev app to glimesh.tv
 //It creates an express server so glimesh can redirect the user back to the bot. It is closed when the auth is completed.
-const Datastore = require('nedb'); //Connects to the auth DB
 var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 var serverisOn = false; //tells us if the user started but didn't complete the auth. 
 var client = "" //Client ID
