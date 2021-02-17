@@ -1,56 +1,11 @@
-const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
+const { app, autoUpdater, BrowserWindow, ipcMain, screen, } = require('electron'); //electron modules
 const log = require('electron-log');
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
-const { autoUpdater } = require('electron-updater'); //handles updates
-
-
-function logSettings(settings) {
-if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
-    console.log(`Auth: ${settings.Auth.Oauth}`);
-    console.log("Mods:")
-    settings.Mods.ModList.forEach(element => {
-        console.log('\x1b[36m', `${element.Name} `,'\x1b[0m');
-        console.log('\x1b[38m', `GlimeshMod: ${element.GlimeshMod} `,'\x1b[0m');
-    });
-    console.log('\x1b[36m%s\x1b[0m', '______________________'); 
-    if (settings.Points.enabled == true) {
-        console.log("Points:");
-        console.log(" Name: " + "\x1b[33m" + settings.Points.name + "\033[0m");
-        console.log(" Starting Amount: " + "\x1b[33m" + settings.Points.StartingAmount + "\033[0m");
-        console.log(" Points per 15 minutes: " + "\x1b[33m" + settings.Points.accumalation + "\033[0m");
-        console.log("\x1b[33m" + "______________________" + "\033[0m");
-    };
-    if (settings.Games.enabled == true) {
-        console.log("Games:");
-        console.log(" Numbers: " + "\x1b[34m" + settings.Games.Numbers + "\033[0m");
-        console.log(" BankHeist: " + "\x1b[34m" + settings.Games.BankHeist + "\033[0m");
-        console.log(" Trivia: " + "\x1b[34m" + settings.Games.Trivia + "\033[0m");
-        console.log("\x1b[34m" + "______________________" + "\033[0m");
-    };
-    if (settings.Commands.enabled == true) {
-        console.log("Commands:");
-        console.log(" Cooldown: " + "\x1b[35m" + settings.Commands.cooldown + "m" + "\033[0m");
-        console.log(" Prefix: " + "\x1b[35m" + settings.Commands.Prefix + "\033[0m");
-        console.log(" Chat Errors: " + "\x1b[35m" + settings.Commands.Error + "\033[0m");
-        console.log("\x1b[35m" + "______________________" + "\033[0m");
-    };
-    console.log("GlimBoi:");
-        console.log(" Chat Control: " + "\x1b[38m" + settings.GlimBot.chatControls + "\033[0m");
-        console.log(" Current Version: " + "\x1b[38m" + autoUpdater.currentVersion + "\033[0m");
-        console.log("\x1b[38m" + "______________________" + "\033[0m");
-    console.log("Logging Completed!");
-}
-}
-
-ipcMain.on('app_version', (event) => {
-  event.sender.send('app_version', { version: app.getVersion() });
-  console.log("The current version is recieved. " + app.getVersion());
-});
-
-//console.log(autoUpdater.fullChangelog);
+var isDev = require("electron-is-dev");
+var APP_VERSION = 1
+var AUTO_UPDATE_URL;
 
 var win; // The main window
-
 
 function createWindow () { //make Win a window
   const {width,height} = screen.getPrimaryDisplay().workAreaSize
@@ -143,7 +98,7 @@ ipcMain.on("logEnd", event => {
   event.reply("endedLog", "The log has been ended.")
 })
 
-
+/*
 autoUpdater.on('update-available', () => {
   win.webContents.send('update_available');
   console.log("avaible update!")
@@ -162,3 +117,67 @@ autoUpdater.allowPrerelease = true;
 autoUpdater.autoInstallOnAppQuit = true;
 console.log(autoUpdater.currentVersion);
 autoUpdater.checkForUpdates()
+*/
+
+ipcMain.on('app_version', (event) => {
+  var version = app.getVersion()
+  event.sender.send('app_version', { version: version });
+  console.log("The current version is recieved. " + version);
+  if (isDev) {
+    console.log("isdev")
+  } else {
+    APP_VERSION = version
+    AUTO_UPDATE_URL = 'https://api.update.rocks/update/github.com/aMytho/GlimBoi/stable/' + process.platform + '/' + APP_VERSION
+    init()
+  }
+});
+
+function init () {
+  if (process.platform === 'linux') {
+    console.log('Auto updates not available on linux')
+  } else {
+    console.log(AUTO_UPDATE_URL)
+    initDarwinWin32()
+  }
+}
+
+function initDarwinWin32 () {
+  autoUpdater.on(
+    'error',
+    (err) => console.log(`Update error: ${err.message}`))
+
+  autoUpdater.on(
+    'checking-for-update',
+    () => console.log('Checking for update'))
+
+  autoUpdater.on(
+    'update-available',
+    () => console.log('Update available'))
+
+  autoUpdater.on(
+    'update-not-available',
+    () => console.log('No update available'))
+
+  // Ask the user if update is available
+  autoUpdater.on(
+    'update-downloaded',
+    (event, releaseNotes, releaseName) => {
+      var {dialog} = require("electron")
+      console.log('Update downloaded')
+      dialog.showMessageBox({
+        type: 'question',
+        buttons: ['Update', 'Cancel'],
+        defaultId: 0,
+        message: `Version ${releaseName} is available, do you want to install it now?`,
+        title: 'Update available'
+      }, response => {
+        if (response === 0) {
+          autoUpdater.quitAndInstall()
+        }
+      })
+    }
+  )
+
+  autoUpdater.setFeedURL(AUTO_UPDATE_URL)
+  autoUpdater.checkForUpdates()
+}
