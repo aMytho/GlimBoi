@@ -14,7 +14,9 @@
     "publish": {
       "provider": "github",
       "vPrefixedTagName": true,
-      "token": "redacted"
+      "token": "redacted",
+      "private": false,
+      "protocol": "https"
     },
     "nsis": {
       "oneClick": false,
@@ -39,7 +41,8 @@
     "start": "electron main.js",
     "build": "electron-builder build  --win --publish never",
     "deploy": "electron-builder build  --win --publish always",
-    "linux": "electron-builder build --linux"
+    "linux": "electron-builder build --linux",
+    "devPublish": "electron-builder build  --win --config.publish.provider=s3 --config.publish.endpoint=http://127.0.0.1:9000 --config.publish.bucket=test-update"
   },
   "author": "Mytho",
   "license": "MIT",
@@ -47,6 +50,7 @@
     "@types/node": "^14.11.2",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.3.1",
+    "electron-updater": "^4.3.5",
     "esm": "^3.2.25",
     "nedb": "^1.8.0",
     "ws": "^7.4.1"

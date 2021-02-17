@@ -1,11 +1,40 @@
-const { app, autoUpdater, BrowserWindow, ipcMain, screen, } = require('electron'); //electron modules
+const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
 const log = require('electron-log');
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
-var isDev = require("electron-is-dev");
-var APP_VERSION = 1
-var AUTO_UPDATE_URL;
+const { autoUpdater } = require('electron-updater'); //handles updates
+var isDev = require("electron-is-dev")
+
+ipcMain.on('app_version', (event) => {
+  event.sender.send('app_version', { version: app.getVersion() });
+  console.log("The current version is recieved. " + app.getVersion());
+  if (isDev) {
+    console.log("isdev") 
+  } else {
+    console.log("Not dev")
+    autoUpdater.logger = log
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
+    console.log(autoUpdater.currentVersion);
+    autoUpdater.checkForUpdates()
+  }
+});
+
+autoUpdater.on('update-available', () => {
+  win.webContents.send('update_available');
+  console.log("avaible update!")
+});
+autoUpdater.on('update-downloaded', () => {
+  win.webContents.send('update_downloaded');
+  console.log("downloaded the update!")
+});
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
+});
+
+//console.log(autoUpdater.fullChangelog);
 
 var win; // The main window
+
 
 function createWindow () { //make Win a window
   const {width,height} = screen.getPrimaryDisplay().workAreaSize
@@ -98,86 +127,3 @@ ipcMain.on("logEnd", event => {
   event.reply("endedLog", "The log has been ended.")
 })
 
-/*
-autoUpdater.on('update-available', () => {
-  win.webContents.send('update_available');
-  console.log("avaible update!")
-});
-autoUpdater.on('update-downloaded', () => {
-  win.webContents.send('update_downloaded');
-  console.log("downloaded the update!")
-});
-ipcMain.on('restart_app', () => {
-  autoUpdater.quitAndInstall();
-});
-
-autoUpdater.logger = log
-autoUpdater.autoDownload = true;
-autoUpdater.allowPrerelease = true;
-autoUpdater.autoInstallOnAppQuit = true;
-console.log(autoUpdater.currentVersion);
-autoUpdater.checkForUpdates()
-*/
-
-ipcMain.on('app_version', (event) => {
-  var version = app.getVersion()
-  event.sender.send('app_version', { version: version });
-  console.log("The current version is recieved. " + version);
-  if (isDev) {
-    console.log("isdev")
-  } else {
-    APP_VERSION = version
-    AUTO_UPDATE_URL = 'https://api.update.rocks/update/github.com/aMytho/GlimBoi/stable/' + process.platform + '/' + APP_VERSION
-    init()
-  }
-});
-
-function init () {
-  if (process.platform === 'linux') {
-    console.log('Auto updates not available on linux')
-  } else {
-    console.log(AUTO_UPDATE_URL)
-    initDarwinWin32()
-  }
-}
-
-function initDarwinWin32 () {
-  autoUpdater.on(
-    'error',
-    (err) => console.log(`Update error: ${err.message}`))
-
-  autoUpdater.on(
-    'checking-for-update',
-    () => console.log('Checking for update'))
-
-  autoUpdater.on(
-    'update-available',
-    () => console.log('Update available'))
-
-  autoUpdater.on(
-    'update-not-available',
-    () => console.log('No update available'))
-
-  // Ask the user if update is available
-  autoUpdater.on(
-    'update-downloaded',
-    (event, releaseNotes, releaseName) => {
-      var {dialog} = require("electron")
-      console.log('Update downloaded')
-      dialog.showMessageBox({
-        type: 'question',
-        buttons: ['Update', 'Cancel'],
-        defaultId: 0,
-        message: `Version ${releaseName} is available, do you want to install it now?`,
-        title: 'Update available'
-      }, response => {
-        if (response === 0) {
-          autoUpdater.quitAndInstall()
-        }
-      })
-    }
-  )
-
-  autoUpdater.setFeedURL(AUTO_UPDATE_URL)
-  autoUpdater.checkForUpdates()
-}
