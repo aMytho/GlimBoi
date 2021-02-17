@@ -92,6 +92,46 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
   return newCommand;
 }
 
+function addCommandFilter(commandName, arguements, commandData, type) {
+  if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
+    ChatHandle.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
+    return
+  }
+  if (type == "!command") {
+    commandData = commandData.substring(12 + commandName.length + 2)
+    console.log(commandData)
+  } else {
+    commandData = commandData.substring(8 + commandName.length + 2)
+    console.log(commandData)
+  }
+  commandData = commandData.substring()
+  if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
+    ChatHandle.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
+    return
+  }
+  if (commandName.startsWith("!")) {
+    commandName = commandName.substring(1)
+  }
+  console.log(commandName, commandData);
+  findCommand(commandName).then(data => {
+    if (data !== undefined) {
+      console.log(commandName + " already exists.")
+      ChatHandle.filterMessage(commandName + " already exists", "glimboi")
+    } else {
+      console.log("no command found")
+      addCommand(commandName.toLowerCase(), null, commandData, 0, 0, "Everyone", null, false);
+      ChatHandle.filterMessage(commandName + " added!", "glimboi");
+      try {
+        addCommandTable(commandName, commandData, 0, 0, "Everyone")
+      } catch(e) {
+        console.log(e)
+      }
+    }
+  })
+  
+}
+
+
 
 /**
  * Removes a command from the database. Reloads the current commands upon completion
@@ -128,6 +168,7 @@ function editCommand(commandName, arguements, commandData, commandUses, commandP
  * @returns A command
  */
 async function findCommand(command) {
+  console.log(command)
   return new Promise(resolve => {
     commandsDB.find({commandName: command}, function (err, docs) {
       console.log(docs)
@@ -152,11 +193,20 @@ function checkCommand(data) {
   if (CD < cooldown) {/*  if not enough time has passed do nothing*/} else { // We are past the cooldown, command time!
   try {
     var commandExists = false; // We assume the command does not exist.
-    for (let index = 0; index < commands.length; index++) { // Runs a loop to search for the command in the commands array
+    for (let index = 0; index < commands.length && commandExists == false; index++) { // Runs a loop to search for the command in the commands array
       try {
         if (commands[index].commandName == message[0]) { // We found the command!
         commandExists = true // We log this. If it were false we would log it to the console.
-        runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
+        console.log(commands[index]);
+        permissionCheck(commands[index], data.user.username.toLowerCase()).then(value => {
+          if (value == "ACCEPTED") {
+            console.log("All good running command")
+            runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
+          } else { // They don't have permission, we log this to chat.
+            ChatHandle.filterMessage(value, "glimboi");
+            console.log(value)
+          }
+        })
         break // stop the loop.
         }
       } catch(e) {}
@@ -170,6 +220,38 @@ function checkCommand(data) {
     console.log(error);
   }
 }
+}
+
+/**
+ * Encures the user has permission to use the command
+ * @param {object} command The command
+ * @param {string} user The user who activated the command
+ * @async
+ */
+async function permissionCheck(command, user) {
+  return new Promise(resolve => {
+    if (command.points !== 0 ) {
+      UserHandle.findByUserName(user).then(data => {
+        if (data == "ADDUSER") {
+          resolve("This command requires points to use. You must be a user to have points.")
+          return
+        } else if ((data[0].points - command.points) < 0) {
+          resolve(`You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${data[0].points}`);
+          return
+        } else {
+          UserHandle.removePoints(user, command.points)
+          resolve("ACCEPTED")
+        }
+      })
+    } else {
+      resolve("ACCEPTED")
+    }
+    /*
+    if (commands.rank == 0) {
+  
+    }
+    */
+  })
 }
 
 /**
@@ -330,4 +412,11 @@ function cooldownChange(cd) {
   console.log(cooldown)
 }
 
-module.exports = { addCommand, checkCommand, cooldownChange, editCommand, getAll, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
+/**
+ * Explains how to use commands in chat.
+ */
+function info() {
+  ChatHandle.filterMessage("placeholder", "glimboi")
+}
+
+module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
