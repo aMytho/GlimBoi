@@ -33,3 +33,7 @@ This is a work in progress.
 
 *This bot is in alpha. There will be bugs, crashes, and other errors. Report all issues on our issue page or to [Glimesh.tv/Mytho](https://glimesh.tv/Mytho)
 
+[[main]]
+  name = "Blog"
+  url = "/blog/"
+  weight = 20

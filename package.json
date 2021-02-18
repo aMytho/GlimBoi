@@ -28,7 +28,7 @@
       "maintainer": "Mytho",
       "vendor": "Mytho",
       "executableName": "GlimBoi",
-      "icon": "UI/Icons/icon.png"
+      "icon": "UI/Icons/500x500.icns"
     },
     "directories": {
       "buildResources": "UI/Icons"

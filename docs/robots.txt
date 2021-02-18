@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aMytho.github.io/GlimBoi/sitemap.xml
