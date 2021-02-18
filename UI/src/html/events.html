@@ -1,0 +1,42 @@
+<div class="row d-flex align-items-stretch">
+    <div class="col-3 mx-auto mt-3">
+        <div class="card glimPanel h-100 ml-3">
+            <span class="badge badge-info">Lasts for 1 minute! Type !raffle in chat.</span>
+            <div class="card-body glimPanel text-center">
+              <h3 class="whiteText" id="chatName">Raffle</h3>
+              <p class="whiteText">_______________</p>
+              <p class="whiteText">Starts a raffle. One winner is chosen.</p>
+              <button class="btn btn-success mt-2" type="submit" id="leaveChat" onclick="startRaffle()">Start</button>
+              <button class="btn btn-info mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalRaffleList">View Participants</button>
+              <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopRaffle()">End</button>
+              <h4 class="whiteText mt-3" id="raffleWinner"></h4>
+            </div>
+            </div>
+     </div>
+  </div>
+  
+
+<!-- Modal: Raffle User List -->
+<div class="modal fade" id="modalRaffleList" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
+    style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="raffleList">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">User List</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body" id="modalRaffleListBody">
+                <p class="whitetext">Note that if a user joins multiple times they will only be counted once.</p>
+                <ul id="RaffleUserList">
+                  </ul>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <p id="RaffleListModalText"></p>
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal: Raffle User List -->

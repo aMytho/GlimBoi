@@ -10,6 +10,10 @@ var commandToBeEdited; // A global var because I was too lazy to find another so
 //Loads the command table. It is loaded when the page is opened for the first time. After that it is saved to a variable.
 function loadCommandTable() {
   if (tblhasbeenopened == false) {
+    $('#modalCart').on('hidden.bs.modal', function (e) {
+      console.log("Resetting command add modal.");
+      document.getElementById("commandAddModalBody").innerHTML = addCommandModal();
+     })
     let commandData;
     //Imports all the commands from the DB
     CommandHandle.getAll().then(docs => { 
@@ -55,20 +59,12 @@ function loadCommandTable() {
           ],
         });
       });
-
-      /*   var hasbeenEdited = document.getElementById('example');
-            hasbeenEdited.addEventListener('input', function(updateValue) {
-        console.log(updateValue)
-        console.log('Hey, somebody changed something in my text!');
-    });*/
-
      /* $("#example").click(function (event) {
         //Tells us which column and row they clicked, currently unused
         var text = $(event.target).text();
         event.target.id = "one";
         console.log(event);
       });*/
-
       tblhasbeenopened = true;
     });
   } else {
@@ -110,8 +106,7 @@ function checkNewCommand() {
   if ($("#addCommandName").html() == "!") {
     //Ensure it is not JUST a !
     document.getElementById("addCommandName").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML =
-      "You need a command Name.";
+    document.getElementById("errorMessageAdd").innerHTML ="You need a command Name.";
     console.log("Command Name is not valid.");
   } else if ($("#addCommandName").html().startsWith("!")) {
     //Removes the ! if it exists
@@ -124,10 +119,8 @@ function checkNewCommand() {
           document.getElementById("addCommandName").classList.add("errorClass");
         }, 1000);
         setTimeout(() => {
-          document.getElementById("errorMessageAdd").innerHTML =
-            "This command already exists";
+          document.getElementById("errorMessageAdd").innerHTML = "This command already exists";
         }, 1000);
-
         isvalid = -1;
       }
     }
@@ -150,8 +143,7 @@ function checkNewCommand() {
       if (arrayOfCommands[i][0] == commandName) {
         console.log("The command " + commandName + " already exists");
         document.getElementById("addCommandName").classList.add("errorClass");
-        document.getElementById("errorMessageAdd").innerHTML =
-          "This command already exists";
+        document.getElementById("errorMessageAdd").innerHTML = "This command already exists";
         isvalid = -1;
       }
     }
@@ -169,8 +161,7 @@ function checkNewCommand() {
     //max length is 255. - 1 for the 0. may be worng, idk
     console.log("its too long.");
     document.getElementById("addCommandData").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML =
-      "This message is too long.";
+    document.getElementById("errorMessageAdd").innerHTML = "This message is too long.";
   } else {
     commandData = $("#addCommandData").html();
     isvalid = isvalid + 1;
@@ -189,8 +180,7 @@ function checkNewCommand() {
   } else if (Math.sign(parseFloat($("#addCommandPoints").html())) == -1) {
     console.log("Its a negative");
     document.getElementById("addCommandPoints").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML =
-      "Must be greater than 0.";
+    document.getElementById("errorMessageAdd").innerHTML = "Must be greater than 0.";
   } else {
     commandPoints = $("#addCommandPoints").html();
     isvalid = isvalid + 1;
@@ -210,8 +200,7 @@ function checkNewCommand() {
     document.getElementById("addCommandUses").classList.add("errorClass");
   } else if (Math.sign(parseFloat($("#addCommandUses").html())) == -1) {
     console.log("Its a negative");
-    document.getElementById("errorMessageAdd").innerHTML =
-      "Must be greater than 0.";
+    document.getElementById("errorMessageAdd").innerHTML = "Must be greater than 0.";
   } else {
     commandUses = $("#addCommandUses").html();
     isvalid = isvalid + 1;
@@ -229,44 +218,11 @@ function checkNewCommand() {
   commandRank = document.getElementById("rankChoiceAdd").value;
   commandName = commandName.toLowerCase();
   if (isvalid == 4) {
-    console.log(
-      commandName,
-      commandData,
-      commandPoints,
-      commandUses,
-      commandRank,
-      null,
-      repeat
-    );
-    CommandHandle.addCommand(
-      commandName,
-      null,
-      commandData,
-      commandUses,
-      commandPoints,
-      commandRank,
-      null,
-      repeat
-    ); //Adds a command to the DB
+    console.log(commandName, commandData, commandPoints, commandUses, commandRank, null, repeat);
+    //Adds a command to the DB
+    CommandHandle.addCommand(commandName, null, commandData, commandUses, commandPoints, commandRank,null, repeat); 
     //adds a row to the table with the new command info
-    table.row.add([
-      commandName,
-      null,
-      commandData,
-      commandUses,
-      commandPoints,
-      commandRank,
-    ]);
-    var newcommand = [
-      `${commandName}`,
-      null,
-      `${commandData}`,
-      `${commandUses}`,
-      `${commandPoints}`,
-      `${commandRank}`,
-    ];
-    arrayOfCommands.push(newcommand); //Adds it to the array variable.
-    table.draw(); //Show changes
+    addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank)
     $("#modalCart").modal("hide");
   }
   console.log(isvalid);
@@ -284,9 +240,7 @@ function checkRemoveCommand() {
   try {
     for (let i = 0; i < arrayOfCommands.length; i++) {
       if (arrayOfCommands[i][0] == commandToBeRemoved) {
-        console.log(
-          "The command " + commandToBeRemoved + " will now be deleted"
-        );
+        console.log("The command " + commandToBeRemoved + " will now be deleted");
         arrayOfCommands.splice(i, 1); //Removes it from the array.
         var filteredData = table
           .rows()
@@ -300,13 +254,11 @@ function checkRemoveCommand() {
       }
     }
     if (errorNeeded == true) {
-      document.getElementById("removeCommandMessage").innerHTML =
-        "This command does not exist.";
+      document.getElementById("removeCommandMessage").innerHTML = "This command does not exist.";
     }
   } catch (e) {
     console.log(e);
-    document.getElementById("removeCommandMessage").innerHTML =
-      "This command does not exist.";
+    document.getElementById("removeCommandMessage").innerHTML = "This command does not exist.";
   }
 }
 
@@ -325,65 +277,7 @@ function checkEditCommand() {
         console.log("Editing " + commandToBeEdited);
         errorNeeded = false;
         //We replace the html of the modal with new html
-        document.getElementById("editModal").innerHTML = `<!--Header-->
-                <div class="modal-header text-center">
-                   <h4 class="modal-title w-100" id="myModalLabel">Edit a command</h4>
-                </div>
-                <!--Body-->
-                <div class="modal-body">
-                   <table class="table table-hover">
-                      <thead>
-                         <tr>
-                            <th>Command</th>
-                            <th>Data</th>
-                         </tr>
-                      </thead>
-                      <tbody>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
-                            <td contenteditable="true" id="editCommandArguements">${arrayOfCommands[i][1]}</td>
-                         </tr>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
-                            <td contenteditable="true" id="editCommandData">${arrayOfCommands[i][2]}</td>
-                         </tr>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
-                            <td contenteditable="true" id="editCommandPoints">${arrayOfCommands[i][4]}</td>
-                         </tr>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
-                            <td contenteditable="true" id="editCommandUses">${arrayOfCommands[i][3]}</td>
-                         </tr>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
-                            <td id="editCommandRank">
-                               <select name="cars" id="rankChoiceEdit">
-                                  <option value="Everyone">Everyone (Defualt)</option>
-                                  <option value="Moderator">Moderator</option>
-                                  <option value="Editor">Editor</option>
-                                  <option value="Streamer">Streamer</option>
-                               </select>
-                            </td>
-                         </tr>
-                         <tr>
-                  <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
-                  <td id="commandRepeat">
-                     <select name="repeatableCommand" id="commandRepeatableChoiceEdit">
-                        <option value="false">Disabled (Defualt)</option>
-                        <option value="true">Enabled</option>
-                     </select>
-                  </td>
-               </tr>
-                      </tbody>
-                   </table>
-                </div>
-                <!--Footer-->
-                <div class="modal-footer">
-                   <p id="errorMessageEdit"></p>
-                   <button type="button" class="btn btn-outline-primary" onclick="editReset()" data-dismiss="modal">Close</button>
-                   <button class="btn btn-outline-primary" onclick="editCommand()" id="editCommandButtonFinish">Edit</button>
-                </div>`;
+        document.getElementById("editModal").innerHTML = editCommandModal(arrayOfCommands, i)
       }
     }
     if (errorNeeded == true) {
@@ -426,15 +320,12 @@ function editCommand() {
   } else if (Math.sign(parseFloat($("#editCommandPoints").html())) == -1) {
     console.log("Its a negative");
     document.getElementById("editCommandPoints").classList.add("errorClass");
-    document.getElementById("errorMessageEdit").innerHTML =
-      "Must be greater than 0.";
+    document.getElementById("errorMessageEdit").innerHTML = "Must be greater than 0.";
   } else {
     commandPoints = $("#editCommandPoints").html();
     isvalid = isvalid + 1;
     try {
-      document
-        .getElementById("editCommandPoints")
-        .classList.remove("errorClass");
+      document.getElementById("editCommandPoints").classList.remove("errorClass");
       document.getElementById("errorMessageEdit").innerHTML = "";
     } catch (error) {
       console.log(error);
@@ -447,8 +338,7 @@ function editCommand() {
     document.getElementById("editCommandUses").classList.add("errorClass");
   } else if (Math.sign(parseFloat($("#editCommandUses").html())) == -1) {
     console.log("Its a negative");
-    document.getElementById("errorMessageEdit").innerHTML =
-      "Must be greater than 0.";
+    document.getElementById("errorMessageEdit").innerHTML = "Must be greater than 0.";
   } else {
     commandUses = $("#editCommandUses").html();
     isvalid = isvalid + 1;
@@ -472,30 +362,13 @@ function editCommand() {
   commandToBeEdited = commandToBeEdited.toLowerCase();
   if (isvalid == 3) {
     console.log(commandData, commandPoints, commandUses, commandRank);
-
-    CommandHandle.editCommand(
-      commandToBeEdited,
-      null,
-      commandData,
-      commandUses,
-      commandPoints,
-      commandRank,
-      null,
-      repeat
-    ); //Edit the DB
+    CommandHandle.editCommand(commandToBeEdited, null, commandData, commandUses, commandPoints, commandRank, null, repeat); //Edit the DB
     for (let i = 0; i < arrayOfCommands.length; i++) {
       //Find the right command on the table
       if (arrayOfCommands[i][0] == commandToBeEdited) {
         //Found it!
         arrayOfCommands.splice(i, 1); //Removes it from the array.
-        var newcommand = [
-          `${commandToBeEdited}`,
-          null,
-          `${commandData}`,
-          `${commandUses}`,
-          `${commandPoints}`,
-          `${commandRank}`,
-        ];
+        var newcommand = [`${commandToBeEdited}`, null, `${commandData}`, `${commandUses}`, `${commandPoints}`, `${commandRank}`];
         arrayOfCommands.push(newcommand); //Add the command back with new data
         var filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
           .rows()
@@ -507,27 +380,7 @@ function editCommand() {
         table.row.add(newcommand);
         table.draw();
         $("#modalEditCommand").modal("hide");
-        document.getElementById("editModal").innerHTML = `
-                     <!--Header-->
-                    <div class="modal-header text-center">
-                       <h4 class="modal-title w-100" id="myModalLabelEdit">Edit a command</h4>
-                    </div>
-                    <!--Body-->
-                    <div class="modal-body">
-                       <!--Body-->
-                    <div class="modal-body">
-                     <div class="icon-input-container">
-                        <input class="icon-input" type="text" placeholder="Command Name" id="commandEditInput">
-                        <p id="editCommandMessage" class="errorMessage"></p>
-                    </div>
-                    </div>
-                    </div>
-                    <!--Footer-->
-                    <div class="modal-footer">
-                       <p id="errorMessageAdd"></p>
-                       <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                       <button class="btn btn-outline-primary" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
-                    </div>`;
+        document.getElementById("editModal").innerHTML = editCommandModalEntry()
       }
     }
   }
@@ -536,25 +389,12 @@ function editCommand() {
 }
 
 function editReset() {
-  document.getElementById("editModal").innerHTML = `
-                     <!--Header-->
-                    <div class="modal-header text-center">
-                       <h4 class="modal-title w-100" id="myModalLabelEdit">Edit a command</h4>
-                    </div>
-                    <!--Body-->
-                    <div class="modal-body">
-                       <!--Body-->
-                    <div class="modal-body">
-                     <div class="icon-input-container">
-                        <input class="icon-input" type="text" placeholder="Command Name" id="commandEditInput">
-                        <p id="editCommandMessage" class="errorMessage"></p>
-                    </div>
-                    </div>
-                    </div>
-                    <!--Footer-->
-                    <div class="modal-footer">
-                       <p id="errorMessageAdd"></p>
-                       <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                       <button class="btn btn-outline-primary" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
-                    </div>`;
+  document.getElementById("editModal").innerHTML = editCommandReset()
+}
+
+function addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank) {
+  table.row.add([commandName, "null", commandData, commandUses, commandPoints, commandRank]);
+  var newcommand = [`${commandName}`, null, `${commandData}`, `${commandUses}`, `${commandPoints}`, `${commandRank}`];
+  arrayOfCommands.push(newcommand); //Adds it to the array variable.
+  table.draw(); //Show changes
 }

@@ -52,17 +52,20 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
           $(document).ready(function () {
             loadUserTable()
             //makes clicking the button in the quotes column show the quotes under the table
-            $('#userTable tbody').on( 'click', 'button', function () { 
+            $('#userTable tbody').on( 'click', 'button', function () {
               var data = userTable.row( $(this).parents('tr') ).data();
               //alert( data[0] +"'s salary is: "+ data[ 5 ] ); Keep this as an example
               console.log('Build table with ' + data)
               makeList(data) //Builds the list of the users quotes.
             });
+            $('#userTable tbody').on( 'click', 'a', function () {
+              var data = userTable.row( $(this).parents('tr') ).data();
+              loadLink("glimesh.tv/" + data[0])
+            });
           });
           usersActive = true; //ensures we don't run this again.
     })
   } else {
-
     $(document).ready(function () {
       loadUserTable()
       //Same as above
@@ -70,9 +73,12 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
         var data = userTable.row( $(this).parents('tr') ).data();
         console.log('Building table with ' + data)
         makeList(data)
-      } );
+      });
+      $('#userTable tbody').on( 'click', 'a', function () {
+        var data = userTable.row( $(this).parents('tr') ).data();
+        loadLink("glimesh.tv/" + data[0])
+      });
     });
-
   }
 }
 
@@ -364,17 +370,17 @@ function userSearch(user) {
                       </tbody>
                    </table>
       `;
-      document.getElementById("userEditSearchButton").setAttribute('onclick', "editUser(tempUser, document.getElementById('EditUserRank').innerHTML, document.getElementById('editUserPoints').innerHTML)")
+      document.getElementById("userEditSearchButton").setAttribute('onclick', "editUserTable(tempUser, document.getElementById('EditUserRank').innerHTML, document.getElementById('editUserPoints').innerHTML), $('#modalUserEdit').modal('hide'), UserHandle.editUser(tempUser.toLowerCase(), document.getElementById('EditUserRank').innerHTML, document.getElementById('editUserPoints').innerHTML)")
       document.getElementById("userEditSearchButton").innerText = "Edit"
 
     }
   })
 }
 
-function editUser(user, role, points) {
+function editUserTable(user, role, points) {
+  try {
   console.log(user, role, points);
   user = user.toLowerCase()
-  UserHandle.editUser(user, role, points).then(data => {
     for (let index = 0; index < arrayofUsers.length; index++) {
       if (arrayofUsers[index][0] == user) {
         console.log('found')
@@ -388,7 +394,6 @@ function editUser(user, role, points) {
     .rows()
     .indexes()
     .filter( function ( value, index ) {
-      console.log(value, index)
       return user === userTable.row(value).data()[0];
     } );
 
@@ -405,9 +410,9 @@ function editUser(user, role, points) {
   // Update the table data and redraw the table
   row.data( data ).draw();
   // loadUserTable()
-  $('#modalUserEdit').modal('hide')
-  })
-  
+} catch(e) {
+  console.log(e)
+}
 }
 
 function loadUserTable() {
@@ -441,6 +446,16 @@ function loadUserTable() {
       "targets": -1,
       "data": null,
       "defaultContent": "<button>Open</button>"
+  }, {
+    "targets": -2,
+      "data": null,
+      "render": function(data, type, row, meta){
+            if(type === 'display'){
+                data = '<a href="javascript:void(0)" disabled>' + "View Profile" + '</a>';
+            }
+
+            return data;
+         }
   } ]
   });
 }

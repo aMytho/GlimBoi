@@ -21,7 +21,7 @@
            <h4 class="modal-title w-100" id="myModalLabel">Add a command</h4>
         </div>
         <!--Body-->
-        <div class="modal-body">
+        <div class="modal-body" id="commandAddModalBody">
            <table class="table table-hover">
               <thead>
                  <tr>
@@ -53,7 +53,7 @@
                  <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
                     <td id="addCommandRank">
-                       <select name="cars" id="rankChoiceAdd">
+                       <select name="cars" id="rankChoiceAdd" disabled>
                           <option value="Everyone">Everyone (Defualt)</option>
                           <option value="Moderator">Moderator</option>
                           <option value="Editor">Editor</option>
@@ -105,7 +105,7 @@
         </div>
         <!--Footer-->
         <div class="modal-footer">
-           <p id="errorMessageAdd"></p>
+           <p id="errorMessageEdit"></p>
            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
         </div>
@@ -131,7 +131,7 @@
         </div>
         <!--Footer-->
         <div class="modal-footer">
-           <p id="errorMessageAdd"></p>
+           <p id="errorMessageDelete"></p>
            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="checkRemoveCommand()">Remove</button>
         </div>

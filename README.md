@@ -2,6 +2,7 @@
 
 A chatbot for Glimesh.tv
 
+> The bot is not yet ready for release. It will be released in beta shortly before Glimesh Launches.
 
 ## Setup
 Download the bot from the [releases](https://github.com/aMytho/GlimBoi/releases) page.
@@ -30,10 +31,3 @@ GlimBoi has a basic GUI for interacting with the bot. You can create commands an
 Windows can recieve automatic updates. Other platforms must manually update. You can download any version of the bot from the releases page. If the platform you want is not supported you can manually build the bot from the source code. Your platform must support Electron. 
 This is a work in progress.
 
-
-*This bot is in alpha. There will be bugs, crashes, and other errors. Report all issues on our issue page or to [Glimesh.tv/Mytho](https://glimesh.tv/Mytho)
-
-[[main]]
-  name = "Blog"
-  url = "/blog/"
-  weight = 20

@@ -2,49 +2,33 @@ const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron 
 const log = require('electron-log');
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 const { autoUpdater } = require('electron-updater'); //handles updates
-
-
-function logSettings(settings) {
-if (settings.GlimBot.startLog == true) { //Runs at startup to show your config
-    console.log(`Auth: ${settings.Auth.Oauth}`);
-    console.log("Mods:")
-    settings.Mods.ModList.forEach(element => {
-        console.log('\x1b[36m', `${element.Name} `,'\x1b[0m');
-        console.log('\x1b[38m', `GlimeshMod: ${element.GlimeshMod} `,'\x1b[0m');
-    });
-    console.log('\x1b[36m%s\x1b[0m', '______________________'); 
-    if (settings.Points.enabled == true) {
-        console.log("Points:");
-        console.log(" Name: " + "\x1b[33m" + settings.Points.name + "\033[0m");
-        console.log(" Starting Amount: " + "\x1b[33m" + settings.Points.StartingAmount + "\033[0m");
-        console.log(" Points per 15 minutes: " + "\x1b[33m" + settings.Points.accumalation + "\033[0m");
-        console.log("\x1b[33m" + "______________________" + "\033[0m");
-    };
-    if (settings.Games.enabled == true) {
-        console.log("Games:");
-        console.log(" Numbers: " + "\x1b[34m" + settings.Games.Numbers + "\033[0m");
-        console.log(" BankHeist: " + "\x1b[34m" + settings.Games.BankHeist + "\033[0m");
-        console.log(" Trivia: " + "\x1b[34m" + settings.Games.Trivia + "\033[0m");
-        console.log("\x1b[34m" + "______________________" + "\033[0m");
-    };
-    if (settings.Commands.enabled == true) {
-        console.log("Commands:");
-        console.log(" Cooldown: " + "\x1b[35m" + settings.Commands.cooldown + "m" + "\033[0m");
-        console.log(" Prefix: " + "\x1b[35m" + settings.Commands.Prefix + "\033[0m");
-        console.log(" Chat Errors: " + "\x1b[35m" + settings.Commands.Error + "\033[0m");
-        console.log("\x1b[35m" + "______________________" + "\033[0m");
-    };
-    console.log("GlimBoi:");
-        console.log(" Chat Control: " + "\x1b[38m" + settings.GlimBot.chatControls + "\033[0m");
-        console.log(" Current Version: " + "\x1b[38m" + autoUpdater.currentVersion + "\033[0m");
-        console.log("\x1b[38m" + "______________________" + "\033[0m");
-    console.log("Logging Completed!");
-}
-}
+var isDev = require("electron-is-dev")
 
 ipcMain.on('app_version', (event) => {
   event.sender.send('app_version', { version: app.getVersion() });
   console.log("The current version is recieved. " + app.getVersion());
+  if (isDev) {
+    console.log("isdev") 
+  } else {
+    console.log("Not dev")
+    autoUpdater.logger = log
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
+    console.log(autoUpdater.currentVersion);
+    autoUpdater.checkForUpdates()
+  }
+});
+
+autoUpdater.on('update-available', () => {
+  win.webContents.send('update_available');
+  console.log("avaible update!")
+});
+autoUpdater.on('update-downloaded', () => {
+  win.webContents.send('update_downloaded');
+  console.log("downloaded the update!")
+});
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
 });
 
 //console.log(autoUpdater.fullChangelog);
@@ -143,22 +127,3 @@ ipcMain.on("logEnd", event => {
   event.reply("endedLog", "The log has been ended.")
 })
 
-
-autoUpdater.on('update-available', () => {
-  win.webContents.send('update_available');
-  console.log("avaible update!")
-});
-autoUpdater.on('update-downloaded', () => {
-  win.webContents.send('update_downloaded');
-  console.log("downloaded the update!")
-});
-ipcMain.on('restart_app', () => {
-  autoUpdater.quitAndInstall();
-});
-
-autoUpdater.logger = log
-autoUpdater.autoDownload = true;
-autoUpdater.allowPrerelease = true;
-autoUpdater.autoInstallOnAppQuit = true;
-console.log(autoUpdater.currentVersion);
-autoUpdater.checkForUpdates()

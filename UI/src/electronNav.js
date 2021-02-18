@@ -52,7 +52,7 @@ naviLinks.forEach((linkEl) => {
                 changeNavHighlight(id) //Changes the highlight
                 if (linkEl.id == "CommandLink") {loadCommandTable()} //Builds the data table
                 if (linkEl.id == "GlimBoiHeader") {getBasicData(); rememberID();} //Builds the homepage charts and check for auth ino for the buttons
-               // if (linkEl.id == "ChatLink") {openWindow()}
+                if (linkEl.id == "EventsLink") {loadEvents()}
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
                 if (linkEl.id == "SettingsLink") {showSettings()}

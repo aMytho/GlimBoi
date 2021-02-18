@@ -198,7 +198,18 @@ async function editUser(userName, role, points) {
 function earnPointsWT(users) {
   usersDB.update({ $or: users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err, numReplaced, affectedDocuments) {
     console.log("Adding " + settings.Points.accumalation + " points to " + numReplaced + " users.");
+    affectedDocuments.forEach(element => {
+      console.log(element)
+      editUserTable(element.userName, element.role, element.points)
+    });
   });
 }
 
-module.exports = {addQuote, addUser, earnPointsWT, editUser, findByUserName, getAll, getTopPoints, removeUser, removeQuoteByID, updatePath, User}
+function removePoints(user, value) {
+  usersDB.update({ userName: user }, { $inc: { points: -value} }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
+    console.log("Removing " + value + " points from " + user);
+    editUserTable(user, affectedDocuments.role, affectedDocuments.points)
+  });
+}
+
+module.exports = {addQuote, addUser, earnPointsWT, editUser, findByUserName, getAll, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}

@@ -30,6 +30,8 @@ function unlockBot() {
     document.getElementById("UsersLink").classList.remove("disabled")
     document.getElementById("SettingsLink").classList.remove("disabled")
     document.getElementById("ChatLink").classList.remove("disabled")
+    document.getElementById("EventsLink").classList.remove("disabled")
+
     } catch(e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
