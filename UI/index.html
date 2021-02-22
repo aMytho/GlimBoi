@@ -67,6 +67,10 @@
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item glimNavItem">
+                    <a class="nav-link disabled" href="#" >
+                        <i class="fa fa-ban" id="authStatus" aria-hidden="true" title="Not authenticated" style="color: rgb(134, 34, 34);"> <span style="color: rgb(189, 57, 57);">Not Authenticated! Some features will not work!</span> </i></a>
+                </li>
+                <li class="nav-item glimNavItem">
                     <a class="nav-link" href="#"><i class="fa fa-bell" style="color: skyblue;"></i></a>
                 </li>
                 <li class="nav-item glimNavItem">
@@ -88,7 +92,7 @@
             <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
         </div>
         <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. This also allows the bot to have a custom name.</p>
-        <p> When you are finished enter the client ID and secret key. Save them to GlimBoi. Then press authenicate to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
+        <p> When you are finished enter the client ID and secret key. Save them to GlimBoi. Then press authorize to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
         <div class="row">
             <div class="col">
             <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
@@ -100,7 +104,7 @@
             <button class="btn btn-info btn-block" type="submit" id="authButton4" onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
             </div>
             <div class="col">
-            <button class="btn btn-info btn-block disabled" disabled type="submit" id="authButton5" onclick="loadLink('github.com/aMytho/GlimBoi')">FAQ</button>
+            <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
             </div>
             </div>
         </div>
@@ -116,9 +120,8 @@
                 </div>
               </form>
               <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-              <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authenicate</button>
-              <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" onclick="document.getElementById('ChatLink').click();">Join Channel</button>
-              <script>/*rememberID()*/ // runs the function to get the id from storage</script>
+              <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authorize</button>
+              <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
         </div>
         </div>
        
@@ -132,19 +135,19 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div id="chart">
-
                     </div>
                 </div>
                 <div class="col-sm-6">
+                    <h6 class="text-center">GlimBoi to Chat:</h6>
+                    <p>1: Create Bot</p>
+                    <p>2: Create an application on Glimesh. Redirect URI must be http://localhost:3000/success</p>
+                    <p>3: Enter the client ID and secret ID from the application into GlimBoi. Save them.</p>
+                    <p>4: Select Authorize. It will open a new tab in your browser. Authorize your application.</p>
+                    <p>GlimBoi can join the chat!</p>
                 </div>
-
-
-            </div>
-            
-            
+            </div>            
         </div>
-        </div>
-        
+        </div>  
         </div>
   </div>
   <p id="version" class="whiteText ml-3"></p>
@@ -177,6 +180,7 @@
   getBasicData()
   checkForUpdate();
   getSettings()
+  rememberID(true)
       </script>
 </body>
 </html>

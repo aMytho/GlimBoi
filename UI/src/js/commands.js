@@ -103,14 +103,14 @@ function checkNewCommand() {
   console.log("Checking if command is valid.");
   var commandName, commandData, commandPoints, commandUses, commandRank;
 
-  if ($("#addCommandName").html() == "!") {
+  if ($("#addCommandName").text() == "!") {
     //Ensure it is not JUST a !
     document.getElementById("addCommandName").classList.add("errorClass");
     document.getElementById("errorMessageAdd").innerHTML ="You need a command Name.";
     console.log("Command Name is not valid.");
-  } else if ($("#addCommandName").html().startsWith("!")) {
+  } else if ($("#addCommandName").text().startsWith("!")) {
     //Removes the ! if it exists
-    commandName = $("#addCommandName").html().substring(1);
+    commandName = $("#addCommandName").text().substring(1);
     console.log("Command name is valid");
     for (let i = 0; i < arrayOfCommands.length; i++) {
       if (arrayOfCommands[i][0] == commandName) {
@@ -157,13 +157,13 @@ function checkNewCommand() {
   }
 
 
-  if ($("#addCommandData").html().length > 254) {
+  if ($("#addCommandData").text().length > 254) {
     //max length is 255. - 1 for the 0. may be worng, idk
-    console.log("its too long.");
+    console.log("Command data is too long.");
     document.getElementById("addCommandData").classList.add("errorClass");
     document.getElementById("errorMessageAdd").innerHTML = "This message is too long.";
   } else {
-    commandData = $("#addCommandData").html();
+    commandData = strip($("#addCommandData").text())
     isvalid = isvalid + 1;
     try {
       document.getElementById("addCommandData").classList.remove("errorClass");
@@ -173,16 +173,16 @@ function checkNewCommand() {
     }
   }
 
-  if (isNaN($("#addCommandPoints").html()) == true) {
+  if (isNaN($("#addCommandPoints").text()) == true) {
     console.log("Not a number");
     document.getElementById("addCommandPoints").classList.add("errorClass");
     document.getElementById("errorMessageAdd").innerHTML = "Must be a number.";
-  } else if (Math.sign(parseFloat($("#addCommandPoints").html())) == -1) {
+  } else if (Math.sign(parseFloat($("#addCommandPoints").text())) == -1) {
     console.log("Its a negative");
     document.getElementById("addCommandPoints").classList.add("errorClass");
     document.getElementById("errorMessageAdd").innerHTML = "Must be greater than 0.";
   } else {
-    commandPoints = $("#addCommandPoints").html();
+    commandPoints = $("#addCommandPoints").text();
     isvalid = isvalid + 1;
     try {
       document
@@ -194,15 +194,15 @@ function checkNewCommand() {
     }
   }
 
-  if (isNaN($("#addCommandUses").html()) == true) {
+  if (isNaN($("#addCommandUses").text()) == true) {
     console.log("Not a number");
     document.getElementById("errorMessageAdd").innerHTML = "Must be a number";
     document.getElementById("addCommandUses").classList.add("errorClass");
-  } else if (Math.sign(parseFloat($("#addCommandUses").html())) == -1) {
+  } else if (Math.sign(parseFloat($("#addCommandUses").text())) == -1) {
     console.log("Its a negative");
     document.getElementById("errorMessageAdd").innerHTML = "Must be greater than 0.";
   } else {
-    commandUses = $("#addCommandUses").html();
+    commandUses = $("#addCommandUses").text();
     isvalid = isvalid + 1;
     try {
       document.getElementById("addCommandUses").classList.remove("errorClass");
@@ -397,4 +397,9 @@ function addCommandTable(commandName, commandData, commandUses, commandPoints, c
   var newcommand = [`${commandName}`, null, `${commandData}`, `${commandUses}`, `${commandPoints}`, `${commandRank}`];
   arrayOfCommands.push(newcommand); //Adds it to the array variable.
   table.draw(); //Show changes
+}
+
+function strip(html){
+  let doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
 }

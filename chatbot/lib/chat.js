@@ -8,7 +8,7 @@ var logging = true; // Should we log chat messages to a text file?
 var heartbeat, stats; //heartbeat and stats intervals
 
 var recentUserMessages = 0; //a count of user messages to compare against repeatable bot messages
-var botName; //The username of the bot in normal caps
+var botName = "GlimBoi"; //The username of the bot in normal caps
 var repeatCommand; // A timer that sends a repeatable message to chat on a set interval
 var repeatSpamProtection = 15, repeatDelay = 600000 // The users repeat settings. Default is at least 5 messages between repeats, attempt every 5 min
 
@@ -40,7 +40,7 @@ function connectToGlimesh(access_token, channelID) {
   connection.on("open", function open() { // When the connection opens...
     console.log("Connected to the Glimesh API");
     connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
-    connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { user { username avatarUrl } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
+    connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
     if (logging == true) { // if the user wants us to log messages to a file...
       setTimeout(() => { // wait a few seconds and show a dialogue box. Asks for the location to lo messages.
         ipcRenderer.send("startLogging", ""); // Tells the main process to start logging messages.
@@ -206,6 +206,9 @@ function connectToGlimesh(access_token, channelID) {
                 case "!raffle":
                   startRaffle()
                   glimboiMessage("Raffle started. Type !enter to join the raffle. You have one minute remaining.")
+                  break;
+                case "!poll":
+                  startPoll(userChat, null, null, messageChat);
                   break;
                 case "!user":
                   switch (message[1]) {
@@ -454,7 +457,7 @@ function loggingEnabled(enabled) {
  * @param settings.Commands.repeatSpamProtection Amount of non bot messages that must be present before a repeatable message is sent.
  */
 function repeatSettings(settings) {
-  console.log(settings.Commands.repeatDelay)
+  console.log("The repeat delay is " + settings.Commands.repeatDelay)
   switch (settings.Commands.repeatDelay) { // seconds to ms converter
     case 5:
       repeatDelay = 300000
@@ -588,4 +591,11 @@ function commandList() {
   });
 }
 
-module.exports = { connectToGlimesh, disconnect, filterMessage, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+/**
+ * Returns the name of the Bot
+ */
+function getBotName() {
+  return botName
+}
+
+module.exports = { connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

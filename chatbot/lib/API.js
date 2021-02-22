@@ -22,9 +22,10 @@ function updateID() {
   AuthHandle.getID().then(data => {
     if (data == null) {
       console.log("No ID exists yet.");
-      successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot use the API without the proper authentication")
+      successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!")
     } else {
-    clientID = data
+    clientID = data;
+    console.log("API.js is using the new client ID")
     }
   })
 }

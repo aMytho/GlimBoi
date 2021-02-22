@@ -43,7 +43,7 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageAdd"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="addUser()" id="addUserFinish">Add</button>
         </div>
      </div>
@@ -70,8 +70,8 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageRemove"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="removeUser()" id="removeUserFinish">Remove</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-danger" onclick="removeUser()" id="removeUserFinish">Remove</button>
         </div>
      </div>
   </div>
@@ -98,7 +98,7 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageAddQuote"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="addQuote()" id="addQuoteFinish">Add</button>
         </div>
      </div>
@@ -124,15 +124,15 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorUserEdit"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="userSearch(document.getElementById('userEditSearch').value)" id="userEditSearchButton">Search</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-success" onclick="userSearch(document.getElementById('userEditSearch').value)" id="userEditSearchButton">Search</button>
         </div>
      </div>
   </div>
 </div>
 <!-- Modal: modalCart -->
 
-<!-- Modal: edit user -->
+<!-- Modal: remove user -->
 <div class="modal fade" id="modalQuoteRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
@@ -151,10 +151,10 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorQuoteExit"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-danger" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
         </div>
      </div>
   </div>
 </div>
-<!-- Modal: modalCart -->
+<!-- Modal: remove user -->

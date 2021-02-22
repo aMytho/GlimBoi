@@ -5,11 +5,12 @@ const { autoUpdater } = require('electron-updater'); //handles updates
 var isDev = require("electron-is-dev")
 
 ipcMain.on('app_version', (event) => {
-  event.sender.send('app_version', { version: app.getVersion() });
   console.log("The current version is recieved. " + app.getVersion());
   if (isDev) {
+    event.sender.send('app_version', { version: app.getVersion(), isDev: true });
     console.log("isdev") 
   } else {
+    event.sender.send('app_version', { version: app.getVersion() , isDev: false});
     console.log("Not dev")
     autoUpdater.logger = log
     autoUpdater.autoDownload = true;
@@ -126,4 +127,3 @@ ipcMain.on("logEnd", event => {
   try {loggingFile.end(); console.log("Finishes chat logs.");} catch(e) {console.log(e); event.reply("endedLog", e)}
   event.reply("endedLog", "The log has been ended.")
 })
-

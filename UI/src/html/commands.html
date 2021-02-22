@@ -35,7 +35,7 @@
                     <td><div id="addCommandName" contentEditable="true" data-text="ex. !follow"></div></td>
                  </tr>
                  <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
+                    <td data-toggle="tooltip" data-placement="top" title="Arguments">Arguments</td>
                     <td><div id="addCommandArguements" contentEditable="true" data-text="null"></div></td>
                  </tr>
                  <tr>
@@ -76,7 +76,7 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageAdd"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
            <button class="btn btn-outline-primary" onclick="checkNewCommand()" id="addCommandButtonFinish">Add</button>
         </div>
      </div>
@@ -106,8 +106,8 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageEdit"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-success" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
         </div>
      </div>
   </div>
@@ -132,8 +132,8 @@
         <!--Footer-->
         <div class="modal-footer">
            <p id="errorMessageDelete"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="checkRemoveCommand()">Remove</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+           <button class="btn btn-outline-danger" onclick="checkRemoveCommand()">Remove</button>
         </div>
      </div>
   </div>
@@ -157,6 +157,7 @@
         <ul>
            <li>$target : The first word after the command. ex. !so Mytho : Go follow Mytho at glimesh.tv/Mytho</li>
            <li>$user : The user who said the command</li>
+           <li>$watchtime : The amount of watchtime of the user in minutes</li>
            <li>$cmdcount : The number of times the command has been used.</li>
            <li>$advice : Returns random advice.</li>
            <li>$dadjoke : Returns a dad joke. These may be longer than the message limit.</li>
@@ -165,7 +166,7 @@
         <!--Footer-->
         <div class="modal-footer">
            <p>Need more info? View the Glimboi Tutorials!</p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
         </div>
      </div>
   </div>
@@ -194,7 +195,7 @@
         <!--Footer-->
         <div class="modal-footer">
            <p>Need more info? View the Glimboi Tutorials!</p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
         </div>
      </div>
   </div>

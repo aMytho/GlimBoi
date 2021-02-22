@@ -3,6 +3,18 @@ var raffleUsers = []; // array of users in the raffle. cleared on raffle end
 var raffleTimer = {} // 1 minute timer for the raffle. Contains functions for controlling raffles.
 
 /**
+ * 
+ */
+var pollHandle = {
+    question: "",
+    options: [],
+    responses: [],
+    results: {},
+    users: []
+};
+
+
+/**
  * Event Handler. Inputs the event and does the required action with the other paramaters. This allows multiple events to be run at the same time.
  * @param {string} event 
  * @param {string} user 
@@ -14,6 +26,21 @@ function handleEvent(event, user, message) {
             if (message.startsWith('!enter')) {
                 addUserRaffle(user)
             }
+            break;
+        case "poll":
+            if (message.startsWith('!vote') || message.startsWith("!v")) {
+                message = message.split(" ");
+                if (message[1] == null || message[1] == undefined || message[1] == "") {
+                    ChatHandle.filterMessage("@" + user + ", Please respond with a number indicating your response. ex. !vote 1, !v 1", "glimboi");
+                } else if (!pollHandle.users.includes(user)) {
+                    // Note that the number is a string, since we only subtract it nothing breaks.
+                    pollHandle.users.push(user);
+                    pollHandle.responses.push(message[1]-1);
+                } else {
+                    console.log("The user " + user + " has already entered the poll or tried a conflicting command.");
+                }
+            }
+
             break;
     
         default:
@@ -78,4 +105,48 @@ function stopRaffle() {
 }
 
 
-module.exports = {addUserRaffle, getRaffleUsers, handleEvent, startRaffle, stopRaffle}
+async function startPoll(poll, time) {
+    return new Promise(resolve => {
+        if (poll == "" || poll == undefined || poll == null) {
+            resolve("NOPOLL");
+            return;
+        } else {
+            console.log(poll)
+            pollHandle.options = poll.options
+
+            ChatHandle.filterMessage("Poll Started! " + poll.user + " asks: " + poll.question, "glimboi");
+            setTimeout(() => {
+                var messageOptions = ""
+                for (let index = 0; index < poll.options.length; index++) {
+                    messageOptions = messageOptions.concat(`${index + 1}: ${poll.options[index]}, `)
+                }
+                ChatHandle.filterMessage("Choices: " + messageOptions + ". Respond with !vote NUMBER based on the option you choose.", "glimboi");
+            }, 1000);
+
+            setTimeout(() => {
+                console.log("Poll finished. Returning results.");
+                arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "poll"})
+                pollHandle.results = pollHandle.responses.reduce(function(obj, b) {
+                    obj[b] = ++obj[b] || 1;
+                    return obj;
+                  }, {});
+                var results = ""
+                console.log(pollHandle)
+                for (const key in pollHandle.results) {
+                    results = results.concat(`${pollHandle.options[key]}: ${pollHandle.results[key]}, `)
+                }
+                console.log(results);
+                ChatHandle.filterMessage("The results are in: " + results.slice(0, -1), "glimboi")
+            }, time);
+        }
+        pollHandle.cancel = function() {
+            resolve({status:"CANCELLED", reson:"MANUAL CANCELLATION"})
+        }
+    })
+}
+
+function stopPoll() {
+    pollHandle.cancel()
+}
+
+module.exports = {addUserRaffle, getRaffleUsers, handleEvent, startRaffle, startPoll, stopPoll, stopRaffle}

@@ -1,4 +1,4 @@
-var userCount,pointCount,commandCount,quoteCount,introChart
+var userCount,pointCount,commandCount,quoteCount,introChart,pollChart
  function getBasicData() {
   var users = UserHandle.getAll().then( a =>  {
     userCount = a.length;
@@ -57,4 +57,8 @@ var userCount,pointCount,commandCount,quoteCount,introChart
       })
     })
   })
+}
+
+function loadPollUsers() {
+  
 }

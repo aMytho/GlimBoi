@@ -118,8 +118,8 @@ function editCommandModal(arrayOfCommands, i) {
 <!--Footer-->
 <div class="modal-footer">
    <p id="errorMessageEdit"></p>
-   <button type="button" class="btn btn-outline-primary" onclick="editReset()" data-dismiss="modal">Close</button>
-   <button class="btn btn-outline-primary" onclick="editCommand()" id="editCommandButtonFinish">Edit</button>
+   <button type="button" class="btn btn-outline-warning" onclick="editReset()" data-dismiss="modal">Close</button>
+   <button class="btn btn-outline-success" onclick="editCommand()" id="editCommandButtonFinish">Edit</button>
 </div>
    `
 }
@@ -143,8 +143,8 @@ function editCommandModalEntry() {
 <!--Footer-->
 <div class="modal-footer">
    <p id="errorMessageEdit"></p>
-   <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-   <button class="btn btn-outline-primary" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
+   <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+   <button class="btn btn-outline-success" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
 </div>`
 }
 
@@ -167,7 +167,7 @@ function editCommandReset() {
 <!--Footer-->
 <div class="modal-footer">
    <p id="errorMessageEdit"></p>
-   <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-   <button class="btn btn-outline-primary" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
+   <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+   <button class="btn btn-outline-success" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
 </div>`
 }

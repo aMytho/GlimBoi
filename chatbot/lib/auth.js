@@ -74,6 +74,7 @@ function startAuthServer(authScheme) {
                               }, function(err, numReplaced) {
                                   console.log("Got the tokens, ready to connect to glimesh");
                                   // Everything is ready, they can join chat!
+                                  updateStatus(2)
                                   successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!");
                                   // success message tells the user info
                                   server.close() // Closes the server
@@ -159,6 +160,7 @@ async function refreshToken(refresh_token, client_id, client_secret) {
         token.expire = data.expires_in
         //Updates the database with the info
         authDB.update({}, { $set: { access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
+         updateStatus(2) // updates the status message
          console.log("Refreshed a token, ready to connect to chat!");
          resolve("SUCCESS")}) // Lets the orignal function know that everything worked
       } catch(e) {
@@ -187,17 +189,40 @@ async function updateID(client, secret) {
 }
 
 /**
- * Creates the document in auth.db . It will contain a client and secret ID.
+ * Creates the document in auth.db . It will contain a client and secret ID. Updates if data already exists (determined by previous query)
  * @param {string} client Client ID
  * @param {string} secret Secret ID
  * @async
  */
 async function createID(client, secret) {
+  console.log(client,secret)
   return new Promise(resolve => {
-    authDB.insert({clientID: client, secret: secret}, function (err, numReplaced) {
-      console.log("Created the auth IDs.");
-      resolve("UPDATEDID")
-    });
+    if (client == "" && secret !== "") {
+      authDB.update({}, {$set: {secret: secret}} , { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
+        console.log("Updated the Secret.");
+        resolve(affectedDocuments)
+        return
+      });
+    } else 
+      if (secret == "" && client !== "") {
+        authDB.update({}, {$set: {clientID: client}}, { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
+          console.log("Updated the client ID");
+          resolve(affectedDocuments)
+          return
+        });
+      } else
+      if (client.length > 2 && secret.length > 2) {
+        authDB.update({}, {$set: {clientID: client, secret: secret}}, { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
+          console.log("Updated the client ID");
+          resolve(affectedDocuments)
+          return
+        });
+      } else if (client == "" && secret == ""){
+        console.log("No auth info recieved. No changes to auth.db")
+        resolve("NOAUTH");
+        return
+      }
+    
    }) 
 }
 

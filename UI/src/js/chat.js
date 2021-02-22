@@ -1,5 +1,5 @@
 var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js");
-
+var isDev = false;
 
 
 function joinChat() {
@@ -33,19 +33,21 @@ function sendMessage() {
 }
 
 
-
-
-
-
 // This was a convient place for this, I need to move it later
 function checkForUpdate() {
     const version = document.getElementById('version');
     ipcRenderer.send('app_version');
     ipcRenderer.on('app_version', (event, arg) => {
       console.log("Recieved app_version with : " + arg.version)
-      ipcRenderer.removeAllListeners('app_version');
-      console.log("Removed all listeners for app_version.")
+      console.log("Removing all listeners for app_version.")
       version.innerText = 'Version ' + arg.version;
+      if (arg.isDev == true) {
+        isDev = true;
+        console.log("Glimboi is in dev mode. We will not request the token.")
+      } else {
+        console.log("GlimBoi is in production mode. We will request an access token. ")
+      }
+      ipcRenderer.removeAllListeners('app_version');
     });
     const notification = document.getElementById('notification');
     const message = document.getElementById('message');
@@ -78,7 +80,7 @@ ipcRenderer.on('update_downloaded', () => {
 
 function restartApp() {
   console.log("trying to restart the app for the update")
-ipcRenderer.send('restart_app');
+  ipcRenderer.send('restart_app');
 }
 
 function readyChat() {

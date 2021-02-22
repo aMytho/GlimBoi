@@ -313,6 +313,10 @@ async function replaceVariable(variable, arguements, user) {
       variableList[2] = getTime();
       break;
     case "$watchtime":
+      var watchTime = await UserHandle.findByUserName(user.username.toLowerCase())
+      if (watchTime == "ADDUSER") {variableList[3] = "(No user found)"} else {
+      variableList[3] = watchTime[0].watchTime
+      }
       break;
     case "$cmdcount":
       var count = await findCommand(arguements[0])
@@ -323,11 +327,11 @@ async function replaceVariable(variable, arguements, user) {
       variableList[5] = user    
       break;
     case "$advice":
-      var advice = await ApiHandle.getAdvice();
+      var advice = await ApiHandle.getAdvice().catch(reason => variableList[6] = 'Advice Error');
       variableList[6] = advice
       break;
     case "$dadjoke":
-      var joke = await ApiHandle.getDadJoke();
+      var joke = await ApiHandle.getDadJoke().catch(reason => variableList[7] = 'Joke Error');
       variableList[7] = joke
       break;
     default:
@@ -409,7 +413,7 @@ async function addCommandCount(command) {
  */
 function cooldownChange(cd) {
   cooldown = cd*1000;
-  console.log(cooldown)
+  console.log("Command cooldown is " + cooldown)
 }
 
 /**
