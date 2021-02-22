@@ -56,6 +56,7 @@ function handleEvent(event, user, message) {
 async function startRaffle(time) {
     return new Promise(resolve => {
         console.log("Starting Raffle");
+        ChatHandle.filterMessage("A raffle has begun! Type !enter to join the raffle. You have one minute remaining.")
         raffleTimer.timer = setTimeout(() => {
         arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "raffle"}) // removes from current events
           if (raffleUsers.length == 0) {

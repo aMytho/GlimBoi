@@ -50,7 +50,7 @@ function createWindow () { //make Win a window
     frame: false
   })
   win.loadFile(app.getAppPath() + '/UI/index.html');
-  win.setIcon('UI/Icons/icon.png');
+  win.setIcon('UI/Icons/icon.ico');
 }
 app.whenReady().then(createWindow)
 

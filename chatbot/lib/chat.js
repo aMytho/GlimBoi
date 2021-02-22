@@ -205,7 +205,6 @@ function connectToGlimesh(access_token, channelID) {
                   break;
                 case "!raffle":
                   startRaffle()
-                  glimboiMessage("Raffle started. Type !enter to join the raffle. You have one minute remaining.")
                   break;
                 case "!poll":
                   startPoll(userChat, null, null, messageChat);

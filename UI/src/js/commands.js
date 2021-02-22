@@ -296,14 +296,14 @@ function editCommand() {
   console.log("Checking if command is valid.");
   var commandData, commandPoints, commandUses, commandRank;
 
-  if ($("#editCommandData").html().length > 254) {
+  if (strip($("#editCommandData").html()).length > 254) {
     //max length is 255. - 1 for the 0. may be worng, idk
     console.log("its too long.");
     document.getElementById("editCommandData").classList.add("errorClass");
     document.getElementById("errorMessageEdit").innerHTML =
       "This message is too long.";
   } else {
-    commandData = $("#editCommandData").html();
+    commandData = strip($("#editCommandData").html());
     isvalid = isvalid + 1;
     try {
       document.getElementById("editCommandData").classList.remove("errorClass");

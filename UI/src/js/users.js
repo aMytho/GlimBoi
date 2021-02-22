@@ -328,7 +328,7 @@ function getPoints() {
       ];
       arrayOfPoints.push(pointValue)
     }
-    console.log(pointsTable.rows.length);
+    console.log(pointsTable.rows.length + " rows in the table");
     for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
           pointsTable.rows[i+1].cells[0].innerHTML = i
           if (arrayOfPoints[i] == undefined) {} else {

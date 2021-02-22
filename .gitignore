@@ -8,3 +8,4 @@ nodeglimeshAPI.MD
 electron-builder.yml
 dist/
 .vscode/
+.env

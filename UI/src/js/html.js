@@ -40,7 +40,7 @@ function addCommandModal() {
          <tr>
             <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
             <td id="addCommandRank">
-               <select name="cars" id="rankChoiceAdd">
+               <select name="cars" id="rankChoiceAdd" disabled>
                   <option value="Everyone">Everyone (Defualt)</option>
                   <option value="Moderator">Moderator</option>
                   <option value="Editor">Editor</option>

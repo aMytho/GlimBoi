@@ -139,7 +139,7 @@ function startPoll(user, message, GUI, stringMessage) {
         arrayOfEvents.push("poll");
         console.log(stringMessage);
         var questionEnd = stringMessage.indexOf("?");
-        EventHandle.startPoll({ question: "Favorite Glimdrop?", options: [':glimHype:', ':glimSmile:'], user: user }, 20000).then(data => {
+        EventHandle.startPoll({ question: "Favorite Glimdrop?", options: [':glimHype:', ':glimSmile:'], user: user }, 60000).then(data => {
             if (typeof data !== "object") {
                 console.log("The winner is " + data);
                 try {

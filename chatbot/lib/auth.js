@@ -35,7 +35,7 @@ function startAuthServer(authScheme) {
               console.log(queryObject.code) // the oauth code we submit for a token
               var code = queryObject.code // ^
               res.statusCode = 200 // 200 ok good amazing poggers
-              res.end('Auth completed. Requesting the access token. You can close this and retrun to GlimBoi.') // We display this to the user.
+              res.end('Auth completed. Requesting the access token. You can close this and return to GlimBoi.') // We display this to the user.
               console.log("Auth complete! Code: " + code + ' Requesting token.');
               console.log(code, client, secret);
               //Requests a token with the code and other info. Written to the database after. The token variable houses it for this session
@@ -221,8 +221,7 @@ async function createID(client, secret) {
         console.log("No auth info recieved. No changes to auth.db")
         resolve("NOAUTH");
         return
-      }
-    
+      }   
    }) 
 }
 
