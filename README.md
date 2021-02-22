@@ -30,3 +30,4 @@ GlimBoi has a basic GUI for interacting with the bot. You can create commands an
 ## Updates
 Windows can recieve automatic updates. Other platforms must manually update. You can download any version of the bot from the releases page. If the platform you want is not supported you can manually build the bot from the source code. Your platform must support Electron. 
 This is a work in progress.
+
