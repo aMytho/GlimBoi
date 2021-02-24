@@ -1,6 +1,43 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Help on</title><link>https://aMytho.github.io/GlimBoi/docs/help/</link><description>Recent content in Help on</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><lastBuildDate>Tue, 06 Oct 2020 08:49:15 +0000</lastBuildDate><atom:link href="https://aMytho.github.io/GlimBoi/docs/help/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Update</title><link>https://aMytho.github.io/GlimBoi/docs/help/how-to-update/</link><pubDate>Thu, 12 Nov 2020 13:26:54 +0100</pubDate><guid>https://aMytho.github.io/GlimBoi/docs/help/how-to-update/</guid><description>Windows Windows supports automatic updates. On lanch GlimBoi checks for a new update. It will be downloaded in the background and applied on closing. If something is not working properly you can download the next update manually on the releases page.
-Linux Linux does not support automatic updates. GlimBoi will try to notify you when a new update is released. You can go to the releases page to download the new version.</description></item><item><title>Troubleshooting</title><link>https://aMytho.github.io/GlimBoi/docs/help/troubleshooting/</link><pubDate>Thu, 12 Nov 2020 15:22:20 +0100</pubDate><guid>https://aMytho.github.io/GlimBoi/docs/help/troubleshooting/</guid><description>Restart Usually a simple restart fixes the problem. Reloading the bot may prove helpful.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Help on </title>
+    <link>https://aMytho.github.io/GlimBoi/docs/help/</link>
+    <description>Recent content in Help on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Tue, 06 Oct 2020 08:49:15 +0000</lastBuildDate><atom:link href="https://aMytho.github.io/GlimBoi/docs/help/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Update</title>
+      <link>https://aMytho.github.io/GlimBoi/docs/help/how-to-update/</link>
+      <pubDate>Thu, 12 Nov 2020 13:26:54 +0100</pubDate>
+      
+      <guid>https://aMytho.github.io/GlimBoi/docs/help/how-to-update/</guid>
+      <description>Windows Windows supports automatic updates. On lanch GlimBoi checks for a new update. It will be downloaded in the background and applied on closing. If something is not working properly you can download the next update manually on the releases page.
+Linux Linux does not support automatic updates. GlimBoi will try to notify you when a new update is released. You can go to the releases page to download the new version.</description>
+    </item>
+    
+    <item>
+      <title>Troubleshooting</title>
+      <link>https://aMytho.github.io/GlimBoi/docs/help/troubleshooting/</link>
+      <pubDate>Thu, 12 Nov 2020 15:22:20 +0100</pubDate>
+      
+      <guid>https://aMytho.github.io/GlimBoi/docs/help/troubleshooting/</guid>
+      <description>Restart Usually a simple restart fixes the problem. Reloading the bot may prove helpful.
 Why are commands not working? Ensure the cooldown is turned off or at a low rate. The cooldown applies to all commands, not just one command repeating. You must prefix the command with a ! . ex. !example.
-Ensure you don&amp;rsquo;t have two ! before the command. When you add new commands you can use one !</description></item><item><title>FAQ</title><link>https://aMytho.github.io/GlimBoi/docs/help/faq/</link><pubDate>Tue, 06 Oct 2020 08:49:31 +0000</pubDate><guid>https://aMytho.github.io/GlimBoi/docs/help/faq/</guid><description>How much does GlimBoi cost? GlimBoi is free and open source.
+Ensure you don&amp;rsquo;t have two ! before the command. When you add new commands you can use one !</description>
+    </item>
+    
+    <item>
+      <title>FAQ</title>
+      <link>https://aMytho.github.io/GlimBoi/docs/help/faq/</link>
+      <pubDate>Tue, 06 Oct 2020 08:49:31 +0000</pubDate>
+      
+      <guid>https://aMytho.github.io/GlimBoi/docs/help/faq/</guid>
+      <description>How much does GlimBoi cost? GlimBoi is free and open source.
 Can I run GlimBoi? GlimBoi can run on windows and linux devices. On average it uses about 100mb of RAM. The CPU usage will be very low.
-Why is my viewer not earning points/quotes/stats? You must add your viewers as users in the bot. Any viewer can add themselves by typing !user new NAME in chat. This allows the bot to store data about them.</description></item></channel></rss>
+Why is my viewer not earning points/quotes/stats? You must add your viewers as users in the bot. Any viewer can add themselves by typing !user new NAME in chat. This allows the bot to store data about them.</description>
+    </item>
+    
+  </channel>
+</rss>

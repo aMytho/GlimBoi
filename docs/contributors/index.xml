@@ -1,2 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Contributors on</title><link>https://aMytho.github.io/GlimBoi/contributors/</link><description>Recent content in Contributors on</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><lastBuildDate>Tue, 06 Oct 2020 08:50:29 +0000</lastBuildDate><atom:link href="https://aMytho.github.io/GlimBoi/contributors/index.xml" rel="self" type="application/rss+xml"/><item><title>Henk Verlinde</title><link>https://aMytho.github.io/GlimBoi/contributors/henk-verlinde/</link><pubDate>Tue, 06 Oct 2020 08:50:45 +0000</pubDate><guid>https://aMytho.github.io/GlimBoi/contributors/henk-verlinde/</guid><description>Creator of Hyas.
-@HenkVerlinde</description></item><item><title>Mytho</title><link>https://aMytho.github.io/GlimBoi/contributors/mytho/</link><pubDate>Tue, 06 Oct 2020 08:50:45 +0000</pubDate><guid>https://aMytho.github.io/GlimBoi/contributors/mytho/</guid><description>Creator of GlimBoi: @MythoGM - Glimesh - Discord: Mytho#1108</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Contributors on </title>
+    <link>https://aMytho.github.io/GlimBoi/contributors/</link>
+    <description>Recent content in Contributors on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Tue, 06 Oct 2020 08:50:29 +0000</lastBuildDate><atom:link href="https://aMytho.github.io/GlimBoi/contributors/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Henk Verlinde</title>
+      <link>https://aMytho.github.io/GlimBoi/contributors/henk-verlinde/</link>
+      <pubDate>Tue, 06 Oct 2020 08:50:45 +0000</pubDate>
+      
+      <guid>https://aMytho.github.io/GlimBoi/contributors/henk-verlinde/</guid>
+      <description>Creator of Hyas.
+@HenkVerlinde</description>
+    </item>
+    
+    <item>
+      <title>Mytho</title>
+      <link>https://aMytho.github.io/GlimBoi/contributors/mytho/</link>
+      <pubDate>Tue, 06 Oct 2020 08:50:45 +0000</pubDate>
+      
+      <guid>https://aMytho.github.io/GlimBoi/contributors/mytho/</guid>
+      <description>Creator of GlimBoi: @MythoGM - Glimesh - Discord: Mytho#1108</description>
+    </item>
+    
+  </channel>
+</rss>
