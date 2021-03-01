@@ -1,13 +1,15 @@
-<div class="row">
-  <div class="col-1 mt-3 mx-auto">
-     <a class="btn btn-primary btn-block" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
-     <a class="btn btn-success mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
-     <a class="btn btn-danger mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
-     <a class="btn btn-info mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalVar">View Variables</a>
-     <a class="btn btn-info mt-2 btn-block" href="#" data-toggle="modal" data-target="#modalCMD">GlimBoi Commands</a>
+<div class="row mx-1">
+  <div class="col-lg-2 col-12 row mt-3 mx-auto" id="command-btn-panel">
+      <div class="btn-group-vertical d-inline-block row mx-auto justify-content-md-center">
+        <a class="offset-lg-0 offset-1 col-lg-12 col-2 btn btn-primary mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
+        <a class="col-lg-12 col-2 btn btn-success mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
+        <a class="col-lg-12 col-2 btn btn-danger mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
+        <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalVar">View Variables</a>
+        <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalClg">GlimBoi Commands</a>
+      </div>
   </div>
-  <div class="col-10 glimPanel whiteText mt-3 mx-auto">
-     <table id="example" class="display table table-striped" style="width:100%">
+  <div class="col-lg-10 mx-lg-0 col-11 mx-auto glimPanel whiteText mt-3 pt-3 overflow-auto w-100">
+     <table id="example" class="display table w-100">
      </table>
   </div>
 </div>
@@ -202,3 +204,4 @@
   </div>
 </div>
 <!-- Modal: modalCart -->
+
