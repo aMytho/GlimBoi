@@ -1,3 +1,4 @@
+// This file reads all data and displays it in a chart. Chart is shown on start page. This is only used for the start page.
 var userCount,pointCount,commandCount,quoteCount,introChart,pollChart
  function getBasicData() {
   var users = UserHandle.getAll().then( a =>  {
@@ -57,8 +58,4 @@ var userCount,pointCount,commandCount,quoteCount,introChart,pollChart
       })
     })
   })
-}
-
-function loadPollUsers() {
-  
 }

@@ -18,10 +18,10 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
        <p id="editUserMessage" class="errorMessage"></p>
    </div>
    </div>`;
-   document.getElementById("userEditSearchButton").innerText = "Search";
-   document.getElementById("userEditSearchButton").setAttribute('onclick', "userSearch(document.getElementById('userEditSearch').value)")
-   })
-   $('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
+    document.getElementById("userEditSearchButton").innerText = "Search";
+    document.getElementById("userEditSearchButton").setAttribute('onclick', "userSearch(document.getElementById('userEditSearch').value)")
+  })
+  $('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
     console.log("Resetting quote removal modal.");
     document.getElementById("modalRemoveQuote").innerHTML = `<div class="modal-body" id="modalRemoveQuote">
     <div class="icon-input-container">
@@ -29,53 +29,53 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
             <p id="editQuoteError" class="errorMessage"></p>
         </div>
    </div>`;
-   document.getElementById("userRemoveQuoteSearch").innerText = "Search";
-   document.getElementById("userRemoveQuoteSearch").setAttribute('onclick', "quoteSearch(document.getElementById('userQuoteSearch').value)")
-   })
+    document.getElementById("userRemoveQuoteSearch").innerText = "Search";
+    document.getElementById("userRemoveQuoteSearch").setAttribute('onclick', "quoteSearch(document.getElementById('userQuoteSearch').value)")
+  })
   if (usersActive == false) {
     console.log("Loading users.");
     var x = UserHandle.getAll() //gets all users
-    x.then(function(data) { //then...
-        for (const property in data) {
-            var tempArray = [
-              `${data[`${property}`].userName}`,
-              `${data[`${property}`].points}`,
-              `${data[`${property}`].watchTime}`,
-              `${data[`${property}`].team}`,
-              `${data[`${property}`].role}`,
-              `${data[`${property}`].picture}`,
-              data[`${property}`].quotes,
-            ];
-            arrayofUsers.push(tempArray); //Pushes the commands to a variable which we use to build the table
-          }
-          console.log(arrayofUsers)
-          $(document).ready(function () {
-            loadUserTable()
-            //makes clicking the button in the quotes column show the quotes under the table
-            $('#userTable tbody').on( 'click', 'button', function () {
-              var data = userTable.row( $(this).parents('tr') ).data();
-              //alert( data[0] +"'s salary is: "+ data[ 5 ] ); Keep this as an example
-              console.log('Build table with ' + data)
-              makeList(data) //Builds the list of the users quotes.
-            });
-            $('#userTable tbody').on( 'click', 'a', function () {
-              var data = userTable.row( $(this).parents('tr') ).data();
-              loadLink("glimesh.tv/" + data[0])
-            });
-          });
-          usersActive = true; //ensures we don't run this again.
+    x.then(function (data) { //then...
+      for (const property in data) {
+        var tempArray = [
+          `${data[`${property}`].userName}`,
+          `${data[`${property}`].points}`,
+          `${data[`${property}`].watchTime}`,
+          `${data[`${property}`].team}`,
+          `${data[`${property}`].role}`,
+          `${data[`${property}`].picture}`,
+          data[`${property}`].quotes,
+        ];
+        arrayofUsers.push(tempArray); //Pushes the commands to a variable which we use to build the table
+      }
+      console.log(arrayofUsers)
+      $(document).ready(function () {
+        loadUserTable()
+        //makes clicking the button in the quotes column show the quotes under the table
+        $('#userTable tbody').on('click', 'button', function () {
+          var data = userTable.row($(this).parents('tr')).data();
+          //alert( data[0] +"'s salary is: "+ data[ 5 ] ); Keep this as an example
+          console.log('Build table with ' + data)
+          makeList(data) //Builds the list of the users quotes.
+        });
+        $('#userTable tbody').on('click', 'a', function () {
+          var data = userTable.row($(this).parents('tr')).data();
+          loadLink("glimesh.tv/" + data[0])
+        });
+      });
+      usersActive = true; //ensures we don't run this again.
     })
   } else {
     $(document).ready(function () {
       loadUserTable()
       //Same as above
-      $('#userTable tbody').on( 'click', 'button', function () {
-        var data = userTable.row( $(this).parents('tr') ).data();
+      $('#userTable tbody').on('click', 'button', function () {
+        var data = userTable.row($(this).parents('tr')).data();
         console.log('Building table with ' + data)
         makeList(data)
       });
-      $('#userTable tbody').on( 'click', 'a', function () {
-        var data = userTable.row( $(this).parents('tr') ).data();
+      $('#userTable tbody').on('click', 'a', function () {
+        var data = userTable.row($(this).parents('tr')).data();
         loadLink("glimesh.tv/" + data[0])
       });
     });
@@ -86,7 +86,7 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
   console.log("Loading Quotes.");
   var quotes = QuoteHandle.getAll(); //Gets all thq quotes
   var allQuotes = [];
-  quotes.then(function(data) {
+  quotes.then(function (data) {
     console.log("Quote query complete.");
     for (const property in data) { //For every quote we make a temp array and push its array to allQuotes. It is wiped when the function ends.
       var tempArray = [
@@ -98,25 +98,25 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
     //This section shows the quotes in a list under the table.
     document.getElementsByClassName('userList')[0].innerHTML = ""
     let listContainer = document.createElement('div'),
-    listElement = document.createElement('ul'),
-    // Set up a loop that goes through the items in listItems one at a time
-    numberOfListItems = allQuotes.length,
-    listItem,
-    i;
-  
+      listElement = document.createElement('ul'),
+      // Set up a loop that goes through the items in listItems one at a time
+      numberOfListItems = allQuotes.length,
+      listItem,
+      i;
+
     // Add it to the page
     document.getElementsByClassName('userList')[0].appendChild(listContainer);
     listContainer.appendChild(listElement);
-  
+
     for (i = 0; i < numberOfListItems; ++i) {
-        // create an item for each one
-        listItem = document.createElement('li');
-  
-        // Add the item text
-        listItem.innerHTML = `${allQuotes[i][0]}: ${allQuotes[i][1]}`;
-  
-        // Add listItem to the listElement
-        listElement.appendChild(listItem);
+      // create an item for each one
+      listItem = document.createElement('li');
+
+      // Add the item text
+      listItem.innerHTML = `${allQuotes[i][0]}: ${allQuotes[i][1]}`;
+
+      // Add listItem to the listElement
+      listElement.appendChild(listItem);
     }
   })
 }
@@ -145,7 +145,7 @@ function quoteSearch(user) {
        <p id="editUserMessage" class="errorMessage"></p>
    </div>
       `
-      document.getElementsByClassName('removeQuoteList')[0].innerHTML = ""
+    document.getElementsByClassName('removeQuoteList')[0].innerHTML = ""
     let listContainer = document.createElement('div'),
     listElement = document.createElement('ul'),
     // Set up a loop that goes through the items in listItems one at a time
@@ -263,6 +263,7 @@ function removeUser() { //removes the user
   })
 }
 
+// Removes the user from a table. This only affects the table and arrayofusers variable.
 function removeUserFromTable(deletedUser) {
   for (let i = 0; i < arrayofUsers.length; i++) {
     if (arrayofUsers[i][0] == deletedUser) {
@@ -314,9 +315,9 @@ var arrayOfPoints = [];
 var pointsTable;
 function getPoints() {
   arrayOfPoints = []
-    document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
-    document.getElementById("EarningPoints").innerHTML = settings.Points.accumalation;
-    document.getElementById("pointName").innerHTML = settings.Points.name
+  document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
+  document.getElementById("EarningPoints").innerHTML = settings.Points.accumalation;
+  document.getElementById("pointName").innerHTML = settings.Points.name
   var points = UserHandle.getTopPoints().then(data => {
     console.log(data);
     pointsTable = document.getElementById("pointsTable");
@@ -330,12 +331,12 @@ function getPoints() {
     }
     console.log(pointsTable.rows.length + " rows in the table");
     for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
-          pointsTable.rows[i+1].cells[0].innerHTML = i
-          if (arrayOfPoints[i] == undefined) {} else {
-          pointsTable.rows[i+1].cells[1].innerHTML = arrayOfPoints[i][0]
-          pointsTable.rows[i+1].cells[2].innerHTML = arrayOfPoints[i][1]
-          pointsTable.rows[i+1].cells[3].innerHTML = arrayOfPoints[i][2]
-          }
+      pointsTable.rows[i + 1].cells[0].innerHTML = i
+      if (arrayOfPoints[i] == undefined) { } else {
+        pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0]
+        pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1]
+        pointsTable.rows[i + 1].cells[3].innerHTML = arrayOfPoints[i][2]
+      }
     }
   })
 }
@@ -346,8 +347,9 @@ function userSearch(user) {
     if (data == "ADDUSER") {
       document.getElementById("editUserMessage").innerText = "No user was found with that name.";
       setTimeout(() => {
-      document.getElementById("editUserMessage").innerText = "";
-    }, 3500);} else {
+        document.getElementById("editUserMessage").innerText = "";
+      }, 3500);
+    } else {
       console.log("Editing user");
       document.getElementById("modalEditBody").innerHTML = `
                    <table class="table table-hover">
@@ -460,8 +462,8 @@ function loadUserTable() {
   });
 }
 
+//adds it to the table
 function addUserTable(data) {
-  //adds it to the table
   userTable.row.add([
     data.userName,
     data.points,

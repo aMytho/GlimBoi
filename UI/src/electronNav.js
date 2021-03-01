@@ -11,7 +11,6 @@ function changeNavHighlight(highlight) { //Removes the old and highlights the ne
 }
 
 window.onload = function() {
-
   document.getElementById("close").addEventListener("click", function(e) { //Closes the App.
     ipcRenderer.send("pleaseClose");
   });

@@ -2,8 +2,6 @@
 
 A chatbot for Glimesh.tv
 
-> The bot is not yet ready for release. It will be released in beta shortly before Glimesh Launches.
-
 ## Setup
 Download the bot from the [releases](https://github.com/aMytho/GlimBoi/releases) page.
 Run the installer for your platform. Windows users can use the .exe file. Linux users can use the .deb file. Other platforms can build the app manually or use wine.

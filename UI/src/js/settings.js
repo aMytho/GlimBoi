@@ -1,5 +1,5 @@
 var ApiHandle = require(appData[0] + "/chatbot/lib/API.js");
-ApiHandle.updateID()
+ApiHandle.updateID(); // Gives the api file auth information
 var fs = require("fs");
 var settings = {}
 var updatedSettings = {
@@ -14,7 +14,7 @@ var updatedSettings = {
         cooldown: 0,
         Prefix: "!",
         Error: true,
-        repeatDelay: 10, 
+        repeatDelay: 10,
         repeatSpamProtection: 15
     },
     chat: {
@@ -25,50 +25,52 @@ var updatedSettings = {
 // removes the disable class on the navbar
 function unlockBot() {
     try {
-    document.getElementById("CommandLink").classList.remove("disabled")
-    document.getElementById("PointsLink").classList.remove("disabled")
-    document.getElementById("UsersLink").classList.remove("disabled")
-    document.getElementById("SettingsLink").classList.remove("disabled")
-    document.getElementById("ChatLink").classList.remove("disabled")
-    document.getElementById("EventsLink").classList.remove("disabled")
+        document.getElementById("CommandLink").classList.remove("disabled")
+        document.getElementById("PointsLink").classList.remove("disabled")
+        document.getElementById("UsersLink").classList.remove("disabled")
+        document.getElementById("SettingsLink").classList.remove("disabled")
+        document.getElementById("ChatLink").classList.remove("disabled")
+        document.getElementById("EventsLink").classList.remove("disabled")
 
-    } catch(e) {
+    } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
     }
 }
+
+
 // Ran at startup and to get data for settings page
 function getSettings() {
     try { // Check if the file exists.
-    var raw = fs.readFileSync(appData[1] + '/data/settings.json');
-    settings = JSON.parse(raw)
-    } catch(e) { // if not create the file
+        var raw = fs.readFileSync(appData[1] + '/data/settings.json');
+        settings = JSON.parse(raw)
+    } catch (e) { // if not create the file
         console.log("no settings file exists, creating it")
         var dataTemplate = JSON.stringify({
-                Points: {
-                    enabled: true,
-                    name: "Points",
-                    StartingAmount: 0,
-                    accumalation: 15
-                },
-                Commands: {
-                    enabled: true,
-                    cooldown: 0,
-                    Prefix: "!",
-                    Error: true,
-                    repeatDelay: 10, 
-                    repeatSpamProtection: 15
-                },
-                chat: {
-                    logging: false
-                }
-            })
-            try {
-        fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time the bot runs.
-            } catch(e) {
-                fs.mkdirSync(appData[1] + '/data'); // Makes the folder
-                fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes the file
+            Points: {
+                enabled: true,
+                name: "Points",
+                StartingAmount: 0,
+                accumalation: 15
+            },
+            Commands: {
+                enabled: true,
+                cooldown: 0,
+                Prefix: "!",
+                Error: true,
+                repeatDelay: 10,
+                repeatSpamProtection: 15
+            },
+            chat: {
+                logging: false
             }
+        })
+        try {
+            fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time the bot runs.
+        } catch (e) {
+            fs.mkdirSync(appData[1] + '/data'); // Makes the folder
+            fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes the file
+        }
         // for now we use the settings variable
         settings = {
             Points: {
@@ -82,7 +84,7 @@ function getSettings() {
                 cooldown: 0,
                 Prefix: "!",
                 Error: true,
-                repeatDelay: 10, 
+                repeatDelay: 10,
                 repeatSpamProtection: 15
             },
             chat: {
@@ -104,68 +106,67 @@ function showSettings() {
     slider.value = settings.Points.StartingAmount
     var output = document.getElementById("initialValueOutput");
     output.innerHTML = slider.value;
-    slider.oninput = function() {
-    output.innerHTML = this.value;
+    slider.oninput = function () {
+        output.innerHTML = this.value;
     }
     document.getElementById("pointsNewName").value = settings.Points.name
     var rateSlider = document.getElementById("rateValueSlider");
     rateSlider.value = settings.Points.accumalation
     var rateOutput = document.getElementById("rateValueOutput");
     rateOutput.innerHTML = rateSlider.value;
-    rateSlider.oninput = function() {
-    rateOutput.innerHTML = this.value;
+    rateSlider.oninput = function () {
+        rateOutput.innerHTML = this.value;
     }
     // Chat - - -
     var loggingswitch = document.getElementById("loggingEnabled")
     if (settings.chat.logging == true) {
-    loggingswitch.toggleAttribute("checked");
+        loggingswitch.toggleAttribute("checked");
     }
     // Commands - - -
     switch (settings.Commands.cooldown) {
         case 0:
             document.getElementById("cdNone").toggleAttribute("selected");
             break;
-            case 30:
+        case 30:
             document.getElementById("cd30").toggleAttribute("selected");
             break;
-            case 60:
+        case 60:
             document.getElementById("cd60").toggleAttribute("selected");
             break;
-            case 180:
+        case 180:
             document.getElementById("cd180").toggleAttribute("selected");
             break;
-            case 300:
+        case 300:
             document.getElementById("cd300").toggleAttribute("selected");
             break;
         default:
             break;
     }
-        // repeat handlers
-        var repeatDelay = document.getElementById("repeatDelaySlider");
-        repeatDelay.value = settings.Commands.repeatDelay;
-        var repeatDelayValue = document.getElementById("repeatDelayValue")
-        repeatDelayValue.innerHTML = repeatDelay.value;
-        repeatDelay.oninput = function() {
+    // repeat handlers
+    var repeatDelay = document.getElementById("repeatDelaySlider");
+    repeatDelay.value = settings.Commands.repeatDelay;
+    var repeatDelayValue = document.getElementById("repeatDelayValue");
+    repeatDelayValue.innerHTML = repeatDelay.value;
+    repeatDelay.oninput = function () {
         repeatDelayValue.innerHTML = this.value
-        }
-        switch (settings.Commands.repeatSpamProtection) {
-            case 5:
-                    document.getElementById("rp5").toggleAttribute("selected")
-                break;
-                case 15:
-                    document.getElementById("rp15").toggleAttribute("selected")
-                break;
-                case 30:
-                    document.getElementById("rp30").toggleAttribute("selected")
-                break;
-                case 60:
-                    document.getElementById("rp60").toggleAttribute("selected")
-                break;
-            default:
-                break;
-        }
-
     }
+    switch (settings.Commands.repeatSpamProtection) {
+        case 5:
+            document.getElementById("rp5").toggleAttribute("selected")
+            break;
+        case 15:
+            document.getElementById("rp15").toggleAttribute("selected")
+            break;
+        case 30:
+            document.getElementById("rp30").toggleAttribute("selected")
+            break;
+        case 60:
+            document.getElementById("rp60").toggleAttribute("selected")
+            break;
+        default:
+            break;
+    }
+}
     
 
 
@@ -178,16 +179,16 @@ function saveSettings() {
             case "None (default)":
                 return 0
                 break;
-                case "30 seconds":
+            case "30 seconds":
                 return 30
                 break;
-                case "1 Minute":
+            case "1 Minute":
                 return 60
                 break;
-                case "3 Minutes":
+            case "3 Minutes":
                 return 180
                 break;
-                case "5 Minutes":
+            case "5 Minutes":
                 return 300
                 break;
         }
@@ -198,13 +199,13 @@ function saveSettings() {
             case "5 (not recommended)":
                 return 5
                 break;
-                case "15 (default)":
+            case "15 (default)":
                 return 15
                 break;
-                case "30":
+            case "30":
                 return 30
                 break;
-                case "60":
+            case "60":
                 return 60
                 break;
         }
@@ -221,7 +222,7 @@ function saveSettings() {
             cooldown: getCooldown(),
             Prefix: "!",
             Error: true,
-            repeatDelay: Number(document.getElementById("repeatDelayValue").innerText), 
+            repeatDelay: Number(document.getElementById("repeatDelayValue").innerText),
             repeatSpamProtection: getRepeatProtection()
         },
         chat: {
@@ -229,7 +230,7 @@ function saveSettings() {
         }
     }
     console.log(settings);
-    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function() {})
+    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { })
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")
 }
@@ -248,14 +249,14 @@ function resetSettings() {
             cooldown: 0,
             Prefix: "!",
             Error: true,
-            repeatDelay: 10, 
+            repeatDelay: 10,
             repeatSpamProtection: 15
         },
         chat: {
             logging: false
         }
     }
-    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function() {});
+    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
     showSettings() // shows the sldiers as the normal values.
     updateSettings()
     successMessage("Settings Reset", "Your settings have been set to their original values.")

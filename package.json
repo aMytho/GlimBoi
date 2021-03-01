@@ -14,12 +14,6 @@
     "win": {
       "icon": "UI/Icon/icon.png"
     },
-    "publish": {
-      "provider": "github",
-      "vPrefixedTagName": true,
-      "private": false,
-      "protocol": "https"
-    },
     "nsis": {
       "oneClick": false,
       "installerIcon": "UI/Icons/icon.ico",

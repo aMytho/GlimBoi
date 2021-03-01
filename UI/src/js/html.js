@@ -41,7 +41,7 @@ function addCommandModal() {
             <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
             <td id="addCommandRank">
                <select name="cars" id="rankChoiceAdd" disabled>
-                  <option value="Everyone">Everyone (Defualt)</option>
+                  <option value="Everyone">Everyone (Default)</option>
                   <option value="Moderator">Moderator</option>
                   <option value="Editor">Editor</option>
                   <option value="Streamer">Streamer</option>
@@ -52,7 +52,7 @@ function addCommandModal() {
             <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
             <td id="commandRepeat">
                <select name="repeatableCommand" id="commandRepeatableChoice">
-                  <option value="false">Disabled (Defualt)</option>
+                  <option value="false">Disabled (Default)</option>
                   <option value="true">Enabled</option>
                </select>
             </td>
@@ -96,7 +96,7 @@ function editCommandModal(arrayOfCommands, i) {
             <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
             <td id="editCommandRank">
                <select name="cars" id="rankChoiceEdit" disabled>
-                  <option value="Everyone">Everyone (Defualt)</option>
+                  <option value="Everyone">Everyone (Default)</option>
                   <option value="Moderator">Moderator</option>
                   <option value="Editor">Editor</option>
                   <option value="Streamer">Streamer</option>
@@ -107,7 +107,7 @@ function editCommandModal(arrayOfCommands, i) {
             <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
             <td id="commandRepeat">
                <select name="repeatableCommand" id="commandRepeatableChoiceEdit">
-                  <option value="false">Disabled (Defualt)</option>
+                  <option value="false">Disabled (Default)</option>
                   <option value="true">Enabled</option>
                </select>
             </td>

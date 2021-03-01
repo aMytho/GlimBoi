@@ -32,14 +32,15 @@ function rememberID(firstRun) { // checks if an id has been entered for auth
       document.getElementById("secretID").setAttribute("placeholder", "ID Saved!")
       document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
       document.getElementById("saveAuth").innerHTML = "Edit Auth";
+      if (refreshed !== true) {
       updateStatus(1);
+      }
       if (firstRun) {
       if (data[0].access_token.length > 5 && refreshed == false && isDev == false) { // They have a token as well as the other info, we need to refresh it.
         console.log("They alread have an access token, we will begin refreshing it.");
         document.getElementById("joinChannelBOT").removeAttribute("disabled");
         AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(refresh => {
           if (refresh == "SUCCESS") {
-            refreshed = true;
             document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. ";
             successMessage(refresh, "Auth has been refreshed. Ready to join chat.")
           } else {

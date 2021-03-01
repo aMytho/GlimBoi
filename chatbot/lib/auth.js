@@ -162,6 +162,7 @@ async function refreshToken(refresh_token, client_id, client_secret) {
         authDB.update({}, { $set: { access_token: data.access_token, refresh_token: data.refresh_token, created_at: data.created_at, expire: data.expires_in } }, { multi: true }, function (err, numReplaced) {
          updateStatus(2) // updates the status message
          console.log("Refreshed a token, ready to connect to chat!");
+         refreshed = true;
          resolve("SUCCESS")}) // Lets the orignal function know that everything worked
       } catch(e) {
         console.log(e);

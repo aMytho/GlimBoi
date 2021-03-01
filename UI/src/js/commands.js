@@ -392,6 +392,7 @@ function editReset() {
   document.getElementById("editModal").innerHTML = editCommandReset()
 }
 
+// Adds a command to the table. 
 function addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank) {
   table.row.add([commandName, "null", commandData, commandUses, commandPoints, commandRank]);
   var newcommand = [`${commandName}`, null, `${commandData}`, `${commandUses}`, `${commandPoints}`, `${commandRank}`];
@@ -399,6 +400,10 @@ function addCommandTable(commandName, commandData, commandUses, commandPoints, c
   table.draw(); //Show changes
 }
 
+/**
+ * Removes any HTML/CSS that is invisible to the user.
+ * @param {string} html All the command data
+ */
 function strip(html){
   let doc = new DOMParser().parseFromString(html, 'text/html');
   return doc.body.textContent || "";
