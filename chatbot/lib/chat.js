@@ -130,7 +130,6 @@ function connectToGlimesh(access_token, channelID) {
       } else {
         //Its probably a chat message
         try {
-          console.log(chatMessage)
           if (chatMessage[4].result.data !== undefined) {
             var userChat = chatMessage[4].result.data.chatMessage.user.username;
             var messageChat = chatMessage[4].result.data.chatMessage.message;
@@ -209,6 +208,9 @@ function connectToGlimesh(access_token, channelID) {
                 case "!poll":
                   startPoll(userChat, null, null, messageChat);
                   break;
+                case "!glimrealm":
+                  openGlimRealm(userChat.toLowerCase())
+                  break;
                 case "!user":
                   switch (message[1]) {
                     case "new":
@@ -233,7 +235,7 @@ function connectToGlimesh(access_token, channelID) {
               logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl)
             }
             catch (e3) {
-              console.log(e3)
+              
             }
             // Add a user message counter if it isn't the bot
             if (userChat !== botname) { recentUserMessages++ }
@@ -378,25 +380,27 @@ function test() {
 }
 
 /**
- * 
+ * Logs the message in the UI. Send a message to the main process to log the file if enabled.
  * @param {string} user The user who said the message
  * @param {string} message The message
  * @param {string} avatar The avatar URL
  */
 function logMessage(user, message, avatar) {
-  // We prepend this on the list of chat messages.
-  $("#chatList").prepend(`
-    <li class="left clearfix admin_chat">
-                     <div class="chat-body1 clearfix testing">
-                        <span class="chat-img1 pull-left">
-                           <img src="${avatar}" alt="User Avatar" class="img-circle">
+  $("#chatList").append(`
+    <li class="left clearfix admin_chat" name='${user}' oncontextmenu='testingStuff(event)'>
+                     <div class="chat-body1 clearfix testing" name='${user}'>
+                        <span class="chat-img1 pull-left" name='${user}'>
+                           <img src="${avatar}" alt="User Avatar" class="img-circle" name='${user}'>
                         </span>
-                        <p><span id="chatUser">${user}: </span> ${message}</p>
+                        <p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
                         <!--<div class="whiteText pull-left">09:40PM</div> -->
                         </div>
                   </li>
                   `
   );
+  var scroll = document.getElementById("chatContainer")
+  scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
+
   if (logging == true) {
   ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
   }

@@ -39,6 +39,14 @@
           <h3 class="whiteText text-center" id="fasStar"><i class="fas fa-star"></i></span> 0</h3>
        </div>
      </div>
+     <div class="row mt-1">
+        <div class="col text-center">
+         <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
+         <button class="btn btn-info mt-2" type="submit" id="ComingSoon" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
+         <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
+         <button class="btn btn-info mt-2" type="submit" id="ComingSoon" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
+        </div>
+     </div>
    </div>
    </div>
  </div>
@@ -60,15 +68,15 @@
                 </div>
                 </div>
                 <!--chat-->
-                <div class="chat_area">
-                <ul class="list-unstyled" id="chatList">
+                <div class="chat_area" id="chatContainer">
+                <ul class="list-unstyled chatList" id="chatList">
                
-                   <li class="left clearfix admin_chat">
-                      <div class="chat-body1 clearfix testing" oncontextmenu="testingStuff(event)">
-                         <span class="chat-img1 pull-left">
-                            <img src="Mytho.png" alt="User Avatar" class="img-circle">
+                   <li class="left clearfix admin_chat" name='mytho'>
+                      <div class="chat-body1 clearfix testing" oncontextmenu="testingStuff(event)" name='mytho'>
+                         <span class="chat-img1 pull-left" name='mytho'>
+                            <img src="Mytho.png" alt="User Avatar" class="img-circle" name='mytho'>
                          </span>
-                         <p><span id="chatUser">Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
+                         <p name='mytho'><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
                          <!--<div class="whiteText pull-left">09:40PM</div> -->
                          </div>
                    </li>
@@ -99,7 +107,7 @@
                         <tr>
                           <th scope="col">User</th>
                           <th scope="col">Action</th>
-                          <th scope="col">Time</th>
+                          <th scope="col">Effect</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -170,7 +178,32 @@
  <!-- Modal: Which Chat -->
  
  <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
-   <a class="dropdown-item" href="#" style="color: aquamarine;">Add User</a>
-   <a class="dropdown-item" href="#" style="color: aquamarine;">Make Mod</a>
-   <a class="dropdown-item" href="#" style="color: aquamarine;">Add Quote</a>
+   <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
+   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>
+   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
  </div>
+
+  <!-- Modal: Moderate? -->
+  <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal"
+  aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content glimPanel whiteText" id="chatModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+           <h4 class="modal-title w-100" id="actionType">Action</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalChatBody">
+        <input type="text" class="form-control" placeholder="User" id="whichUser">
+        <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+           <p id="moderateMessage"></p>
+           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- Modal: Moderate -->

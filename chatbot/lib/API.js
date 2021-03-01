@@ -30,6 +30,13 @@ function updateID() {
   })
 }
 
+/**
+ * Returns the current channel the bot is in. 
+ */
+function getID() {
+  return channelID
+}
+
 
 /**
  * Returns a promise that contains the channel ID of the user we are about to join.
@@ -76,7 +83,7 @@ async function getUserID(user) {
     res.json().then((data) => {
       try {
         console.log("The ID of " + user + " is " + data.data.user.id)
-        resolve(data.data.user.id)
+        resolve(Number(data.data.user.id))
         } catch(e) {
           try {
             resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
@@ -177,6 +184,100 @@ async function getBotAccount() {
  return bot
  }
 
+/**
+ * Times out a user for a set duration.
+ * @param {string} type Short or Long 
+ * @param {number} channel Channel ID
+ * @param {number} user User ID 
+ */
+async function timeoutUser(type, channel, user) {
+  return new Promise(resolve => {
+    var body;
+    if (type == "short") {
+      body = `mutation { shortTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`
+    } else {
+      body = `mutation { longTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`
+    }
+    fetch("https://glimesh.tv/api", { method: "POST", body: body, headers: { Authorization: `bearer ${token}` }})
+   .then((res) => {
+     res.json().then((data) => {
+       try {
+         if (data.data.shortTimeoutUser !== null) {
+         resolve(data)
+         } else {
+          resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+         }
+         } catch(e) {
+           try {
+             resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+           } catch(e2) {
+             resolve(null)
+           }
+         }
+     });
+   })
+   .catch((err) => console.error(err));
+  })
+}
+
+/**
+ * Bans a user
+ * @param {number} channel The channel ID
+ * @param {number} user The user ID
+ */
+async function banUser(channel, user) {
+  return new Promise(resolve => {
+    fetch("https://glimesh.tv/api", { method: "POST", body: `mutation { banUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`, headers: { Authorization: `bearer ${token}` }})
+   .then((res) => {
+     res.json().then((data) => {
+       try {
+         if (data.data.banUser !== null) {
+         resolve(data)
+         } else {
+          resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+         }
+         } catch(e) {
+           try {
+             resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+           } catch(e2) {
+             resolve(null)
+           }
+         }
+     });
+   })
+   .catch((err) => console.error(err));
+  })
+}
+
+
+/**
+ * Unbans a user
+ * @param {number} channel The channel ID
+ * @param {number} user The user ID
+ */
+async function unBanUser(channel, user) {
+  return new Promise(resolve => {
+    fetch("https://glimesh.tv/api", { method: "POST", body: `mutation { unbanUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`, headers: { Authorization: `bearer ${token}` }})
+   .then((res) => {
+     res.json().then((data) => {
+       try {
+         if (data.data.unbanUser !== null) {
+         resolve(data)
+         } else {
+          resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+         }
+         } catch(e) {
+           try {
+             resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+           } catch(e2) {
+             resolve(null)
+           }
+         }
+     });
+   })
+   .catch((err) => console.error(err));
+  })
+}
 
  /**
   * @async
@@ -227,5 +328,4 @@ async function getDadJoke() {
  return joke
  }
 
-
-module.exports = { getAdvice, getBotAccount, getChannelID, getDadJoke, getStats, getUserID, updateID, updatePath}
+module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getStats, getUserID, timeoutUser, unBanUser, updateID, updatePath}

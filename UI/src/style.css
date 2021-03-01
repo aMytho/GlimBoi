@@ -94,6 +94,8 @@ th {
 .chatbox #messages li { padding: 10px 20px; color: #fff; }
 .chatbox #messages li:nth-child(odd) { background: #29374c; }
 .chatbox #welcomeMsg {color:azure;background-color: #71cece;}
+.chatList {position: absolute; bottom: 0;}
+#chatList {position: relative;}
 
 
 ::-webkit-scrollbar {
@@ -136,8 +138,9 @@ th {
     float: left;
     height: 300px;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
     width: 100%;
+    position: relative;
   }
   .chat_area li {
     padding: 14px 14px 0;
