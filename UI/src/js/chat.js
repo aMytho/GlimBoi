@@ -1,7 +1,12 @@
-var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js");
-var isDev = false;
+var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
+var ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
+var isDev = false; // We assume they are on a production release.
 
+var contextItem;
 
+/**
+ * Open a modal to allow the user to type which chat they will join.
+ */
 function joinChat() {
   var chatToJoin = document.getElementById("whichChannel").value
   AuthHandle.getToken().then(data => {
@@ -18,7 +23,7 @@ function joinChat() {
          else {
           //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
           console.log("Connected to chat!");
-          ChatHandle.join(data, response);
+          ChatHandle.join(data, response); // Joins the channel
           successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!")
         }
       })
@@ -26,14 +31,19 @@ function joinChat() {
   })
 }
 
-
+/**
+ * Sends a message to chat as the bot. This is user input.
+ * Resets when sent.
+ */
 function sendMessage() {
   ChatHandle.filterMessage(document.getElementById("messageArea").value, "user");
-  document.getElementById("messageArea").value = ""
+  document.getElementById("messageArea").value = "" // resets the message box
 }
 
 
-// This was a convient place for this, I need to move it later
+/**
+ * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready. 
+ */
 function checkForUpdate() {
     const version = document.getElementById('version');
     ipcRenderer.send('app_version');
@@ -69,7 +79,7 @@ ipcRenderer.on('update_downloaded', () => {
   function closeNotification() {
   notification.classList.add('hidden');
 }})
-  
+  // test functions
   ipcRenderer.on("aaaaaaaaaaaaa", () => {
   console.log("it happened")
 })
@@ -83,27 +93,9 @@ function restartApp() {
   ipcRenderer.send('restart_app');
 }
 
-function readyChat() {
-$('.testing').on('contextmenu', function(e) {
-  var top = e.pageY - 10;
-  var left = e.pageX - 20;
-  $("#context-menu").css({
-    display: "block",
-    top: top,
-    left: left
-  }).addClass("show");
-  return false; //blocks default Webbrowser right click menu
-}).on("click", function() {
-  $("#context-menu").removeClass("show").hide();
-});
-
-$("#context-menu a").on("click", function() {
-  $(this).parent().removeClass("show").hide();
-});
-}
-
 function testingStuff(e) {
-  console.log(e)
+  contextItem = $(e.target).attr('name')
+  console.log(contextItem)
   var top = e.pageY - 110;
   var left = e.pageX + 10;
   $("#context-menu").css({
@@ -111,4 +103,51 @@ function testingStuff(e) {
     top: top,
     left: left
   }).addClass("show");
+  document.body.addEventListener("click", function() {$("#context-menu").removeClass("show").hide()},{once:true})
+}
+
+function contextMenu(action) {
+  if (action == "ADDUSER") {
+    UserHandle.addUser(contextItem.toLowerCase(), false).then(data => {
+
+    })
+  } else if (action == "ADDQUOTE") {
+
+  } else {
+    
+  }
+}
+
+/**
+ * Edits the action modal to show the correct info. 
+ * @param {string} action The type of moderator action
+ */
+function actionBuilder(action) {
+  console.log(action)
+  document.getElementById("actionType").innerText = action
+  switch (action) {
+    case "Short Timeout":
+      document.getElementById("targetActionButton").onclick = function() {
+        ModHandle.timeoutByUsername("short", document.getElementById('whichUser').value, "GUI")
+      }
+      break;
+    case "Long Timeout":
+      document.getElementById("targetActionButton").onclick = function() {
+        ModHandle.timeoutByUsername("long", document.getElementById('whichUser').value, "GUI")
+      }
+      break;
+    case "Ban":
+      document.getElementById("targetActionButton").onclick = function() {
+        ModHandle.banByUsername(document.getElementById('whichUser').value, "GUI")
+      }
+      break;
+    case "UnBan":
+      document.getElementById("targetActionButton").onclick = function() {
+        ModHandle.unBanByUsername(document.getElementById('whichUser').value, "GUI")
+      }
+      break;
+  
+    default:
+      break;
+  }
 }

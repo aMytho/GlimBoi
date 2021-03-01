@@ -138,8 +138,17 @@ function startPoll(user, message, GUI, stringMessage) {
         } else {
         arrayOfEvents.push("poll");
         console.log(stringMessage);
+        stringMessage = stringMessage.slice(6)
         var questionEnd = stringMessage.indexOf("?");
-        EventHandle.startPoll({ question: "Favorite Glimdrop?", options: [':glimHype:', ':glimSmile:'], user: user }, 60000).then(data => {
+        console.log(questionEnd);
+        var question = stringMessage.substring(questionEnd + 1);
+        var possibleAnswers = question.split('|');
+        console.log(possibleAnswers);
+        for (let index = 0; index < possibleAnswers.length; index++) {
+           possibleAnswers[index] = possibleAnswers[index].trim()
+        }
+        console.log(possibleAnswers);
+        EventHandle.startPoll({ question: stringMessage.slice(0, questionEnd + 1), options: possibleAnswers, user: user }, 60000).then(data => {
             if (typeof data !== "object") {
                 console.log("The winner is " + data);
                 try {
@@ -160,4 +169,28 @@ function startPoll(user, message, GUI, stringMessage) {
         })
       }
     }
+}
+
+
+function openGlimRealm(user) {
+    if (EventHandle.getGlimrealmStatus() == "active") {
+        ChatHandle.filterMessage("The portal to the Glimrealm is already open! Type !portal to enter the world of the Glimdrops.");
+    } else if (EventHandle.getGlimrealmStatus() == "charging") {
+        ChatHandle.filterMessage("The portal to Glimrealm is charging. You must wait until it finishes to enter the world of the Glimdrops.", "glimboi")
+    } else if (EventHandle.getGlimrealmStatus() == "ready") {
+        EventHandle.openGlimrealm();
+        arrayOfEvents.push("glimrealm")
+        ChatHandle.filterMessage("The portal to the Glimrealm has been opened! Type !portal to enter the world of the Glimdrops!", "glimboi");
+    }
+    
+}
+
+/**
+ * 
+ * @param {string} user 
+ * @param {string} action 
+ * @param {string} effect 
+ */
+function actionHandler(user, action, effect) {
+    
 }

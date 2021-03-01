@@ -191,6 +191,17 @@ async function editUser(userName, role, points) {
   })
 }
 
+async function editUserPoints(userName, points) {
+  return new Promise(resolve => {
+    console.log(userName, points)
+    usersDB.update({ userName: userName }, { $set: {points: Number(points) } }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
+      console.log("Edited " + userName);
+      console.log(affectedDocuments)
+      resolve(affectedDocuments);
+    });
+  })
+}
+
 /**
  * Adds points and watch time to the users who are active
  * @param {Array} users 
@@ -212,4 +223,4 @@ function removePoints(user, value) {
   });
 }
 
-module.exports = {addQuote, addUser, earnPointsWT, editUser, findByUserName, getAll, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
+module.exports = {addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
