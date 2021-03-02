@@ -193,19 +193,21 @@ table.whiteText td {
 .chat_area li .chat-img1 img {
     height: 40px;
     width: 40px;
-    opacity: 50%;
 }
 .chat_area .chat-body1 {
-    margin-left: 50px;
+    display: flex;
 }
 .chat-body1 p {
     background: #29374c none repeat scroll 0 0;
     padding: 10px;
     color: aliceblue;
+    margin-left: 10px;
+}
+.admin_chat .chat-body1 p {
+    background: #651c1c none repeat scroll 0 0;
 }
 .chat_area .admin_chat .chat-body1 {
     margin-left: 0;
-    margin-right: 50px;
 }
 .chat_area li:last-child {
     padding-bottom: 10px;
