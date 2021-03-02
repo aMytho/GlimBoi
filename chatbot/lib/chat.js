@@ -15,6 +15,7 @@ var repeatSpamProtection = 15, repeatDelay = 600000 // The users repeat settings
 var currentUsers = [] // Array of current users.
 var checkForUsers;
 
+var messageHistoryCount = 20;
 var lastChannel = null;
 
 /**
@@ -23,15 +24,6 @@ var lastChannel = null;
  * @param {number} channelID The channel ID for the channel we are joining
  */
 function join(access_token, channelID, handlers = []) {
-  let _l = logging;
-  logging = false;
-
-  globalChatMessages.forEach(msg => {
-    logMessage(msg[0], msg[1], msg[2]);
-  });
-
-  logging = _l;
-
   try {connectToGlimesh(access_token, channelID)} catch(e) {
      console.log("we caught the error, poggers");
      errorMessage(e, "Chat Error")
@@ -250,6 +242,8 @@ function connectToGlimesh(access_token, channelID) {
             }
             try { // We try to log the message to the chat box (glimboi) and may log to a file
               globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl]);
+
+              globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
               logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
             }
             catch (e3) {
@@ -403,7 +397,7 @@ function test() {
  * @param {string} message The message
  * @param {string} avatar The avatar URL
  */
-function logMessage(user, message, avatar) {
+function logMessage(user, message, avatar, logOverride = null) {
   $("#chatList").append(`
     <li class="left clearfix admin_chat" name='${user}' oncontextmenu='testingStuff(event)'>
         <div class="chat-body1 clearfix testing" name='${user}'>
@@ -415,10 +409,13 @@ function logMessage(user, message, avatar) {
           </div>
     </li>`
   );
-  var scroll = document.getElementById("chatContainer")
-  scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
+  var scroll = document.getElementById("chatContainer");
 
-  if (logging == true) {
+  if (scroll) scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
+
+  var canLog = (logOverride !== null) ? logOverride : logging;
+
+  if (canLog == true) {
     ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
   }
 }

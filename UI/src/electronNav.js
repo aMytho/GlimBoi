@@ -5,7 +5,7 @@ var {
 var Datastore = require('nedb')
 var appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
-const globalChatMessages = [];
+var globalChatMessages = [];
 
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
   try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
@@ -57,7 +57,7 @@ naviLinks.forEach((linkEl) => {
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
                 if (linkEl.id == "SettingsLink") {showSettings()}
-                //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
+                if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }
     })
