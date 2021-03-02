@@ -23,7 +23,7 @@ var lastChannel = null;
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
-function join(access_token, channelID, handlers = []) {
+function join(access_token, channelID) {
   try {connectToGlimesh(access_token, channelID)} catch(e) {
      console.log("we caught the error, poggers");
      errorMessage(e, "Chat Error")
