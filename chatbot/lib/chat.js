@@ -16,7 +16,6 @@ var currentUsers = [] // Array of current users.
 var checkForUsers;
 
 var messageHistoryCount = 20;
-var lastChannel = null;
 
 /**
  * Tries to join a glimesh chat. Returns an error if the attempt failed.
@@ -39,11 +38,6 @@ function connectToGlimesh(access_token, channelID) {
   const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}` // The websocket URL
   connection = new WebSocket(url); // Connection is now an offical connection!
   chatID = channelID // The channel ID is now an accessible variable for this module
-
-  if (chatID !== lastChannel) {
-    globalChatMessages.length = 0;
-  }
-  lastChannel = chatID;
 
   connection.on("open", function open() { // When the connection opens...
     console.log("Connected to the Glimesh API");
