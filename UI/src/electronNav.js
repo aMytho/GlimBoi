@@ -62,6 +62,22 @@ naviLinks.forEach((linkEl) => {
 })
 }
 
+/**
+ * On Enter functions
+ */
+$(document).on('keypress','input', function (event) {
+    var key = event.keyCode || event.which;
+
+    if (key != 13) {
+        return;
+    }
+
+    var id = $(this).attr('id');
+    if (id === 'whichChannel') $('#chat-modal-btn-join').click()
+
+    event.preventDefault();
+});
+
 
 //Opens a link in the users default browser.
 function loadLink(link) {
@@ -69,7 +85,7 @@ function loadLink(link) {
 }
 
 
-// Shows an error message to the user in the form of a modal. 
+// Shows an error message to the user in the form of a modal.
 function errorMessage(errorType, errorMessage) {
   document.getElementById("errorMessageText").innerHTML = errorType;
   document.getElementById("errorMessageSolution").innerHTML = errorMessage;
@@ -77,7 +93,7 @@ function errorMessage(errorType, errorMessage) {
 }
 
 
-// Shows a success message to the user in the form of a modal. 
+// Shows a success message to the user in the form of a modal.
 function successMessage(messageType, message) {
   document.getElementById("successMessageText").innerHTML = messageType;
   document.getElementById("successMessageSolution").innerHTML = message;
