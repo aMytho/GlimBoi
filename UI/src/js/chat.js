@@ -3,6 +3,40 @@ var ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles mo
 var isDev = false; // We assume they are on a production release.
 
 var contextItem;
+var globalChatMessages;
+
+/**
+ * For the Join Chat modal, pulls the bots username from the API and autofills whichChannel
+ */
+function showJoinModal()
+{
+    $('#modalChat').modal('show'); // Do this first in case there are issues later on
+
+    if (document.getElementById("whichChannel").value !== '') {
+        return; // No point re-requesting if we already have it
+    }
+
+    try {
+        AuthHandle.getToken().then(data => {
+            if (data == undefined || data.length == 0 ) {
+                return; // No auth
+            } else {
+                ApiHandle.updatePath(data); //Sends the API module our access token.
+                ApiHandle.getBotAccount().then(data => {
+                    console.log(data);
+
+                    // Ensure we have auth but also check user hasn't started typing!
+                    if (data.status !== 'AUTHNEEDED' && document.getElementById("whichChannel").value === '') {
+                        document.getElementById("whichChannel").value = data;
+                    }
+                });
+            }
+        });
+    } catch (e) {
+        console.log(e);
+    }
+
+}
 
 /**
  * Open a modal to allow the user to type which chat they will join.
@@ -31,6 +65,12 @@ function joinChat() {
   })
 }
 
+function loadChatWindow() {
+    globalChatMessages.forEach(msg => {
+        ChatHandle.logMessage(msg[0], msg[1], msg[2], false);
+    });
+}
+
 /**
  * Sends a message to chat as the bot. This is user input.
  * Resets when sent.
@@ -42,7 +82,7 @@ function sendMessage() {
 
 
 /**
- * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready. 
+ * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready.
  */
 function checkForUpdate() {
     const version = document.getElementById('version');
@@ -114,12 +154,12 @@ function contextMenu(action) {
   } else if (action == "ADDQUOTE") {
 
   } else {
-    
+
   }
 }
 
 /**
- * Edits the action modal to show the correct info. 
+ * Edits the action modal to show the correct info.
  * @param {string} action The type of moderator action
  */
 function actionBuilder(action) {
@@ -146,7 +186,7 @@ function actionBuilder(action) {
         ModHandle.unBanByUsername(document.getElementById('whichUser').value, "GUI")
       }
       break;
-  
+
     default:
       break;
   }

@@ -18,14 +18,14 @@
           </div>
        </div>
     </div>
-  
+
  </div>
  <div class="col-6 mx-auto mt-3">
   <div class="card glimPanel h-100">
    <div class="card-body glimPanel">
      <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
      <p class="whiteText text-center">_______________</p>
-     <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="$('#modalChat').modal('show')">Join Chat</button>
+     <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="showJoinModal()">Join Chat</button>
      <button class="btn btn-danger btn-block mt-2" type="submit" id="ComingSoon" onclick="ChatHandle.disconnect()">Leave Chat</button>
      <p class="whiteText text-center">_______________</p>
      <div class="row">
@@ -51,7 +51,7 @@
    </div>
  </div>
  </div>
- 
+
  <div class="row ">
     <div class="col-6 mx-auto">
        <div class="card body glimPanel ml-3 mt-2">
@@ -61,26 +61,26 @@
                    <!--top of the chat-->
                 <div class="new_message_head glimPanel whiteText">
                 <div class="pull-left">
- 
+
                 </div>
                 <div class="pull-right">
- 
+
                 </div>
                 </div>
                 <!--chat-->
                 <div class="chat_area" id="chatContainer">
                 <ul class="list-unstyled chatList" id="chatList">
-               
+
                    <li class="left clearfix admin_chat" name='mytho'>
                       <div class="chat-body1 clearfix testing" oncontextmenu="testingStuff(event)" name='mytho'>
                          <span class="chat-img1 pull-left" name='mytho'>
-                            <img src="Mytho.png" alt="User Avatar" class="img-circle" name='mytho'>
+                            <img src="Mytho.png" alt="User Avatar" class="rounded-circle" name='mytho'>
                          </span>
                          <p name='mytho'><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
                          <!--<div class="whiteText pull-left">09:40PM</div> -->
                          </div>
                    </li>
-                
+
                 </ul>
              </div>
                 <!--chat_area-->
@@ -147,10 +147,10 @@
        </div>
     </div>
  </div>
- 
- 
- 
- 
+
+
+
+
  <!-- Modal: Which Chat? -->
  <div class="modal fade" id="modalChat" tabindex="-1" role="dialog" aria-labelledby="chat modal"
    aria-hidden="true" style="overflow-wrap: break-word;">
@@ -169,14 +169,15 @@
          <!--Footer-->
          <div class="modal-footer">
             <p id="chatMessageAdd"></p>
-            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
+            <p id="chatMessageAdd"></p>
+            <button id="chat-modal-btn-close" type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            <button id="chat-modal-btn-join" type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
          </div>
       </div>
    </div>
  </div>
  <!-- Modal: Which Chat -->
- 
+
  <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
    <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
    <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>

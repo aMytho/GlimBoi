@@ -5,6 +5,8 @@ var {
 var Datastore = require('nedb')
 var appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
+var globalChatMessages = [];
+
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
   try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
   document.getElementById(highlight).classList.add("active");
@@ -55,12 +57,40 @@ naviLinks.forEach((linkEl) => {
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
                 if (linkEl.id == "SettingsLink") {showSettings()}
-                //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
+                if (linkEl.id == "ChatLink") {loadChatWindow();} //Builds the data table
+
             })
         }
     })
 })
 }
+
+/**
+ * On Enter functions
+ */
+$(document).on('keypress','input, textarea', function (event) {
+    var key = event.keyCode || event.which;
+
+    if (key != 13 || event.shiftKey === true) {
+        return;
+    }
+
+    var id = $(this).attr('id');
+
+    if (id === 'commandEditInput') $('#addCommandButtonFinish').click()
+    if (id === 'messageArea') $('#sendMessage').click()
+    if (id === 'quoteRemoveSearch') $('#userRemoveQuoteSearch').click()
+    if (id === 'userAddInput') $('#addUserFinish').click()
+    if (id === 'userEditSearch') $('#userEditSearchButton').click()
+    if (id === 'userQuoteInputQ') $('#addQuoteFinish').click()
+    if (id === 'userQuoteInputU') $('#addQuoteFinish').click()
+    if (id === 'userQuoteSearch') $('#userRemoveQuoteSearch').click()
+    if (id === 'userremoveInput') $('#removeUserFinish').click()
+    if (id === 'whichChannel') $('#chat-modal-btn-join').click()
+    if (id === 'whichUser') $(this).closest('.modal-content').find('#targetActionButton').click();
+
+    event.preventDefault();
+});
 
 
 //Opens a link in the users default browser.
@@ -69,7 +99,7 @@ function loadLink(link) {
 }
 
 
-// Shows an error message to the user in the form of a modal. 
+// Shows an error message to the user in the form of a modal.
 function errorMessage(errorType, errorMessage) {
   document.getElementById("errorMessageText").innerHTML = errorType;
   document.getElementById("errorMessageSolution").innerHTML = errorMessage;
@@ -77,7 +107,7 @@ function errorMessage(errorType, errorMessage) {
 }
 
 
-// Shows a success message to the user in the form of a modal. 
+// Shows a success message to the user in the form of a modal.
 function successMessage(messageType, message) {
   document.getElementById("successMessageText").innerHTML = messageType;
   document.getElementById("successMessageSolution").innerHTML = message;

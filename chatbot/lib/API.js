@@ -11,7 +11,7 @@ var streamer = ""; // Streamer name
  * @param {string} accessToken The access token for this session.
  */
 function updatePath(accessToken) {
-  token = accessToken;  
+  token = accessToken;
 }
 
 /**
@@ -31,7 +31,7 @@ function updateID() {
 }
 
 /**
- * Returns the current channel the bot is in. 
+ * Returns the current channel the bot is in.
  */
 function getID() {
   return channelID
@@ -186,9 +186,9 @@ async function getBotAccount() {
 
 /**
  * Times out a user for a set duration.
- * @param {string} type Short or Long 
+ * @param {string} type Short or Long
  * @param {number} channel Channel ID
- * @param {number} user User ID 
+ * @param {number} user User ID
  */
 async function timeoutUser(type, channel, user) {
   return new Promise(resolve => {
