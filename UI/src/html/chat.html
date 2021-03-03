@@ -25,7 +25,7 @@
    <div class="card-body glimPanel">
      <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
      <p class="whiteText text-center">_______________</p>
-     <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="$('#modalChat').modal('show')">Join Chat</button>
+     <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="showJoinModal()">Join Chat</button>
      <button class="btn btn-danger btn-block mt-2" type="submit" id="ComingSoon" onclick="ChatHandle.disconnect()">Leave Chat</button>
      <p class="whiteText text-center">_______________</p>
      <div class="row">
@@ -169,8 +169,9 @@
          <!--Footer-->
          <div class="modal-footer">
             <p id="chatMessageAdd"></p>
-            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
+            <p id="chatMessageAdd"></p>
+            <button id="chat-modal-btn-close" type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            <button id="chat-modal-btn-join" type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
          </div>
       </div>
    </div>

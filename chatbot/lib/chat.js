@@ -15,16 +15,18 @@ var repeatSpamProtection = 15, repeatDelay = 600000 // The users repeat settings
 var currentUsers = [] // Array of current users.
 var checkForUsers;
 
+var messageHistoryCount = 20;
+
 /**
  * Tries to join a glimesh chat. Returns an error if the attempt failed.
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
 function join(access_token, channelID) {
-   try {connectToGlimesh(access_token, channelID)} catch(e) {
-      console.log("we caught the error, poggers");
-      errorMessage(e, "Chat Error")
-   }
+  try {connectToGlimesh(access_token, channelID)} catch(e) {
+     console.log("we caught the error, poggers");
+     errorMessage(e, "Chat Error")
+  }
 }
 
 /**
@@ -128,6 +130,7 @@ function connectToGlimesh(access_token, channelID) {
       if (chatMessage[4].status !== undefined) {
         console.log("Status: " + chatMessage[4].status);
       } else {
+
         //Its probably a chat message
         try {
           if (chatMessage[4].result.data !== undefined) {
@@ -232,7 +235,10 @@ function connectToGlimesh(access_token, channelID) {
               }
             }
             try { // We try to log the message to the chat box (glimboi) and may log to a file
-              logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl)
+              globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl]);
+
+              globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
+              logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
             }
             catch (e3) {
 
@@ -363,8 +369,8 @@ function glimboiMessage(data) {
   msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message:{message:\""+data+"\"}) {message }}","variables":{}});
   var test = JSON.stringify(msgArray);
   try {
-  console.log(test)
-  connection.send(test)
+    console.log(test)
+    connection.send(test)
   } catch(e) {
     errorMessage("Message Error", "Message failed to send. You must be authenticated and be in a chat to send a message.")
   }
@@ -397,6 +403,7 @@ function logMessage(user, message, avatar) {
         <p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
         <!--<div class="whiteText pull-left">09:40PM</div> -->
         </div>
+
     </li>`
   );
   var scroll = document.getElementById("chatContainer")
@@ -405,6 +412,7 @@ function logMessage(user, message, avatar) {
   if (logging == true) {
     ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
   }
+
 }
 
 /**
