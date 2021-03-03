@@ -64,6 +64,33 @@ naviLinks.forEach((linkEl) => {
 })
 }
 
+/**
+ * On Enter functions
+ */
+$(document).on('keypress','input, textarea', function (event) {
+    var key = event.keyCode || event.which;
+
+    if (key != 13 || event.shiftKey === true) {
+        return;
+    }
+
+    var id = $(this).attr('id');
+
+    if (id === 'commandEditInput') $('#addCommandButtonFinish').click()
+    if (id === 'messageArea') $('#sendMessage').click()
+    if (id === 'quoteRemoveSearch') $('#userRemoveQuoteSearch').click()
+    if (id === 'userAddInput') $('#addUserFinish').click()
+    if (id === 'userEditSearch') $('#userEditSearchButton').click()
+    if (id === 'userQuoteInputQ') $('#addQuoteFinish').click()
+    if (id === 'userQuoteInputU') $('#addQuoteFinish').click()
+    if (id === 'userQuoteSearch') $('#userRemoveQuoteSearch').click()
+    if (id === 'userremoveInput') $('#removeUserFinish').click()
+    if (id === 'whichChannel') $('#chat-modal-btn-join').click()
+    if (id === 'whichUser') $(this).closest('.modal-content').find('#targetActionButton').click();
+
+    event.preventDefault();
+});
+
 
 //Opens a link in the users default browser.
 function loadLink(link) {
