@@ -403,11 +403,10 @@ function logMessage(user, message, avatar) {
         <p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
         <!--<div class="whiteText pull-left">09:40PM</div> -->
         </div>
-
     </li>`
   );
-  var scroll = document.getElementById("chatContainer")
-  scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
+    var scroll = document.getElementById("chatContainer")
+    scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
 
   if (logging == true) {
     ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
