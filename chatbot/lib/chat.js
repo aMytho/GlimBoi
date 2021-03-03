@@ -391,27 +391,27 @@ function test() {
  * @param {string} message The message
  * @param {string} avatar The avatar URL
  */
-function logMessage(user, message, avatar, logOverride = null) {
+function logMessage(user, message, avatar) {
+  var adminClass = (user === botname) ? 'admin_chat' : '';
+
   $("#chatList").append(`
-    <li class="left clearfix admin_chat" name='${user}' oncontextmenu='testingStuff(event)'>
+    <li class="left clearfix ${adminClass} w-100" name='${user}' oncontextmenu='testingStuff(event)'>
         <div class="chat-body1 clearfix testing" name='${user}'>
-          <span class="chat-img1 pull-left" name='${user}'>
-              <img src="${avatar}" alt="User Avatar" class="img-circle" name='${user}'>
-          </span>
-          <p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
-          <!--<div class="whiteText pull-left">09:40PM</div> -->
-          </div>
+        <span class="chat-img1 pull-left" name='${user}'>
+            <img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
+        </span>
+        <p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
+        <!--<div class="whiteText pull-left">09:40PM</div> -->
+        </div>
     </li>`
   );
-  var scroll = document.getElementById("chatContainer");
+    var scroll = document.getElementById("chatContainer")
+    scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
 
-  if (scroll) scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
-
-  var canLog = (logOverride !== null) ? logOverride : logging;
-
-  if (canLog == true) {
+  if (logging == true) {
     ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
   }
+
 }
 
 /**
