@@ -1,8 +1,8 @@
-var UserHandle = require(appData[0] + "/chatbot/lib/users.js"); 
+var UserHandle = require(appData[0] + "/chatbot/lib/users.js");
 UserHandle.updatePath(appData[1]);
 
-var QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js"); 
-QuoteHandle.updatePath(appData[1]); 
+var QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js");
+QuoteHandle.updatePath(appData[1]);
 
 var arrayofUsers = []; //Holds users after we leave the page.
 var userTable; //physical table showing user data
@@ -66,7 +66,7 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
   }
 }
 
-function loadAllQuotes() { //loads all quotes and displays them under the table. 
+function loadAllQuotes() { //loads all quotes and displays them under the table.
   console.log("Loading Quotes.");
   var quotes = QuoteHandle.getAll(); //Gets all thq quotes
   var allQuotes = [];
@@ -136,18 +136,18 @@ function quoteSearch(user) {
     numberOfListItems = data[0].quotes.length,
     listItem,
     i;
-  
+
     // Add it to the page
     document.getElementsByClassName('removeQuoteList')[0].appendChild(listContainer);
     listContainer.appendChild(listElement);
-  
+
     for (i = 0; i < numberOfListItems; ++i) {
         // create an item for each one
         listItem = document.createElement('li');
-  
+
         // Add the item text
         listItem.innerHTML = `${data[0].quotes[i].quoteID}: ${data[0].quotes[i].quoteData}`;
-  
+
         // Add listItem to the listElement
         listElement.appendChild(listItem);
     }
@@ -171,12 +171,12 @@ function removeQuote(id, user) {
       }, 3500);
     }
   })
-  
+
 }
 
 function addUser() { //Adds a user
   var user = document.getElementById("userAddInput").value.toLowerCase(); //must be lower case
-  var newUser = UserHandle.addUser(user); //adds it to the DB. 
+  var newUser = UserHandle.addUser(user); //adds it to the DB.
   newUser.then(data => { //Displays it on our side.
     if (data == "USEREXISTS") { //Tells the user that user exists.
       document.getElementById("addUserMessage").innerHTML = "That user already exists."
@@ -190,7 +190,7 @@ function addUser() { //Adds a user
     } else if (data == "INVALIDUSER") {
       console.log("The user cannot be created because the user doesn't exist on glimesh.");
       document.getElementById("addUserMessage").innerHTML = "The user does not exist on Glimesh. Ensure the username is correct."
-    } else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+    } else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       document.getElementById("addUserMessageSuccess").innerHTML = "Success! User has been created!";
       //adds it to the user var.
       var arrayUser = [
@@ -290,7 +290,7 @@ function makeList(user) { //Similir to above function, makes a list and displays
   }
 }
 
-//This is the points section. 
+//This is the points section.
 var arrayOfPoints = [];
 var pointsTable;
 function getPoints() {
@@ -311,11 +311,15 @@ function getPoints() {
     }
     console.log(pointsTable.rows.length + " rows in the table");
     for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
-      pointsTable.rows[i + 1].cells[0].innerHTML = i
-      if (arrayOfPoints[i] == undefined) { } else {
-        pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0]
-        pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1]
-        pointsTable.rows[i + 1].cells[3].innerHTML = arrayOfPoints[i][2]
+      if (pointsTable.rows[i + 1] === undefined) {
+        continue;
+      }
+
+      pointsTable.rows[i + 1].cells[0].innerHTML = i;
+      if (arrayOfPoints[i] !== undefined) {
+        pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0];
+        pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1];
+        pointsTable.rows[i + 1].cells[3].innerHTML = arrayOfPoints[i][2];
       }
     }
   })
@@ -332,29 +336,41 @@ function userSearch(user) {
     } else {
       console.log("Editing user");
       document.getElementById("modalEditBody").innerHTML = `
-                   <table class="table table-hover">
-                      <thead>
-                         <tr>
-                            <th>User</th>
-                            <th>Information</th>
-                         </tr>
-                      </thead>
-                      <tbody>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="Rank">Chat role</td>
-                            <td contenteditable="false" id="EditUserRank">${data[0].role}</td>
-                         </tr>
-                         <tr>
-                            <td data-toggle="tooltip" data-placement="top" title="The amount of points the user has">Points</td>
-                            <td contenteditable="true" id="editUserPoints">${data[0].points}</td>
-                         </tr>
-                         <tr>
-                      </tbody>
-                   </table>
-      `;
-      document.getElementById("userEditSearchButton").setAttribute('onclick', "editUserTable(tempUser, document.getElementById('EditUserRank').innerHTML, document.getElementById('editUserPoints').innerHTML), $('#modalUserEdit').modal('hide'), UserHandle.editUser(tempUser.toLowerCase(), document.getElementById('EditUserRank').innerHTML, document.getElementById('editUserPoints').innerHTML)")
-      document.getElementById("userEditSearchButton").innerText = "Edit"
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Information</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Rank">Chat role</td>
+              <td contenteditable="false" id="EditUserRank">${data[0].role}</td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="The amount of points the user has">Points</td>
+              <td contenteditable="true" id="editUserPoints">${data[0].points}</td>
+            </tr>
+            <tr>
+          </tbody>
+        </table>`;
 
+      var q = `
+      editUserTable(
+        tempUser,
+        document.getElementById('EditUserRank').innerHTML,
+        document.getElementById('editUserPoints').innerHTML
+      ),
+      $('#modalUserEdit').modal('hide'),
+      UserHandle.editUser(
+        tempUser.toLowerCase(),
+        document.getElementById('EditUserRank').innerHTML,
+        document.getElementById('editUserPoints').innerHTML
+      )`;
+
+      document.getElementById("userEditSearchButton").setAttribute('onclick', q);
+      document.getElementById("userEditSearchButton").innerText = "Edit";
     }
   })
 }
@@ -381,14 +397,14 @@ function editUserTable(user, role, points) {
 
   // Get the row for indexes
   var row = userTable.row(indexes[0]);
-  
+
   // Get the data for the row
   var data = row.data();
 
   // Change the row data
   data[1] = points;
   data[4] = role;
-  
+
   // Update the table data and redraw the table
   row.data( data ).draw();
   // loadUserTable()
