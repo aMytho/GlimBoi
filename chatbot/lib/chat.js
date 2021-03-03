@@ -30,6 +30,16 @@ function join(access_token, channelID) {
 }
 
 /**
+ * Determines if the websocket is connected or connecting
+ *
+ * @return bool
+ */
+function isConnected() {
+  if (connection === undefined) return false;
+  return connection.readyState !== WebSocket.CLOSED && connection.readyState !== WebSocket.CLOSING;
+}
+
+/**
  * Connects to a Glimesh chat.
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
@@ -295,13 +305,13 @@ function connectToGlimesh(access_token, channelID) {
  */
 function disconnect() {
   try {
-  connection.close(1001, "So long and thanks for all the fish.") // closes the websocket
-  successMessage("Chat has been successfully disconnected!", "You can close this now.");
-  if (logging == true) {
-  setTimeout(() => {
-    ipcRenderer.send("logEnd") // ends the logging
-  }, 3000);
-}
+    connection.close(1001, "So long and thanks for all the fish.") // closes the websocket
+    successMessage("Chat has been successfully disconnected!", "You can close this now.");
+    if (logging == true) {
+      setTimeout(() => {
+        ipcRenderer.send("logEnd") // ends the logging
+      }, 3000);
+    }
   } catch(e) {
     errorMessage(e, "Error disconnecting from the chat")
   }
@@ -312,13 +322,13 @@ function disconnect() {
  */
 function disconnectError() {
   try {
-  connection.close(1001, "So long and thanks for all the fish.")
-  errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
-  if (logging == true) {
-  setTimeout(() => {
-    ipcRenderer.send("logEnd")
-  }, 3000);
-}
+    connection.close(1001, "So long and thanks for all the fish.")
+    errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
+    if (logging == true) {
+      setTimeout(() => {
+        ipcRenderer.send("logEnd")
+      }, 3000);
+    }
   } catch(e) {
     errorMessage(e, "Error disconnecting from the chat")
   }
@@ -619,4 +629,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

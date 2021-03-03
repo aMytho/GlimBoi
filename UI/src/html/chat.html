@@ -2,31 +2,29 @@
    <div class="col-6 mx-auto mt-3">
      <div class="card body glimPanel ml-3">
        <div class="card-body">
-          <h3 class="whiteText text-center" id="pointName">Chat</h3>
-          <div class="row">
-          <div class="col">
-           <p class="whiteText">You must authenticate before joining a chat. You can join ANY chat you wish. The bot will perform all of its tasks regardless of which chat you are in. However, if it is not a mod in the chat some abilities will be limited.</p>
-           <p class="whiteText">The bot is still a user, it can be banned if you are causing problems. This feature is intented so mods can add bots to the streamers chat if the streamer does not want to install the bot themselves.</p>
-           <p class="whiteText">This is an experimental feature. It may be removed in a future update.</p>
-          </div>
-          <div class="col">
-           <p class="whiteText">Select Join Chat = ></p>
-           <p class="whiteText">Enter the chat that you want to join.</p>
-           <p class="whiteText">If everything is successful the bot will join the selected chat. Chat controls will unlock on the right.</p>
-           <p class="whiteText">When you are finished disconnect the bot. It cleanly closes the connection.</p>
-          </div>
+          <h3 class="whiteText text-center">Chat Connections</h3>
+          <div id="chatConnections">
+            <div class="row mt-1 channel-listing" data-channel="Glimesh" data-connected="false">
+              <h4 class="col-6 whiteText channelName">Glimesh</h4>
+              <div class="col-3 px-1"><button data-action="join" class="btn btn-success btn-block">Join</button></div>
+              <div class="col-3 px-1"><button data-action="leave" class="btn btn-danger btn-block" disabled>Leave</button></div>
+            </div>
+            <div class="row mt-1 channel-listing" data-channel="Shadeslayer890" data-connected="false">
+              <h4 class="col-6 whiteText channelName">Shadeslayer890</h4>
+              <div class="col-3 px-1"><button data-action="join" class="btn btn-success btn-block">Join</button></div>
+              <div class="col-3 px-1"><button data-action="leave" class="btn btn-danger btn-block" disabled>Leave</button></div>
+            </div>
           </div>
        </div>
     </div>
-
  </div>
  <div class="col-6 mx-auto mt-3">
   <div class="card glimPanel h-100">
    <div class="card-body glimPanel">
      <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
      <p class="whiteText text-center">_______________</p>
-     <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="showJoinModal()">Join Chat</button>
-     <button class="btn btn-danger btn-block mt-2" type="submit" id="ComingSoon" onclick="ChatHandle.disconnect()">Leave Chat</button>
+     <button class="btn btn-success btn-block mt-2" type="submit" onclick="showJoinModal()">Join Chat</button>
+     <button class="btn btn-danger btn-block mt-2" type="submit" onclick="ChatHandle.disconnect()">Leave Chat</button>
      <p class="whiteText text-center">_______________</p>
      <div class="row">
         <div class="col-4 mx-auto">
@@ -41,10 +39,10 @@
      </div>
      <div class="row mt-1">
         <div class="col text-center">
-         <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
-         <button class="btn btn-info mt-2" type="submit" id="ComingSoon" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
-         <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
-         <button class="btn btn-info mt-2" type="submit" id="ComingSoon" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
+         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
+         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
+         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
+         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
         </div>
      </div>
    </div>

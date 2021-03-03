@@ -241,3 +241,15 @@ table.whiteText td {
     text-decoration: none;
     background-color: #1672ce !important;
 }
+
+#chatConnections {
+    max-height: 260px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#chatConnections .channelName {
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

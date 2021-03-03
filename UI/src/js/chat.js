@@ -38,11 +38,38 @@ function showJoinModal()
 
 }
 
+$(document).on('click', '#chatConnections button', function (event) {
+  var action    = $(this).data('action');
+  var listing   = $(this).closest('.channel-listing');
+  var channel   = listing.data('channel');
+  var container = listing.parent();
+
+  if (ChatHandle.isConnected()) ChatHandle.disconnect(); // Always disconnect
+
+  // Resets everything to disconnected / disabled
+  $('button[data-action=leave]').prop('disabled', true);
+  $('button[data-action=join]').prop('disabled', false);
+  $('.channel-listing').attr('data-connected', false);
+
+  // Disable this button, and enable the sibling button
+  $(this).prop('disabled', true);
+  listing.find(`button[data-action!=${action}]`).prop('disabled', false);
+
+  // Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
+  if (action === 'join') {
+    setTimeout(function () {
+      container.children(`[data-channel=${channel}]`).attr('data-connected', true);
+      joinChat(channel);
+    }, 500);
+  }
+});
+
 /**
  * Open a modal to allow the user to type which chat they will join.
  */
-function joinChat() {
-  var chatToJoin = document.getElementById("whichChannel").value
+function joinChat(chat = null) {
+  var chatToJoin = chat ?? document.getElementById("whichChannel").value;
+
   AuthHandle.getToken().then(data => {
     if (data == undefined || data.length == 0 ) {
       errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and auth again.")
