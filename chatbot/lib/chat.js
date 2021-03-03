@@ -198,6 +198,16 @@ function connectToGlimesh(access_token, channelID) {
                         }
                       })
                       break;
+                    case "top":
+                      UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
+                        console.log(data)
+                        if (data.length > 0) {
+                          filterMessage("The top user is " + data[0].userName, "glimboi")
+                        } else {
+                          filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
+                        }
+                      })
+                      break;
                     default:
                       break;
                   }
