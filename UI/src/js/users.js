@@ -357,17 +357,17 @@ function userSearch(user) {
         </table>`;
 
       var q = `
-      editUserTable(
-        tempUser,
-        document.getElementById('EditUserRank').innerHTML,
-        document.getElementById('editUserPoints').innerHTML
-      ),
-      $('#modalUserEdit').modal('hide'),
-      UserHandle.editUser(
-        tempUser.toLowerCase(),
-        document.getElementById('EditUserRank').innerHTML,
-        document.getElementById('editUserPoints').innerHTML
-      )`;
+        editUserTable(
+          tempUser,
+          document.getElementById('EditUserRank').innerHTML,
+          document.getElementById('editUserPoints').innerHTML
+        ),
+        $('#modalUserEdit').modal('hide'),
+        UserHandle.editUser(
+          tempUser.toLowerCase(),
+          document.getElementById('EditUserRank').innerHTML,
+          document.getElementById('editUserPoints').innerHTML
+        )`;
 
       document.getElementById("userEditSearchButton").setAttribute('onclick', q);
       document.getElementById("userEditSearchButton").innerText = "Edit";
