@@ -3,6 +3,7 @@ var ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles mo
 var isDev = false; // We assume they are on a production release.
 
 var contextItem;
+var globalChatMessages;
 
 /**
  * Open a modal to allow the user to type which chat they will join.
@@ -31,6 +32,12 @@ function joinChat() {
   })
 }
 
+function loadChatWindow() {
+    globalChatMessages.forEach(msg => {
+        ChatHandle.logMessage(msg[0], msg[1], msg[2], false);
+    });
+}
+
 /**
  * Sends a message to chat as the bot. This is user input.
  * Resets when sent.
@@ -42,7 +49,7 @@ function sendMessage() {
 
 
 /**
- * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready. 
+ * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready.
  */
 function checkForUpdate() {
     const version = document.getElementById('version');
@@ -114,12 +121,12 @@ function contextMenu(action) {
   } else if (action == "ADDQUOTE") {
 
   } else {
-    
+
   }
 }
 
 /**
- * Edits the action modal to show the correct info. 
+ * Edits the action modal to show the correct info.
  * @param {string} action The type of moderator action
  */
 function actionBuilder(action) {
@@ -146,7 +153,7 @@ function actionBuilder(action) {
         ModHandle.unBanByUsername(document.getElementById('whichUser').value, "GUI")
       }
       break;
-  
+
     default:
       break;
   }

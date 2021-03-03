@@ -5,6 +5,8 @@ var {
 var Datastore = require('nedb')
 var appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
+var globalChatMessages = [];
+
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
   try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
   document.getElementById(highlight).classList.add("active");
@@ -55,7 +57,7 @@ naviLinks.forEach((linkEl) => {
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
                 if (linkEl.id == "SettingsLink") {showSettings()}
-                //if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
+                if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
             })
         }
     })
@@ -69,7 +71,7 @@ function loadLink(link) {
 }
 
 
-// Shows an error message to the user in the form of a modal. 
+// Shows an error message to the user in the form of a modal.
 function errorMessage(errorType, errorMessage) {
   document.getElementById("errorMessageText").innerHTML = errorType;
   document.getElementById("errorMessageSolution").innerHTML = errorMessage;
@@ -77,7 +79,7 @@ function errorMessage(errorType, errorMessage) {
 }
 
 
-// Shows a success message to the user in the form of a modal. 
+// Shows a success message to the user in the form of a modal.
 function successMessage(messageType, message) {
   document.getElementById("successMessageText").innerHTML = messageType;
   document.getElementById("successMessageSolution").innerHTML = message;
