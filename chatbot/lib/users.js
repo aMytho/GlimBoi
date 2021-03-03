@@ -28,34 +28,34 @@ class User {
  * @returns If the exists returns USEREXISTS
  */
 async function addUser(user, inModal) {
-    var newUser = await new Promise(done => {
-      usersDB.find({userName:user}, function (err, docs) {
-        if (docs.length == 0) {
-          console.log("No user was found with the name " + user);
-          ApiHandle.getUserID(user).then(ID => {
-            if (isNaN(ID) == true || ID == null || typeof ID == Object) {
-              console.log(ID);
-                done("INVALIDUSER")
-            } else {
-                console.log(ID)
-                var tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
-                usersDB.insert(tempUser, function(err, doc) {
-                  console.log(doc);
-                  console.log("User created!");
-                  if (inModal == false) {
-                    syncUsers(doc, "add")
-                  }
-                  done(doc)
-                });
-            }            
-          })
-        } else {
-          console.log(user + " already exists in the database.")
-          done("USEREXISTS")
-        }
-      })
+  var newUser = await new Promise(done => {
+    usersDB.find({ userName: user }, function (err, docs) {
+      if (docs.length == 0) {
+        console.log("No user was found with the name " + user);
+        ApiHandle.getUserID(user).then(ID => {
+          if (isNaN(ID) == true || ID == null || typeof ID == Object) {
+            console.log(ID);
+            done("INVALIDUSER")
+          } else {
+            console.log(ID)
+            var tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
+            usersDB.insert(tempUser, function (err, doc) {
+              console.log(doc);
+              console.log("User created!");
+              if (inModal == false) {
+                syncUsers(doc, "add")
+              }
+              done(doc)
+            });
+          }
+        })
+      } else {
+        console.log(user + " already exists in the database.")
+        done("USEREXISTS")
+      }
     })
-    return newUser
+  })
+  return newUser
 };
 
 /**
@@ -75,17 +75,17 @@ function updatePath(GUI) {
  */
 async function findByUserName(name) {
   var queryResult = await new Promise(resolve => {
-   usersDB.find({userName: name}, function (err, docs) {
-     console.log(docs);
-     if (docs.length == 0 ) {
-       console.log("No user was found with the name " + name);
-       resolve("ADDUSER")
-     } else {
-       resolve(docs)
-     }
+    usersDB.find({ userName: name }, function (err, docs) {
+      console.log(docs);
+      if (docs.length == 0) {
+        console.log("No user was found with the name " + name);
+        resolve("ADDUSER")
+      } else {
+        resolve(docs)
+      }
+    })
   })
-})
-return queryResult
+  return queryResult
 }
 
 /**
@@ -210,7 +210,6 @@ function earnPointsWT(users) {
   usersDB.update({ $or: users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err, numReplaced, affectedDocuments) {
     console.log("Adding " + settings.Points.accumalation + " points to " + numReplaced + " users.");
     affectedDocuments.forEach(element => {
-      console.log(element)
       editUserTable(element.userName, element.role, element.points)
     });
   });

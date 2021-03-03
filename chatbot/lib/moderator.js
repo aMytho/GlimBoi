@@ -1,5 +1,8 @@
 // This file handles filtering and mod actions.
 
+var filterLevel = "none";
+var warnings = {};
+
 function timeoutByUsername(type, user, origin) {
     console.log(type + "timeout sent to " + user);
     var channelID = ApiHandle.getID();
@@ -164,4 +167,33 @@ function handleUnBan(user, origin, data) {
     }
 }
 
-module.exports = { banByUsername, timeoutByUsername, timeoutByUserID, unBanByUsername }
+
+function getFilter() {
+    return filterLevel
+}
+
+function setFilter(level) {
+    filterLevel = level
+}
+
+var badWords = ['a', 'b', 'c'];
+
+/**
+ * 
+ * @param {string} user 
+ * @param {string} message 
+ */
+function scanMessage(user, message) {
+    for (let i = 0; i < arrayofUsers.length; i++) {
+        if (arrayofUsers[i][0] == user) {
+            for (let index = 0; index < badWords.length; index++) {
+                if (message.indexOf(badWords[index]) !== -1) {
+                    console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
+                }
+                
+            }
+        }
+    }
+}
+
+module.exports = { banByUsername, scanMessage, timeoutByUsername, timeoutByUserID, unBanByUsername }

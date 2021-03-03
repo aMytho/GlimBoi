@@ -33,38 +33,22 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
     document.getElementById("userRemoveQuoteSearch").setAttribute('onclick', "quoteSearch(document.getElementById('userQuoteSearch').value)")
   })
   if (usersActive == false) {
-    console.log("Loading users.");
-    var x = UserHandle.getAll() //gets all users
-    x.then(function (data) { //then...
-      for (const property in data) {
-        var tempArray = [
-          `${data[`${property}`].userName}`,
-          `${data[`${property}`].points}`,
-          `${data[`${property}`].watchTime}`,
-          `${data[`${property}`].team}`,
-          `${data[`${property}`].role}`,
-          `${data[`${property}`].picture}`,
-          data[`${property}`].quotes,
-        ];
-        arrayofUsers.push(tempArray); //Pushes the commands to a variable which we use to build the table
-      }
-      console.log(arrayofUsers)
-      $(document).ready(function () {
-        loadUserTable()
-        //makes clicking the button in the quotes column show the quotes under the table
-        $('#userTable tbody').on('click', 'button', function () {
-          var data = userTable.row($(this).parents('tr')).data();
-          //alert( data[0] +"'s salary is: "+ data[ 5 ] ); Keep this as an example
-          console.log('Build table with ' + data)
-          makeList(data) //Builds the list of the users quotes.
-        });
-        $('#userTable tbody').on('click', 'a', function () {
-          var data = userTable.row($(this).parents('tr')).data();
-          loadLink("glimesh.tv/" + data[0])
-        });
+    console.log(arrayofUsers)
+    $(document).ready(function () {
+      loadUserTable()
+      //makes clicking the button in the quotes column show the quotes under the table
+      $('#userTable tbody').on('click', 'button', function () {
+        var data = userTable.row($(this).parents('tr')).data();
+        //alert( data[0] +"'s salary is: "+ data[ 5 ] ); Keep this as an example
+        console.log('Build table with ' + data)
+        makeList(data) //Builds the list of the users quotes.
       });
-      usersActive = true; //ensures we don't run this again.
-    })
+      $('#userTable tbody').on('click', 'a', function () {
+        var data = userTable.row($(this).parents('tr')).data();
+        loadLink("glimesh.tv/" + data[0])
+      });
+    });
+    usersActive = true; //ensures we don't run this again.
   } else {
     $(document).ready(function () {
       loadUserTable()
@@ -242,9 +226,7 @@ function removeUser() { //removes the user
          document.getElementById("removeUserMessage").innerHTML = "User Removed.";
          for (let i = 0; i < arrayofUsers.length; i++) {
           if (arrayofUsers[i][0] == deletedUser) {
-            console.log(
-              "The user " + deletedUser + " will now be deleted"
-            );
+            console.log("The user " + deletedUser + " will now be deleted");
             arrayofUsers.splice(i, 1); //Removes it from the array.
             var filteredData = userTable
               .rows()
@@ -267,9 +249,7 @@ function removeUser() { //removes the user
 function removeUserFromTable(deletedUser) {
   for (let i = 0; i < arrayofUsers.length; i++) {
     if (arrayofUsers[i][0] == deletedUser) {
-      console.log(
-        "The user " + deletedUser + " will now be deleted"
-      );
+      console.log("The user " + deletedUser + " will now be deleted");
       arrayofUsers.splice(i, 1); //Removes it from the array.
       var filteredData = userTable
         .rows()
@@ -381,11 +361,11 @@ function userSearch(user) {
 
 function editUserTable(user, role, points) {
   try {
+  points = Number(points);
   console.log(user, role, points);
   user = user.toLowerCase()
     for (let index = 0; index < arrayofUsers.length; index++) {
       if (arrayofUsers[index][0] == user) {
-        console.log('found')
         arrayofUsers[index][1] = points;
         arrayofUsers[index][4] = role;
         break;
