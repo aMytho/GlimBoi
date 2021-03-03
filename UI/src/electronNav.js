@@ -57,7 +57,7 @@ naviLinks.forEach((linkEl) => {
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
                 if (linkEl.id == "SettingsLink") {showSettings()}
-                if (linkEl.id = "Chat") {loadChatWindow();} //Builds the data table
+                if (linkEl.id == "ChatLink") {loadChatWindow();} //Builds the data table
             })
         }
     })
