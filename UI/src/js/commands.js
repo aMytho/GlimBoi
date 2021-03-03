@@ -14,25 +14,6 @@ function loadCommandTable() {
       console.log("Resetting command add modal.");
       document.getElementById("commandAddModalBody").innerHTML = addCommandModal();
      })
-    let commandData;
-    //Imports all the commands from the DB
-    CommandHandle.getAll().then(docs => { 
-      console.log(docs);
-      commandData = docs;
-      //We push the commands to the arrayofcommands var. The table uses this to build.
-      for (const property in commandData) {
-        var tempArray = [
-          `${commandData[`${property}`].commandName}`,
-          ` ${commandData[`${property}`].arguements}`,
-          ` ${commandData[`${property}`].message}`,
-          ` ${commandData[`${property}`].uses}`,
-          ` ${commandData[`${property}`].points}`,
-          ` ${commandData[`${property}`].rank}`,
-          ` ${commandData[`${property}`].special}`,
-        ];
-        arrayOfCommands.push(tempArray); //Pushes the commands to a variable which we use to build the table
-      }
-
       $(document).ready(function () {
         table = $("#example").DataTable({
           //Create a table with the arrayofcommands varibale.
@@ -66,7 +47,6 @@ function loadCommandTable() {
         console.log(event);
       });*/
       tblhasbeenopened = true;
-    });
   } else {
     //it has already been ran before. Building from arrayofcommands
     $(document).ready(function () {
@@ -395,7 +375,7 @@ function editReset() {
 // Adds a command to the table. 
 function addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank) {
   table.row.add([commandName, "null", commandData, commandUses, commandPoints, commandRank]);
-  var newcommand = [`${commandName}`, null, `${commandData}`, `${commandUses}`, `${commandPoints}`, `${commandRank}`];
+  var newcommand = [`${commandName}`, null, `${commandData}`, Number(`${commandUses}`), Number(`${commandPoints}`), `${commandRank}`];
   arrayOfCommands.push(newcommand); //Adds it to the array variable.
   table.draw(); //Show changes
 }

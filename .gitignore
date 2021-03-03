@@ -9,3 +9,4 @@ electron-builder.yml
 dist/
 .vscode/
 .env
+a.js
