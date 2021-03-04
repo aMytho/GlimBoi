@@ -18,7 +18,8 @@ var updatedSettings = {
         repeatSpamProtection: 15
     },
     chat: {
-        logging: false
+        logging: false,
+        filter: false
     }
 }
 
@@ -62,7 +63,8 @@ function getSettings() {
                 repeatSpamProtection: 15
             },
             chat: {
-                logging: false
+                logging: false,
+                filter: false
             }
         })
         try {
@@ -88,7 +90,8 @@ function getSettings() {
                 repeatSpamProtection: 15
             },
             chat: {
-                logging: false
+                logging: false,
+                filter: false
             }
         }
     }
@@ -121,6 +124,10 @@ function showSettings() {
     var loggingswitch = document.getElementById("loggingEnabled")
     if (settings.chat.logging == true) {
         loggingswitch.toggleAttribute("checked");
+    }
+    var filterSwitch = document.getElementById("filterEnabled");
+    if (settings.chat.filter == true) {
+        filterSwitch.toggleAttribute("checked")
     }
     // Commands - - -
     switch (settings.Commands.cooldown) {
@@ -226,7 +233,8 @@ function saveSettings() {
             repeatSpamProtection: getRepeatProtection()
         },
         chat: {
-            logging: document.getElementById("loggingEnabled").checked
+            logging: document.getElementById("loggingEnabled").checked,
+            filter: document.getElementById("filterEnabled").checked
         }
     }
     console.log(settings);
@@ -253,7 +261,8 @@ function resetSettings() {
             repeatSpamProtection: 15
         },
         chat: {
-            logging: false
+            logging: false,
+            filter: false
         }
     }
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
@@ -265,6 +274,7 @@ function resetSettings() {
 //applies the settings. THis is ran at launch after the file is read. Once finished the bot is fully ready
 function updateSettings() {
     ChatHandle.loggingEnabled(settings.chat.logging);
-    CommandHandle.cooldownChange(settings.Commands.cooldown)
-    ChatHandle.repeatSettings(settings)
+    CommandHandle.cooldownChange(settings.Commands.cooldown);
+    ChatHandle.repeatSettings(settings);
+    ModHandle.updateFilter(settings.chat.filter)
 }
