@@ -1,209 +1,208 @@
-<div class="row mx-1">
-  <div class="col-lg-2 col-12 row mt-3 mx-auto" id="command-btn-panel">
-      <div class="btn-group-vertical d-inline-block row mx-auto justify-content-md-center">
+<div class="card-deck m-3">
+  <div class="col-lg-2 col-12 p-0">
+    <div class="card glimPanel m-0 mr-lg-2" id="command-btn-panel">
+      <div class="btn-group-vertical pb-2 pb-lg-0 d-inline-block row mx-auto justify-content-md-center">
         <a class="offset-lg-0 offset-1 col-lg-12 col-2 btn btn-primary mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
         <a class="col-lg-12 col-2 btn btn-success mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
         <a class="col-lg-12 col-2 btn btn-danger mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
         <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalVar">View Variables</a>
         <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalCMD">GlimBoi Commands</a>
       </div>
+    </div>
   </div>
-  <div class="col-lg-10 mx-lg-0 col-11 mx-auto glimPanel whiteText mt-3 pt-3 overflow-auto w-100">
-     <table id="example" class="display table w-100">
-     </table>
+  <div class="col-lg-10 mx-lg-0 mt-3 mt-lg-2 col-12 p-0">
+    <div class="card glimPanel  whiteTex overflow-auto p-3 w-100 m-0">
+      <table id="example" class="display table w-100"></table>
+    </div>
   </div>
 </div>
+
 <!-- Modal: Add Command -->
-<div class="modal fade" id="modalCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText" id="removeModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="myModalLabel">Add a command</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body" id="commandAddModalBody">
-           <table class="table table-hover">
-              <thead>
-                 <tr>
-                    <th>Command</th>
-                    <th>Data</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Name of command">Name</td>
-                    <td><div id="addCommandName" contentEditable="true" data-text="ex. !follow"></div></td>
-                 </tr>
-                 <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Arguments">Arguments</td>
-                    <td><div id="addCommandArguements" contentEditable="true" data-text="null"></div></td>
-                 </tr>
-                 <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
-                    <td placeholder="test"><div id="addCommandData" contentEditable="true" data-text="Command response"></div></td>
-                 </tr>
-                 <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
-                    <td contenteditable="true" id="addCommandPoints">0</td>
-                 </tr>
-                 <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
-                    <td contenteditable="true" id="addCommandUses">0</td>
-                 </tr>
-                 <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
-                    <td id="addCommandRank">
-                       <select name="cars" id="rankChoiceAdd" disabled>
-                          <option value="Everyone">Everyone (Default)</option>
-                          <option value="Moderator">Moderator</option>
-                          <option value="Editor">Editor</option>
-                          <option value="Streamer">Streamer</option>
-                       </select>
-                    </td>
-                 </tr>
-                 <tr>
-                  <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
-                  <td id="commandRepeat">
-                     <select name="repeatableCommand" id="commandRepeatableChoice">
-                        <option value="false">Disabled (Default)</option>
-                        <option value="true">Enabled</option>
-                     </select>
-                  </td>
-               </tr>
-              </tbody>
-           </table>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p id="errorMessageAdd"></p>
-           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-primary" onclick="checkNewCommand()" id="addCommandButtonFinish">Add</button>
-        </div>
-     </div>
+    <div class="modal-content glimPanel whiteText" id="removeModal">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabel">Add a command</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="commandAddModalBody">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Name of command">Name</td>
+              <td><div id="addCommandName" contentEditable="true" data-text="ex. !follow"></div></td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Arguments">Arguments</td>
+              <td><div id="addCommandArguements" contentEditable="true" data-text="null"></div></td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
+              <td placeholder="test"><div id="addCommandData" contentEditable="true" data-text="Command response"></div></td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
+              <td contenteditable="true" id="addCommandPoints">0</td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
+              <td contenteditable="true" id="addCommandUses">0</td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
+              <td id="addCommandRank">
+                <select name="cars" id="rankChoiceAdd" disabled>
+                  <option value="Everyone">Everyone (Default)</option>
+                  <option value="Moderator">Moderator</option>
+                  <option value="Editor">Editor</option>
+                  <option value="Streamer">Streamer</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
+              <td id="commandRepeat">
+                <select name="repeatableCommand" id="commandRepeatableChoice">
+                  <option value="false">Disabled (Default)</option>
+                  <option value="true">Enabled</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageAdd"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-primary" onclick="checkNewCommand()" id="addCommandButtonFinish">Add</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal: modalCart -->
 
 <!-- Modal: Edit Command -->
-<div class="modal fade" id="modalEditCommand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalEditCommand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText" id="editModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="myModalLabelEdit">Edit a command</h4>
-        </div>
+    <div class="modal-content glimPanel whiteText" id="editModal">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabelEdit">Edit a command</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
         <!--Body-->
         <div class="modal-body">
-           <!--Body-->
-        <div class="modal-body">
-         <div class="icon-input-container">
+          <div class="icon-input-container">
             <input class="icon-input" type="text" placeholder="Command Name" id="commandEditInput">
             <p id="editCommandMessage" class="errorMessage"></p>
+          </div>
         </div>
-        </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p id="errorMessageEdit"></p>
-           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-success" onclick="checkEditCommand()" id="editCommandButtonFinish">Edit</button>
-        </div>
-     </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageEdit"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-success" onclick="checkEditCommand()" id="editCommandButtonFinish">Edit</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal: modalCart -->
 
-<div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="myModalLabelDelete">Remove a Command</h4>
+    <div class="modal-content glimPanel whiteText">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabelDelete">Remove a Command</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Command Name" id="commandRemoveInput">
+          <p id="removeCommandMessage" class="errorMessage"></p>
         </div>
-        <!--Body-->
-        <div class="modal-body">
-         <div class="icon-input-container">
-            <input class="icon-input" type="text" placeholder="Command Name" id="commandRemoveInput">
-            <p id="removeCommandMessage" class="errorMessage"></p>
-        </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p id="errorMessageDelete"></p>
-           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-           <button class="btn btn-outline-danger" onclick="checkRemoveCommand()" id="removeCommandButtonFinish">Remove</button>
-        </div>
-     </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageDelete"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-danger" onclick="checkRemoveCommand()" id="removeCommandButtonFinish">Remove</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal: modalCart -->
 
 <!--Modal variables-->
-<div class="modal fade" id="modalVar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalVar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100">Variables Info</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body">
+    <div class="modal-content glimPanel whiteText">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">Variables Info</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
         <p class="whiteText mx-auto ">Variables are like a map for your commands. They tell the commands how to get certain information.</p>
         <p class="whiteText mx-auto">Let's say you wanted a command to show the current game. You could manually update the command every stream. Instead you can use a variable.</p>
         <p class="whiteText mx-auto">Variables will search for the data that they are supposed to hold and insert themselves into the command. A complete list of them is found below.</p>
         <ul>
-           <li>$target : The first word after the command. ex. !so Mytho : Go follow Mytho at glimesh.tv/Mytho</li>
-           <li>$user : The user who said the command</li>
-           <li>$watchtime : The amount of watchtime of the user in minutes</li>
-           <li>$cmdcount : The number of times the command has been used.</li>
-           <li>$advice : Returns random advice.</li>
-           <li>$dadjoke : Returns a dad joke. These may be longer than the message limit.</li>
+          <li>$target : The first word after the command. ex. !so Mytho : Go follow Mytho at glimesh.tv/Mytho</li>
+          <li>$user : The user who said the command</li>
+          <li>$watchtime : The amount of watchtime of the user in minutes</li>
+          <li>$cmdcount : The number of times the command has been used.</li>
+          <li>$advice : Returns random advice.</li>
+          <li>$dadjoke : Returns a dad joke. These may be longer than the message limit.</li>
         </ul>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p>Need more info? View the <a href="#" onclick="loadLink('amytho.github.io/GlimBoi/docs/intro/commands/')">GlimBoi Tutorials</a></p>
-           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        </div>
-     </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p>Need more info? View the <a href="#" onclick="loadLink('amytho.github.io/GlimBoi/docs/intro/commands/')">GlimBoi Tutorials</a></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal: modalCart -->
 
-<div class="modal fade" id="modalCMD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalCMD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
   <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100">System Commands</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body">
+    <div class="modal-content glimPanel whiteText">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">System Commands</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
         <p class="whiteText mx-auto ">GlimBoi has built in commands (system commands). These commands cannot be deleted or modified.</p>
         <p class="whiteText mx-auto">You should avoid having commands with conflicting names. A system command will take priority.</p>
         <p class="whiteText mx-auto">System commands help the bot and inform your viewers about its capabilities. A complete list of them is found below.</p>
         <ul>
-           <li>!commands : A list of commands</li>
-           <li>!quote : Sends a random quote.</li>
-           <li>!user (add/new, remove/del/delete) : User functions. Ex '!user new Mytho' would add Mytho to the user list.</li>
-           <li>!quote (add/new) USER QUOTE : Adds a new quote. Ex. !quote add Mytho Hello world!</li>
-           <li>!points : Returns how many points you have.</li>
-           <li>!points top : Returns the user with the most points.</li>
-           <li>!points NUMBER : Returns the points of the user with the position you typed.</li>
+          <li>!commands : A list of commands</li>
+          <li>!quote : Sends a random quote.</li>
+          <li>!user (add/new, remove/del/delete) : User functions. Ex '!user new Mytho' would add Mytho to the user list.</li>
+          <li>!quote (add/new) USER QUOTE : Adds a new quote. Ex. !quote add Mytho Hello world!</li>
+          <li>!points : Returns how many points you have.</li>
+          <li>!points top : Returns the user with the most points.</li>
+          <li>!points NUMBER : Returns the points of the user with the position you typed.</li>
         </ul>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p>Need more info? View the <a href="#" onclick="loadLink('amytho.github.io/GlimBoi/docs/intro/commands/')">GlimBoi Tutorials</a></p>
-           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        </div>
-     </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p>Need more info? View the <a href="#" onclick="loadLink('amytho.github.io/GlimBoi/docs/intro/commands/')">GlimBoi Tutorials</a></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal: modalCart -->

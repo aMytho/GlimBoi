@@ -1,198 +1,186 @@
-<div class="row">
-   <div class="col-6 mx-auto mt-3">
-     <div class="card body glimPanel ml-3">
-       <div class="card-body px-0">
-          <h3 class="whiteText text-center">Chat Connections</h3>
-          <div id="chatConnections">
-          </div>
-       </div>
+<div class="card-deck m-3">
+  <div class="card glimPanel col-lg-6 mx-1">
+    <div class="card-body">
+      <h3 class="whiteText text-center" id="pointName">Chat</h3>
+      <div id="chatConnections">
+      </div>
     </div>
- </div>
- <div class="col-6 mx-auto mt-3">
-  <div class="card glimPanel h-100">
-   <div class="card-body glimPanel">
-     <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
-     <p class="whiteText text-center">_______________</p>
-     <button class="btn btn-success btn-block mt-2" type="submit" onclick="showJoinModal()">Join Chat</button>
-     <button class="btn btn-danger btn-block mt-2" type="submit" onclick="ChatHandle.disconnect()">Leave Chat</button>
-     <p class="whiteText text-center">_______________</p>
-     <div class="row">
+  </div>
+  <div class="card glimPanel col-lg-6 mx-1">
+    <div class="card-body">
+      <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
+      <p class="whiteText text-center">_______________</p>
+      <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="showJoinModal()">Join Chat</button>
+      <button class="btn btn-danger btn-block mt-2" type="submit" id="ComingSoon" onclick="ChatHandle.disconnect()">Leave Chat</button>
+      <p class="whiteText text-center">_______________</p>
+      <div class="row">
         <div class="col-4 mx-auto">
           <h3 class="whiteText text-center" id="fasUsers"><span><i class="fas fa-users"></i></span> 0</h3>
         </div>
         <div class="col-4 mx-auto">
           <h3 class="whiteText text-center" id="fasHeart"><span><i class="fas fa-heart"></i></span> 0</h3>
-       </div>
-       <div class="col-4 mx-auto">
+        </div>
+        <div class="col-4 mx-auto">
           <h3 class="whiteText text-center" id="fasStar"><i class="fas fa-star"></i></span> 0</h3>
-       </div>
-     </div>
-     <div class="row mt-1">
-        <div class="col text-center">
-         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
-         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
-         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
-         <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
         </div>
-     </div>
-   </div>
-   </div>
- </div>
- </div>
-
- <div class="row ">
-    <div class="col-6 mx-auto">
-       <div class="card body glimPanel ml-3 mt-2">
-          <div class="card-body">
-             <div class="col-12 message_section">
-                <div class="row">
-                   <!--top of the chat-->
-                <div class="new_message_head glimPanel whiteText">
-                <div class="pull-left">
-
-                </div>
-                <div class="pull-right">
-
-                </div>
-                </div>
-                <!--chat-->
-                <div class="chat_area" id="chatContainer">
-                <ul class="list-unstyled chatList" id="chatList">
-
-                   <li class="left clearfix admin_chat" name='mytho'>
-                      <div class="chat-body1 clearfix testing" oncontextmenu="testingStuff(event)" name='mytho'>
-                         <span class="chat-img1 pull-left" name='mytho'>
-                            <img src="Mytho.png" alt="User Avatar" class="rounded-circle" name='mytho'>
-                         </span>
-                         <p name='mytho'><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
-                         <!--<div class="whiteText pull-left">09:40PM</div> -->
-                         </div>
-                   </li>
-
-                </ul>
-             </div>
-                <!--chat_area-->
-                   <div class="message_write">
-                 <textarea class="form-control" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
-                <div class="clearfix"></div>
-                <div class="chat_bottom">
-          <a href="#" class="pull-right btn btn-success" id="sendMessage" onclick="sendMessage()">Send</a>
-       </div>
-                </div>
-                </div>
-                  </div>
-          </div>
-       </div>
-    </div>
-    <div class="col-6 mx-auto">
-       <div class="card body glimPanel mt-2">
-          <div class="card-body">
-                   <h3 class="whiteText text-center">GlimBoi Actions</h3>
-                   <p class="whiteText text-center">_______________</p>
-                   <h5 class="whiteText text-center">Demo Example (Coming soon!)</h5>
-                   <table class="table whiteText mt-2">
-                      <thead>
-                        <tr>
-                          <th scope="col">User</th>
-                          <th scope="col">Action</th>
-                          <th scope="col">Effect</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">Billy</th>
-                          <td>Time out</td>
-                          <td>15 min</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Bob</th>
-                          <td>Ban</td>
-                          <td>Permanant</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">aUser</th>
-                          <td>Command added</td>
-                          <td>!socials</td>
-                        </tr>
-                        <tr>
-                         <th scope="row">aUser</th>
-                         <td>Command added</td>
-                         <td>!socials</td>
-                       </tr>
-                       <tr>
-                         <th scope="row">aUser</th>
-                         <td>Command added</td>
-                         <td>!socials</td>
-                       </tr>
-                       <tr>
-                        <th scope="row">aUser</th>
-                        <td>Command added</td>
-                        <td>!test</td>
-                      </tr>
-                      </tbody>
-                    </table>
-          </div>
-       </div>
-    </div>
- </div>
-
-
-
-
- <!-- Modal: Which Chat? -->
- <div class="modal fade" id="modalChat" tabindex="-1" role="dialog" aria-labelledby="chat modal"
-   aria-hidden="true" style="overflow-wrap: break-word;">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="chatModal">
-         <!--Header-->
-         <div class="modal-header text-center">
-            <h4 class="modal-title w-100" id="myModalChat">Chat</h4>
-         </div>
-         <!--Body-->
-         <div class="modal-body" id="modalChatBody">
-         <p id="chatMessageText">Which channel do you want GlimBoi do join?</p>
-         <input type="text" class="form-control" placeholder="Channel" id="whichChannel">
-         <p id="chatMessageSolution" class="mt-1">You can join ANY channel but you are restricted by the bots permissions in that channel. Your bot can still be timed out and banned just like any other user.</p>
-         </div>
-         <!--Footer-->
-         <div class="modal-footer">
-            <p id="chatMessageAdd"></p>
-            <p id="chatMessageAdd"></p>
-            <button id="chat-modal-btn-close" type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-            <button id="chat-modal-btn-join" type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
-         </div>
       </div>
-   </div>
- </div>
- <!-- Modal: Which Chat -->
-
- <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
-   <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
-   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>
-   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
- </div>
-
-  <!-- Modal: Moderate? -->
-  <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal"
-  aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText" id="chatModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="actionType">Action</h4>
+      <div class="row mt-1">
+        <div class="col text-center">
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
         </div>
-        <!--Body-->
-        <div class="modal-body" id="modalChatBody">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-deck m-3 mt-0 ">
+  <div class="card glimPanel col-lg-6 mx-1">
+    <div class="card-body">
+      <div class="col-12 message_section">
+        <div class="row">
+          <!--top of the chat-->
+          <div class="new_message_head glimPanel whiteText">
+            <div class="pull-left">
+
+            </div>
+            <div class="pull-right">
+
+            </div>
+          </div>
+          <!--chat-->
+          <div class="chat_area" id="chatContainer">
+            <ul class="list-unstyled chatList" id="chatList">
+
+              <li class="left clearfix admin_chat" name='mytho'>
+                <div class="chat-body1 clearfix testing" oncontextmenu="testingStuff(event)" name='mytho'>
+                  <span class="chat-img1 pull-left" name='mytho'>
+                    <img src="Mytho.png" alt="User Avatar" class="rounded-circle" name='mytho'>
+                  </span>
+                  <p name='mytho'><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
+                  <!--<div class="whiteText pull-left">09:40PM</div> -->
+                </div>
+              </li>
+
+            </ul>
+          </div>
+          <!--chat_area-->
+          <div class="message_write">
+            <textarea class="form-control" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
+            <div class="clearfix"></div>
+            <div class="chat_bottom">
+              <a href="#" class="pull-right btn btn-success" id="sendMessage" onclick="sendMessage()">Send</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card glimPanel col-lg-6 mx-1">
+    <div class="card-body">
+      <h3 class="whiteText text-center">GlimBoi Actions</h3>
+      <p class="whiteText text-center">_______________</p>
+      <h5 class="whiteText text-center">Demo Example (Coming soon!)</h5>
+      <table class="table whiteText mt-2">
+        <thead>
+          <tr>
+            <th scope="col">User</th>
+            <th scope="col">Action</th>
+            <th scope="col">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Billy</th>
+            <td>Time out</td>
+            <td>15 min</td>
+          </tr>
+          <tr>
+            <th scope="row">Bob</th>
+            <td>Ban</td>
+            <td>Permanant</td>
+          </tr>
+          <tr>
+            <th scope="row">aUser</th>
+            <td>Command added</td>
+            <td>!socials</td>
+          </tr>
+          <tr>
+            <th scope="row">aUser</th>
+            <td>Command added</td>
+            <td>!socials</td>
+          </tr>
+          <tr>
+            <th scope="row">aUser</th>
+            <td>Command added</td>
+            <td>!socials</td>
+          </tr>
+          <tr>
+            <th scope="row">aUser</th>
+            <td>Command added</td>
+            <td>!test</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal: Which Chat? -->
+<div class="modal fade" id="modalChat" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText" id="chatModal">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalChat">Chat</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalChatBody">
+        <p id="chatMessageText">Which channel do you want GlimBoi do join?</p>
+        <input type="text" class="form-control" placeholder="Channel" id="whichChannel">
+        <p id="chatMessageSolution" class="mt-1">You can join ANY channel but you are restricted by the bots permissions in that channel. Your bot can still be timed out and banned just like any other user.</p>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="chatMessageAdd"></p>
+        <p id="chatMessageAdd"></p>
+        <button id="chat-modal-btn-close" type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        <button id="chat-modal-btn-join" type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal: Which Chat -->
+
+<div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
+  <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
+  <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>
+  <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
+</div>
+
+<!-- Modal: Moderate? -->
+<div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText" id="chatModal">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="actionType">Action</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalChatBody">
         <input type="text" class="form-control" placeholder="User" id="whichUser">
         <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p id="moderateMessage"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-           <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
-        </div>
-     </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="moderateMessage"></p>
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Modal: Moderate -->
