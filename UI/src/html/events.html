@@ -1,160 +1,150 @@
-<div class="row d-flex align-items-stretch">
-    <div class="col-3 mx-auto mt-3">
-        <div class="card glimPanel h-100 ml-3">
-            <span class="badge badge-info">Lasts for 1 minute! Type !enter to join.</span>
-            <div class="card-body glimPanel text-center">
-              <h3 class="whiteText" id="chatName">Raffle</h3>
-              <p class="whiteText">_______________</p>
-              <p class="whiteText">Starts a raffle. One winner is chosen.</p>
-              <button class="btn btn-success mt-2" type="submit" id="leaveChat" onclick="startRaffle()">Start</button>
-              <button class="btn btn-info mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalRaffleList">View Participants</button>
-              <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopRaffle()">End</button>
-              <h4 class="whiteText mt-3" id="raffleWinner"></h4>
-            </div>
-            </div>
-     </div>
-     <div class="col-3 mx-auto mt-3">
-        <div class="card glimPanel h-100 ml-3">
-            <span class="badge badge-info">Lasts for 1 minte! !vote CHOICE</span>
-            <div class="card-body glimPanel text-center">
-              <h3 class="whiteText" id="chatName">Poll</h3>
-              <p class="whiteText">_______________</p>
-              <p class="whiteText">Starts a Poll. Responses listed at the end of the poll.</p>
-              <button class="btn btn-success mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalPoll">Start</button>
-              <button class="btn btn-info mt-2 disabled" disabled type="submit" id="leaveChat" data-toggle="modal" data-target="#pollUserList">View Poll (Coming Soon!)</button>
-              <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopPoll()">End</button>
-              <h4 class="whiteText mt-3" id="raffleWinner"></h4>
-            </div>
-            </div>
-     </div>
-     <div class="col-3 mx-auto mt-3">
-        <div class="card glimPanel h-100 ml-3">
-            <span class="badge badge-info">New Game: Glimrealm</span>
-            <div class="card-body glimPanel text-center">
-              <h3 class="whiteText" id="chatName">Chat Based Games</h3>
-              <p class="whiteText">_______________</p>
-              <p class="whiteText">The following games can only be played in chat.</p>
-              <button class="btn btn-success mt-2" type="submit" data-toggle="modal" data-target="#chatGameListModal">View</button>
-            </div>
-            </div>
-     </div>
-
+<div class="card-deck m-3 ">
+  <div class="card col-lg-4 glimPanel p-0 mt-3">
+    <span class="badge badge-info">Lasts for 1 minute! Type !enter to join.</span>
+    <div class="card-body glimPanel text-center">
+      <h3 class="whiteText" id="chatName">Raffle</h3>
+      <p class="whiteText">_______________</p>
+      <p class="whiteText">Starts a raffle. One winner is chosen.</p>
+      <button class="btn btn-success mt-2" type="submit" id="leaveChat" onclick="startRaffle()">Start</button>
+      <button class="btn btn-info mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalRaffleList">View Participants</button>
+      <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopRaffle()">End</button>
+      <h4 class="whiteText mt-3" id="raffleWinner"></h4>
+    </div>
   </div>
-  
+  <div class="card col-lg-4 glimPanel p-0 mt-3">
+    <span class="badge badge-info">Lasts for 1 minte! !vote CHOICE</span>
+    <div class="card-body glimPanel text-center">
+      <h3 class="whiteText" id="chatName">Poll</h3>
+      <p class="whiteText">_______________</p>
+      <p class="whiteText">Starts a Poll. Responses listed at the end of the poll.</p>
+      <button class="btn btn-success mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalPoll">Start</button>
+      <button class="btn btn-info mt-2 disabled" disabled type="submit" id="leaveChat" data-toggle="modal" data-target="#pollUserList">View Poll (Coming Soon!)</button>
+      <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopPoll()">End</button>
+      <h4 class="whiteText mt-3" id="raffleWinner"></h4>
+    </div>
+  </div>
+  <div class="card col-lg-4 glimPanel p-0 mt-3">
+    <span class="badge badge-info">New Game: Glimrealm</span>
+    <div class="card-body glimPanel text-center">
+      <h3 class="whiteText" id="chatName">Chat Based Games</h3>
+      <p class="whiteText">_______________</p>
+      <p class="whiteText">The following games can only be played in chat.</p>
+      <button class="btn btn-success mt-2" type="submit" data-toggle="modal" data-target="#chatGameListModal">View</button>
+    </div>
+  </div>
+
+</div>
+
 
 <!-- Modal: Raffle User List -->
-<div class="modal fade" id="modalRaffleList" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="raffleList">
-            <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">User List</h4>
-            </div>
-            <!--Body-->
-            <div class="modal-body" id="modalRaffleListBody">
-                <p class="whitetext">Note that if a user joins multiple times they will only be counted once.</p>
-                <ul id="RaffleUserList">
-                  </ul>
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
-                <p id="RaffleListModalText"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-            </div>
-        </div>
+<div class="modal fade" id="modalRaffleList" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText" id="raffleList">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">User List</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalRaffleListBody">
+        <p class="whitetext">Note that if a user joins multiple times they will only be counted once.</p>
+        <ul id="RaffleUserList">
+        </ul>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="RaffleListModalText"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Modal: Raffle User List -->
 <!-- Modal: Poll -->
-<div class="modal fade" id="modalPoll" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="pollList">
-            <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Creata a Poll</h4>
-            </div>
-            <!--Body-->
-            <div class="modal-body" id="modalPollBody">
-                <p class="text-center">Any blank options will be removed. The question and options must not exceed the chat limit.</p>
-                <table class="table table-hover" id="pollData">
-                    <thead>
-                       <tr>
-                          <th>Type</th>
-                          <th>Data</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                       <tr>
-                          <td data-toggle="tooltip" data-placement="top" title="The poll question">Question</td>
-                          <td contenteditable="true" id="pollQuestion"></td>
-                       </tr>
-                       <tr>
-                          <td data-toggle="tooltip" data-placement="top" title="Poll response">Option</td>
-                          <td contenteditable="true" class="pollOption"></td>
-                       </tr>
-                    </tbody>
-                 </table>
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
-                <p id="PollModalText"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-info" onclick="$('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption'></td></tr>`)">Add Option</button>
-                <button type="button" class="btn btn-outline-success" onclick="startPoll(null, document.getElementById('pollQuestion').innerText, true)">Start Poll</button>
-            </div>
-        </div>
+<div class="modal fade" id="modalPoll" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText" id="pollList">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">Creata a Poll</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalPollBody">
+        <p class="text-center">Any blank options will be removed. The question and options must not exceed the chat limit.</p>
+        <table class="table table-hover" id="pollData">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="The poll question">Question</td>
+              <td contenteditable="true" id="pollQuestion"></td>
+            </tr>
+            <tr>
+              <td data-toggle="tooltip" data-placement="top" title="Poll response">Option</td>
+              <td contenteditable="true" class="pollOption"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="PollModalText"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-outline-info" onclick="$('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption'></td></tr>`)">Add Option</button>
+        <button type="button" class="btn btn-outline-success" onclick="startPoll(null, document.getElementById('pollQuestion').innerText, true)">Start Poll</button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Modal: Poll -->
 <!-- Modal: Poll User List -->
-<div class="modal fade" id="pollUserList" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="raffleList">
-            <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">User List</h4>
-            </div>
-            <!--Body-->
-            <div class="modal-body" id="modalRaffleListBody">
-                <p class="whitetext">Note that if a user joins multiple times they will only be counted once.</p>
-                <ul id="pollResults">
-                  </ul>
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
-                <p id="RaffleListModalText"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-            </div>
-        </div>
+<div class="modal fade" id="pollUserList" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText" id="raffleList">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">User List</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalRaffleListBody">
+        <p class="whitetext">Note that if a user joins multiple times they will only be counted once.</p>
+        <ul id="pollResults">
+        </ul>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="RaffleListModalText"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Modal: Poll User List -->
 
 <!-- Modal: Poll User List -->
-<div class="modal fade" id="chatGameListModal" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
-            <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Chat Games List</h4>
-            </div>
-            <!--Body-->
-            <div class="modal-body" >
-                <p class="whitetext">In a future update these games will have various settings.</p>
-                <ul id="pollResults">
-                    <li>GlimRealm: Enter the world of the Glimdrops. !glimrealm</li>
-                  </ul>
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
-                <p id="RaffleListModalText"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-            </div>
-        </div>
+<div class="modal fade" id="chatGameListModal" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">Chat Games List</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" >
+        <p class="whitetext">In a future update these games will have various settings.</p>
+        <ul id="pollResults">
+          <li>GlimRealm: Enter the world of the Glimdrops. !glimrealm</li>
+        </ul>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="RaffleListModalText"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Modal: Poll User List -->
