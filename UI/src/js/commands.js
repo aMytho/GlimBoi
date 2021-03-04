@@ -196,8 +196,14 @@ function checkNewCommand() {
   if (repeat == "false") {repeat = false} else {repeat = true}
 
   commandRank = document.getElementById("rankChoiceAdd").value;
-  commandName = commandName.toLowerCase(); // All DB data is lower case
   commandName = commandName.trim(); // removes any extra spaces before or after the command.
+  if (commandName.endsWith("&nbsp;")) {
+    isvalid = isvalid-1;
+    document.getElementById("errorMessageAdd").innerHTML = "Commands cannot end with a space";
+    setTimeout(() => {
+      document.getElementById("errorMessageAdd").innerHTML = "";
+    }, 4000);
+  }
 
   if (isvalid == 4) {
     commandName = commandName.toLowerCase();
