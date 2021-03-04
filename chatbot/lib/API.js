@@ -180,7 +180,6 @@ async function getBotAccount() {
    })
    .catch((err) => console.error(err));
   });
-  console.log("Completed bot username request");
  return bot
  }
 
