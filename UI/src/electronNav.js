@@ -77,7 +77,8 @@ $(document).on('keypress','input, textarea', function (event) {
 
     var id = $(this).attr('id');
 
-    if (id === 'commandEditInput') $('#addCommandButtonFinish').click()
+    if (id === 'commandEditInput') $('#editCommandButtonFinish').click()
+    if (id === 'commandRemoveInput') $('#removeCommandButtonFinish').click()
     if (id === 'messageArea') $('#sendMessage').click()
     if (id === 'quoteRemoveSearch') $('#userRemoveQuoteSearch').click()
     if (id === 'userAddInput') $('#addUserFinish').click()
