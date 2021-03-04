@@ -1,6 +1,6 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
 var CommandHandle = require(appData[0] + "/chatbot/lib/commands.js");
-CommandHandle.updatePath(appData[1]); 
+CommandHandle.updatePath(appData[1]);
 var arrayOfCommands = []; //An array that stores the commands from the DB so we don't import them every change.
 var tblhasbeenopened = false; //Ensures we don't run this function evey time the table is opened.
 var table; //The physical table for the UI
@@ -198,10 +198,13 @@ function checkNewCommand() {
   commandRank = document.getElementById("rankChoiceAdd").value;
   commandName = commandName.toLowerCase(); // All DB data is lower case
   commandName = commandName.trim(); // removes any extra spaces before or after the command.
+
   if (isvalid == 4) {
+    commandName = commandName.toLowerCase();
+
     console.log(commandName, commandData, commandPoints, commandUses, commandRank, null, repeat);
     //Adds a command to the DB
-    CommandHandle.addCommand(commandName, null, commandData, commandUses, commandPoints, commandRank,null, repeat); 
+    CommandHandle.addCommand(commandName, null, commandData, commandUses, commandPoints, commandRank,null, repeat);
     //adds a row to the table with the new command info
     addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank)
     $("#modalCart").modal("hide");
@@ -373,7 +376,7 @@ function editReset() {
   document.getElementById("editModal").innerHTML = editCommandReset()
 }
 
-// Adds a command to the table. 
+// Adds a command to the table.
 function addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank) {
   table.row.add([commandName, "null", commandData, commandUses, commandPoints, commandRank]);
   var newcommand = [`${commandName}`, null, `${commandData}`, Number(`${commandUses}`), Number(`${commandPoints}`), `${commandRank}`];
