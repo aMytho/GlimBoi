@@ -1,7 +1,5 @@
 // This file handles filtering and mod actions.
 
-const { compileFunction } = require("vm");
-
 var filterLevel = false;
 var warnings = {};
 var badWords;
