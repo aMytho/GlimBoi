@@ -1,4 +1,5 @@
 //This file handles connecting the bot to a chat.
+const { resolve } = require("path");
 const WebSocket = require("ws"); // websocket library
 var connection; // the websocket connection
 var chatID = "" // the channel ID
@@ -16,6 +17,67 @@ var currentUsers = [] // Array of current users.
 var checkForUsers;
 
 var messageHistoryCount = 20;
+
+var recentChannelsDB;
+var path = "./";
+
+/**
+ * Updates the path to the DB. The path variable is updated
+ */
+function updatePath(GUI) {
+  console.log("User path is " + GUI);
+  path = GUI;
+  recentChannelsDB = new Datastore({ filename: `${path}/data/recentChannels.db`, autoload: true });
+}
+
+/**
+ * Adds a recent channel to GlimBoi
+ * @param {string} object The channel object
+ * @returns If successful returns the user.
+ */
+async function addRecentChannel(channel, timestamp) {
+  var channelDoc = await new Promise(done => {
+    if (channel == 'GlimBoi') done(null); // no
+
+    recentChannelsDB.find({ channel: channel }, function (err, doc) {
+      if (doc.length == 0) {
+        console.log("No channel was found with the name " + channel);
+        recentChannelsDB.insert({channel: channel, timestamp: timestamp}, function (err, doc) {
+          console.log(doc);
+          done(doc)
+        });
+      } else {
+        recentChannelsDB.update({ channel: channel }, { $set: {timestamp: timestamp } }, {returnUpdatedDocs: true}, function (err, dic) {
+          console.log(doc);
+          done(doc)
+        });
+      }
+    })
+  })
+  return channelDoc;
+}
+
+// TODO: Implement
+async function removeRecentChannel(channel) {
+  return new Promise(resolve => {
+    recentChannelsDB.remove({ channel: channel }, { multi: true }, function (err, doc) {
+      resolve()
+    });
+  });
+}
+
+/**
+ * Get all recent Channels
+ * @returns Returns array of channel objects
+ */
+async function getAllRecentChannels() {
+  return new Promise(resolve => {
+    recentChannelsDB.find({}, function (err, docs) {
+      console.log('Returning all recent channels.');
+      resolve(docs)
+    })
+  })
+}
 
 /**
  * Tries to join a glimesh chat. Returns an error if the attempt failed.
@@ -629,4 +691,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { updatePath, addRecentChannel, getAllRecentChannels, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

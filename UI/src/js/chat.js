@@ -1,10 +1,31 @@
 var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
 var ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
 var isDev = false; // We assume they are on a production release.
+ChatHandle.updatePath(appData[1]);
 
 var contextItem;
 var globalChatMessages;
+var botAccount;
 
+async function getBot() {
+  return new Promise(resolve => {
+    try {
+      AuthHandle.getToken().then(data => {
+        if (data == undefined || data.length == 0 ) {
+          resolve(null);
+        } else {
+          ApiHandle.updatePath(data); //Sends the API module our access token.
+          ApiHandle.getBotAccount().then(data => {
+            resolve(data);
+          });
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      resolve(null);
+    }
+  })
+}
 /**
  * For the Join Chat modal, pulls the bots username from the API and autofills whichChannel
  */
@@ -13,29 +34,25 @@ function showJoinModal()
     $('#modalChat').modal('show'); // Do this first in case there are issues later on
 
     if (document.getElementById("whichChannel").value !== '') {
-        return; // No point re-requesting if we already have it
+      return; // No point re-requesting if we already have it
     }
 
     try {
-        AuthHandle.getToken().then(data => {
-            if (data == undefined || data.length == 0 ) {
-                return; // No auth
-            } else {
-                ApiHandle.updatePath(data); //Sends the API module our access token.
-                ApiHandle.getBotAccount().then(data => {
-                    console.log(data);
-
-                    // Ensure we have auth but also check user hasn't started typing!
-                    if (data.status !== 'AUTHNEEDED' && document.getElementById("whichChannel").value === '') {
-                        document.getElementById("whichChannel").value = data;
-                    }
-                });
-            }
+      if (botAccount === null) {
+        getBot().then(botName => {
+          botAccount = botName;
+          if (botName.status !== 'AUTHNEEDED' && document.getElementById("whichChannel").value === '') {
+            document.getElementById("whichChannel").value = botName;
+          }
         });
+      } else {
+        if (botAccount.status !== 'AUTHNEEDED' && document.getElementById("whichChannel").value === '') {
+          document.getElementById("whichChannel").value = botAccount;
+        }
+      }
     } catch (e) {
-        console.log(e);
+      console.log(e);
     }
-
 }
 
 $(document).on('click', '#chatConnections button', function (event) {
@@ -93,9 +110,45 @@ function joinChat(chat = null) {
 }
 
 function loadChatWindow() {
-    globalChatMessages.forEach(msg => {
-        ChatHandle.logMessage(msg[0], msg[1], msg[2], false);
+  globalChatMessages.forEach(msg => {
+    ChatHandle.logMessage(msg[0], msg[1], msg[2], false);
+  });
+
+  try {
+    getBot().then(botName => {
+      botAccount = botName;
+
+      ChatHandle.getAllRecentChannels().then(channels => {
+        var ts = (new Date()).toLocaleTimeString();
+        var defaultChannels = [{
+          channel: 'Glimesh',
+          timestamp: ts
+        }, {
+          channel: botAccount,
+          timestamp: ts
+        }];
+
+        if (channels.length == 0) {
+          defaultChannels.forEach(chan => {
+            ChatHandle.addRecentChannel(chan.channel, chan.ts);
+          });
+          channels = defaultChannels;
+        }
+
+        channels.forEach(channel => {
+          $('#chatConnections').append(`
+            <div class="row mt-1 channel-listing" data-channel="${channel.channel}" data-connected="false">
+              <h4 class="col-6 whiteText channelName">${channel.channel}</h4>
+              <div class="col-3 px-1"><button data-action="join" class="btn btn-success btn-block">Join</button></div>
+              <div class="col-3 px-1"><button data-action="leave" class="btn btn-danger btn-block" disabled>Leave</button></div>
+            </div>
+          `);
+        });
+      });
     });
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 /**
