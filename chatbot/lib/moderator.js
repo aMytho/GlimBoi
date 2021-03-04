@@ -1,14 +1,18 @@
 // This file handles filtering and mod actions.
 
-var filterLevel = "none";
+var filterLevel = false;
 var warnings = {};
+var badWords;
 
-function timeoutByUsername(type, user, origin) {
+function timeoutByUsername(type, user, origin, ID) {
     console.log(type + "timeout sent to " + user);
     var channelID = ApiHandle.getID();
     if (channelID !== "") {
+        // The main difference is we have the ID and respond to the tm in chat.
+        if (origin == "chat") {
+            ApiHandle.timeoutUser(type, channelID, ID).then(data => handleTimeout(user, origin, data))
+        } else {
         ApiHandle.getUserID(user).then(data => {
-            console.log(data);
             if (typeof data == "number") {
                 ApiHandle.timeoutUser(type, channelID, data).then(data => handleTimeout(user, origin, data))
             } else if (data == null) {
@@ -19,6 +23,7 @@ function timeoutByUsername(type, user, origin) {
                 errorMessageTM("Error: The user does not exist or you do not have permission to moderate.")
             }
         })
+    }
     } else {
         console.log("No channel ID for timeout");
         errorMessageTM("You must be in a channel to use this feature.")
@@ -52,7 +57,7 @@ function handleTimeout(user, origin, data) {
                 document.getElementById("moderateMessage").innerText = ""
             }, 5000);
         } else {
-
+            ChatHandle.filterMessage(user + " has been timed out for 5 minutes.", "glimboi")
         }
     }
 }
@@ -168,32 +173,45 @@ function handleUnBan(user, origin, data) {
 }
 
 
-function getFilter() {
-    return filterLevel
-}
-
-function setFilter(level) {
-    filterLevel = level
-}
-
-var badWords = ['a', 'b', 'c'];
-
 /**
  * 
  * @param {string} user 
  * @param {string} message 
  */
-function scanMessage(user, message) {
-    for (let i = 0; i < arrayofUsers.length; i++) {
-        if (arrayofUsers[i][0] == user) {
-            for (let index = 0; index < badWords.length; index++) {
-                if (message.indexOf(badWords[index]) !== -1) {
-                    console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
-                }
-                
+function scanMessage(user, message, userID) {
+    if (filterLevel == true) {
+        // The user exists, in the future we would get their rank to determine the filter to check against
+        message = message.split(" ");
+        var badWordFound = 0;
+        // for every word...
+        for (let index = 0; index < message.length; index++) {
+            // compare against every bad word.
+            var badWordFound = badWords.indexOf(message[index]);
+            if (badWordFound !== -1) {
+                console.log("Getting a bar of soap for " + user);
+                timeoutByUsername("short", user, "chat", userID);
+                break
             }
+
         }
     }
 }
 
-module.exports = { banByUsername, scanMessage, timeoutByUsername, timeoutByUserID, unBanByUsername }
+function updateFilter(status) {
+    filterLevel = status;
+    console.log("Filter status: " + status);
+}
+
+function importFilter() {
+    fs.readFile(appData[0] + '/chatbot/resources/badWordFilter.json', 'utf8' , (err, data) => {
+        if (err) {
+          console.error(err);
+          errorMessage(err, "Filter Error. The chat filter did not load correctly. You may need to reload the bot.");
+          badWords = []; // We make it an array so if the filter is still used it won't break the bot when badWords.indexOf() is called
+          return
+        }
+        badWords = JSON.parse(data);
+      })
+}
+
+module.exports = { banByUsername, importFilter, scanMessage, timeoutByUsername, timeoutByUserID, unBanByUsername, updateFilter }

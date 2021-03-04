@@ -196,6 +196,9 @@ function checkNewCommand() {
   if (repeat == "false") {repeat = false} else {repeat = true}
 
   commandRank = document.getElementById("rankChoiceAdd").value;
+  commandName = commandName.toLowerCase(); // All DB data is lower case
+  commandName = commandName.trim(); // removes any extra spaces before or after the command.
+
   if (isvalid == 4) {
     commandName = commandName.toLowerCase();
 

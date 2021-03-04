@@ -58,7 +58,9 @@ function joinChat() {
           //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
           console.log("Connected to chat!");
           ChatHandle.join(data, response); // Joins the channel
-          successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!")
+          successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
+          // Now we need to import the filter.
+          ModHandle.importFilter();
         }
       })
     }
