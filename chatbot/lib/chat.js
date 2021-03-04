@@ -114,7 +114,7 @@ function connectToGlimesh(access_token, channelID) {
   connection.on("open", function open() { // When the connection opens...
     console.log("Connected to the Glimesh API");
     connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
-    connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
+    connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
     if (logging == true) { // if the user wants us to log messages to a file...
       setTimeout(() => { // wait a few seconds and show a dialogue box. Asks for the location to lo messages.
         ipcRenderer.send("startLogging", ""); // Tells the main process to start logging messages.
@@ -208,6 +208,7 @@ function connectToGlimesh(access_token, channelID) {
           if (chatMessage[4].result.data !== undefined) {
             var userChat = chatMessage[4].result.data.chatMessage.user.username;
             var messageChat = chatMessage[4].result.data.chatMessage.message;
+            var userID = Number(chatMessage[4].result.data.chatMessage.user.id)
             console.log(userChat + ": " + messageChat);
             arrayOfEvents.forEach(element => {
               console.log(arrayOfEvents)
@@ -280,7 +281,25 @@ function connectToGlimesh(access_token, channelID) {
                         }
                       })
                       break;
-                    default:
+                    default: 
+                      if (!isNaN(message[1])) {
+                        UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
+                          if (data.length > 0) {
+                            var pointsPosition = Number(message[1])
+                            console.log(pointsPosition)
+                            if (pointsPosition <= 0) {
+                              filterMessage("That number is not valid.")
+                            } else if (data[pointsPosition-1] !== undefined) {
+                              pointsPosition = pointsPosition - 1
+                              filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points) 
+                            } else {
+                              filterMessage("There is not a user with that position.")
+                            }
+                          } else {
+                            filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
+                          }
+                        })
+                      }
                       break;
                   }
                   break;
@@ -321,6 +340,7 @@ function connectToGlimesh(access_token, channelID) {
 
               globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
               logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
+              ModHandle.scanMessage(userChat.toLowerCase(), messageChat.toLowerCase(), userID) // filter the message if needed
             }
             catch (e3) {
 
