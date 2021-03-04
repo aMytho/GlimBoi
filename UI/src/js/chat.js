@@ -61,7 +61,13 @@ $(document).on('click', '#chatConnections button', function (event) {
   var channel   = listing.data('channel');
   var container = listing.parent();
 
-  if (ChatHandle.isConnected()) ChatHandle.disconnect(); // Always disconnect
+  if (action === 'delete') {
+    $(this).prop('disabled', true); // Disable delete btn
+    $(listing).remove();
+    ChatHandle.removeRecentChannel(channel); // Remove from DB
+  } else if (ChatHandle.isConnected()) {
+    ChatHandle.disconnect(); // Always disconnect unless we're deleting
+  }
 
   // Resets everything to disconnected / disabled
   $('button[data-action=leave]').prop('disabled', true);
@@ -105,6 +111,8 @@ function joinChat(chat = null) {
           successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
           // Now we need to import the filter.
           ModHandle.importFilter();
+
+          ChatHandle.addRecentChannel(chatToJoin);
         }
       })
     }
@@ -139,10 +147,13 @@ function loadChatWindow() {
 
         channels.forEach(channel => {
           $('#chatConnections').append(`
-            <div class="row mt-1 channel-listing" data-channel="${channel.channel}" data-connected="false">
-              <h4 class="col-6 whiteText channelName">${channel.channel}</h4>
-              <div class="col-3 px-1"><button data-action="join" class="btn btn-success btn-block">Join</button></div>
-              <div class="col-3 px-1"><button data-action="leave" class="btn btn-danger btn-block" disabled>Leave</button></div>
+            <div class="mx-0 row mt-1 channel-listing" data-channel="${channel.channel}" data-connected="false">
+              <h4 class="col whiteText channelName">${channel.channel}</h4>
+              <div class="d-flex">
+                <div class="px-1"><button data-action="join" class="btn btn-success btn-block">Join</button></div>
+                <div class="px-1"><button data-action="leave" class="btn btn-danger btn-block" disabled>Leave</button></div>
+                <div class="px-1"><button data-action="delete" class="btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
+              </div>
             </div>
           `);
         });

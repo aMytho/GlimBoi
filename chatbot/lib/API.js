@@ -24,8 +24,8 @@ function updateID() {
       console.log("No ID exists yet.");
       successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!")
     } else {
-    clientID = data;
-    console.log("API.js is using the new client ID")
+      clientID = data;
+      console.log("API.js is using the new client ID")
     }
   })
 }
@@ -48,25 +48,25 @@ function getID() {
 async function getChannelID(channel) {
   var ID = await new Promise(resolve => {
     fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel (username: "${channel}"){id, streamer {displayname}}}`, headers: { Authorization: `Bearer ${token}` }})
-      .then((res) => {
-        res.json().then((data) => {
+    .then((res) => {
+      res.json().then((data) => {
+        try {
+          console.log(data);
+          channelID = data.data.channel.id;
+          streamer = data.data.channel.streamer.displayname; // We can use the streamer name now.
+          resolve(data.data.channel.id);
+        } catch (e) {
           try {
-            console.log(data);
-            channelID = data.data.channel.id;
-            streamer = data.data.channel.streamer.displayname; // We can use the streamer name now.
-            resolve(data.data.channel.id);
-          } catch (e) {
-            try {
-              resolve({ data: data.errors[0].message, status: "AUTHNEEDED" });
-            } catch (e2) {
-              resolve(null);
-            }
+            resolve({ data: data.errors[0].message, status: "AUTHNEEDED" });
+          } catch (e2) {
+            resolve(null);
           }
-        });
-      })
-      .catch((err) => console.error(err));
+        }
+      });
+    })
+    .catch((err) => console.error(err));
   })
-return ID
+  return ID;
 }
 
 
@@ -77,26 +77,26 @@ return ID
  * @returns {Promise<number>} The user ID. If failed returns null
  */
 async function getUserID(user) {
- var ID = await new Promise(resolve => {
-  fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${user}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
-  .then((res) => {
-    res.json().then((data) => {
-      try {
-        console.log("The ID of " + user + " is " + data.data.user.id)
-        resolve(Number(data.data.user.id))
-        } catch(e) {
-          try {
-            resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
-          } catch(e2) {
-            resolve(null)
+  var ID = await new Promise(resolve => {
+    fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${user}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
+    .then((res) => {
+      res.json().then((data) => {
+        try {
+          console.log("The ID of " + user + " is " + data.data.user.id)
+          resolve(Number(data.data.user.id))
+          } catch(e) {
+            try {
+              resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
+            } catch(e2) {
+              resolve(null)
+            }
           }
-        }
-    });
-  })
-  .catch((err) => console.error(err));
- });
- console.log("Completed user id request");
-return ID
+      });
+    })
+    .catch((err) => console.error(err));
+  });
+  console.log("Completed user id request");
+  return ID;
 }
 
 /**
@@ -107,23 +107,23 @@ return ID
 async function getCurrentGame() {
   var category = await new Promise(resolve => {
     fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(username: "mytho") {stream {category {slug}}}}`, headers: { Authorization: `Client-ID ${clientID}` }})
-   .then((res) => {
-    res.json().then((data) => {
-      try { //if it is null and nested this will prevent a crash.
-        console.log("The ID of " + channel + " is " + data.data.channel.id)
-        resolve(data.data.channel.id)
-        } catch(e) {
-          try {
-            resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
-          } catch(e2) {
-            resolve(null)
+    .then((res) => {
+      res.json().then((data) => {
+        try { //if it is null and nested this will prevent a crash.
+          console.log("The ID of " + channel + " is " + data.data.channel.id)
+          resolve(data.data.channel.id)
+          } catch(e) {
+            try {
+              resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
+            } catch(e2) {
+              resolve(null)
+            }
           }
-        }
-    });
-  })
-  .catch((err) => console.error(err));
-});
-return category
+      });
+    })
+    .catch((err) => console.error(err));
+  });
+  return category
 }
 
 
@@ -135,24 +135,24 @@ return category
 async function getStats() {
   var viewers = await new Promise(resolve => {
     fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(id:${channelID}) {stream {countViewers,newSubscribers}},followers(streamerUsername: "${streamer}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
-      .then((res) => {
-        res.json().then((data) => {
-          try { //if it is null and nested this will prevent a crash.
-            console.log(data)
-            console.log("Current viewcount:" + data.data.channel.stream.countViewers + " Subscribers: " + data.data.channel.stream.newSubscribers + " Followers: " + data.data.followers.length)
-            resolve(data.data)
-            } catch(e) {
-              try {
-                resolve({data: data.errors[0].message, status: "NOSTREAMFOUND"})
-              } catch(e2) {
-                resolve(null)
-              }
+    .then((res) => {
+      res.json().then((data) => {
+        try { //if it is null and nested this will prevent a crash.
+          console.log(data)
+          console.log("Current viewcount:" + data.data.channel.stream.countViewers + " Subscribers: " + data.data.channel.stream.newSubscribers + " Followers: " + data.data.followers.length)
+          resolve(data.data)
+          } catch(e) {
+            try {
+              resolve({data: data.errors[0].message, status: "NOSTREAMFOUND"})
+            } catch(e2) {
+              resolve(null)
             }
-        });
-      })
-      .catch((err) => console.error(err));
-});
-return viewers
+          }
+      });
+    })
+    .catch((err) => console.error(err));
+  });
+  return viewers
 }
 
 

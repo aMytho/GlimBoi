@@ -245,11 +245,15 @@ table.whiteText td {
 #chatConnections {
     max-height: 260px;
     overflow-y: scroll;
-    overflow-x: hidden;
+    display: content;
 }
 
 #chatConnections .channelName {
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+#chatConnections button:not(.btn-icon) {
+    width: 75px;
+    font-weight: bold;
 }

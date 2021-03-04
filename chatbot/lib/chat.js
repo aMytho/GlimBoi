@@ -35,7 +35,9 @@ function updatePath(GUI) {
  * @param {string} object The channel object
  * @returns If successful returns the user.
  */
-async function addRecentChannel(channel, timestamp) {
+async function addRecentChannel(channel, timestamp = null) {
+  var timestamp = timestamp ?? (new Date()).toLocaleTimeString();
+
   var channelDoc = await new Promise(done => {
     if (channel == 'GlimBoi') done(null); // no
 
@@ -57,7 +59,10 @@ async function addRecentChannel(channel, timestamp) {
   return channelDoc;
 }
 
-// TODO: Implement
+/**
+ *
+ * @param {string} channel Name of the channel
+ */
 async function removeRecentChannel(channel) {
   return new Promise(resolve => {
     recentChannelsDB.remove({ channel: channel }, { multi: true }, function (err, doc) {
@@ -281,7 +286,7 @@ function connectToGlimesh(access_token, channelID) {
                         }
                       })
                       break;
-                    default: 
+                    default:
                       if (!isNaN(message[1])) {
                         UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
                           if (data.length > 0) {
@@ -291,7 +296,7 @@ function connectToGlimesh(access_token, channelID) {
                               filterMessage("That number is not valid.")
                             } else if (data[pointsPosition-1] !== undefined) {
                               pointsPosition = pointsPosition - 1
-                              filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points) 
+                              filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points)
                             } else {
                               filterMessage("There is not a user with that position.")
                             }
@@ -711,4 +716,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { updatePath, addRecentChannel, getAllRecentChannels, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { updatePath, addRecentChannel, getAllRecentChannels, removeRecentChannel, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
