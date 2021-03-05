@@ -72,6 +72,19 @@ async function removeRecentChannel(channel) {
 }
 
 /**
+ *
+ * @param {string} id Name of the id
+ */
+async function removeRecentChannelByID(id) {
+    return new Promise(resolve => {
+      recentChannelsDB.remove({ _id: id }, { multi: false }, function (err, doc) {
+        resolve()
+      });
+    });
+  }
+
+
+/**
  * Get all recent Channels
  * @returns Returns array of channel objects
  */
@@ -716,4 +729,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { updatePath, addRecentChannel, getAllRecentChannels, removeRecentChannel, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { updatePath, addRecentChannel, getAllRecentChannels, removeRecentChannel, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
