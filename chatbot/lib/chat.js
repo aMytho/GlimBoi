@@ -390,10 +390,10 @@ function connectToGlimesh(access_token, channelID) {
 /**
  * Disconnects from Glimesh chat.
  */
-function disconnect() {
+function disconnect(displayMessage = true) {
   try {
     connection.close(1001, "So long and thanks for all the fish.") // closes the websocket
-    successMessage("Chat has been successfully disconnected!", "You can close this now.");
+    if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
     if (logging == true) {
       setTimeout(() => {
         ipcRenderer.send("logEnd") // ends the logging

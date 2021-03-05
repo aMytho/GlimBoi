@@ -1,18 +1,19 @@
 <div class="card-deck m-3">
   <div class="card glimPanel col-lg-6 mx-1">
     <div class="card-body">
-      <h3 class="whiteText text-center" id="pointName">Chat</h3>
-      <div id="chatConnections">
-      </div>
+      <button onclick="$('#newChatModal').modal('show');" class="btn btn-success" style="position: absolute;right: 5px;bottom: 5px;">Add new </button>
+      <h3 class="whiteText text-center">Chat</h3>
+      <div id="chatConnections"></div>
     </div>
   </div>
   <div class="card glimPanel col-lg-6 mx-1">
     <div class="card-body">
-      <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
-      <p class="whiteText text-center">_______________</p>
-      <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="showJoinModal()">Join Chat</button>
-      <button class="btn btn-danger btn-block mt-2" type="submit" id="ComingSoon" onclick="ChatHandle.disconnect()">Leave Chat</button>
-      <p class="whiteText text-center">_______________</p>
+      <h3 class="whiteText text-center">Chat Controls</h3>
+      <div class="row">
+        <h4 id="channelConnectedName"  class="col-12 whiteText text-center py-3 my-3 border border-white border-left-0 border-right-0 text-danger">
+            Not Connected
+        </h4>
+      </div>
       <div class="row">
         <div class="col-4 mx-auto">
           <h3 class="whiteText text-center" id="fasUsers"><span><i class="fas fa-users"></i></span> 0</h3>
@@ -128,33 +129,6 @@
   </div>
 </div>
 
-
-<!-- Modal: Which Chat? -->
-<div class="modal fade" id="modalChat" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="chatModal">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalChat">Chat</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body" id="modalChatBody">
-        <p id="chatMessageText">Which channel do you want GlimBoi do join?</p>
-        <input type="text" class="form-control" placeholder="Channel" id="whichChannel">
-        <p id="chatMessageSolution" class="mt-1">You can join ANY channel but you are restricted by the bots permissions in that channel. Your bot can still be timed out and banned just like any other user.</p>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <p id="chatMessageAdd"></p>
-        <p id="chatMessageAdd"></p>
-        <button id="chat-modal-btn-close" type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-        <button id="chat-modal-btn-join" type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal: Which Chat -->
-
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
   <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>
@@ -184,3 +158,25 @@
   </div>
 </div>
 <!-- Modal: Moderate -->
+
+<!-- Modal: add new chat? -->
+<div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content glimPanel whiteText" id="chatModal">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">Add New Chat</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalChatBody">
+        <input type="text" class="form-control" placeholder="Channel" id="newChatName">
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal: add new chat -->

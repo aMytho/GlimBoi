@@ -59,14 +59,14 @@ $(document).on('click', '#chatConnections button', function (event) {
   var action    = $(this).data('action');
   var listing   = $(this).closest('.channel-listing');
   var channel   = listing.data('channel');
-  var container = listing.parent();
 
+  if (action === 'join') $(this).prop('disabled', true);
   if (action === 'delete') {
     $(this).prop('disabled', true); // Disable delete btn
     $(listing).remove();
     ChatHandle.removeRecentChannel(channel); // Remove from DB
   } else if (ChatHandle.isConnected()) {
-    ChatHandle.disconnect(); // Always disconnect unless we're deleting
+    ChatHandle.disconnect(false); // Always disconnect unless we're deleting
   }
 
   // Resets everything to disconnected / disabled
@@ -75,18 +75,24 @@ $(document).on('click', '#chatConnections button', function (event) {
   $('.channel-listing').attr('data-connected', false);
 
   // Disable this button, and enable the sibling button
-  $(this).prop('disabled', true);
-  listing.find(`button[data-action!=${action}]`).prop('disabled', false);
+  $(`#chatConnections button[data-action=join]`).prop('disabled', true);
 
   // Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
   if (action === 'join') {
     setTimeout(function () {
-      container.children(`[data-channel=${channel}]`).attr('data-connected', true);
+      listing.parent().children(`[data-channel=${channel}]`).attr('data-connected', true);
       joinChat(channel);
     }, 500);
+  } else if (ChatHandle.isConnected() === false) {
+    $('#channelConnectedName').removeClass('text-success').addClass('text-danger ');
+    $('#channelConnectedName').text('Not Connected');
+    $(`#chatConnections button[data-action=join]`).prop('disabled', false);
   }
 });
 
+$('#new-chat-button').click(function() {
+
+});
 /**
  * Open a modal to allow the user to type which chat they will join.
  */
@@ -113,11 +119,19 @@ function joinChat(chat = null) {
           ModHandle.importFilter();
 
           ChatHandle.addRecentChannel(chatToJoin);
+
+          $('#channelConnectedName').text(chatToJoin);
+          $('#channelConnectedName').removeClass('text-danger').addClass('text-success ');
+          $(`#chatConnections button[data-action=join]`).prop('disabled', false);
+          $(`div[data-channel=${chatToJoin}] button[data-action=join]`).prop('disabled', true);
+          $(`div[data-channel=${chatToJoin}] button[data-action=leave]`).prop('disabled', false);
         }
       })
     }
   })
 }
+
+// TODO: add action for click #triggerNewChatAdd
 
 function loadChatWindow() {
   globalChatMessages.forEach(msg => {
@@ -145,23 +159,25 @@ function loadChatWindow() {
           channels = defaultChannels;
         }
 
-        channels.forEach(channel => {
-          $('#chatConnections').append(`
-            <div class="mx-0 row mt-1 channel-listing" data-channel="${channel.channel}" data-connected="false">
-              <h4 class="col whiteText channelName">${channel.channel}</h4>
-              <div class="d-flex">
-                <div class="px-1"><button data-action="join" class="btn btn-success btn-block">Join</button></div>
-                <div class="px-1"><button data-action="leave" class="btn btn-danger btn-block" disabled>Leave</button></div>
-                <div class="px-1"><button data-action="delete" class="btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
-              </div>
-            </div>
-          `);
-        });
+        channels.forEach(channel => addChannelElement(channel));
       });
     });
   } catch (e) {
     console.log(e);
   }
+}
+
+function addChannelElement(channel) {
+  return $('#chatConnections').append(`
+    <div class="mx-0 row mt-1 channel-listing" data-channel="${channel.channel}" data-connected="false">
+      <h4 class="col whiteText channelName">${channel.channel}</h4>
+      <div class="d-flex">
+        <div><button data-action="join" class="mx-1 btn btn-success btn-block">Join</button></div>
+        <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" disabled>Leave</button></div>
+        <div><button data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
+      </div>
+    </div>
+  `);
 }
 
 /**

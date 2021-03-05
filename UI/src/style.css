@@ -245,7 +245,7 @@ table.whiteText td {
 #chatConnections {
     max-height: 260px;
     overflow-y: scroll;
-    display: content;
+    display: contents;
 }
 
 #chatConnections .channelName {

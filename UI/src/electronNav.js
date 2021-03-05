@@ -87,8 +87,8 @@ $(document).on('keypress','input, textarea', function (event) {
     if (id === 'userQuoteInputU') $('#addQuoteFinish').click()
     if (id === 'userQuoteSearch') $('#userRemoveQuoteSearch').click()
     if (id === 'userremoveInput') $('#removeUserFinish').click()
-    if (id === 'whichChannel') $('#chat-modal-btn-join').click()
     if (id === 'whichUser') $(this).closest('.modal-content').find('#targetActionButton').click();
+    if (id === 'newChatName') $('#triggerNewChatAdd').click()
 
     event.preventDefault();
 });
