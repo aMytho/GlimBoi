@@ -129,33 +129,33 @@
   </div>
 </div>
 
+<!-- Modal: add new chat? -->
+<div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="chatModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Add New Chat</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalChatBody">
+          <input type="text" class="form-control" placeholder="Channel" id="newChatName">
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: add new chat -->
+
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
   <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>
   <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
 </div>
-
-<!-- Modal: add new chat? -->
-<div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="chatModal">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100">Add New Chat</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body" id="modalChatBody">
-        <input type="text" class="form-control" placeholder="Channel" id="newChatName">
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Send</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal: add new chat -->
 
 <!-- Modal: Moderate? -->
 <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">

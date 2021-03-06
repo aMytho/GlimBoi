@@ -151,19 +151,22 @@ function loadChatWindow() {
 
   try {
     getBot().then(botName => {
-      if (botName.status === 'AUTHNEEDED') return;
-      botAccount = botName;
+      var ts = (new Date()).toLocaleTimeString();
+      var defaultChannels = [{
+        channel: 'Glimesh',
+        timestamp: ts
+      }];
+
+      // If we have authentication, add our name to recent channels
+      if (botName !== null) {
+        botAccount = botName;
+        defaultChannels.push({
+          channel: botName,
+          timestamp: ts
+        });
+      }
 
       ChatHandle.getAllRecentChannels().then(channels => {
-        var ts = (new Date()).toLocaleTimeString();
-        var defaultChannels = [{
-          channel: 'Glimesh',
-          timestamp: ts
-        }, {
-          channel: botAccount,
-          timestamp: ts
-        }];
-
         if (channels.length == 0) {
           defaultChannels.forEach(chan => {
             ChatHandle.addRecentChannel(chan.channel, chan.ts);
