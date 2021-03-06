@@ -59,6 +59,8 @@ naviLinks.forEach((linkEl) => {
                 if (linkEl.id == "SettingsLink") {showSettings()}
                 if (linkEl.id == "ChatLink") {loadChatWindow();} //Builds the data table
 
+                // Make sure tooltips are triggered so they work
+                $('[data-toggle=tooltip]').tooltip();
             })
         }
     })
@@ -93,6 +95,7 @@ $(document).on('keypress','input, textarea', function (event) {
     event.preventDefault();
 });
 
+$('[data-toggle=tooltip]').tooltip();
 
 //Opens a link in the users default browser.
 function loadLink(link) {

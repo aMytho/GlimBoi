@@ -133,7 +133,10 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
         if (response == null || response.data == 'Could not find resource') {
           errorMessage(response.data, "Please make sure that the channel exists. Check your spelling.")
         } else {
-          addChannelAndDisplay(chatToJoin).then($('#newChatModal').modal('hide'));
+          addChannelAndDisplay(chatToJoin).then(function () {
+            $('#newChatModal').modal('hide')
+            $('#newChatName').val('');
+          });
         }
       })
     }

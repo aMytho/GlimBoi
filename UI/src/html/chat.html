@@ -2,7 +2,12 @@
   <div class="card glimPanel col-lg-6 mx-1">
     <div class="card-body px-0 pl-1">
       <button onclick="$('#newChatModal').modal('show');" class="btn btn-success" style="position: absolute;right: 5px;bottom: 5px;">Add new </button>
-      <h3 class="whiteText text-center">Chat</h3>
+
+      <button type="button" class="btn btn-primary" data-placement="right" data-toggle="tooltip" style="position: absolute;left: 5px;bottom: 5px;" title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
+        <i class="fas fa-question-circle"></i>
+      </button>
+
+      <h3 class="whiteText text-center">Recent Channel Connections</h3>
       <div id="chatConnections"><div class="pinned"></div><div class="scroller">Loading...</div></div>
     </div>
   </div>
