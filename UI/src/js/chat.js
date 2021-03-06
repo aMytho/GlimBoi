@@ -5,7 +5,6 @@ ChatHandle.updatePath(appData[1]);
 
 var contextItem;
 var globalChatMessages;
-var botAccount;
 var currentChatConnected = null;
 
 /**
@@ -159,7 +158,6 @@ function loadChatWindow() {
 
       // If we have authentication, add our name to recent channels
       if (botName !== null) {
-        botAccount = botName;
         defaultChannels.push({
           channel: botName,
           timestamp: ts
