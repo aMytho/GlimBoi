@@ -62,16 +62,19 @@ $(document).on('click', '#chatConnections button', function (event) {
 
     // Set the selected channel to be auto-join
     ChatHandle.setAutoJoinChannelByID(channelid, enabled).then(channel => {
+      $('button[data-action=auto-join]').prop('disabled', false);
+      if (channel === null) return;
+
+      console.log(`Auto join for ${channel.channel} changed to: ${enabled}`);
+
       // Done, so reset the classes
       $('[data-action=auto-join]').removeClass('btn-success').addClass('btn-outline-warning');
       $('[data-action=auto-join]').attr('data-enabled', false);
 
-      if (channel !== null && channel.autoJoin) {
+      if (channel.autoJoin) {
         $(this).removeClass('btn-outline-warning').addClass('btn-success');
         $(this).attr('data-enabled', channel.autoJoin);
       }
-      $('button[data-action=auto-join]').prop('disabled', false);
-      console.log(`Auto join for ${channel.channel} changed to: ${enabled}`);
     });
 
     return;
