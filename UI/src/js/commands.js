@@ -1,381 +1,287 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
 var CommandHandle = require(appData[0] + "/chatbot/lib/commands.js");
 CommandHandle.updatePath(appData[1]);
-var arrayOfCommands = []; //An array that stores the commands from the DB so we don't import them every change.
-var tblhasbeenopened = false; //Ensures we don't run this function evey time the table is opened.
 var table; //The physical table for the UI
-
 var commandToBeEdited; // A global var because I was too lazy to find another solution. Must have for editing.
 
 //Loads the command table. It is loaded when the page is opened for the first time. After that it is saved to a variable.
 function loadCommandTable() {
-  if (tblhasbeenopened == false) {
-    $('#modalCart').on('hidden.bs.modal', function (e) {
-      console.log("Resetting command add modal.");
-      document.getElementById("commandAddModalBody").innerHTML = addCommandModal();
-     })
-      $(document).ready(function () {
-        table = $("#example").DataTable({
-          //Create a table with the arrayofcommands varibale.
-          data: arrayOfCommands,
-          columns: [
-            {
-              title: "Commands",
-            },
-            {
-              title: "Arguements",
-            },
-            {
-              title: "Data",
-            },
-            {
-              title: "Uses",
-            },
-            {
-              title: "Points",
-            },
-            {
-              title: "Rank",
-            },
-          ],
-        });
-      });
-     /* $("#example").click(function (event) {
-        //Tells us which column and row they clicked, currently unused
-        var text = $(event.target).text();
-        event.target.id = "one";
-        console.log(event);
-      });*/
-      tblhasbeenopened = true;
-  } else {
-    //it has already been ran before. Building from arrayofcommands
-    $(document).ready(function () {
-      table = $("#example").DataTable({
-        data: arrayOfCommands,
-        columns: [
-          {
-            title: "Commands",
-          },
-          {
-            title: "Arguements",
-          },
-          {
-            title: "Data",
-          },
-          {
-            title: "Uses",
-          },
-          {
-            title: "Points",
-          },
-          {
-            title: "Rank",
-          },
-        ],
-      });
+  $(document).ready(function () {
+    commandModalPrep()
+    table = $("#example").DataTable({
+      data: CommandHandle.getCurrentCommands(),
+      columns: [
+        {
+          title: "Commands",
+          data: "commandName",
+        },
+        {
+          title: "Arguements",
+          data: "arguements",
+        },
+        {
+          title: "Data",
+          data: "message",
+        },
+        {
+          title: "Uses",
+          data: "uses",
+        },
+        {
+          title: "Points",
+          data: "points",
+        },
+        {
+          title: "Rank",
+          data: "rank",
+        },
+      ],
     });
-  }
+  });
 } // End of start function
 
 //Adds a command
 function checkNewCommand() {
-  var isvalid = 0;
   console.log("Checking if command is valid.");
-  var commandName, commandData, commandPoints, commandUses, commandRank;
-
-  if ($("#addCommandName").text() == "!") {
-    //Ensure it is not JUST a !
-    document.getElementById("addCommandName").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML ="You need a command Name.";
-    console.log("Command Name is not valid.");
-  } else if ($("#addCommandName").text().startsWith("!")) {
+  var commandName = $("#addCommandName").text().trim().toLowerCase();
+  var commandData = $("#addCommandData").text().trim();
+  var commandPoints = Number($("#addCommandPoints").text());
+  var commandUses = Number($("#addCommandUses").text());
+  var repeat = document.getElementById("commandRepeatableChoice").value
+  var commandRank = document.getElementById("rankChoiceAdd").value;
+  if (commandName.length == 0 || commandName == "!") {
+    errorMessageCommandModal("You must enter a command name!", "addCommandName")
+    return
+  } else if (commandName.startsWith("!")) {
     //Removes the ! if it exists
-    commandName = $("#addCommandName").text().substring(1);
-    console.log("Command name is valid");
-    for (let i = 0; i < arrayOfCommands.length; i++) {
-      if (arrayOfCommands[i][0] == commandName) {
-        console.log("The command " + commandName + " already exists");
-        setTimeout(() => {
-          document.getElementById("addCommandName").classList.add("errorClass");
-        }, 1000);
-        setTimeout(() => {
-          document.getElementById("errorMessageAdd").innerHTML = "This command already exists";
-        }, 1000);
-        isvalid = -1;
+    commandName = commandName.substring(1);
+    CommandHandle.findCommand(commandName).then(data => {
+      if (data !== null) {
+        errorMessageCommandModal("That command already exists!", "addCommandName")
+        return
       }
-    }
-    isvalid = isvalid + 1;
-    try {
-      document.getElementById("addCommandName").classList.remove("errorClass");
-      document.getElementById("errorMessageAdd").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
-  } else if ($("#addCommandName").html() == "") {
-    //if blank...
-    console.log("Not valid name");
-    document.getElementById("addCommandName").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML = "Cannot be Blank";
+    })
   } else {
-    commandName = $("#addCommandName").html();
-    console.log("Valid Name is " + commandName);
-    for (let i = 0; i < arrayOfCommands.length; i++) {
-      if (arrayOfCommands[i][0] == commandName) {
+    CommandHandle.findCommand(commandName).then(data => {
+      if (data !== null) {
         console.log("The command " + commandName + " already exists");
         document.getElementById("addCommandName").classList.add("errorClass");
         document.getElementById("errorMessageAdd").innerHTML = "This command already exists";
-        isvalid = -1;
+        return
       }
-    }
-    isvalid = isvalid + 1;
-    try {
-      document.getElementById("addCommandName").classList.remove("errorClass");
-      document.getElementById("errorMessageAdd").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
+    })
   }
+  resetMessageCommandModal("addCommandName");
 
-
-  if ($("#addCommandData").text().length > 254) {
-    //max length is 255. - 1 for the 0. may be worng, idk
-    console.log("Command data is too long.");
-    document.getElementById("addCommandData").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML = "This message is too long.";
+  if (commandData.length >= 255) {
+    //max length is 255
+    errorMessageCommandModal("This message is too long.", "addCommandData");
+    return
+  } else if (commandData.length == 0) {
+    errorMessageCommandModal("You must type a message.", "addCommandData");
+    return
   } else {
-    commandData = strip($("#addCommandData").text())
-    isvalid = isvalid + 1;
-    try {
-      document.getElementById("addCommandData").classList.remove("errorClass");
-      document.getElementById("errorMessageAdd").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
+    commandData = strip(commandData);
+    resetMessageCommandModal("addCommandData");
   }
 
-  if (isNaN($("#addCommandPoints").text()) == true) {
-    console.log("Not a number");
-    document.getElementById("addCommandPoints").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML = "Must be a number.";
-  } else if (Math.sign(parseFloat($("#addCommandPoints").text())) == -1) {
-    console.log("Its a negative");
-    document.getElementById("addCommandPoints").classList.add("errorClass");
-    document.getElementById("errorMessageAdd").innerHTML = "Must be greater than 0.";
+  if (isNaN(commandPoints) == true) {
+    errorMessageCommandModal("Points must be a number", "addCommandPoints");
+    return
+  } else if (Math.sign(parseFloat(commandPoints)) == -1) {
+    errorMessageCommandModal("Cannot be negative", "addCommandPoints");
+    return
   } else {
-    commandPoints = $("#addCommandPoints").text();
-    isvalid = isvalid + 1;
-    try {
-      document
-        .getElementById("addCommandPoints")
-        .classList.remove("errorClass");
-      document.getElementById("errorMessageAdd").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
+    resetMessageCommandModal("addCommandPoints")
   }
 
-  if (isNaN($("#addCommandUses").text()) == true) {
-    console.log("Not a number");
-    document.getElementById("errorMessageAdd").innerHTML = "Must be a number";
-    document.getElementById("addCommandUses").classList.add("errorClass");
-  } else if (Math.sign(parseFloat($("#addCommandUses").text())) == -1) {
-    console.log("Its a negative");
-    document.getElementById("errorMessageAdd").innerHTML = "Must be greater than 0.";
+  if (isNaN(commandUses) == true) {
+    errorMessageCommandModal("Uses must be a number", "addCommandUses");
+    return
+  } else if (Math.sign(parseFloat(commandUses)) == -1) {
+    errorMessageCommandModal("Cannot be negative", "addCommandUses");
+    return
   } else {
-    commandUses = $("#addCommandUses").text();
-    isvalid = isvalid + 1;
+    resetMessageCommandModal("addCommandUses")
+  }
+
+  if (repeat == "false") { repeat = false } else { repeat = true }
+
+  console.log(commandName, commandData, commandPoints, commandUses, commandRank, null, repeat);
+  //Adds a command to the DB
+  CommandHandle.addCommand(commandName, null, commandData, commandUses, commandPoints, commandRank, null, repeat);
+  //adds a row to the table with the new command info
+  addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank)
+  $("#modalCart").modal("hide");
+
+  function errorMessageCommandModal(message, errLocation) {
+    var addCommandName = document.getElementById(errLocation).parentElement;
+    var cmdErrorMessage = document.getElementById("errorMessageAdd")
+    addCommandName.classList.add("errorClass");
+    cmdErrorMessage.innerHTML = message;
+    console.log("Command is not valid.");
+  }
+
+  function resetMessageCommandModal(toBeReset) {
     try {
-      document.getElementById("addCommandUses").classList.remove("errorClass");
+      document.getElementById(toBeReset).parentElement.classList.remove("errorClass");
       document.getElementById("errorMessageAdd").innerHTML = "";
     } catch (error) {
       console.log(error);
     }
   }
-
-  var repeat = document.getElementById("commandRepeatableChoice").value
-  if (repeat == "false") {repeat = false} else {repeat = true}
-
-  commandRank = document.getElementById("rankChoiceAdd").value;
-  commandName = commandName.trim(); // removes any extra spaces before or after the command.
-  if (commandName.endsWith("&nbsp;")) {
-    isvalid = isvalid-1;
-    document.getElementById("errorMessageAdd").innerHTML = "Commands cannot end with a space";
-    setTimeout(() => {
-      document.getElementById("errorMessageAdd").innerHTML = "";
-    }, 4000);
-  }
-
-  if (isvalid == 4) {
-    commandName = commandName.toLowerCase();
-
-    console.log(commandName, commandData, commandPoints, commandUses, commandRank, null, repeat);
-    //Adds a command to the DB
-    CommandHandle.addCommand(commandName, null, commandData, commandUses, commandPoints, commandRank,null, repeat);
-    //adds a row to the table with the new command info
-    addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank)
-    $("#modalCart").modal("hide");
-  }
-  console.log(isvalid);
-  isvalid = 0;
 }
 
 //removes commands
 function checkRemoveCommand() {
-  var commandToBeRemoved = $("#commandRemoveInput").val();
-  commandToBeRemoved = commandToBeRemoved.toLowerCase();
+  var commandToBeRemoved = $("#commandRemoveInput").val().toLowerCase()
   if (commandToBeRemoved.startsWith("!")) {
     commandToBeRemoved = commandToBeRemoved.substring(1);
   }
-  var errorNeeded = true;
   try {
-    for (let i = 0; i < arrayOfCommands.length; i++) {
-      if (arrayOfCommands[i][0] == commandToBeRemoved) {
-        console.log("The command " + commandToBeRemoved + " will now be deleted");
-        arrayOfCommands.splice(i, 1); //Removes it from the array.
+    CommandHandle.findCommand(commandToBeRemoved).then(data => {
+      if (data !== null) {
+        console.log("The command " + commandToBeRemoved + " will now be removed from the table");
         var filteredData = table
           .rows()
           .indexes()
           .filter(function (value, index) {
-            return table.row(value).data()[0] == commandToBeRemoved;
+            return table.row(value).data().commandName == commandToBeRemoved;
           });
         table.rows(filteredData).remove().draw();
         CommandHandle.removeCommand(commandToBeRemoved);
-        errorNeeded = false;
+      } else {
+        var removeCommandMessageError = document.getElementById("removeCommandMessage")
+        removeCommandMessageError.innerHTML = "This command does not exist.";
+        setTimeout(() => {
+          removeCommandMessageError.innerHTML = ""
+        }, 4000);
       }
-    }
-    if (errorNeeded == true) {
-      document.getElementById("removeCommandMessage").innerHTML = "This command does not exist.";
-    }
+    })
   } catch (e) {
     console.log(e);
-    document.getElementById("removeCommandMessage").innerHTML = "This command does not exist.";
+    var removeCommandMessageError = document.getElementById("removeCommandMessage")
+    removeCommandMessageError.innerHTML = "This command does not exist.";
+    setTimeout(() => {
+      removeCommandMessageError.innerHTML = ""
+    }, 4000);
   }
 }
 
 //edits commands
 function checkEditCommand() {
-  commandToBeEdited = $("#commandEditInput").val();
-  commandToBeEdited = commandToBeEdited.toLowerCase();
+  commandToBeEdited = $("#commandEditInput").val().toLowerCase();
+  var editErrorMessage = document.getElementById("editCommandMessage")
   if (commandToBeEdited.startsWith("!")) {
     commandToBeEdited = commandToBeEdited.substring(1);
   }
-  var errorNeeded = true;
   //Make sure the command exists.
   try {
-    for (let i = 0; i < arrayOfCommands.length; i++) {
-      if (arrayOfCommands[i][0] == commandToBeEdited) {
+    CommandHandle.findCommand(commandToBeEdited).then(data => {
+      if (data !== null) {
         console.log("Editing " + commandToBeEdited);
-        errorNeeded = false;
         //We replace the html of the modal with new html
-        document.getElementById("editModal").innerHTML = editCommandModal(arrayOfCommands, i)
+        document.getElementById("editModal").innerHTML = editCommandModal(data);
+        editErrorMessage.innerHTML = "";
+        $("#editCommandPoints").keypress(function (e) {
+          if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+        });
+        $("#editCommandUses").keypress(function (e) {
+          if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+        });
+      } else {
+        editErrorMessage.innerHTML = "This command does not exist.";
+        setTimeout(() => {
+          editErrorMessage.innerHTML = "";
+        }, 4000);
       }
-    }
-    if (errorNeeded == true) {
-      document.getElementById("editCommandMessage").innerHTML =
-        "This command does not exist.";
-    }
+    })
   } catch (e) {
     console.log(e);
-    document.getElementById("editCommandMessage").innerHTML =
-      "This command does not exist.";
+    editErrorMessage.innerHTML = "This command does not exist.";
+    setTimeout(() => {
+      editErrorMessage.innerHTML = ""
+    }, 4000);
   }
 }
 
 function editCommand() {
-  var isvalid = 0;
   console.log("Checking if command is valid.");
-  var commandData, commandPoints, commandUses, commandRank;
-
-  if (strip($("#editCommandData").html()).length > 254) {
-    //max length is 255. - 1 for the 0. may be worng, idk
-    console.log("its too long.");
-    document.getElementById("editCommandData").classList.add("errorClass");
-    document.getElementById("errorMessageEdit").innerHTML =
-      "This message is too long.";
-  } else {
-    commandData = strip($("#editCommandData").html());
-    isvalid = isvalid + 1;
-    try {
-      document.getElementById("editCommandData").classList.remove("errorClass");
-      document.getElementById("errorMessageEdit").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  if (isNaN($("#editCommandPoints").html()) == true) {
-    console.log("Not a number");
-    document.getElementById("editCommandPoints").classList.add("errorClass");
-    document.getElementById("errorMessageEdit").innerHTML = "Must be a number.";
-  } else if (Math.sign(parseFloat($("#editCommandPoints").html())) == -1) {
-    console.log("Its a negative");
-    document.getElementById("editCommandPoints").classList.add("errorClass");
-    document.getElementById("errorMessageEdit").innerHTML = "Must be greater than 0.";
-  } else {
-    commandPoints = $("#editCommandPoints").html();
-    isvalid = isvalid + 1;
-    try {
-      document.getElementById("editCommandPoints").classList.remove("errorClass");
-      document.getElementById("errorMessageEdit").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  if (isNaN($("#editCommandUses").html()) == true) {
-    console.log("Not a number");
-    document.getElementById("errorMessageEdit").innerHTML = "Must be a number";
-    document.getElementById("editCommandUses").classList.add("errorClass");
-  } else if (Math.sign(parseFloat($("#editCommandUses").html())) == -1) {
-    console.log("Its a negative");
-    document.getElementById("errorMessageEdit").innerHTML = "Must be greater than 0.";
-  } else {
-    commandUses = $("#editCommandUses").html();
-    isvalid = isvalid + 1;
-    try {
-      document.getElementById("editCommandUses").classList.remove("errorClass");
-      document.getElementById("errorMessageEdit").innerHTML = "";
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  commandRank = document.getElementById("rankChoiceEdit").value;
-  commandToBeEdited = commandToBeEdited.toLowerCase();
-
+  var commandData = $("#editCommandData").text().trim().toLowerCase();
+  var commandPoints = Number($("#editCommandPoints").text());
+  var commandUses = Number($("#editCommandUses").text());
+  var commandRank = document.getElementById("rankChoiceEdit").value;
   var repeat = document.getElementById("commandRepeatableChoiceEdit").value
-  if (repeat == "false") {repeat = false} else {repeat = true}
 
-  if (commandToBeEdited.startsWith("!")) {
-    commandToBeEdited = commandToBeEdited.substring(1);
+  if (commandData.length >= 255) {
+    //max length is 255.
+    errorMessageCommandModal("The message is too long", "editCommandData");
+    return
+  } else if (commandData.length == 0) {
+    errorMessageCommandModal("You must type a message", "editCommandData");
+    return
+  } else {
+    commandData = strip(commandData);
+    resetMessageCommandModal("editCommandData")
   }
-  commandToBeEdited = commandToBeEdited.toLowerCase();
-  if (isvalid == 3) {
-    console.log(commandData, commandPoints, commandUses, commandRank);
-    CommandHandle.editCommand(commandToBeEdited, null, commandData, commandUses, commandPoints, commandRank, null, repeat); //Edit the DB
-    for (let i = 0; i < arrayOfCommands.length; i++) {
-      //Find the right command on the table
-      if (arrayOfCommands[i][0] == commandToBeEdited) {
-        //Found it!
-        arrayOfCommands.splice(i, 1); //Removes it from the array.
-        var newcommand = [`${commandToBeEdited}`, null, `${commandData}`, `${commandUses}`, `${commandPoints}`, `${commandRank}`];
-        arrayOfCommands.push(newcommand); //Add the command back with new data
-        var filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
-          .rows()
-          .indexes()
-          .filter(function (value, index) {
-            return table.row(value).data()[0] == commandToBeEdited;
-          });
-        table.rows(filteredData).remove();
-        table.row.add(newcommand);
-        table.draw();
-        $("#modalEditCommand").modal("hide");
-        document.getElementById("editModal").innerHTML = editCommandModalEntry()
-      }
+
+  if (isNaN(commandPoints) == true) {
+    errorMessageCommandModal("Points must be a number", "editCommandPoints");
+    return
+  } else if (Math.sign(parseFloat(commandPoints)) == -1) {
+    errorMessageCommandModal("Points cannot be negative", "editCommandPoints");
+    return
+  } else {
+    resetMessageCommandModal("editCommandPoints")
+  }
+
+  if (isNaN(commandUses) == true) {
+    errorMessageCommandModal("Uses must be a number", "editCommandUses");
+    return
+  } else if (Math.sign(parseFloat(commandUses)) == -1) {
+    errorMessageCommandModal("Uses cannot be negative", "editCommandUses");
+    return
+  } else {
+    resetMessageCommandModal("editCommandUses")
+  }
+
+  if (repeat == "false") { repeat = false } else { repeat = true }
+
+  console.log(commandData, commandPoints, commandUses, commandRank, repeat);
+  // Adds it to the db and table
+  CommandHandle.editCommand(commandToBeEdited, null, commandData, commandUses, commandPoints, commandRank, null, repeat); //Edit the DB
+  CommandHandle.findCommand(commandToBeEdited).then(data => {
+    if (data !== null) {
+      var filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
+        .rows()
+        .indexes()
+        .filter(function (value, index) {
+          return table.row(value).data().commandName == commandToBeEdited;
+        });
+      table.rows(filteredData).remove();
+      table.row.add({ commandName: commandToBeEdited, arguements: null, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank });
+      table.draw();
+      $("#modalEditCommand").modal("hide");
+      document.getElementById("editModal").innerHTML = editCommandModalEntry()
+    }
+  })
+
+  function errorMessageCommandModal(message, errLocation) {
+    var editCommandName = document.getElementById(errLocation).parentElement;
+    var cmdErrorMessageEdit = document.getElementById("errorMessageEdit")
+    editCommandName.classList.add("errorClass");
+    cmdErrorMessageEdit.innerHTML = message;
+    console.log("Command is not valid.");
+  }
+
+  function resetMessageCommandModal(toBeReset) {
+    try {
+      document.getElementById(toBeReset).parentElement.classList.remove("errorClass");
+      document.getElementById("errorMessageEdit").innerHTML = "";
+    } catch (error) {
+      console.log(error);
     }
   }
-  console.log(isvalid);
-  isvalid = 0;
 }
 
 function editReset() {
@@ -384,9 +290,7 @@ function editReset() {
 
 // Adds a command to the table.
 function addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank) {
-  table.row.add([commandName, "null", commandData, commandUses, commandPoints, commandRank]);
-  var newcommand = [`${commandName}`, null, `${commandData}`, Number(`${commandUses}`), Number(`${commandPoints}`), `${commandRank}`];
-  arrayOfCommands.push(newcommand); //Adds it to the array variable.
+  table.row.add({ commandName: commandName, arguements: null, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank })
   table.draw(); //Show changes
 }
 
@@ -394,7 +298,35 @@ function addCommandTable(commandName, commandData, commandUses, commandPoints, c
  * Removes any HTML/CSS that is invisible to the user.
  * @param {string} html All the command data
  */
-function strip(html){
+function strip(html) {
   let doc = new DOMParser().parseFromString(html, 'text/html');
   return doc.body.textContent || "";
+}
+
+/**
+ * Runs on cmd page load. Adds filters and other things for the modals
+ */
+function commandModalPrep() {
+  $('#modalCart').on('hidden.bs.modal', function (e) {
+    console.log("Resetting command add modal.");
+    document.getElementById("commandAddModalBody").innerHTML = addCommandModal();
+    document.getElementById("errorMessageAdd").innerHTML = "";
+  }).on('show.bs.modal', function (e) {
+      $("#addCommandPoints").keypress(function (e) {
+        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+      });
+      $("#addCommandUses").keypress(function (e) {
+        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+      });
+    })
+    $('#modalEditCommand').on('hidden.bs.modal', function (e) {
+      console.log("Resetting edit add modal.");
+      document.getElementById("editModal").innerHTML = editCommandReset();
+      document.getElementById("errorMessageEdit").innerHTML = "";
+    })
+    $('#modalDelete').on('hidden.bs.modal', function (e) {
+      console.log("Resetting command remove modal.");
+      document.getElementById("removeModal").innerHTML = removeCommandReset();
+      document.getElementById("errorMessageDelete").innerHTML = "";
+    })
 }

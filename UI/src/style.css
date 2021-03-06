@@ -44,7 +44,7 @@ th {
 }
 
 .errorClass {
-    outline: 5px solid red;
+    outline: 5px solid red !important;
     outline-offset: -5px;
 }
 
