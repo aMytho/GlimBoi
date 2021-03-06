@@ -8,6 +8,9 @@ var globalChatMessages;
 var botAccount;
 var currentChatConnected = null;
 
+/**
+ * Gets the bot username for autofilling recent channels
+ */
 async function getBot() {
   return new Promise(resolve => {
     try {
@@ -27,36 +30,22 @@ async function getBot() {
     }
   })
 }
-
 /**
-* For the Join Chat modal, pulls the bots username from the API and autofills whichChannel
-*/
-function showJoinModal()
-{
-  $('#modalChat').modal('show'); // Do this first in case there are issues later on
-
-  if (document.getElementById("whichChannel").value !== '') {
-    return; // No point re-requesting if we already have it
-  }
-
-  try {
-    if (botAccount === null) {
-      getBot().then(botName => {
-        botAccount = botName;
-        if (botName.status !== 'AUTHNEEDED' && document.getElementById("whichChannel").value === '') {
-          document.getElementById("whichChannel").value = botName;
-        }
-      });
-    } else {
-      if (botAccount.status !== 'AUTHNEEDED' && document.getElementById("whichChannel").value === '') {
-        document.getElementById("whichChannel").value = botAccount;
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
+ * The main starting logic for joining and leaving and deleting recent chats / channels
+ *
+ * 3 actions trigger this. Delete, Join, Leave
+ *
+ * Delete:
+ *  - Deletes the element from the page and the database
+ *  - If the user is connected to the deleted channel, they get disconnected
+ *
+ * Join:
+ *  - Joins the selected channel, once ensuring data / auth is correct
+ *  - Leaves any channel if the socket is open (was before everything was disabled, now it's still there for bug prevention)
+ *
+ * Leave:
+ *  - Leaves the current connected chat
+ */
 $(document).on('click', '#chatConnections button', function (event) {
   var action    = $(this).attr('data-action');
   var listing   = $(this).closest('.channel-listing');
@@ -67,38 +56,40 @@ $(document).on('click', '#chatConnections button', function (event) {
   $('button[data-action=join]').prop('disabled', true);
 
   if (action === 'delete') {
+    $(this).prop('disabled', true); // Disable delete btn
     if (currentChatConnected === channel) {
       currentChatConnected = null;
       ChatHandle.disconnect(false);
     }
 
-    $(this).prop('disabled', true); // Disable delete btn
     $(listing).remove();
     ChatHandle.removeRecentChannelByID(channelid); // Remove from DB
   } else if (ChatHandle.isConnected()) {
-      currentChatConnected = null;
-      ChatHandle.disconnect(false); // Always disconnect unless we're deleting
+    // Always disconnect unless we're deleting
+    currentChatConnected = null;
+    ChatHandle.disconnect(false);
   }
 
   // Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
+  // We cannot async / promise the disconnect on the websocket
   if (action === 'join') {
     setTimeout(function () {
       joinChat(channel);
     }, 500);
-  } else if (ChatHandle.isConnected() === false) {
-    $('#channelConnectedName').removeClass('text-success').addClass('text-danger ');
+  } if (ChatHandle.isConnected() === false) {
+    // Clear the right-side text of what channel we're connect to & reload channels after deletion
+    $('#channelConnectedName').removeClass('text-success').addClass('text-danger');
     $('#channelConnectedName').text('Not Connected');
     ChatHandle.getAllRecentChannels().then(channels => displayChannels(channels));
   }
-
 });
 
-
 /**
- * Open a modal to allow the user to type which chat they will join.
+ * Join a chat after ensuring everything is kosher, and display the connection
+ * @param {string} chat
  */
-function joinChat(chat = null) {
-  var chatToJoin = chat ?? document.getElementById("whichChannel").value;
+function joinChat(chat) {
+  var chatToJoin = chat;
 
   AuthHandle.getToken().then(data => {
     if (data == undefined || data.length == 0 ) {
@@ -128,11 +119,14 @@ function joinChat(chat = null) {
   })
 }
 
+/**
+ * Adds a new chat / channel only, does not connect
+ */
 $(document).on('click', '#triggerNewChatAdd', function (event) {
   var chatToJoin = $('#newChatName').val();
   AuthHandle.getToken().then(data => {
     if (data == undefined || data.length == 0) {
-
+      errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and auth again.")
     } else {
       // Authenticate if we can and check the channel
       ApiHandle.updatePath(data); //Sends the API module our access token.
@@ -140,13 +134,16 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
         if (response == null || response.data == 'Could not find resource') {
           errorMessage(response.data, "Please make sure that the channel exists. Check your spelling.")
         } else {
-          addChannelAndDisplay(chatToJoin);
+          addChannelAndDisplay(chatToJoin).then($('#newChatModal').modal('hide'));
         }
       })
     }
   })
 });
 
+/**
+ * Loads the chat window, autofills some data from the API and displays it
+ */
 function loadChatWindow() {
   globalChatMessages.forEach(msg => {
     ChatHandle.logMessage(msg[0], msg[1], msg[2], false);
@@ -183,6 +180,11 @@ function loadChatWindow() {
   }
 }
 
+/**
+ * Adds a channel to the DB, then reloads the visuals
+ *
+ * @param {string} chatToJoin
+ */
 async function addChannelAndDisplay(chatToJoin) {
   return new Promise(resolve => {
     try {
@@ -199,28 +201,37 @@ async function addChannelAndDisplay(chatToJoin) {
   });
 }
 
+/**
+ * Displays all loaded channels into the recent channels / chats box, sorted by timestamp added
+ *
+ * @param {array[object]} channels
+ */
 function displayChannels(channels) {
-  $('#chatConnections').empty();
-  channels.forEach(channel => addChannelElement(channel));
+  $('#chatConnections').empty(); // clear
 
+  // Sort channels by timestamp
+  channels.sort((a,b) => (a.timestamp < b.timestamp) ? 1 : ((b.timestamp < a.timestamp) ? -1 : 0))
+
+  // Add default elements
+  channels.forEach(channel => $('#chatConnections')
+    .append(`<div class="mx-0 row mt-1 channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
+        <h4 class="col whiteText channelName" title="${channel.channel}">${channel.channel}</h4>
+        <div class="d-flex">
+          <div><button data-action="join" class="mx-1 btn btn-success btn-block">Join</button></div>
+          <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" disabled>Leave</button></div>
+          <div><button data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
+        </div>
+      </div>
+    `)
+  );
+
+  // Disable all leave buttons (except on the connected chat)
+  // Enable all join buttons (except on the connected chat)
   channels.forEach(channel => {
     var x = `#chatConnections [data-channel=${channel.channel}]`;
     $(`${x} [data-action=join]`).prop('disabled', (currentChatConnected !== null));
     $(`${x} [data-action=leave]`).prop('disabled', (currentChatConnected === null || currentChatConnected !== channel.channel));
   });
-}
-
-function addChannelElement(channel) {
-  return $('#chatConnections').append(`
-    <div class="mx-0 row mt-1 channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-      <h4 class="col whiteText channelName">${channel.channel}</h4>
-      <div class="d-flex">
-        <div><button data-action="join" class="mx-1 btn btn-success btn-block">Join</button></div>
-        <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" disabled>Leave</button></div>
-        <div><button data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
-      </div>
-    </div>
-  `);
 }
 
 /**
