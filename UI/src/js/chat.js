@@ -151,7 +151,7 @@ function loadChatWindow() {
 
   try {
     getBot().then(botName => {
-      var ts = (new Date()).toLocaleTimeString();
+      var ts = (Date.now());
       var defaultChannels = [{
         channel: 'Glimesh',
         timestamp: ts
@@ -205,7 +205,7 @@ async function addChannelAndDisplay(chatToJoin) {
 }
 
 /**
- * Displays all loaded channels into the recent channels / chats box, sorted by timestamp added
+ * Displays all loaded channels into the recent channels / chats box, sorted by timestamp last connected
  *
  * @param {array[object]} channels
  */
@@ -218,29 +218,33 @@ function displayChannels(channels) {
   channels.sort((a,b) => (a.timestamp < b.timestamp) ? 1 : ((b.timestamp < a.timestamp) ? -1 : 0))
 
   // Add default elements
-  channels.forEach(channel => $('#chatConnections .scroller')
+  channels.forEach(channel => {
+    var d = new Date(channel.timestamp);
+    var current = currentChatConnected === channel.channel;
+
+    if (currentChatConnected === null) {
+      $('#channelConnectedName').removeClass('text-success').addClass('text-danger');
+      $('#channelConnectedName').text('Not Connected');
+    } else if (current) {
+      $('#channelConnectedName').removeClass('text-danger').addClass('text-success');
+      $('#channelConnectedName').text(currentChatConnected);
+    }
+
+    // Disable all leave buttons (except on the connected chat)
+    // Enable all join buttons (except on the connected chat)
+    var disableJoin = (currentChatConnected !== null) ? 'disabled': '';
+    var disableLeave = (currentChatConnected === null || !current) ? 'disabled': '';
+
+    $(current ? '#chatConnections .pinned' : '#chatConnections .scroller')
     .append(`<div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        <h4 class="col whiteText channelName p-0" title="${channel.channel}">${channel.channel}</h4>
+        <h4 class="col whiteText channelName p-0" title="Last Seen: ${d.toLocaleString()} | Channel: ${channel.channel}">${channel.channel}</h4>
         <div class="d-flex">
-          <div><button data-action="join" class="mx-1 btn btn-success btn-block">Join</button></div>
-          <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" disabled>Leave</button></div>
+          <div><button data-action="join" class="mx-1 btn btn-success btn-block" ${disableJoin}>Join</button></div>
+          <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" ${disableLeave}>Leave</button></div>
           <div><button style="width: 40px;" title="Delete" data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
         </div>
       </div>
     `)
-  );
-
-  // Disable all leave buttons (except on the connected chat)
-  // Enable all join buttons (except on the connected chat)
-  channels.forEach(channel => {
-    var current = currentChatConnected === channel.channel;
-    var x = `#chatConnections .scroller [data-channel=${channel.channel}]`;
-    $(`${x} [data-action=join]`).prop('disabled', (currentChatConnected !== null));
-    $(`${x} [data-action=leave]`).prop('disabled', (currentChatConnected === null || !current));
-
-    if (current) {
-      $(`${x}`).detach().appendTo("#chatConnections .pinned");
-    }
   });
 }
 

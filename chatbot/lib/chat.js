@@ -36,7 +36,7 @@ function updatePath(GUI) {
  * @returns If successful returns the user.
  */
 async function addRecentChannel(channel, timestamp = null) {
-  var timestamp = timestamp ?? (new Date()).toLocaleTimeString();
+  var timestamp = timestamp ?? (Date.now());
 
   var channelDoc = await new Promise(done => {
     if (channel == 'GlimBoi') done(null); // no
