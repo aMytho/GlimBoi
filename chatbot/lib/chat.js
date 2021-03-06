@@ -60,28 +60,17 @@ async function addRecentChannel(channel, timestamp = null) {
 }
 
 /**
- *
- * @param {string} channel Name of the channel
- */
-async function removeRecentChannel(channel) {
-  return new Promise(resolve => {
-    recentChannelsDB.remove({ channel: channel }, { multi: true }, function (err, doc) {
-      resolve()
-    });
-  });
-}
-
-/**
+ * Removes a channel from recent chat DB, by the channel ID, the ID is what's in the DB
  *
  * @param {string} id Name of the id
  */
 async function removeRecentChannelByID(id) {
-    return new Promise(resolve => {
-      recentChannelsDB.remove({ _id: id }, { multi: false }, function (err, doc) {
-        resolve()
-      });
+  return new Promise(resolve => {
+    recentChannelsDB.remove({ _id: id }, { multi: false }, function (err, doc) {
+      resolve()
     });
-  }
+  });
+}
 
 
 /**
@@ -112,7 +101,7 @@ function join(access_token, channelID) {
 /**
  * Determines if the websocket is connected or connecting
  *
- * @return bool
+ * @return {bool}
  */
 function isConnected() {
   if (connection === undefined) return false;
@@ -729,4 +718,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { updatePath, addRecentChannel, getAllRecentChannels, removeRecentChannel, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { updatePath, addRecentChannel, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
