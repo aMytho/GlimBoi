@@ -215,11 +215,11 @@ function displayChannels(channels) {
   // Add default elements
   channels.forEach(channel => $('#chatConnections')
     .append(`<div class="mx-0 row mt-1 channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        <h4 class="col whiteText channelName" title="${channel.channel}">${channel.channel}</h4>
+        <h4 class="col whiteText channelName p-0" title="${channel.channel}">${channel.channel}</h4>
         <div class="d-flex">
           <div><button data-action="join" class="mx-1 btn btn-success btn-block">Join</button></div>
           <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" disabled>Leave</button></div>
-          <div><button data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
+          <div><button style="width: 40px;" title="Delete" data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
         </div>
       </div>
     `)
