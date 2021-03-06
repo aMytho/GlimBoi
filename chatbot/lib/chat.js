@@ -35,7 +35,7 @@ function updatePath(GUI) {
  * @param {string} object The channel object
  * @returns If successful returns the user.
  */
-async function addRecentChannel(channel, timestamp = null) {
+async function addRecentChannel(channel, timestamp = null, autoJoin = false) {
   var timestamp = timestamp ?? (Date.now());
 
   var channelDoc = await new Promise(done => {
@@ -49,7 +49,7 @@ async function addRecentChannel(channel, timestamp = null) {
           done(doc)
         });
       } else {
-        recentChannelsDB.update({ channel: channel }, { $set: {timestamp: timestamp } }, {returnUpdatedDocs: true}, function (err, dic) {
+        recentChannelsDB.update({ channel: channel }, { $set: { timestamp: timestamp } }, {returnUpdatedDocs: true}, function (err, num, doc) {
           console.log(doc);
           done(doc)
         });
@@ -57,6 +57,29 @@ async function addRecentChannel(channel, timestamp = null) {
     })
   })
   return channelDoc;
+}
+
+/**
+ * Disables autoJoin for all channels, then enables for a specified channel
+ *
+ * @param {string} id
+ * @param {bool} autoJoinEnabled
+ */
+async function setAutoJoinChannelByID(id, autoJoinEnabled) {
+  return new Promise(done => {
+    console.log(`Disabling autoJoin for all channels`);
+
+    recentChannelsDB.update({ autoJoin: true }, { $set: { autoJoin: false } }, {returnUpdatedDocs: false}, function (err, num, doc) {
+      if (autoJoinEnabled) {
+        console.log(`Setting autojoin to ${autoJoinEnabled} for ${id}`);
+        recentChannelsDB.update({ _id: id }, { $set: { autoJoin: autoJoinEnabled } }, {returnUpdatedDocs: true}, function (err, num, doc) {
+          done(doc)
+        });
+      } else {
+        done(null);
+      }
+    });
+  });
 }
 
 /**
@@ -718,4 +741,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { updatePath, addRecentChannel, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { updatePath, addRecentChannel, setAutoJoinChannelByID, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

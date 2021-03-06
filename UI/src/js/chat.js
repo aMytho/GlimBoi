@@ -44,12 +44,38 @@ async function getBot() {
  *
  * Leave:
  *  - Leaves the current connected chat
+ *
+ * Auto Join:
+ *  - Updates the DB and tells it to auto-join when there are no connections on load
  */
 $(document).on('click', '#chatConnections button', function (event) {
   var action    = $(this).attr('data-action');
   var listing   = $(this).closest('.channel-listing');
   var channel   = listing.attr('data-channel');
   var channelid = listing.attr('data-channelid');
+
+  if (action === 'auto-join') {
+    $('button[data-action=auto-join]').prop('disabled', true);
+
+    var enabled = ($(this).attr('data-enabled') == "false"); // Invert current setting
+    console.log(`Setting autoJoin for ${channel} to ${enabled}`);
+
+    // Set the selected channel to be auto-join
+    ChatHandle.setAutoJoinChannelByID(channelid, enabled).then(channel => {
+      // Done, so reset the classes
+      $('[data-action=auto-join]').removeClass('btn-success').addClass('btn-outline-warning');
+      $('[data-action=auto-join]').attr('data-enabled', false);
+
+      if (channel !== null && channel.autoJoin) {
+        $(this).removeClass('btn-outline-warning').addClass('btn-success');
+        $(this).attr('data-enabled', channel.autoJoin);
+      }
+      $('button[data-action=auto-join]').prop('disabled', false);
+      console.log(`Auto join for ${channel.channel} changed to: ${enabled}`);
+    });
+
+    return;
+  }
 
   $('button[data-action=leave]').prop('disabled', true);
   $('button[data-action=join]').prop('disabled', true);
@@ -156,26 +182,34 @@ function loadChatWindow() {
       var ts = (Date.now());
       var defaultChannels = [{
         channel: 'Glimesh',
-        timestamp: ts
+        timestamp: ts,
+        autoJoin: false
       }];
 
       // If we have authentication, add our name to recent channels
       if (botName !== null) {
         defaultChannels.push({
           channel: botName,
-          timestamp: ts
+          timestamp: ts,
+          autoJoin: false
         });
       }
 
       ChatHandle.getAllRecentChannels().then(channels => {
         if (channels.length == 0) {
           defaultChannels.forEach(chan => {
-            ChatHandle.addRecentChannel(chan.channel, chan.ts);
+            ChatHandle.addRecentChannel(chan.channel, chan.ts, chan.autoJoin);
           });
           channels = defaultChannels;
         }
 
         $('#chatConnections').empty();
+        channels.forEach(chan => {
+          if (chan.autoJoin === true && ChatHandle.isConnected() === false) {
+            joinChat(chan.channel);
+          }
+        });
+
         displayChannels(channels);
       });
     });
@@ -221,31 +255,33 @@ function displayChannels(channels) {
   // Add default elements
   channels.forEach(channel => {
     var d = new Date(channel.timestamp);
-    var current = currentChatConnected === channel.channel;
+    var currentlyConnected = currentChatConnected === channel.channel;
 
     if (currentChatConnected === null) {
       $('#channelConnectedName').removeClass('text-success').addClass('text-danger');
       $('#channelConnectedName').text('Not Connected');
-    } else if (current) {
+    } else if (currentlyConnected) {
       $('#channelConnectedName').removeClass('text-danger').addClass('text-success');
       $('#channelConnectedName').text(currentChatConnected);
     }
 
     // Disable all leave buttons (except on the connected chat)
     // Enable all join buttons (except on the connected chat)
-    var disableJoin = (currentChatConnected !== null) ? 'disabled': '';
-    var disableLeave = (currentChatConnected === null || !current) ? 'disabled': '';
+    var disableJoin = (currentChatConnected !== null) ? 'disabled' : '';
+    var disableLeave = (currentChatConnected === null || !currentlyConnected) ? 'disabled' : '';
+    var joinClasses = (channel.autoJoin) ? 'btn-success' : 'btn-outline-warning';
 
-    $(current ? '#chatConnections .pinned' : '#chatConnections .scroller')
-    .append(`<div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        <h4 class="col whiteText channelName p-0" title="Last Seen: ${d.toLocaleString()} | Channel: ${channel.channel}">${channel.channel}</h4>
-        <div class="d-flex">
-          <div><button data-action="join" class="mx-1 btn btn-success btn-block" ${disableJoin}>Join</button></div>
-          <div><button data-action="leave" class="mx-1 btn btn-danger btn-block" ${disableLeave}>Leave</button></div>
-          <div><button style="width: 40px;" title="Delete" data-action="delete" class="mx-1 btn btn-danger btn-block btn-icon"><i class="fas fa-trash"></i></button></div>
+    $(currentlyConnected ? '#chatConnections .pinned' : '#chatConnections .scroller').append(`
+      <div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
+        <h4 class="col whiteText channelName p-0 mb-1" title="Last Seen: ${d.toLocaleString()} | Channel: ${channel.channel}">${channel.channel}</h4>
+        <div class="d-flex btn-group mb-1" role="group">
+          <button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon"><i class="fas fa-sync-alt"></i></button>
+          <button data-action="join" class="btn btn-success" ${disableJoin}>Join</button>
+          <button data-action="leave" class="btn btn-danger" ${disableLeave}>Leave</button>
+          <button title="Delete" data-action="delete" class="btn btn-danger btn-icon"><i class="fas fa-trash"></i></button>
         </div>
       </div>
-    `)
+    `);
   });
 }
 
