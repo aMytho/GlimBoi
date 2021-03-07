@@ -1,5 +1,4 @@
 //This file handles connecting the bot to a chat.
-const { resolve } = require("path");
 const WebSocket = require("ws"); // websocket library
 var connection; // the websocket connection
 var chatID = "" // the channel ID
