@@ -32,6 +32,7 @@
     }
   },
   "scripts": {
+    "clean": "eslint . --fix",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js",

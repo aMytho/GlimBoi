@@ -8,7 +8,10 @@ rules: {
   "indent": 2,
   "max-len": [
     2,
-    {code: 120}
+    {code: 160}
+  ],
+  "no-unused-vars": [
+    1
   ]
 }
 plugins:
