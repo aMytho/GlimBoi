@@ -61,7 +61,7 @@ var listofvariables = [
 function updatePath(GUI) {
   console.log("path is " + GUI);
   path = GUI;
- commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
+  commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
 }
 
 
@@ -83,7 +83,10 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
     //inserts a document as a command. Uses the command made above.
     commandsDB.insert(newCommand, function(err, doc) {
     console.log('Inserted', doc.commandName, 'with ID', doc._id);
-    getAll()
+    commands.push(newCommand);
+    if (repeat == true) {
+      repeatableArray.push(newCommand)
+    }
   });
   } catch(e) {
     console.log(e);
@@ -93,6 +96,7 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
 }
 
 function addCommandFilter(commandName, arguements, commandData, type) {
+  commandName = commandName.toLowerCase()
   if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
     ChatHandle.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
     return
@@ -114,12 +118,11 @@ function addCommandFilter(commandName, arguements, commandData, type) {
   }
   console.log(commandName, commandData);
   findCommand(commandName).then(data => {
-    if (data !== undefined) {
+    if (data !== null) {
       console.log(commandName + " already exists.")
       ChatHandle.filterMessage(commandName + " already exists", "glimboi")
     } else {
-      console.log("no command found")
-      addCommand(commandName.toLowerCase(), null, commandData, 0, 0, "Everyone", null, false);
+      addCommand(commandName, null, commandData, 0, 0, "Everyone", null, false);
       ChatHandle.filterMessage(commandName + " added!", "glimboi");
       try {
         addCommandTable(commandName, commandData, 0, 0, "Everyone")
@@ -140,12 +143,20 @@ function addCommandFilter(commandName, arguements, commandData, type) {
 function removeCommand(commandName) {
   commandsDB.remove({ commandName: commandName }, {}, function (err, numRemoved) {
     console.log(commandName + " was removed from the db");
-    getAll()
+    for (let index = 0; index < commands.length; index++) {
+      if (commandName == commands[index].commandName) {
+        if (commands[index].repeat == true) {
+          removeRepeat(commandName)
+        }
+        commands.splice(index, 1);
+        break;
+      }
+    }
   });
 }
 
 /**
- * Edits a command by searching the name. All values are passed (maybe...). Reloads the commands upon completion.
+ * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  * @param {string} commandName The name of your command. Lowercase please!
  * @param {null} arguements null for now
  * @param {string} commandData The command response.
@@ -157,24 +168,72 @@ function removeCommand(commandName) {
  */
 function editCommand(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special, repeat) {
   console.log(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special, repeat)
-  commandsDB.update({ commandName: commandName }, { $set: {arguements : arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat} }, {}, function (err, numReplaced) {
-    console.log("Replacing " + commandName);
-    getAll()
-});
+  commandsDB.update({ commandName: commandName }, { $set: { arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat } }, {}, function (err, numReplaced) {
+    console.log("Updating " + commandName);
+    for (let index = 0; index < commands.length; index++) {
+      if (commandName == commands[index].commandName) {
+        commands.splice(index, 1, { commandName: commandName, arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat });
+        var repeatExists = findRepeat(commandName);
+        if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
+          console.log("Adding to repeat array.")
+          repeatableArray.push({ commandName: commandName, arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat })
+        } else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
+          console.log("Removing from repeat array")
+          removeRepeat(commandName)
+        } else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
+          console.log("Editing command in repeat array.")
+          repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat })
+        }
+        break;
+      }
+    }
+  });
 }
 
 /**
- * @param {string} command Lowercase name of command.
+ * @param {string} command Name of command.
  * @returns A command
+ * This technically does not need a promise, but all the functions that use it are meant to deal with promises. This will be fixed later
  */
-async function findCommand(command) {
-  console.log(command)
+function findCommand(command) {
   return new Promise(resolve => {
-    commandsDB.find({commandName: command}, function (err, docs) {
-      console.log(docs)
-      resolve(docs[0]) //
-    })
+    console.log("Searching for " + command);
+    command = command.toLowerCase()
+    for (let index = 0; index < commands.length; index++) {
+      if (command == commands[index].commandName) {
+        resolve(commands[index]);
+        break;
+      }
+    }
+    resolve(null)
   })
+}
+
+/**
+ * Returns the repeatable command and null if none exists.
+ * @param {string} commandName 
+ * @returns 
+ */
+function findRepeat(commandName) {
+  for (let i = 0; i < repeatableArray.length; i++) {
+    if (repeatableArray[i].commandName == commandName) {
+      return { command: repeatableArray[i], index: i };
+    }
+  }
+  return null
+}
+
+/**
+ * Removes the command from the repeat array.
+ * @param {string} commandName 
+ */
+function removeRepeat(commandName) {
+  for (let i = 0; i < repeatableArray.length; i++) {
+    if (repeatableArray[i].commandName == commandName) {
+      repeatableArray.splice(i, 1);
+      break
+    }
+  }
 }
 
 /**
@@ -355,6 +414,16 @@ async function getAll() {
   })
 }
 
+// Self explanatory. This contains all the commands
+function getCurrentCommands() {
+  return commands
+}
+
+// Returns all the repeatable data
+function getRepeats() {
+  return repeatableArray
+}
+
 /**
  * Loads all the repeat commands. Pushes them to the repeatableArray
  * @param {array} command Array of all commands
@@ -395,16 +464,20 @@ function getTime() {
 }
 
 /**
- * @async
  * Increments the command uses by one. Updates the commands upon completion.
  * @param {string} command Name of the command
  */
-async function addCommandCount(command) {
-  commandsDB.update({ commandName: command }, { $inc: {uses: 1} }, {}, function (err, numReplaced) {
+function addCommandCount(command) {
+  commandsDB.update({ commandName: command }, { $inc: { uses: 1 } }, {}, function (err, numReplaced) {
     console.log("Updating uses of " + command);
     err ? console.log(err) : null; // if error log it
-    getAll()
-});
+    for (let index = 0; index < commands.length; index++) {
+      if (command == commands[index].commandName) {
+        commands[index].uses++
+        break;
+      }
+    }
+  });
 }
 
 /**
@@ -423,4 +496,4 @@ function info() {
   ChatHandle.filterMessage("placeholder", "glimboi")
 }
 
-module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
+module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.

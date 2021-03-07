@@ -62,7 +62,7 @@ function addCommandModal() {
 </div>`
 }
 
-function editCommandModal(arrayOfCommands, i) {
+function editCommandModal(command) {
    return `
 <div class="modal-header text-center">
    <h4 class="modal-title w-100" id="myModalLabel">Edit a command</h4>
@@ -78,19 +78,19 @@ function editCommandModal(arrayOfCommands, i) {
       <tbody>
          <tr>
             <td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
-            <td contenteditable="true" id="editCommandArguements">${arrayOfCommands[i][1]}</td>
+            <td contenteditable="true" id="editCommandArguements">${command.arguements}</td>
          </tr>
          <tr>
             <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
-            <td contenteditable="true" id="editCommandData">${arrayOfCommands[i][2]}</td>
+            <td contenteditable="true" id="editCommandData">${command.message}</td>
          </tr>
          <tr>
             <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
-            <td contenteditable="true" id="editCommandPoints">${arrayOfCommands[i][4]}</td>
+            <td contenteditable="true" id="editCommandPoints">${command.points}</td>
          </tr>
          <tr>
             <td data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
-            <td contenteditable="true" id="editCommandUses">${arrayOfCommands[i][3]}</td>
+            <td contenteditable="true" id="editCommandUses">${command.uses}</td>
          </tr>
          <tr>
             <td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
@@ -170,4 +170,25 @@ function editCommandReset() {
    <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
    <button class="btn btn-outline-success" onclick="checkEditCommand()" id="addCommandButtonFinish">Edit</button>
 </div>`
+}
+
+function removeCommandReset() {
+   return `
+   <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabelDelete">Remove a Command</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Command Name" id="commandRemoveInput">
+          <p id="removeCommandMessage" class="errorMessage"></p>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageDelete"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-danger" onclick="checkRemoveCommand()" id="removeCommandButtonFinish">Remove</button>
+      </div>`
 }

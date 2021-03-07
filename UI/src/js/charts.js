@@ -18,18 +18,6 @@ function getBasicData() {
     var points = QuoteHandle.getAll().then(b => {
       quoteCount = b.length;
       var commands = CommandHandle.getAll().then(c => {
-        for (const property in c) {
-          var tempArray = [
-            `${c[`${property}`].commandName}`,
-            ` ${c[`${property}`].arguements}`,
-            ` ${c[`${property}`].message}`,
-            Number(` ${c[`${property}`].uses}`),
-            Number(` ${c[`${property}`].points}`),
-            ` ${c[`${property}`].rank}`,
-            ` ${c[`${property}`].special}`,
-          ];
-          arrayOfCommands.push(tempArray); //Pushes the commands to a variable which we use to build the table
-        }
         commandCount = c.length;
         pointCount = 4;
         var introChartOptions = {

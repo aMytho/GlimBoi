@@ -255,7 +255,6 @@ function connectToGlimesh(access_token, channelID) {
                     case "add":
                     case "new":
                     CommandHandle.addCommandFilter(message[2], null, messageChat, message[0])
-
                       break;
                     case "help":
                     case "info":
