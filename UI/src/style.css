@@ -241,3 +241,41 @@ table.whiteText td {
     text-decoration: none;
     background-color: #1672ce !important;
 }
+
+#chatConnections {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chatConnections .scroller {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-bottom: 40px;
+    padding-right: 5px;
+}
+#chatConnections .pinned {
+    margin-right: 15px;
+}
+
+#chatConnections .pinned .channel-listing {
+    background: #17a2b8;
+}
+
+#chatConnections .channel-listing {
+    height: 50px;
+    border-radius: 5px;
+    padding: 6px;
+    padding-right: 2px;
+}
+
+#chatConnections .channelName {
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 35px;
+}
+#chatConnections button:not(.btn-icon) {
+    width: 75px;
+    font-weight: bold;
+}

@@ -17,6 +17,95 @@ var checkForUsers;
 
 var messageHistoryCount = 20;
 
+var recentChannelsDB;
+var path = "./";
+
+/**
+ * Updates the path to the DB. The path variable is updated
+ */
+function updatePath(GUI) {
+  console.log("User path is " + GUI);
+  path = GUI;
+  recentChannelsDB = new Datastore({ filename: `${path}/data/recentChannels.db`, autoload: true });
+}
+
+/**
+ * Adds a recent channel to GlimBoi
+ * @param {string} object The channel object
+ * @returns If successful returns the user.
+ */
+async function addRecentChannel(channel, timestamp = null, autoJoin = false) {
+  var timestamp = timestamp ?? (Date.now());
+
+  var channelDoc = await new Promise(done => {
+    recentChannelsDB.find({ channel: channel }, function (err, doc) {
+      if (doc.length == 0) {
+        console.log("No channel was found with the name " + channel);
+        recentChannelsDB.insert({channel: channel, timestamp: timestamp}, function (err, doc) {
+          console.log(doc);
+          done(doc)
+        });
+      } else {
+        recentChannelsDB.update({ channel: channel }, { $set: { timestamp: timestamp } }, {returnUpdatedDocs: true}, function (err, num, doc) {
+          console.log(doc);
+          done(doc)
+        });
+      }
+    })
+  })
+  return channelDoc;
+}
+
+/**
+ * Disables autoJoin for all channels, then enables for a specified channel
+ *
+ * @param {string} id
+ * @param {bool} autoJoinEnabled
+ */
+async function setAutoJoinChannelByID(id, autoJoinEnabled) {
+  return new Promise(done => {
+    console.log(`Disabling autoJoin for all channels`);
+
+    recentChannelsDB.update({ autoJoin: true }, { $set: { autoJoin: false } }, {returnUpdatedDocs: false}, function (err, num, doc) {
+      if (autoJoinEnabled) {
+        console.log(`Setting autojoin to ${autoJoinEnabled} for ${id}`);
+        recentChannelsDB.update({ _id: id }, { $set: { autoJoin: autoJoinEnabled } }, {returnUpdatedDocs: true}, function (err, num, doc) {
+          done(doc)
+        });
+      } else {
+        done(null);
+      }
+    });
+  });
+}
+
+/**
+ * Removes a channel from recent chat DB, by the channel ID, the ID is what's in the DB
+ *
+ * @param {string} id Name of the id
+ */
+async function removeRecentChannelByID(id) {
+  return new Promise(resolve => {
+    recentChannelsDB.remove({ _id: id }, { multi: false }, function (err, doc) {
+      resolve()
+    });
+  });
+}
+
+
+/**
+ * Get all recent Channels
+ * @returns Returns array of channel objects
+ */
+async function getAllRecentChannels() {
+  return new Promise(resolve => {
+    recentChannelsDB.find({}, function (err, docs) {
+      console.log('Returning all recent channels.');
+      resolve(docs)
+    })
+  })
+}
+
 /**
  * Tries to join a glimesh chat. Returns an error if the attempt failed.
  * @param {string} access_token Access token used for authentication
@@ -27,6 +116,16 @@ function join(access_token, channelID) {
      console.log("we caught the error, poggers");
      errorMessage(e, "Chat Error")
   }
+}
+
+/**
+ * Determines if the websocket is connected or connecting
+ *
+ * @return {bool}
+ */
+function isConnected() {
+  if (connection === undefined) return false;
+  return connection.readyState !== WebSocket.CLOSED && connection.readyState !== WebSocket.CLOSING;
 }
 
 /**
@@ -209,7 +308,7 @@ function connectToGlimesh(access_token, channelID) {
                         }
                       })
                       break;
-                    default: 
+                    default:
                       if (!isNaN(message[1])) {
                         UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
                           if (data.length > 0) {
@@ -219,7 +318,7 @@ function connectToGlimesh(access_token, channelID) {
                               filterMessage("That number is not valid.")
                             } else if (data[pointsPosition-1] !== undefined) {
                               pointsPosition = pointsPosition - 1
-                              filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points) 
+                              filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points)
                             } else {
                               filterMessage("There is not a user with that position.")
                             }
@@ -313,15 +412,15 @@ function connectToGlimesh(access_token, channelID) {
 /**
  * Disconnects from Glimesh chat.
  */
-function disconnect() {
+function disconnect(displayMessage = true) {
   try {
-  connection.close(1001, "So long and thanks for all the fish.") // closes the websocket
-  successMessage("Chat has been successfully disconnected!", "You can close this now.");
-  if (logging == true) {
-  setTimeout(() => {
-    ipcRenderer.send("logEnd") // ends the logging
-  }, 3000);
-}
+    connection.close(1001, "So long and thanks for all the fish.") // closes the websocket
+    if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
+    if (logging == true) {
+      setTimeout(() => {
+        ipcRenderer.send("logEnd") // ends the logging
+      }, 3000);
+    }
   } catch(e) {
     errorMessage(e, "Error disconnecting from the chat")
   }
@@ -332,13 +431,13 @@ function disconnect() {
  */
 function disconnectError() {
   try {
-  connection.close(1001, "So long and thanks for all the fish.")
-  errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
-  if (logging == true) {
-  setTimeout(() => {
-    ipcRenderer.send("logEnd")
-  }, 3000);
-}
+    connection.close(1001, "So long and thanks for all the fish.")
+    errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
+    if (logging == true) {
+      setTimeout(() => {
+        ipcRenderer.send("logEnd")
+      }, 3000);
+    }
   } catch(e) {
     errorMessage(e, "Error disconnecting from the chat")
   }
@@ -639,4 +738,4 @@ function getBotName() {
   return botName
 }
 
-module.exports = { connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+module.exports = { updatePath, addRecentChannel, setAutoJoinChannelByID, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}

@@ -1,29 +1,24 @@
-<div class="card-deck m-3">
+<div class="card-deck m-3 whiteText">
   <div class="card glimPanel col-lg-6 mx-1">
-    <div class="card-body">
-      <h3 class="whiteText text-center" id="pointName">Chat</h3>
-      <div class="row">
-        <div class="col-12 col-lg-6">
-          <p class="whiteText">You must authenticate before joining a chat. You can join ANY chat you wish. The bot will perform all of its tasks regardless of which chat you are in. However, if it is not a mod in the chat some abilities will be limited.</p>
-          <p class="whiteText">The bot is still a user, it can be banned if you are causing problems. This feature is intented so mods can add bots to the streamers chat if the streamer does not want to install the bot themselves.</p>
-          <p class="whiteText">This is an experimental feature. It may be removed in a future update.</p>
-        </div>
-        <div class="col-12 col-lg-6">
-          <p class="whiteText">Select Join Chat = ></p>
-          <p class="whiteText">Enter the chat that you want to join.</p>
-          <p class="whiteText">If everything is successful the bot will join the selected chat. Chat controls will unlock on the right.</p>
-          <p class="whiteText">When you are finished disconnect the bot. It cleanly closes the connection.</p>
-        </div>
-      </div>
+    <div class="card-body px-0 pl-1">
+      <button onclick="$('#newChatModal').modal('show');" class="btn btn-success" style="position: absolute;right: 5px;bottom: 5px;">Add new </button>
+
+      <button type="button" class="btn btn-primary" data-placement="right" data-toggle="tooltip" style="position: absolute;left: 5px;bottom: 5px;" title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
+        <i class="fas fa-question-circle"></i>
+      </button>
+
+      <h3 class="whiteText text-center">Recent Channel Connections</h3>
+      <div id="chatConnections"><div class="pinned"></div><div class="scroller">Loading...</div></div>
     </div>
   </div>
   <div class="card glimPanel col-lg-6 mx-1">
     <div class="card-body">
-      <h3 class="whiteText text-center" id="chatName">Chat Controls</h3>
-      <p class="whiteText text-center">_______________</p>
-      <button class="btn btn-success btn-block mt-2" type="submit" id="leaveChat" onclick="showJoinModal()">Join Chat</button>
-      <button class="btn btn-danger btn-block mt-2" type="submit" id="ComingSoon" onclick="ChatHandle.disconnect()">Leave Chat</button>
-      <p class="whiteText text-center">_______________</p>
+      <h3 class="whiteText text-center">Chat Controls</h3>
+      <div class="row">
+        <h4 id="channelConnectedName" class="col-12 whiteText text-center py-3 my-3 border border-white border-left-0 border-right-0 text-danger">
+          Not Connected
+        </h4>
+      </div>
       <div class="row">
         <div class="col-4 mx-auto">
           <h3 class="whiteText text-center" id="fasUsers"><span><i class="fas fa-users"></i></span> 0</h3>
@@ -37,17 +32,17 @@
       </div>
       <div class="row mt-1">
         <div class="col text-center">
-          <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
-          <button class="btn btn-info mt-2" type="submit" id="ComingSoon" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
-          <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
-          <button class="btn btn-info mt-2" type="submit" id="ComingSoon" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
+          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="card-deck m-3 mt-0 ">
+<div class="card-deck m-3 mt-0 whiteText">
   <div class="card glimPanel col-lg-6 mx-1">
     <div class="card-body">
       <div class="col-12 message_section">
@@ -139,32 +134,27 @@
   </div>
 </div>
 
-
-<!-- Modal: Which Chat? -->
-<div class="modal fade" id="modalChat" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="chatModal">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalChat">Chat</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body" id="modalChatBody">
-        <p id="chatMessageText">Which channel do you want GlimBoi do join?</p>
-        <input type="text" class="form-control" placeholder="Channel" id="whichChannel">
-        <p id="chatMessageSolution" class="mt-1">You can join ANY channel but you are restricted by the bots permissions in that channel. Your bot can still be timed out and banned just like any other user.</p>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <p id="chatMessageAdd"></p>
-        <p id="chatMessageAdd"></p>
-        <button id="chat-modal-btn-close" type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-        <button id="chat-modal-btn-join" type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="joinChat()">Join</button>
+<!-- Modal: add new chat? -->
+<div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="chatModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Add New Chat</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalChatBody">
+          <input type="text" class="form-control" placeholder="Channel" id="newChatName">
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Send</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- Modal: Which Chat -->
+  <!-- Modal: add new chat -->
 
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
   <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
