@@ -39,8 +39,6 @@ async function addRecentChannel(channel, timestamp = null, autoJoin = false) {
   var timestamp = timestamp ?? (Date.now());
 
   var channelDoc = await new Promise(done => {
-    if (channel == 'GlimBoi') done(null); // no
-
     recentChannelsDB.find({ channel: channel }, function (err, doc) {
       if (doc.length == 0) {
         console.log("No channel was found with the name " + channel);

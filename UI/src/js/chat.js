@@ -136,7 +136,10 @@ function joinChat(chat) {
           ModHandle.importFilter();
 
           addChannelAndDisplay(chatToJoin).then(function () {
-            $('#channelConnectedName').text(chatToJoin);
+            if (chatToJoin.toLowerCase() === 'glimboi') {
+              channelNameText = 'GlimBoi (TEST)';
+            }
+            $('#channelConnectedName').text(channelNameText);
             $('#channelConnectedName').removeClass('text-danger').addClass('text-success ');
           });
         }
@@ -182,7 +185,7 @@ function loadChatWindow() {
     getBot().then(botName => {
       var ts = (Date.now());
       var defaultChannels = [{
-        channel: 'Glimesh',
+        channel: 'GlimBoi',
         timestamp: ts,
         autoJoin: false
       }];
@@ -272,9 +275,17 @@ function displayChannels(channels) {
     var disableLeave = (currentChatConnected === null || !currentlyConnected) ? 'disabled' : '';
     var joinClasses = (channel.autoJoin) ? 'btn-success' : 'btn-outline-warning';
 
+    var channelNameText = channel.channel;
+    var channelNameHTML = channel.channel;
+
+    if (channel.channel.toLowerCase() === 'glimboi') {
+      channelNameText = 'GlimBoi (TEST)';
+      channelNameHTML = '<span class="text-warning"><b>GlimBoi (TEST)</b></span>';
+    }
+
     $(currentlyConnected ? '#chatConnections .pinned' : '#chatConnections .scroller').append(`
       <div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        <h4 class="col whiteText channelName p-0 mb-1" title="Last Seen: ${d.toLocaleString()} | Channel: ${channel.channel}">${channel.channel}</h4>
+        <h4 class="col whiteText channelName p-0 mb-1" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
         <div class="d-flex btn-group mb-1" role="group">
           <button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon"><i class="fas fa-sync-alt"></i></button>
           <button data-action="join" class="btn btn-success" ${disableJoin}>Join</button>
