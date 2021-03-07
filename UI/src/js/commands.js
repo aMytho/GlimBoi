@@ -4,12 +4,12 @@ CommandHandle.updatePath(appData[1]);
 var table; //The physical table for the UI
 var commandToBeEdited; // A global var because I was too lazy to find another solution. Must have for editing.
 
-//Loads the command table. It is loaded when the page is opened for the first time. After that it is saved to a variable.
+//Loads the command table.
 function loadCommandTable() {
   $(document).ready(function () {
-    commandModalPrep()
+    commandModalPrep() // ensures the modals have the proper filter enabled
     table = $("#example").DataTable({
-      data: CommandHandle.getCurrentCommands(),
+      data: CommandHandle.getCurrentCommands(), // returns all the commands
       columns: [
         {
           title: "Commands",
@@ -40,7 +40,10 @@ function loadCommandTable() {
   });
 } // End of start function
 
-//Adds a command
+/**
+ * Checks if the new command is valid. This is the same as the edit command modal.
+ * If any errors occur the function returns. After an property is checked the errors are reset (even if none occured)
+ */
 function checkNewCommand() {
   console.log("Checking if command is valid.");
   var commandName = $("#addCommandName").text().trim().toLowerCase();
@@ -114,6 +117,7 @@ function checkNewCommand() {
   addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank)
   $("#modalCart").modal("hide");
 
+  // Shows an error in the modal
   function errorMessageCommandModal(message, errLocation) {
     var addCommandName = document.getElementById(errLocation).parentElement;
     var cmdErrorMessage = document.getElementById("errorMessageAdd")
@@ -122,6 +126,7 @@ function checkNewCommand() {
     console.log("Command is not valid.");
   }
 
+  // resets the errors
   function resetMessageCommandModal(toBeReset) {
     try {
       document.getElementById(toBeReset).parentElement.classList.remove("errorClass");
@@ -205,6 +210,10 @@ function checkEditCommand() {
   }
 }
 
+/**
+ * Same as the add modal with the exception of the command name.
+ * @returns 
+ */
 function editCommand() {
   console.log("Checking if command is valid.");
   var commandData = $("#editCommandData").text().trim().toLowerCase();
@@ -266,6 +275,7 @@ function editCommand() {
     }
   })
 
+  // Shows an error in the modal
   function errorMessageCommandModal(message, errLocation) {
     var editCommandName = document.getElementById(errLocation).parentElement;
     var cmdErrorMessageEdit = document.getElementById("errorMessageEdit")
@@ -274,6 +284,7 @@ function editCommand() {
     console.log("Command is not valid.");
   }
 
+  // Resets the errors
   function resetMessageCommandModal(toBeReset) {
     try {
       document.getElementById(toBeReset).parentElement.classList.remove("errorClass");

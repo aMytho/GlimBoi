@@ -156,7 +156,7 @@ function removeCommand(commandName) {
 }
 
 /**
- * Edits a command by searching the name. All values are passed (maybe...). Reloads the commands upon completion.
+ * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  * @param {string} commandName The name of your command. Lowercase please!
  * @param {null} arguements null for now
  * @param {string} commandData The command response.
@@ -209,7 +209,11 @@ function findCommand(command) {
   })
 }
 
-
+/**
+ * Returns the repeatable command and null if none exists.
+ * @param {string} commandName 
+ * @returns 
+ */
 function findRepeat(commandName) {
   for (let i = 0; i < repeatableArray.length; i++) {
     if (repeatableArray[i].commandName == commandName) {
@@ -219,6 +223,10 @@ function findRepeat(commandName) {
   return null
 }
 
+/**
+ * Removes the command from the repeat array.
+ * @param {string} commandName 
+ */
 function removeRepeat(commandName) {
   for (let i = 0; i < repeatableArray.length; i++) {
     if (repeatableArray[i].commandName == commandName) {
@@ -406,10 +414,12 @@ async function getAll() {
   })
 }
 
+// Self explanatory. This contains all the commands
 function getCurrentCommands() {
   return commands
 }
 
+// Returns all the repeatable data
 function getRepeats() {
   return repeatableArray
 }
