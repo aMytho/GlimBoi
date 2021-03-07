@@ -19,7 +19,8 @@ var updatedSettings = {
     },
     chat: {
         logging: false,
-        filter: false
+        filter: false,
+        health: 0
     }
 }
 
@@ -64,7 +65,8 @@ function getSettings() {
             },
             chat: {
                 logging: false,
-                filter: false
+                filter: false,
+                health: 0
             }
         })
         try {
@@ -91,7 +93,8 @@ function getSettings() {
             },
             chat: {
                 logging: false,
-                filter: false
+                filter: false,
+                health: 0
             }
         }
     }
@@ -173,6 +176,23 @@ function showSettings() {
         default:
             break;
     }
+
+    switch (settings.chat.health) {
+        case 0:
+            document.getElementById("hr0").toggleAttribute("selected")
+            break;
+        case 30:
+            document.getElementById("hr30").toggleAttribute("selected")
+            break;
+        case 60:
+            document.getElementById("hr60").toggleAttribute("selected")
+            break;
+        case 120:
+            document.getElementById("hr120").toggleAttribute("selected")
+            break;
+        default:
+            break;
+    }
 }
     
 
@@ -217,6 +237,23 @@ function saveSettings() {
                 break;
         }
     }
+    function getHealthInterval() {
+        var value = document.getElementById("healthReminder").value
+        switch (value) {
+            case "Disabled (default)":
+                return 0
+                break;
+            case "30 minutes":
+                return 30
+                break;
+            case "60 minutes":
+                return 60
+                break;
+            case "2 hours":
+                return 120
+                break;
+        }
+    }
     settings = {
         Points: {
             enabled: true,
@@ -234,7 +271,8 @@ function saveSettings() {
         },
         chat: {
             logging: document.getElementById("loggingEnabled").checked,
-            filter: document.getElementById("filterEnabled").checked
+            filter: document.getElementById("filterEnabled").checked,
+            health: getHealthInterval()
         }
     }
     console.log(settings);
@@ -262,19 +300,19 @@ function resetSettings() {
         },
         chat: {
             logging: false,
-            filter: false
+            filter: false,
+            health: 0
         }
     }
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
-    showSettings() // shows the sldiers as the normal values.
+    showSettings() // shows the sliders as the normal values.
     updateSettings()
     successMessage("Settings Reset", "Your settings have been set to their original values.")
 }
 
 //applies the settings. THis is ran at launch after the file is read. Once finished the bot is fully ready
 function updateSettings() {
-    ChatHandle.loggingEnabled(settings.chat.logging);
     CommandHandle.cooldownChange(settings.Commands.cooldown);
-    ChatHandle.repeatSettings(settings);
-    ModHandle.updateFilter(settings.chat.filter)
+    ModHandle.updateFilter(settings.chat.filter);
+    ChatHandle.updateSettings(settings)
 }
