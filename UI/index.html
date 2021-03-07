@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <title>GlimBoi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="src/style.css">
+    <link rel="stylesheet" href="src/css/glimboi.css">
     <!-- jQuery library -->
-    <script src="src/js/jquery.js"></script>
+    <script src="src/js/external/jquery.min.js"></script>
     <script>
-    window.jQuery || document.write('<script src="src/js/jquery.js"><\/script>') //Imports it if it failed initially.
+    window.jQuery || document.write('<script src="src/js/external/jquery.min.js"><\/script>') //Imports it if it failed initially.
     </script>
-    <link rel="stylesheet" href="src/css/bootstrap.min.css">
+    <link rel="stylesheet" href="src/css/external/bootstrap.min.css">
     <!-- Popper JS -->
-    <script src="src/js/popper.js"></script>
+    <script src="src/js/external/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
-    <script src="src/js/bootstrap/bootstrap.min.js"></script>
-    <link href="src/css/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="src/js/dataTables/dataTables.css">
-    <script src="src/js/dataTables/dataTables.js"></script>
+    <script src="src/js/external/bootstrap/bootstrap.min.js"></script>
+    <link href="src/css/external/fontAwesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/js/external/dataTables/dataTables.css">
+    <script src="src/js/external/dataTables/dataTables.js"></script>
     <!--Apex Charts-->
-    <script src="src/js/apexCharts/apexCharts.js"></script>
+    <script src="src/js/external/apexCharts/apexCharts.js"></script>
     <!--custom scripts-->
     <script src="src/electronNav.js"></script>
     <script src="src/js/home.js"></script>
@@ -82,11 +82,11 @@
   </nav>
   <!--End of Navbar-->
 
-  
+
   <!-- Layout for home page -->
   <div class="pane h-100">
     <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
-        
+
         <div class="row">
         <div class="col-sm-6">
         <div class="introaaa">
@@ -125,7 +125,7 @@
               <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
         </div>
         </div>
-       
+
         <div class="row">
         <div class="col-sm-6 mt-3">
         <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
@@ -146,9 +146,9 @@
                     <p>4: Select Authorize. It will open a new tab in your browser. Authorize your application.</p>
                     <p>GlimBoi can join the chat!</p>
                 </div>
-            </div>            
+            </div>
         </div>
-        </div>  
+        </div>
         </div>
   </div>
   <p id="version" class="whiteText ml-3"></p>
