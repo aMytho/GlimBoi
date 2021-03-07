@@ -1,0 +1,10 @@
+node_modules
+UI/src/js/apexCharts
+UI/src/js/bootstrap
+UI/src/js/dataTables
+docs
+dist/
+.vscode/
+release-builds/
+
+**/*.min.*

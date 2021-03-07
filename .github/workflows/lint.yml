@@ -1,0 +1,28 @@
+name: Linting
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
+
+jobs:
+  prettier_lint:
+    runs-on: ubuntu-latest
+    steps:
+      # make your repository's code available to the action
+      - uses: actions/checkout@v1
+      # setup Node 12. Change the version number to your preference
+      - uses: actions/setup-node@v1
+        with:
+          version: 12
+      # Install your package dependencies
+      - run: npm ci
+      # Fix linting errors with the new prettier version
+      - run: npm run lint
