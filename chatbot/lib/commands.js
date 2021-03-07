@@ -2,7 +2,7 @@ var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set
 let commandsDB; //Database of commands.
 var commands = []; //Array that contains all the commands. The bot reads this 
 var cooldown = 0; //Default cooldown time for commands
-var startCD, timeCD; //When a command is activated to the next command. Subtract now from then.
+var startCD = new Date(), timeCD; //When a command is activated to the next command. Subtract now from then.
 var repeatableArray = []; //Array of repeatable commands
 
 /**
@@ -259,7 +259,6 @@ function checkCommand(data) {
         console.log(commands[index]);
         permissionCheck(commands[index], data.user.username.toLowerCase()).then(value => {
           if (value == "ACCEPTED") {
-            console.log("All good running command")
             runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
           } else { // They don't have permission, we log this to chat.
             ChatHandle.filterMessage(value, "glimboi");
