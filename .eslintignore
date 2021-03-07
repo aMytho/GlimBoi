@@ -1,12 +1,9 @@
 node_modules
-UI/src/js/apexCharts
-UI/src/js/bootstrap
-UI/src/js/dataTables
+UI/src/js/external
+UI/src/css/external
+**/*.min.*
+
 docs
 dist/
 .vscode/
 release-builds/
-
-**/*.min.*
-UI/src/js/jquery.js
-UI/src/js/popper.js
