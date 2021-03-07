@@ -20,6 +20,10 @@ var messageHistoryCount = 20;
 var recentChannelsDB;
 var path = "./";
 
+var healthReminder = false;
+var healthInterval;
+var healthIntervalTimer = 0;
+
 /**
  * Updates the path to the DB. The path variable is updated
  */
@@ -124,7 +128,7 @@ function join(access_token, channelID) {
  * @return {bool}
  */
 function isConnected() {
-  if (connection === undefined) return false;
+  if (connection === undefined) {return false};
   return connection.readyState !== WebSocket.CLOSED && connection.readyState !== WebSocket.CLOSING;
 }
 
@@ -157,7 +161,12 @@ function connectToGlimesh(access_token, channelID) {
         })
       }, 3000);
     }
-    heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
+      healthInterval = setInterval(() => {
+        if (healthReminder == true) {
+        filterMessage("You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.", "glimboi")
+        }
+      }, healthIntervalTimer);
+      heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       connection.send('[null,"6","phoenix","heartbeat",{}]');
     }, 30000);
     //every 5 minutes get the current view count
@@ -390,6 +399,7 @@ function connectToGlimesh(access_token, channelID) {
       clearInterval(stats) // stops the polling
       clearInterval(repeatCommand)
       clearInterval(checkForUsers)
+      clearInterval(healthInterval)
       } catch(e) {console.log(e)}
       if (event.wasClean) {
         console.log(
@@ -404,6 +414,13 @@ function connectToGlimesh(access_token, channelID) {
     connection.onerror = function (error) { // oh noes, an error!
       console.log(`[error] ${error.message}`);
       console.log("Probably an auth issue. Please reauthenicate");
+      try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
+      clearInterval(heartbeat) // stops the hearbteat
+      clearInterval(stats) // stops the polling
+      clearInterval(repeatCommand)
+      clearInterval(checkForUsers)
+      clearInterval(healthInterval)
+      } catch(e) {console.log(e)}
       throw "error, it crashed. p l e a s e f i x n o w"
     };
 }
@@ -576,86 +593,6 @@ function delUserChat(user) {
   })
 }
 
-/**
- * Sets message logging on or off
- * @param {boolean} enabled is logging enabled?
- */
-function loggingEnabled(enabled) {
-  console.log("Logging is set to " + enabled)
-  if (enabled == true) {
-    logging = true
-  } else {
-    logging = false
-  }
-}
-
-/**
- * Sets the settings for repeat commands
- * @param {object} settings Settings object
- * @param settings.Commands.repeatDelay //Delay between repeatable messages
- * @param settings.Commands.repeatSpamProtection Amount of non bot messages that must be present before a repeatable message is sent.
- */
-function repeatSettings(settings) {
-  console.log("The repeat delay is " + settings.Commands.repeatDelay)
-  switch (settings.Commands.repeatDelay) { // seconds to ms converter
-    case 5:
-      repeatDelay = 300000
-      break;
-      case 10:
-        repeatDelay = 600000
-      break;
-      case 15:
-      repeatDelay = 900000
-      break;
-      case 20:
-        repeatDelay = 1200000
-      break;
-      case 25:
-        repeatDelay = 1500000
-      break;
-      case 30:
-        repeatDelay = 1800000
-      break;
-      case 35:
-        repeatDelay = 2100000
-      break;
-      case 40:
-        repeatDelay = 2400000
-      break;
-      case 45:
-        repeatDelay = 2400000
-      break;
-      case 50:
-        repeatDelay = 3000000
-      break;
-      case 55:
-        repeatDelay = 3300000
-      break;
-      case 60:
-        repeatDelay = 3600000
-      break;
-
-    default:repeatDelay = 600000
-      break;
-  }
-  switch (settings.Commands.repeatSpamProtection) { // sets the spam protection limit
-    case 5:
-      repeatSpamProtection = 5
-      break;
-      case 15:
-      repeatSpamProtection = 15
-      break;
-      case 30:
-      repeatSpamProtection = 30
-      break;
-      case 60:
-      repeatSpamProtection = 60
-      break;
-
-    default:repeatSpamProtection = 15
-      break;
-  }
-}
 
 /**
  * Returns a random quote and sends it to chat.
@@ -737,4 +674,95 @@ function getBotName() {
   return botName
 }
 
-module.exports = { updatePath, addRecentChannel, setAutoJoinChannelByID, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, loggingEnabled, logMessage, repeatSettings, resetUserMessageCounter, sendMessage, test}
+/**
+ * Updates repeat, health, and logging settings.
+ */
+function updateSettings(settings) {
+  console.log("The repeat delay is " + settings.Commands.repeatDelay)
+  switch (settings.Commands.repeatDelay) { // seconds to ms converter
+    case 5:
+      repeatDelay = 300000
+      break;
+      case 10:
+        repeatDelay = 600000
+      break;
+      case 15:
+      repeatDelay = 900000
+      break;
+      case 20:
+        repeatDelay = 1200000
+      break;
+      case 25:
+        repeatDelay = 1500000
+      break;
+      case 30:
+        repeatDelay = 1800000
+      break;
+      case 35:
+        repeatDelay = 2100000
+      break;
+      case 40:
+        repeatDelay = 2400000
+      break;
+      case 45:
+        repeatDelay = 2400000
+      break;
+      case 50:
+        repeatDelay = 3000000
+      break;
+      case 55:
+        repeatDelay = 3300000
+      break;
+      case 60:
+        repeatDelay = 3600000
+      break;
+    default:repeatDelay = 600000
+      break;
+  }
+  switch (settings.Commands.repeatSpamProtection) { // sets the spam protection limit
+    case 5:
+      repeatSpamProtection = 5
+      break;
+      case 15:
+      repeatSpamProtection = 15
+      break;
+      case 30:
+      repeatSpamProtection = 30
+      break;
+      case 60:
+      repeatSpamProtection = 60
+      break;
+    default:repeatSpamProtection = 15
+      break;
+  }
+
+  console.log("Logging is set to " + settings.chat.logging)
+  if (settings.chat.logging == true) {
+    logging = true
+  } else {
+    logging = false
+  }
+  console.log("Health reminder set to " + settings.chat.health)
+  switch (settings.chat.health) {
+    case 0:
+      healthReminder = false
+      healthIntervalTimer = 1800000 // we still check, this will let us update the settings while . The message will not be sent
+      break;
+      case 30:
+        healthReminder = true
+        healthIntervalTimer = 1800000
+      break;
+      case 60:
+        healthReminder = true
+        healthIntervalTimer = 3600000 
+      break;
+      case 120:
+        healthReminder = true
+        healthIntervalTimer = 7200000
+      break;
+    default:
+      break;
+  }
+}
+
+module.exports = { updatePath, addRecentChannel, setAutoJoinChannelByID, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, logMessage, updateSettings, resetUserMessageCounter, sendMessage, test}
