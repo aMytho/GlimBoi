@@ -448,7 +448,8 @@ function randomRepeatCommand() {
   console.log(repeatableArray[index]);
   if (repeatableArray[index] !== undefined) {
   console.log(repeatableArray[index].message);
-  checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
+  //checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
+  ChatHandle.filterMessage(`${repeatableArray[index].message}`, "glimboi")
   ChatHandle.resetUserMessageCounter()
   }
 }
