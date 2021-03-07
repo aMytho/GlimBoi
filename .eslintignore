@@ -8,3 +8,5 @@ dist/
 release-builds/
 
 **/*.min.*
+UI/src/js/jquery.js
+UI/src/js/popper.js
