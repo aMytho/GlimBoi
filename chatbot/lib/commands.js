@@ -1,6 +1,6 @@
 var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 let commandsDB; //Database of commands.
-var commands = []; //Array that contains all the commands. The bot reads this 
+var commands = []; //Array that contains all the commands. The bot reads this
 var cooldown = 0; //Default cooldown time for commands
 var startCD = new Date(), timeCD; //When a command is activated to the next command. Subtract now from then.
 var repeatableArray = []; //Array of repeatable commands
@@ -40,7 +40,7 @@ class Command {
 
 //This array will be filled with every variable in a command and is reset once the command is sent.
 var variableList = [];
-//This array contains all possible variables for commands. The order is important!!! 
+//This array contains all possible variables for commands. The order is important!!!
 //If you add a new var it must be at the bottom and you must link it is the replace variable function in the SAME ORDER!
 var listofvariables = [
   "$target", // The word after the command. ex !so Mytho (Mytho would be the target)
@@ -98,7 +98,7 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
 function addCommandFilter(commandName, arguements, commandData, type) {
   commandName = commandName.toLowerCase()
   if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
-    ChatHandle.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
+    ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
     return
   }
   if (type == "!command") {
@@ -110,7 +110,7 @@ function addCommandFilter(commandName, arguements, commandData, type) {
   }
   commandData = commandData.substring()
   if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
-    ChatHandle.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
+    ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
     return
   }
   if (commandName.startsWith("!")) {
@@ -120,10 +120,10 @@ function addCommandFilter(commandName, arguements, commandData, type) {
   findCommand(commandName).then(data => {
     if (data !== null) {
       console.log(commandName + " already exists.")
-      ChatHandle.filterMessage(commandName + " already exists", "glimboi")
+      ChatMessages.filterMessage(commandName + " already exists", "glimboi")
     } else {
       addCommand(commandName, null, commandData, 0, 0, "Everyone", null, false);
-      ChatHandle.filterMessage(commandName + " added!", "glimboi");
+      ChatMessages.filterMessage(commandName + " added!", "glimboi");
       try {
         addCommandTable(commandName, commandData, 0, 0, "Everyone")
       } catch(e) {
@@ -131,7 +131,7 @@ function addCommandFilter(commandName, arguements, commandData, type) {
       }
     }
   })
-  
+
 }
 
 
@@ -211,8 +211,8 @@ function findCommand(command) {
 
 /**
  * Returns the repeatable command and null if none exists.
- * @param {string} commandName 
- * @returns 
+ * @param {string} commandName
+ * @returns
  */
 function findRepeat(commandName) {
   for (let i = 0; i < repeatableArray.length; i++) {
@@ -225,7 +225,7 @@ function findRepeat(commandName) {
 
 /**
  * Removes the command from the repeat array.
- * @param {string} commandName 
+ * @param {string} commandName
  */
 function removeRepeat(commandName) {
   for (let i = 0; i < repeatableArray.length; i++) {
@@ -260,7 +260,7 @@ function checkCommand(data) {
           if (value == "ACCEPTED") {
             runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
           } else { // They don't have permission, we log this to chat.
-            ChatHandle.filterMessage(value, "glimboi");
+            ChatMessages.filterMessage(value, "glimboi");
             console.log(value)
           }
         })
@@ -271,7 +271,7 @@ function checkCommand(data) {
     if (commandExists == false) { //The command was not found. We log it to the console.
       console.log(message[0] + " is not a command");
     }
-  
+
   } catch (error) {
     console.log("Error running command");
     console.log(error);
@@ -305,14 +305,14 @@ async function permissionCheck(command, user) {
     }
     /*
     if (commands.rank == 0) {
-  
+
     }
     */
   })
 }
 
 /**
- * @async 
+ * @async
  * @param {array} arguements Each array value is a word in the chat message.
  * @param {number} index The index to search for in the commands array.
  * @param {string} user The user who activated the command.
@@ -345,14 +345,14 @@ async function runCommand(arguements, index, user) {
       }
     }
     console.log(chatMessage + " is the final message");
-    ChatHandle.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
+    ChatMessages.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
     addCommandCount(arguements[0]); // Increments the command uses by one.
     startCD = new Date(); // We save the time, use to determine if enough time has passed (cooldowns)
   }
-    
+
 
 /**
- * 
+ *
  * @param {string} variable The command variable ex $user, $dadjoke, $target,etc
  * @param {array} arguements An array of each word in the chat message
  * @param {string} user The user who activated the command
@@ -363,7 +363,7 @@ async function replaceVariable(variable, arguements, user) {
     case "$target": //The first word after the command
       variableList[0] = arguements[1];
       break;
-    case "$user": //The user who said the message. 
+    case "$user": //The user who said the message.
      variableList[1] = user.username
       break;
     case "$time": //Current time
@@ -381,7 +381,7 @@ async function replaceVariable(variable, arguements, user) {
       break;
     case "$game":
       user = await ApiHandle.getUserID(user.username)
-      variableList[5] = user    
+      variableList[5] = user
       break;
     case "$advice":
       var advice = await ApiHandle.getAdvice().catch(reason => variableList[6] = 'Advice Error');
@@ -448,7 +448,7 @@ function randomRepeatCommand() {
   if (repeatableArray[index] !== undefined) {
   console.log(repeatableArray[index].message);
   //checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
-  ChatHandle.filterMessage(`${repeatableArray[index].message}`, "glimboi")
+  ChatMessages.filterMessage(`${repeatableArray[index].message}`, "glimboi")
   ChatStats.resetUserMessageCounter()
   }
 }
@@ -492,7 +492,7 @@ function cooldownChange(cd) {
  * Explains how to use commands in chat.
  */
 function info() {
-  ChatHandle.filterMessage("placeholder", "glimboi")
+  ChatMessages.filterMessage("placeholder", "glimboi")
 }
 
 module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.

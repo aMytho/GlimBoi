@@ -61,7 +61,7 @@
             <ul class="list-unstyled chatList" id="chatList">
 
               <li class="left clearfix admin_chat" name='mytho'>
-                <div class="chat-body1 clearfix testing" oncontextmenu="testingStuff(event)" name='mytho'>
+                <div class="chat-body1 clearfix testing" oncontextmenu="loadChatContextMenu(event)" name='mytho'>
                   <span class="chat-img1 pull-left" name='mytho'>
                     <img src="Mytho.png" alt="User Avatar" class="rounded-circle" name='mytho'>
                   </span>
@@ -77,7 +77,7 @@
             <textarea class="form-control" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
             <div class="clearfix"></div>
             <div class="chat_bottom">
-              <a href="#" class="pull-right btn btn-success" id="sendMessage" onclick="sendMessage()">Send</a>
+              <a href="#" class="pull-right btn btn-success" id="sendMessage" onclick="sendMessageInBox()">Send</a>
             </div>
           </div>
         </div>

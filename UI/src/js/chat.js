@@ -1,14 +1,20 @@
-var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
-var ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
 var isDev = false; // We assume they are on a production release.
-ChatHandle.updatePath(appData[1]);
 var ChatSettings;
 var ChatActions;
 var ChatStats;
+var ChatMessages;
+var chatID = "" // the channel ID
 
 var contextItem;
 var globalChatMessages;
 var currentChatConnected = null;
+
+const ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
+const ChatChannels = require(appData[0] + "/chatbot/lib/chat/chatChannels.js");
+const ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
+
+ChatHandle.updatePath(appData[1]);
+ChatChannels.updatePath(appData[1]);
 
 /**
  * Gets the bot username for autofilling recent channels
@@ -32,6 +38,7 @@ async function getBot() {
     }
   })
 }
+
 /**
  * The main starting logic for joining and leaving and deleting recent chats / channels
  *
@@ -64,7 +71,7 @@ $(document).on('click', '#chatConnections button', function (event) {
     console.log(`Setting autoJoin for ${channel} to ${enabled}`);
 
     // Set the selected channel to be auto-join
-    ChatHandle.setAutoJoinChannelByID(channelid, enabled).then(channel => {
+    ChatChannels.setAutoJoinChannelByID(channelid, enabled).then(channel => {
       $('button[data-action=auto-join]').prop('disabled', false);
 
       // Done, so reset the classes
@@ -109,7 +116,7 @@ $(document).on('click', '#chatConnections button', function (event) {
     // Clear the right-side text of what channel we're connect to & reload channels after deletion
     $('#channelConnectedName').removeClass('text-success').addClass('text-danger');
     $('#channelConnectedName').text('Not Connected');
-    ChatHandle.getAllRecentChannels().then(channels => displayChannels(channels));
+    ChatChannels.getAllRecentChannels().then(channels => displayChannels(channels));
   }
 });
 
@@ -140,7 +147,7 @@ function joinChat(chat) {
 
           addChannelAndDisplay(chatToJoin).then(function () {
             if (chatToJoin.toLowerCase() === 'glimboi') {
-              channelNameText = 'GlimBoi (TEST)';
+              var channelNameText = 'GlimBoi (TEST)';
             }
             $('#channelConnectedName').text(channelNameText);
             $('#channelConnectedName').removeClass('text-danger').addClass('text-success ');
@@ -181,7 +188,7 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
  */
 function loadChatWindow() {
   globalChatMessages.forEach(msg => {
-    ChatHandle.logMessage(msg[0], msg[1], msg[2], false);
+    ChatMessages.logMessage(msg[0], msg[1], msg[2], false);
   });
 
   try {
@@ -202,10 +209,10 @@ function loadChatWindow() {
         });
       }
 
-      ChatHandle.getAllRecentChannels().then(channels => {
+      ChatChannels.getAllRecentChannels().then(channels => {
         if (channels.length == 0) {
           defaultChannels.forEach(chan => {
-            ChatHandle.addRecentChannel(chan.channel, chan.ts, chan.autoJoin);
+            ChatChannels.addRecentChannel(chan.channel, chan.ts, chan.autoJoin);
           });
           channels = defaultChannels;
         }
@@ -233,8 +240,8 @@ function loadChatWindow() {
 async function addChannelAndDisplay(chatToJoin) {
   return new Promise(resolve => {
     try {
-      ChatHandle.addRecentChannel(chatToJoin).then(newChannel => {
-        ChatHandle.getAllRecentChannels().then(channels => {
+      ChatChannels.addRecentChannel(chatToJoin).then(newChannel => {
+        ChatChannels.getAllRecentChannels().then(channels => {
           displayChannels(channels);
           resolve(newChannel);
         });
@@ -303,67 +310,15 @@ function displayChannels(channels) {
 /**
  * Sends a message to chat as the bot. This is user input.
  * Resets when sent.
+ *
+ * Not to be confused with ChatMessages.sendMessage
  */
-function sendMessage() {
-  ChatHandle.filterMessage(document.getElementById("messageArea").value, "user");
+function sendMessageInBox() {
+  ChatMessages.filterMessage(document.getElementById("messageArea").value, "user");
   document.getElementById("messageArea").value = "" // resets the message box
 }
 
-
-/**
- * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready.
- */
-function checkForUpdate() {
-  const version = document.getElementById('version');
-  ipcRenderer.send('app_version');
-  ipcRenderer.on('app_version', (event, arg) => {
-    console.log("Recieved app_version with : " + arg.version)
-    console.log("Removing all listeners for app_version.")
-    version.innerText = 'Version ' + arg.version;
-    if (arg.isDev == true) {
-      isDev = true;
-      console.log("Glimboi is in dev mode. We will not request the token.")
-    } else {
-      console.log("GlimBoi is in production mode. We will request an access token. ")
-    }
-    ipcRenderer.removeAllListeners('app_version');
-  });
-  const notification = document.getElementById('notification');
-  const message = document.getElementById('message');
-  const restartButton = document.getElementById('restart-button');
-
-  ipcRenderer.on('update_available', () => {
-    ipcRenderer.removeAllListeners('update_available');
-    console.log("Update Avaible")
-    message.innerText = 'A new update is available. Downloading now...';
-    notification.classList.remove('hidden');
-  });
-
-  ipcRenderer.on('update_downloaded', () => {
-    console.log("Update Downloaded")
-    ipcRenderer.removeAllListeners('update_downloaded');
-    message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
-    restartButton.classList.remove('hidden');
-    notification.classList.remove('hidden');
-    function closeNotification() {
-      notification.classList.add('hidden');
-    }
-  })
-  // test functions
-  ipcRenderer.on("aaaaaaaaaaaaa", () => {
-    console.log("it happened")
-  })
-  ipcRenderer.on("test", data => {
-    console.log(data)
-  })
-}
-
-function restartApp() {
-  console.log("trying to restart the app for the update")
-  ipcRenderer.send('restart_app');
-}
-
-function testingStuff(e) {
+function loadChatContextMenu(e) {
   contextItem = $(e.target).attr('name')
   console.log(contextItem)
   var top = e.pageY - 110;
