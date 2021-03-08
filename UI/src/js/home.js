@@ -99,35 +99,22 @@ function editAuth() { //Sets the state to editable
 }
 
 
-// The below functions sync database functions with the UI. Some of these achanges are also sent to chat. 
 function syncQuotes(user, quote, action) {
   // removes it from the list as well as the user quote list.
   try {
     if (action == "remove") {
-      for (let i = 0; i < arrayofUsers.length; i++) {
-        if (arrayofUsers[i][0] == user) {
-          arrayofUsers[i][6] = quote;
-          makeList(user);
-          break;
-        }
-      }
+      makeList(user);
     } else if (action == "add") {
-      for (let i = 0; i < arrayofUsers.length; i++) {
-        if (arrayofUsers[i][0] == user) {
-          arrayofUsers[i][6].push(quote);
-          console.log(user);
-          var filteredData = userTable
-            .rows()
-            .indexes()
-            .filter(function (value, index) {
-              if (userTable.row(value).data()[0] == user) {
-                makeList(userTable.row(value).data());
-                return;
-              }
-            });
-          break;
-        }
-      }
+      console.log(user);
+      var filteredData = userTable
+        .rows()
+        .indexes()
+        .filter(function (value, index) {
+          if (userTable.row(value).data().userName == user) {
+            makeList(userTable.row(value).data());
+            return;
+          }
+        });
     }
   } catch (e) {
     console.log(e);
@@ -137,31 +124,16 @@ function syncQuotes(user, quote, action) {
 function syncUsers(data, action) {
   try {
     if (action == "add") {
-      var arrayUser = [
-        data.userName,
-        data.points,
-        data.watchTime,
-        data.team,
-        data.role,
-        data.picture,
-        data.quotes,
-      ];
-      arrayofUsers.push(arrayUser); //^
       addUserTable(data);
     } else {
-      for (let i = 0; i < arrayofUsers.length; i++) {
-        if (arrayofUsers[i][0] == data) {
-          console.log("The user " + data + " will now be deleted");
-          arrayofUsers.splice(i, 1); //Removes it from the array.
-          var filteredData = userTable
-            .rows()
-            .indexes()
-            .filter(function (value, index) {
-              return userTable.row(value).data()[0] == data;
-            });
-          userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
-        }
-      }
+      console.log("The user " + data + " will now be deleted from the table.");
+      var filteredData = userTable
+        .rows()
+        .indexes()
+        .filter(function (value, index) {
+          return userTable.row(value).data().userName == data;
+        });
+      userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
     }
   } catch (e) {
     console.log(e)
