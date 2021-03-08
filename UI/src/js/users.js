@@ -11,6 +11,7 @@ var tempUser;
 
 function loadUsers() { //Runs at startup (on page load (on page click (only the first time )))
   $('#modalUserEdit').on('hidden.bs.modal', function (e) {
+    loadAllQuotes();
     console.log("Resetting user edit modal.");
     document.getElementById("modalEditBody").innerHTML = `<div class="modal-body" id="modalEditBody">
     <div class="icon-input-container">
@@ -22,6 +23,7 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
     document.getElementById("userEditSearchButton").setAttribute('onclick', "userSearch(document.getElementById('userEditSearch').value)")
   })
   $('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
+    loadAllQuotes();
     console.log("Resetting quote removal modal.");
     document.getElementById("modalRemoveQuote").innerHTML = `<div class="modal-body" id="modalRemoveQuote">
     <div class="icon-input-container">
@@ -80,7 +82,13 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
       allQuotes.push(tempArray); //Pushes the commands to a variable which we use to build the table
     }
     //This section shows the quotes in a list under the table.
-    document.getElementsByClassName('userList')[0].innerHTML = ""
+    console.log(document.getElementsByClassName('userList')[0]);
+    document.getElementsByClassName('userList')[0].innerHTML = "";
+
+    if (allQuotes.length === 0) {
+      document.getElementsByClassName('userList')[0].innerHTML = "No Quotes found";
+      return;
+    }
     let listContainer = document.createElement('div'),
       listElement = document.createElement('ul'),
       // Set up a loop that goes through the items in listItems one at a time
@@ -119,17 +127,18 @@ function quoteSearch(user) {
     if (data == "ADDUSER") {
       document.getElementById('editQuoteError').innerHTML = "No user was found with that name."
     } else {
-     var tempButtonUser = document.getElementById('userRemoveQuoteSearch')
-     tempButtonUser.innerText = 'Remove';
-     tempButtonUser.setAttribute('onclick', `removeQuote(document.getElementById('quoteRemoveSearch').value, '${user}')`)
+      var tempButtonUser = document.getElementById('userRemoveQuoteSearch')
+      tempButtonUser.innerText = 'Remove';
+      tempButtonUser.setAttribute('onclick', `removeQuote(document.getElementById('quoteRemoveSearch').value, '${user}')`)
       document.getElementById("modalRemoveQuote").innerHTML = `
-      <div class="removeQuoteList"></div>
-      <div class="icon-input-container">
-       <input class="icon-input" type="text" placeholder="Quote ID" id="quoteRemoveSearch">
-       <p id="editUserMessage" class="errorMessage"></p>
-   </div>
-      `
-    document.getElementsByClassName('removeQuoteList')[0].innerHTML = ""
+        <div class="removeQuoteList"></div>
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Quote ID" id="quoteRemoveSearch">
+          <p id="editUserMessage" class="errorMessage"></p>
+        </div>`;
+
+    document.getElementById('quoteRemoveSearch').focus();
+    document.getElementsByClassName('removeQuoteList')[0].innerHTML = "";
     let listContainer = document.createElement('div'),
     listElement = document.createElement('ul'),
     // Set up a loop that goes through the items in listItems one at a time
@@ -169,6 +178,8 @@ function removeQuote(id, user) {
       setTimeout(() => {
         document.getElementById("errorQuoteExit").innerText = ""
       }, 3500);
+      loadAllQuotes();
+      quoteSearch(user);
     }
   })
 
