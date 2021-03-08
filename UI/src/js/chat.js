@@ -2,6 +2,9 @@ var ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
 var ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
 var isDev = false; // We assume they are on a production release.
 ChatHandle.updatePath(appData[1]);
+var ChatSettings;
+var ChatActions;
+var ChatStats;
 
 var contextItem;
 var globalChatMessages;
