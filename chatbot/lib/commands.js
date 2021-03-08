@@ -50,7 +50,12 @@ var listofvariables = [
   "$cmdcount", // The amount of times a command has been used.
   "$game", // unused
   "$advice", // Random advice. View API.js
-  "$dadjoke" // Random dad joke. View API.js
+  "$dadjoke", // Random dad joke. View API.js
+  "$discord", // discord invite URL
+  "$guilded", // guilded invite URL
+  "$instagram", // instagram URL
+  "$youtube", // youtube channel URL
+  "$twitter" // twitter profile URL
 ];
 
 
@@ -329,6 +334,11 @@ async function runCommand(arguements, index, user) {
     variableList[5] = chatMessage.includes("$game");
     variableList[6] = chatMessage.includes("$advice");
     variableList[7] = chatMessage.includes("$dadjoke");
+    variableList[8] = chatMessage.includes("$discord");
+    variableList[9] = chatMessage.includes("$guilded");
+    variableList[10] = chatMessage.includes("$instagram");
+    variableList[11] = chatMessage.includes("$youtube");
+    variableList[12] = chatMessage.includes("$twitter");
   //We check if the command has variables against the variable list.
   for (let i = 0; i < variableList.length; i++) {
     //For every variable we check if it is in the chatMessage
@@ -390,6 +400,26 @@ async function replaceVariable(variable, arguements, user) {
     case "$dadjoke":
       var joke = await ApiHandle.getDadJoke().catch(reason => variableList[7] = 'Joke Error');
       variableList[7] = joke
+      break;
+    case "$discord":
+      var discord = await ApiHandle.getSocials("socialDiscord", "mytho").catch(reason => variableList[8] = 'Discord Error');
+      variableList[8] = "https://discord.gg/" + discord
+      break;
+    case "$guilded":
+      var guilded = await ApiHandle.getSocials("socialGuilded", "mytho").catch(reason => variableList[8] = 'Guilded Error');
+      variableList[9] = "https://guilded.gg/" + guilded
+      break;
+    case "$instagram":
+      var instagram = await ApiHandle.getSocials("socialInstagram", "mytho").catch(reason => variableList[8] = 'Instagram Error');
+      variableList[10] = "https://instagram.com/" + instagram
+      break;
+    case "$youtube":
+      var youtube = await ApiHandle.getSocials("socialYoutube", "mytho").catch(reason => variableList[8] = 'Youtube Error');
+      variableList[11] = "https://youtube.com/" + youtube
+      break;
+    case "$twitter":
+      var twitter = await ApiHandle.getSocials("twitter", "mytho").catch(reason => variableList[8] = 'Twitter Error');
+      variableList[12] = "https://twitter.com/" + twitter
       break;
     default:
       break;

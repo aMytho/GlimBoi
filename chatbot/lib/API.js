@@ -327,4 +327,37 @@ async function getDadJoke() {
  return joke
  }
 
-module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getStats, getUserID, timeoutUser, unBanUser, updateID, updatePath}
+ /**
+  * Returns the socail link requested of the channel that you are currently in
+  * @param {string} social The type of social link (discord, youtube, etc)
+  * @param {string} channel The channel to request the info from
+  * @returns {Promise}
+  */
+async function getSocials(social, channel) {
+  var socialLink = await new Promise(resolve => {
+    fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${channel}") {socialDiscord, socialGuilded, socialInstagram, socialYoutube, socials {username, platform}}}`, headers: { Authorization: `bearer ${token}` } })
+      .then((res) => {
+        res.json().then((data) => {
+          try {
+            if (social == "twitter") { // Twitter is a verified link, the return value is different because of this
+              console.log("The requested social link is " + data.data.user.socials[0].username);
+              resolve(data.data.user.socials[0].username)
+            } else {
+              console.log("The requested social link is " + data.data.user[`${social}`])
+              resolve(data.data.user[`${social}`])
+            }
+          } catch (e) {
+            try {
+              resolve({ data: data.errors[0].message, status: "AUTHNEEDED" })
+            } catch (e2) {
+              resolve(null)
+            }
+          }
+        });
+      })
+      .catch((err) => console.error(err));
+  });
+  return socialLink
+}
+
+module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getUserID, timeoutUser, unBanUser, updateID, updatePath}
