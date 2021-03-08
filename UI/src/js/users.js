@@ -91,7 +91,7 @@ function quoteSearch(user) {
     let listContainer = document.createElement('div'),
     listElement = document.createElement('ul'),
     // Set up a loop that goes through the items in listItems one at a time
-    numberOfListItems = data[0].quotes.length,
+    numberOfListItems = data.quotes.length,
     listItem,
     i;
 
@@ -104,7 +104,7 @@ function quoteSearch(user) {
         listItem = document.createElement('li');
 
         // Add the item text
-        listItem.innerHTML = `${data[0].quotes[i].quoteID}: ${data[0].quotes[i].quoteData}`;
+        listItem.innerHTML = `${data.quotes[i].quoteID}: ${data.quotes[i].quoteData}`;
 
         // Add listItem to the listElement
         listElement.appendChild(listItem);
@@ -221,10 +221,9 @@ function makeList(user) { //Similir to above function, makes a list and displays
 }
 
 //This is the points section.
-var arrayOfPoints = [];
 var pointsTable;
 function getPoints() {
-  arrayOfPoints = []
+  var arrayOfPoints = []
   document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
   document.getElementById("EarningPoints").innerHTML = settings.Points.accumalation;
   document.getElementById("pointName").innerHTML = settings.Points.name
