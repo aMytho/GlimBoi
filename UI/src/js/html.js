@@ -192,3 +192,153 @@ function removeCommandReset() {
         <button class="btn btn-outline-danger" onclick="checkRemoveCommand()" id="removeCommandButtonFinish">Remove</button>
       </div>`
 }
+
+function addUserReset() {
+   return `
+   <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabel">Add a User</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Enter the User" id="userAddInput">
+          <p id="addUserMessage" class="errorMessage"></p>
+          <p id="addUserMessageSuccess" class="successMessage"></p>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageAdd"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-primary" onclick="addUser()" id="addUserFinish">Add</button>
+      </div>`
+}
+
+function removeUserReset() {
+   return `
+   <div class="modal-content glimPanel whiteText" id="removeuserModal">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabel2">Remove a User</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Enter the User" id="userremoveInput">
+          <p>This is irreversible.</p>
+          <p id="removeUserMessage" class="errorMessage"></p>
+          <p id="removeUserMessageSuccess" class="successMessage"></p>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageRemove"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-danger" onclick="removeUser()" id="removeUserFinish">Remove</button>
+      </div>`
+}
+
+function addQuoteReset() {
+   return `
+   <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100" id="myModalLabel3">Add a Quote</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body">
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Enter the User" id="userQuoteInputU">
+          <input class="icon-input" type="text" placeholder="Enter the Quote" id="userQuoteInputQ">
+          <p>If the user does not yet exist it will be created.</p>
+          <p id="addQuoteMessage" class="errorMessage"></p>
+          <p id="addQuoteMessageSuccess" class="successMessage"></p>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorMessageAddQuote"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-primary" onclick="addQuote()" id="addQuoteFinish">Add</button>
+      </div>`
+}
+
+function editUserReset() {
+   return `
+   <!--Header-->
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100">Edit User</h4>
+      </div>
+      <!--Body-->
+      <div class="modal-body" id="modalEditBody">
+        <div class="icon-input-container">
+          <input class="icon-input" type="text" placeholder="Username" id="userEditSearch">
+          <p id="editUserMessage" class="errorMessage"></p>
+        </div>
+      </div>
+      <!--Footer-->
+      <div class="modal-footer">
+        <p id="errorUserEdit"></p>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-success" onclick="userSearch(document.getElementById('userEditSearch').value)" id="userEditSearchButton">Search</button>
+      </div>`
+}
+
+function removeQuoteReset() {
+   return `
+   <!--Header-->
+   <div class="modal-header text-center">
+     <h4 class="modal-title w-100">Remove Quote</h4>
+   </div>
+   <!--Body-->
+   <div class="modal-body" id="modalRemoveQuote">
+     <div class="icon-input-container">
+       <input class="icon-input" type="text" placeholder="Username" id="userQuoteSearch">
+       <p id="editQuoteError" class="errorMessage"></p>
+     </div>
+   </div>
+   <!--Footer-->
+   <div class="modal-footer">
+     <p id="errorQuoteExit"></p>
+     <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+     <button class="btn btn-outline-danger" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
+   </div>`
+}
+
+function setModalEditBody(data) {
+   return `
+   <table class="table table-hover">
+     <thead>
+       <tr>
+         <th>User</th>
+         <th>Information</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td data-toggle="tooltip" data-placement="top" title="Rank">Chat role</td>
+         <td contenteditable="false" id="EditUserRank">${data.role}</td>
+       </tr>
+       <tr>
+         <td data-toggle="tooltip" data-placement="top" title="The amount of points the user has">Points</td>
+         <td contenteditable="true" id="editUserPoints" onpaste="return false">${data.points}</td>
+       </tr>
+       <tr>
+     </tbody>
+   </table>`;
+}
+
+function setModalEditButtons() {
+   return `
+   editUserTable(
+      tempUser,
+      document.getElementById('EditUserRank').innerHTML,
+      document.getElementById('editUserPoints').innerHTML
+    ),
+    $('#modalUserEdit').modal('hide'),
+    UserHandle.editUser(
+      tempUser.toLowerCase(),
+      document.getElementById('EditUserRank').innerHTML,
+      document.getElementById('editUserPoints').innerHTML
+    )`
+}
