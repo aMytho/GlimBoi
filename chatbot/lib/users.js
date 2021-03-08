@@ -144,8 +144,15 @@ async function removeUser(user, inModal) {
  */
 async function addQuote(quote, id) {
   return new Promise(resolve => {
+    quote.quoteName = quote.quoteName.toLowerCase()
     usersDB.update({userName:quote.quoteName}, {$push: {quotes: {quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id}}}, {multi: false, }, function(err,) {
       console.log("Quote linked to " + quote.quoteName + ". Quote Complete.");
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].userName == quote.quoteName) {
+          users[i].quotes.push({quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id});
+          break;
+        }  
+      }
       syncQuotes(quote.quoteName, quote, "add");
       resolve("USERQUOTEADDED")
     })
@@ -155,7 +162,7 @@ async function addQuote(quote, id) {
 /**
  * Removes a quote from the users collection and from the quote collection. Attempts to update the user table.
  * @param {Number} id The quote ID (quote id, not database id)
- * @param {*} user The user who the quote belongs to. Lowercase please!
+ * @param {string} user The user who the quote belongs to. Lowercase please!
  * @async
  */
 async function removeQuoteByID(id, user) {
@@ -169,10 +176,7 @@ async function removeQuoteByID(id, user) {
       for (let index = 0; index < docs[0].quotes.length; index++) {
         if (docs[0].quotes[index].quoteID == id) {
           console.log("Found the quote in the user DB");
-          console.log(index);
-          console.log(docs)
           docs[0].quotes.splice(index, 1)
-          console.log(docs[0].quotes)
           usersDB.update({$and: [{userName: user}, {quotes: {$elemMatch: {quoteID: id}}}]}, {$set: {quotes: docs[0].quotes}}, {returnUpdatedDocs: true}, function(affectedDocuments) {
             console.log(affectedDocuments);
             QuoteHandle.removeQuote(id, user);

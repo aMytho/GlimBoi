@@ -14,9 +14,10 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
     //makes clicking the button in the quotes column show the quotes under the table
     $('#userTable tbody').on('click', 'button', function () {
       var data = userTable.row($(this).parents('tr')).data();
-      console.log('Build table with ' + data)
-      makeList(data) //Builds the list of the users quotes.
-
+      UserHandle.findByUserName(data.userName).then(user => {
+        console.log('Building quote list with ' + user.userName)
+        makeList(data) //Builds the list of the users quotes.
+      })
     });
     $('#userTable tbody').on('click', 'a', function () {
       var data = userTable.row($(this).parents('tr')).data();
@@ -39,7 +40,6 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
       allQuotes.push(tempArray); //Pushes the commands to a variable which we use to build the table
     }
     //This section shows the quotes in a list under the table.
-    console.log(document.getElementsByClassName('userList')[0]);
     document.getElementsByClassName('userList')[0].innerHTML = "";
 
     if (allQuotes.length === 0) {
@@ -204,13 +204,12 @@ function removeUserFromTable(deletedUser) {
 
 function makeList(user) { //Similir to above function, makes a list and displays it under the table.
   document.getElementsByClassName('userList')[0].innerHTML = ""
-  console.log(user)
   // Make a container element for the list
   let listContainer = document.createElement('div'),
   // Make the list
   listElement = document.createElement('ul'),
   // Set up a loop that goes through the items in listItems one at a time
-  numberOfListItems = user[6].length,
+  numberOfListItems = user.quotes.length,
   listItem,
   i;
 
@@ -223,7 +222,7 @@ function makeList(user) { //Similir to above function, makes a list and displays
       listItem = document.createElement('li');
 
       // Add the item text
-      listItem.innerHTML = `ID: ${user[6][i].quoteID} | ${user[6][i].quoteData}`
+      listItem.innerHTML = `ID: ${user.quotes[i].quoteID} | ${user.quotes[i].quoteData}`
 
       // Add listItem to the listElement
       listElement.appendChild(listItem);

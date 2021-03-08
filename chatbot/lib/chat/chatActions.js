@@ -21,6 +21,8 @@
  * @param {string} user User to be removed
  */
  function delUserChat(user) {
+   ChatHandle.glimboiMessage("That action will be in a future glimboi release. Until then you can make that change in the users page.");
+   return
     var exists = UserHandle.findByUserName(user);
     exists.then(data => {
       if (data == "ADDUSER") {
@@ -60,7 +62,7 @@
         ChatHandle.glimboiMessage(`Quote added.`)
       } else {
         ChatHandle.glimboiMessage(`That user does not exist.`)
-      }
+      } 
     })
   }
 
@@ -70,9 +72,10 @@
  * @param {Number} id The ID of the quote.
  */
 function delQuoteChat(user, id) {
+  ChatHandle.glimboiMessage("This action will be supported in a future update. Until then you can delete quotes from the users page.");
+  return
+  // The below code will be in place after the rank system exists/
     console.log(user, id);
-    console.log(typeof id)
-    console.log(id)
     if (user == "" || user == " " || id == "" || id == " " || user == undefined || id == undefined) {
       ChatHandle.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
     } else {
