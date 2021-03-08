@@ -2,18 +2,6 @@
 var userCount, pointCount, commandCount, quoteCount, introChart, pollChart
 function getBasicData() {
   var users = UserHandle.getAll().then(a => {
-    for (const property in a) {
-      var tempArray = [
-        `${a[`${property}`].userName}`,
-        Number(`${a[`${property}`].points}`),
-        Number(`${a[`${property}`].watchTime}`),
-        `${a[`${property}`].team}`,
-        `${a[`${property}`].role}`,
-        `${a[`${property}`].picture}`,
-        a[`${property}`].quotes,
-      ];
-      arrayofUsers.push(tempArray); //Pushes the commands to a variable which we use to build the table
-    }
     userCount = a.length;
     var points = QuoteHandle.getAll().then(b => {
       quoteCount = b.length;

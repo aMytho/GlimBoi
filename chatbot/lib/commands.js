@@ -248,7 +248,6 @@ function checkCommand(data) {
   console.log(message)
   timeCD = new Date();
   var CD = timeCD - startCD // check the time since the last command was activated. (cooldown check)
-  console.log(CD)
   if (CD < cooldown) {/*  if not enough time has passed do nothing*/} else { // We are past the cooldown, command time!
   try {
     var commandExists = false; // We assume the command does not exist.
@@ -450,7 +449,7 @@ function randomRepeatCommand() {
   console.log(repeatableArray[index].message);
   //checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
   ChatHandle.filterMessage(`${repeatableArray[index].message}`, "glimboi")
-  ChatHandle.resetUserMessageCounter()
+  ChatStats.resetUserMessageCounter()
   }
 }
 

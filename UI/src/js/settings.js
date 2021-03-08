@@ -314,5 +314,7 @@ function resetSettings() {
 function updateSettings() {
     CommandHandle.cooldownChange(settings.Commands.cooldown);
     ModHandle.updateFilter(settings.chat.filter);
-    ChatHandle.updateSettings(settings)
+    if (ChatSettings !== undefined) {
+        ChatSettings.updateChatSettings(settings)
+    }
 }

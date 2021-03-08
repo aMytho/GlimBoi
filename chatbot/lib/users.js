@@ -2,6 +2,10 @@
 var usersDB;
 var path = "./";
 /**
+ * An array of users
+ */
+var users = [];
+/**
  * A GlimBoi user
  */
 class User {
@@ -41,6 +45,7 @@ async function addUser(user, inModal) {
             var tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
             usersDB.insert(tempUser, function (err, doc) {
               console.log(doc);
+              users.push(tempUser)
               console.log("User created!");
               if (inModal == false) {
                 syncUsers(doc, "add")
@@ -74,16 +79,15 @@ function updatePath(GUI) {
  * @todo Find by ID instead.
  */
 async function findByUserName(name) {
+  name = name.toLowerCase()
   var queryResult = await new Promise(resolve => {
-    usersDB.find({ userName: name }, function (err, docs) {
-      console.log(docs);
-      if (docs.length == 0) {
-        console.log("No user was found with the name " + name);
-        resolve("ADDUSER")
-      } else {
-        resolve(docs)
+    for (let index = 0; index < users.length; index++) {
+      if (name == users[index].userName) {
+        resolve(users[index]);
+        break
       }
-    })
+    }
+    resolve("ADDUSER")
   })
   return queryResult
 }
@@ -94,10 +98,18 @@ async function findByUserName(name) {
 async function getAll() {
   return new Promise(resolve => {
     usersDB.find({}, function (err, docs) {
-      console.log('Returning all users.')
+      users = docs;
       resolve(docs)
     })
   })
+}
+
+/**
+ * Returns an array of users
+ * @returns {array} An array of users
+ */
+function getCurrentUsers() {
+  return users
 }
 
 /**
@@ -106,14 +118,21 @@ async function getAll() {
  * @returns {array} The user that was removed
  */
 async function removeUser(user, inModal) {
+ user = user.toLowerCase()
  return new Promise(resolve => {
   usersDB.remove({ userName: user }, {}, function (err, numRemoved) {
     console.log("Removed " + user);
-    if (inModal == false) {
-      syncUsers(user, "remove")
+    for (let index = 0; index < users.length; index++) {
+      if (user == users[index].userName) {
+        users.splice(index, 1);
+        if (inModal == false) {
+          syncUsers(user, "remove")
+        }
+        QuoteHandle.removeAllQuotes(user);
+        resolve(user);
+        break;
+      }
     }
-    QuoteHandle.removeAllQuotes(user);
-    resolve(user);
   });
  }) 
 }
@@ -222,4 +241,4 @@ function removePoints(user, value) {
   });
 }
 
-module.exports = {addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
+module.exports = {addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
