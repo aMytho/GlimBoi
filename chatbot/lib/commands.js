@@ -297,8 +297,8 @@ async function permissionCheck(command, user) {
         if (data == "ADDUSER") {
           resolve("This command requires points to use. You must be a user to have points.")
           return
-        } else if ((data[0].points - command.points) < 0) {
-          resolve(`You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${data[0].points}`);
+        } else if ((data.points - command.points) < 0) {
+          resolve(`You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${data.points}`);
           return
         } else {
           UserHandle.removePoints(user, command.points)
@@ -382,7 +382,7 @@ async function replaceVariable(variable, arguements, user) {
     case "$watchtime":
       var watchTime = await UserHandle.findByUserName(user.username.toLowerCase())
       if (watchTime == "ADDUSER") {variableList[3] = "(No user found)"} else {
-      variableList[3] = watchTime[0].watchTime
+      variableList[3] = watchTime.watchTime
       }
       break;
     case "$cmdcount":

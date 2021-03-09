@@ -204,17 +204,17 @@ function getGlimrealmStatus() {
  * @param {string} user
  */
 function glimDropRealm(user, data) {
-    console.log(data[0].points);
+    console.log(data.points);
     var result = glimChance(); // get a random effect
     console.log(result);
     ChatMessages.filterMessage(result.message, "glimboi"); // send the message to chat
     if (result.type == "add") {
-        UserHandle.editUserPoints(user.toLowerCase(), data[0].points + result.result); // add the points
+        UserHandle.editUserPoints(user.toLowerCase(), data.points + result.result); // add the points
     } else {
-        if (data[0].points - result.result <= 0) {
+        if (data.points - result.result <= 0) {
             UserHandle.editUserPoints(user.toLowerCase(), 0); // reset to 0
         } else {
-            UserHandle.editUserPoints(user.toLowerCase(), data[0].points - result.result); // subtract points
+            UserHandle.editUserPoints(user.toLowerCase(), data.points - result.result); // subtract points
         }
     }
 }
