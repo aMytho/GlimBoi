@@ -158,7 +158,7 @@ function connectToGlimesh(access_token, channelID) {
                     case undefined:
                       UserHandle.findByUserName(userChat.toLowerCase()).then(data => {
                         if (data == "ADDUSER") { ChatMessages.filterMessage("That user does not exist in the database yet. Type !user new " + userChat.toLowerCase(), "Glimboi") } else {
-                          ChatMessages.filterMessage(userChat.toLowerCase() + " has " + data[0].points + " " + settings.Points.name, "Glimboi")
+                          ChatMessages.filterMessage(userChat.toLowerCase() + " has " + data.points + " " + settings.Points.name, "Glimboi")
                         }
                       })
                       break;
