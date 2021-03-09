@@ -141,7 +141,7 @@ async function startPoll(poll, time) {
                 ChatMessages.filterMessage("Choices: " + messageOptions + ". Respond with !vote NUMBER based on the option you choose.", "glimboi");
             }, 1000);
 
-            setTimeout(() => {
+            var pollTimer = setTimeout(() => {
                 console.log("Poll finished. Returning results.");
                 arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "poll"})
                 pollHandle.results = pollHandle.responses.reduce(function(obj, b) {
@@ -151,14 +151,30 @@ async function startPoll(poll, time) {
                 var results = ""
                 console.log(pollHandle)
                 for (const key in pollHandle.results) {
+                    console.log(key);
+                    console.log(pollHandle.options[key]);
+                    console.log(pollHandle.options)
                     results = results.concat(`${pollHandle.options[key]}: ${pollHandle.results[key]}, `)
                 }
                 console.log(results);
-                ChatMessages.filterMessage("The results are in: " + results.slice(0, -1), "glimboi")
+                ChatMessages.filterMessage("The results are in: " + results.slice(0, -1), "glimboi");
+                pollHandle.options = [];
+                pollHandle.responses = [];
+                pollHandle.results = {};
+                pollHandle.users = []
+                pollHandle.question = ""
+                resolve("POLLFINISHED")
             }, time);
         }
         pollHandle.cancel = function() {
+            pollHandle.options = [];
+            pollHandle.responses = [];
+            pollHandle.results = {};
+            pollHandle.users = []
+            pollHandle.question = ""
+            clearTimeout(pollTimer);
             resolve({status:"CANCELLED", reson:"MANUAL CANCELLATION"})
+            ChatMessages.filterMessage("Poll cancelled.", "glimboi")
         }
     })
 }

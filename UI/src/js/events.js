@@ -149,20 +149,11 @@ function startPoll(user, message, GUI, stringMessage) {
         }
         console.log(possibleAnswers);
         EventHandle.startPoll({ question: stringMessage.slice(0, questionEnd + 1), options: possibleAnswers, user: user }, 60000).then(data => {
-            if (typeof data !== "object") {
-                console.log("The winner is " + data);
+            if (data == "POLLFINISHED") {
+                console.log("The poll has finsished");
+            } else if (data == {status:"CANCELLED", reson:"MANUAL CANCELLATION"}){
                 try {
-                    $("#RaffleUserList").empty();
-                    if (data == "Nobody joined the raffle so nobody won.") {
-                        document.getElementById('raffleWinner').innerText = data
-                    } else {
-                        document.getElementById('raffleWinner').innerText = data + " won!"
-                    }
-                } catch (e) { }
-            } else {
-                try {
-                    $("#RaffleUserList li").remove()
-                    document.getElementById("raffleWinner").innerText = "Raffle Cancelled"
+                    document.getElementById("pollResults").innerText = "Poll Cancelled"
                 } catch (e) {
                 }
             }
