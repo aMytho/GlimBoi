@@ -360,4 +360,8 @@ async function getSocials(social, channel) {
   return socialLink
 }
 
-module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getUserID, timeoutUser, unBanUser, updateID, updatePath}
+function getStreamerName() {
+    return streamer
+}
+
+module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getUserID, timeoutUser, unBanUser, updateID, updatePath}

@@ -1,6 +1,6 @@
 var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 let commandsDB; //Database of commands.
-var commands = []; //Array that contains all the commands. The bot reads this 
+var commands = []; //Array that contains all the commands. The bot reads this
 var cooldown = 0; //Default cooldown time for commands
 var startCD = new Date(), timeCD; //When a command is activated to the next command. Subtract now from then.
 var repeatableArray = []; //Array of repeatable commands
@@ -40,7 +40,7 @@ class Command {
 
 //This array will be filled with every variable in a command and is reset once the command is sent.
 var variableList = [];
-//This array contains all possible variables for commands. The order is important!!! 
+//This array contains all possible variables for commands. The order is important!!!
 //If you add a new var it must be at the bottom and you must link it is the replace variable function in the SAME ORDER!
 var listofvariables = [
   "$target", // The word after the command. ex !so Mytho (Mytho would be the target)
@@ -136,7 +136,7 @@ function addCommandFilter(commandName, arguements, commandData, type) {
       }
     }
   })
-  
+
 }
 
 
@@ -216,8 +216,8 @@ function findCommand(command) {
 
 /**
  * Returns the repeatable command and null if none exists.
- * @param {string} commandName 
- * @returns 
+ * @param {string} commandName
+ * @returns
  */
 function findRepeat(commandName) {
   for (let i = 0; i < repeatableArray.length; i++) {
@@ -230,7 +230,7 @@ function findRepeat(commandName) {
 
 /**
  * Removes the command from the repeat array.
- * @param {string} commandName 
+ * @param {string} commandName
  */
 function removeRepeat(commandName) {
   for (let i = 0; i < repeatableArray.length; i++) {
@@ -276,7 +276,7 @@ function checkCommand(data) {
     if (commandExists == false) { //The command was not found. We log it to the console.
       console.log(message[0] + " is not a command");
     }
-  
+
   } catch (error) {
     console.log("Error running command");
     console.log(error);
@@ -310,14 +310,14 @@ async function permissionCheck(command, user) {
     }
     /*
     if (commands.rank == 0) {
-  
+
     }
     */
   })
 }
 
 /**
- * @async 
+ * @async
  * @param {array} arguements Each array value is a word in the chat message.
  * @param {number} index The index to search for in the commands array.
  * @param {string} user The user who activated the command.
@@ -359,10 +359,10 @@ async function runCommand(arguements, index, user) {
     addCommandCount(arguements[0]); // Increments the command uses by one.
     startCD = new Date(); // We save the time, use to determine if enough time has passed (cooldowns)
   }
-    
+
 
 /**
- * 
+ *
  * @param {string} variable The command variable ex $user, $dadjoke, $target,etc
  * @param {array} arguements An array of each word in the chat message
  * @param {string} user The user who activated the command
@@ -373,7 +373,7 @@ async function replaceVariable(variable, arguements, user) {
     case "$target": //The first word after the command
       variableList[0] = arguements[1];
       break;
-    case "$user": //The user who said the message. 
+    case "$user": //The user who said the message.
      variableList[1] = user.username
       break;
     case "$time": //Current time
@@ -391,7 +391,7 @@ async function replaceVariable(variable, arguements, user) {
       break;
     case "$game":
       user = await ApiHandle.getUserID(user.username)
-      variableList[5] = user    
+      variableList[5] = user
       break;
     case "$advice":
       var advice = await ApiHandle.getAdvice().catch(reason => variableList[6] = 'Advice Error');
@@ -402,23 +402,23 @@ async function replaceVariable(variable, arguements, user) {
       variableList[7] = joke
       break;
     case "$discord":
-      var discord = await ApiHandle.getSocials("socialDiscord", "mytho").catch(reason => variableList[8] = 'Discord Error');
+      var discord = await ApiHandle.getSocials("socialDiscord", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Discord Error');
       variableList[8] = "https://discord.gg/" + discord
       break;
     case "$guilded":
-      var guilded = await ApiHandle.getSocials("socialGuilded", "mytho").catch(reason => variableList[8] = 'Guilded Error');
+      var guilded = await ApiHandle.getSocials("socialGuilded", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Guilded Error');
       variableList[9] = "https://guilded.gg/" + guilded
       break;
     case "$instagram":
-      var instagram = await ApiHandle.getSocials("socialInstagram", "mytho").catch(reason => variableList[8] = 'Instagram Error');
+      var instagram = await ApiHandle.getSocials("socialInstagram", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Instagram Error');
       variableList[10] = "https://instagram.com/" + instagram
       break;
     case "$youtube":
-      var youtube = await ApiHandle.getSocials("socialYoutube", "mytho").catch(reason => variableList[8] = 'Youtube Error');
+      var youtube = await ApiHandle.getSocials("socialYoutube", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Youtube Error');
       variableList[11] = "https://youtube.com/" + youtube
       break;
     case "$twitter":
-      var twitter = await ApiHandle.getSocials("twitter", "mytho").catch(reason => variableList[8] = 'Twitter Error');
+      var twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Twitter Error');
       variableList[12] = "https://twitter.com/" + twitter
       break;
     default:
