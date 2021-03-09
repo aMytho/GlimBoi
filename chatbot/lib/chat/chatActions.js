@@ -86,7 +86,6 @@ function delQuoteChat(user, id) {
       })
     }
   }
-}
 
 /**
  * Returns a list of all commands to chat.
