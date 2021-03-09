@@ -5,6 +5,9 @@ var {
 var Datastore = require('nedb')
 var appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
+const DumbCacheStore = require(appData[0] + "/chatbot/lib/cache.js");
+const CacheStore = new DumbCacheStore();
+
 var globalChatMessages = [];
 
 function changeNavHighlight(highlight) { //Removes the old and highlights the new
