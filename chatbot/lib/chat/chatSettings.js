@@ -42,8 +42,9 @@ function stopChatSettings() {
 function startHealth(healthReminder) {
   if (healthReminder !== 0) {
     console.log("Health reminders are enabled. Interval: " + healthReminder + " minutes.");
+    console.log(healthInterval, healthReminder)
     healthInterval = setInterval(() => {
-      if (healthReminder == true) {
+      if (healthReminder !== 0) {
         ChatMessages.filterMessage(
           "You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
           "glimboi"
