@@ -103,7 +103,7 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
 function addCommandFilter(commandName, arguements, commandData, type) {
   commandName = commandName.toLowerCase()
   if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
-    ChatHandle.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
+    ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
     return
   }
   if (type == "!command") {
@@ -115,7 +115,7 @@ function addCommandFilter(commandName, arguements, commandData, type) {
   }
   commandData = commandData.substring()
   if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
-    ChatHandle.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
+    ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
     return
   }
   if (commandName.startsWith("!")) {
@@ -125,10 +125,10 @@ function addCommandFilter(commandName, arguements, commandData, type) {
   findCommand(commandName).then(data => {
     if (data !== null) {
       console.log(commandName + " already exists.")
-      ChatHandle.filterMessage(commandName + " already exists", "glimboi")
+      ChatMessages.filterMessage(commandName + " already exists", "glimboi")
     } else {
       addCommand(commandName, null, commandData, 0, 0, "Everyone", null, false);
-      ChatHandle.filterMessage(commandName + " added!", "glimboi");
+      ChatMessages.filterMessage(commandName + " added!", "glimboi");
       try {
         addCommandTable(commandName, commandData, 0, 0, "Everyone")
       } catch(e) {
@@ -265,7 +265,7 @@ function checkCommand(data) {
           if (value == "ACCEPTED") {
             runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
           } else { // They don't have permission, we log this to chat.
-            ChatHandle.filterMessage(value, "glimboi");
+            ChatMessages.filterMessage(value, "glimboi");
             console.log(value)
           }
         })
@@ -355,7 +355,7 @@ async function runCommand(arguements, index, user) {
       }
     }
     console.log(chatMessage + " is the final message");
-    ChatHandle.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
+    ChatMessages.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
     addCommandCount(arguements[0]); // Increments the command uses by one.
     startCD = new Date(); // We save the time, use to determine if enough time has passed (cooldowns)
   }
@@ -478,7 +478,7 @@ function randomRepeatCommand() {
   if (repeatableArray[index] !== undefined) {
   console.log(repeatableArray[index].message);
   //checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
-  ChatHandle.filterMessage(`${repeatableArray[index].message}`, "glimboi")
+  ChatMessages.filterMessage(`${repeatableArray[index].message}`, "glimboi")
   ChatStats.resetUserMessageCounter()
   }
 }
@@ -522,7 +522,7 @@ function cooldownChange(cd) {
  * Explains how to use commands in chat.
  */
 function info() {
-  ChatHandle.filterMessage("placeholder", "glimboi")
+  ChatMessages.filterMessage("placeholder", "glimboi")
 }
 
 module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.

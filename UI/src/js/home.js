@@ -25,7 +25,7 @@ function rememberID(firstRun) { // checks if an id has been entered for auth
       document.getElementById("saveAuth").setAttribute("onclick", "saveAuth()")
       document.getElementById("saveAuth").innerHTML = "Save";
     } else {
-      //Now we can safely assume that they have the client ID and secret saved. We reflect this on the buttons. 
+      //Now we can safely assume that they have the client ID and secret saved. We reflect this on the buttons.
       document.getElementById("clientID").setAttribute("disabled", "");
       document.getElementById("secretID").setAttribute("disabled", "");
       document.getElementById("clientID").setAttribute("placeholder", "ID Saved!")
@@ -33,22 +33,22 @@ function rememberID(firstRun) { // checks if an id has been entered for auth
       document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
       document.getElementById("saveAuth").innerHTML = "Edit Auth";
       if (refreshed !== true) {
-      updateStatus(1);
+        updateStatus(1);
       }
       if (firstRun) {
-      if (data[0].access_token.length > 5 && refreshed == false && isDev == false) { // They have a token as well as the other info, we need to refresh it.
-        console.log("They alread have an access token, we will begin refreshing it.");
-        document.getElementById("joinChannelBOT").removeAttribute("disabled");
-        AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(refresh => {
-          if (refresh == "SUCCESS") {
-            document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. ";
-            successMessage(refresh, "Auth has been refreshed. Ready to join chat.")
-          } else {
-            errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
-          }
-        })
-      } else { errorMessage("Possbile Error", "You have already been authenticated. If you belive this to be false you can restart GlimBoi.") }
-    }
+        if (data[0].access_token.length > 5 && refreshed == false && isDev == false) { // They have a token as well as the other info, we need to refresh it.
+          console.log("They alread have an access token, we will begin refreshing it.");
+          document.getElementById("joinChannelBOT").removeAttribute("disabled");
+          AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(refresh => {
+            if (refresh == "SUCCESS") {
+              document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. ";
+              successMessage(refresh, "Auth has been refreshed. Ready to join chat.")
+            } else {
+              errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
+            }
+          })
+        } else { errorMessage("Possbile Error", "You have already been authenticated. If you belive this to be false you can restart GlimBoi.") }
+      }
       // If the above sstatement is true the below statement will run as well. Not efficient, need to fix.
       if (data[0].access_token.length > 5) {
         document.getElementById("joinChannelBOT").removeAttribute("disabled");
@@ -82,7 +82,7 @@ function saveAuth() { //sets the state to saved
   }
   );
   console.log(document.getElementById("clientID").value, document.getElementById("secretID").value)
-  // We set the value to "ID SAVED" because we don't want the ID showing, streamers would probably show it accidentally. 
+  // We set the value to "ID SAVED" because we don't want the ID showing, streamers would probably show it accidentally.
   document.getElementById("clientID").value = "ID Saved";
   document.getElementById("secretID").value = "ID Saved";
 }
@@ -107,14 +107,14 @@ function syncQuotes(user, quote, action) {
     } else if (action == "add") {
       console.log(user);
       var filteredData = userTable
-        .rows()
-        .indexes()
-        .filter(function (value, index) {
-          if (userTable.row(value).data().userName == user) {
-            makeList(userTable.row(value).data());
-            return;
-          }
-        });
+      .rows()
+      .indexes()
+      .filter(function (value, index) {
+        if (userTable.row(value).data().userName == user) {
+          makeList(userTable.row(value).data());
+          return;
+        }
+      });
     }
   } catch (e) {
     console.log(e);
@@ -128,11 +128,11 @@ function syncUsers(data, action) {
     } else {
       console.log("The user " + data + " will now be deleted from the table.");
       var filteredData = userTable
-        .rows()
-        .indexes()
-        .filter(function (value, index) {
-          return userTable.row(value).data().userName == data;
-        });
+      .rows()
+      .indexes()
+      .filter(function (value, index) {
+        return userTable.row(value).data().userName == data;
+      });
       userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
     }
   } catch (e) {
@@ -149,4 +149,52 @@ function updateStatus(stage) {
     document.getElementById("authStatus").className = "fas fa-user";
     document.getElementById("authStatus").style.color = "#115c21"
   }
+}
+
+/**
+* Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready.
+*/
+function checkForUpdate() {
+  console.log('checkForUpdates');
+  const version = document.getElementById('version');
+  ipcRenderer.send('app_version');
+  ipcRenderer.on('app_version', (event, arg) => {
+    console.log("Recieved app_version with : " + arg.version)
+    console.log("Removing all listeners for app_version.")
+    version.innerText = 'Version ' + arg.version;
+    if (arg.isDev == true) {
+      isDev = true;
+      console.log("Glimboi is in dev mode. We will not request the token.")
+    } else {
+      console.log("GlimBoi is in production mode. We will request an access token. ")
+    }
+    ipcRenderer.removeAllListeners('app_version');
+  });
+
+  const notification = document.getElementById('notification');
+  const message = document.getElementById('message');
+  const restartButton = document.getElementById('restart-button');
+
+  ipcRenderer.on('update_available', () => {
+    ipcRenderer.removeAllListeners('update_available');
+    console.log("Update Avaible")
+    message.innerText = 'A new update is available. Downloading now...';
+    notification.classList.remove('hidden');
+  });
+
+  ipcRenderer.on('update_downloaded', () => {
+    console.log("Update Downloaded")
+    ipcRenderer.removeAllListeners('update_downloaded');
+    message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+    restartButton.classList.remove('hidden');
+    notification.classList.remove('hidden');
+    function closeNotification() {
+      notification.classList.add('hidden');
+    }
+  });
+}
+
+function restartApp() {
+  console.log("trying to restart the app for the update")
+  ipcRenderer.send('restart_app');
 }

@@ -1,18 +1,10 @@
 //This file handles connecting the bot to a chat.
 const WebSocket = require("ws"); // websocket library
 var connection; // the websocket connection
-var chatID = "" // the channel ID
-
 var heartbeat; //heartbeat
-
 var botName = "GlimBoi"; //The username of the bot in normal caps
-
 var messageHistoryCount = 20;
-
-var recentChannelsDB;
 var path = "./";
-
-
 
 /**
  * Updates the path to the DB. The path variable is updated
@@ -20,84 +12,6 @@ var path = "./";
 function updatePath(GUI) {
   console.log("User path is " + GUI);
   path = GUI;
-  recentChannelsDB = new Datastore({ filename: `${path}/data/recentChannels.db`, autoload: true });
-}
-
-/**
- * Adds a recent channel to GlimBoi
- * @param {string} object The channel object
- * @returns If successful returns the user.
- */
-async function addRecentChannel(channel, timestamp = null, autoJoin = false) {
-  var timestamp = timestamp ?? (Date.now());
-
-  var channelDoc = await new Promise(done => {
-    recentChannelsDB.find({ channel: channel }, function (err, doc) {
-      if (doc.length == 0) {
-        console.log("No channel was found with the name " + channel);
-        recentChannelsDB.insert({channel: channel, timestamp: timestamp}, function (err, doc) {
-          console.log(doc);
-          done(doc)
-        });
-      } else {
-        recentChannelsDB.update({ channel: channel }, { $set: { timestamp: timestamp } }, {returnUpdatedDocs: true}, function (err, num, doc) {
-          console.log(doc);
-          done(doc)
-        });
-      }
-    })
-  })
-  return channelDoc;
-}
-
-/**
- * Disables autoJoin for all channels, then enables for a specified channel
- *
- * @param {string} id
- * @param {bool} autoJoinEnabled
- */
-async function setAutoJoinChannelByID(id, autoJoinEnabled) {
-  return new Promise(done => {
-    console.log(`Disabling autoJoin for all channels`);
-
-    recentChannelsDB.update({ autoJoin: true }, { $set: { autoJoin: false } }, {returnUpdatedDocs: false}, function (err, num, doc) {
-      if (autoJoinEnabled) {
-        console.log(`Setting autojoin to ${autoJoinEnabled} for ${id}`);
-        recentChannelsDB.update({ _id: id }, { $set: { autoJoin: autoJoinEnabled } }, {returnUpdatedDocs: true}, function (err, num, doc) {
-          done(doc)
-        });
-      } else {
-        done(null);
-      }
-    });
-  });
-}
-
-/**
- * Removes a channel from recent chat DB, by the channel ID, the ID is what's in the DB
- *
- * @param {string} id Name of the id
- */
-async function removeRecentChannelByID(id) {
-  return new Promise(resolve => {
-    recentChannelsDB.remove({ _id: id }, { multi: false }, function (err, doc) {
-      resolve()
-    });
-  });
-}
-
-
-/**
- * Get all recent Channels
- * @returns Returns array of channel objects
- */
-async function getAllRecentChannels() {
-  return new Promise(resolve => {
-    recentChannelsDB.find({}, function (err, docs) {
-      console.log('Returning all recent channels.');
-      resolve(docs)
-    })
-  })
 }
 
 /**
@@ -110,6 +24,15 @@ function join(access_token, channelID) {
      console.log("we caught the error, poggers");
      errorMessage(e, "Chat Error")
   }
+}
+
+/**
+ * Returns the connection for other modules
+ *
+ * @returns {WebSocket} WebSocket Connection
+ */
+function getConnection() {
+  return connection;
 }
 
 /**
@@ -136,11 +59,15 @@ function connectToGlimesh(access_token, channelID) {
     console.log("Connected to the Glimesh API");
     connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
     connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
+
+    // Load requirements for working chat
     ChatSettings = require(appData[0] + "/chatbot/lib/chat/chatSettings.js");
     ChatSettings.loadChatSettings(settings);
-    ChatActions = require(appData[0] + "/chatbot/lib/chat/chatActions.js")
-    ChatStats = require(appData[0] + "/chatbot/lib/chat/chatStats.js")
-      heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
+    ChatActions  = require(appData[0] + "/chatbot/lib/chat/chatActions.js");
+    ChatStats    = require(appData[0] + "/chatbot/lib/chat/chatStats.js");
+    ChatMessages = require(appData[0] + "/chatbot/lib/chat/chatMessages.js");
+
+    heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       connection.send('[null,"6","phoenix","heartbeat",{}]');
     }, 30000);
       // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
@@ -230,8 +157,8 @@ function connectToGlimesh(access_token, channelID) {
                     case null:
                     case undefined:
                       UserHandle.findByUserName(userChat.toLowerCase()).then(data => {
-                        if (data == "ADDUSER") { filterMessage("That user does not exist in the database yet. Type !user new " + userChat.toLowerCase(), "Glimboi") } else {
-                          filterMessage(userChat.toLowerCase() + " has " + data[0].points + " " + settings.Points.name, "Glimboi")
+                        if (data == "ADDUSER") { ChatMessages.filterMessage("That user does not exist in the database yet. Type !user new " + userChat.toLowerCase(), "Glimboi") } else {
+                          ChatMessages.filterMessage(userChat.toLowerCase() + " has " + data[0].points + " " + settings.Points.name, "Glimboi")
                         }
                       })
                       break;
@@ -239,9 +166,9 @@ function connectToGlimesh(access_token, channelID) {
                       UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
                         console.log(data)
                         if (data.length > 0) {
-                          filterMessage("The top user is " + data[0].userName, "glimboi")
+                          ChatMessages.filterMessage("The top user is " + data[0].userName, "glimboi")
                         } else {
-                          filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
+                          ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
                         }
                       })
                       break;
@@ -252,15 +179,15 @@ function connectToGlimesh(access_token, channelID) {
                             var pointsPosition = Number(message[1])
                             console.log(pointsPosition)
                             if (pointsPosition <= 0) {
-                              filterMessage("That number is not valid.")
+                              ChatMessages.filterMessage("That number is not valid.")
                             } else if (data[pointsPosition-1] !== undefined) {
                               pointsPosition = pointsPosition - 1
-                              filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points)
+                              ChatMessages.filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points)
                             } else {
-                              filterMessage("There is not a user with that position.")
+                              ChatMessages.filterMessage("There is not a user with that position.")
                             }
                           } else {
-                            filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
+                            ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
                           }
                         })
                       }
@@ -268,7 +195,7 @@ function connectToGlimesh(access_token, channelID) {
                   }
                   break;
                 case "!test":
-                  glimboiMessage("Test complete. If you have a command called test this replaced it.");
+                  ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
                   break;
                 case "!raffle":
                   startRaffle()
@@ -303,7 +230,7 @@ function connectToGlimesh(access_token, channelID) {
               globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl]);
 
               globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
-              logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
+              ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
               ModHandle.scanMessage(userChat.toLowerCase(), messageChat.toLowerCase(), userID) // filter the message if needed
             }
             catch (e3) {
@@ -383,98 +310,6 @@ function disconnectError() {
 }
 
 /**
- * Filters a message to prepare it for sending. If it cannot be sent we send a message to chat notifying the stream.
- * @param {string} message The chat message to be sent to chat
- * @param {string} source Where the emssage is coming from. Either user or glimboi
- */
-function filterMessage(message, source) {
-  if (message.length == 0 ) {
-    console.log("Message was not long enough or no message was sent.");
-    sendMessage("The message was not long enough or no message was sent.")
-    return
-  }
-  if (source == "user") {
-    if (message.length > 255) {
-      sendMessage("The command/message was too long to send.");
-    } else {
-      message = message.replace(/[\t\r\n""]+/g, "");
-      sendMessage(message);
-    }
-  } else {
-    if (message.length > 255) {
-      glimboiMessage("The command/message was too long to send.");
-    } else {
-      message = message.replace(/[\t\r\n""]+/g, "");
-      glimboiMessage(message);
-    }
-  }
-}
-
-
-/**
- * Sends a message to chat. This function is called when a user presses send.
- * @param {string} data A message to be sent to chat
- */
-function sendMessage(data) {
-  var msgArray = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
-  // adds the message to it.
-  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\""+chatID+"\",message:{message:\""+data+"\"}) {message }}","variables":{}});
-  var test = JSON.stringify(msgArray); // make it sendable (json)
-  try {
-  console.log(test)
-  connection.send(test) // sends it to chat!
-  } catch(e) {
-    errorMessage("Auth Error", "The bot must be authenticated for this feature to work. You must be in a chat to send a message.")
-  }
-}
-
-/**
- * Sends a message to chat as the bot. This is not from a user pressing send.
- * @param {string} data The message to be sent to chat
- */
-function glimboiMessage(data) {
-  var msgArray = ["6","7","__absinthe__:control","doc"];
-  msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message:{message:\""+data+"\"}) {message }}","variables":{}});
-  var test = JSON.stringify(msgArray);
-  try {
-    console.log(test)
-    connection.send(test)
-  } catch(e) {
-    errorMessage("Message Error", "Message failed to send. You must be authenticated and be in a chat to send a message.")
-  }
-}
-
-
-/**
- * Logs the message in the UI. Send a message to the main process to log the file if enabled.
- * @param {string} user The user who said the message
- * @param {string} message The message
- * @param {string} avatar The avatar URL
- */
-function logMessage(user, message, avatar) {
-  var adminClass = (user === botName) ? 'admin_chat' : '';
-
-  $("#chatList").append(`
-    <li class="left clearfix ${adminClass} w-100" name='${user}' oncontextmenu='testingStuff(event)'>
-        <div class="chat-body1 clearfix testing" name='${user}'>
-        <span class="chat-img1 pull-left" name='${user}'>
-            <img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
-        </span>
-        <p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
-        <!--<div class="whiteText pull-left">09:40PM</div> -->
-        </div>
-    </li>`
-  );
-    var scroll = document.getElementById("chatContainer")
-    scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
-
-  if (ChatSettings.isLoggingEnabled() == true) {
-    ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
-  }
-
-}
-
-/**
  * Returns the name of the Bot
  */
 function getBotName() {
@@ -482,4 +317,4 @@ function getBotName() {
 }
 
 
-module.exports = { updatePath, addRecentChannel, setAutoJoinChannelByID, getAllRecentChannels, removeRecentChannelByID, isConnected, connectToGlimesh, disconnect, filterMessage, getBotName, glimboiMessage, join, logMessage, sendMessage}
+module.exports = { getConnection, updatePath, isConnected, connectToGlimesh, disconnect, getBotName, join}

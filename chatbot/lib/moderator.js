@@ -57,7 +57,7 @@ function handleTimeout(user, origin, data) {
                 document.getElementById("moderateMessage").innerText = ""
             }, 5000);
         } else {
-            ChatHandle.filterMessage(user + " has been timed out for 5 minutes.", "glimboi")
+            ChatMessages.filterMessage(user + " has been timed out for 5 minutes.", "glimboi")
         }
     }
 }
@@ -174,9 +174,9 @@ function handleUnBan(user, origin, data) {
 
 
 /**
- * 
- * @param {string} user 
- * @param {string} message 
+ *
+ * @param {string} user
+ * @param {string} message
  */
 function scanMessage(user, message, userID) {
     if (filterLevel == true) {

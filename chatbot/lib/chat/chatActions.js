@@ -4,67 +4,65 @@
  * Adds a user from Glimesh chat.
  * @param {string} user The user who will be added
  */
- function addUserChat(user) {
-    UserHandle.addUser(user, false).then(data => {
-      if (data == "USEREXISTS") {
-        ChatHandle.glimboiMessage("That user is already added to GlimBoi.")
-      } else if (data == "INVALIDUSER") {
-        ChatHandle.glimboiMessage("That user does not exist on Glimesh.")
-      } else {
-        ChatHandle.glimboiMessage("User addded to GlimBoi!")
-      }
-    })
-  }
+function addUserChat(user) {
+  UserHandle.addUser(user, false).then(data => {
+    if (data == "USEREXISTS") {
+      ChatMessages.glimboiMessage("That user is already added to GlimBoi.")
+    } else if (data == "INVALIDUSER") {
+      ChatMessages.glimboiMessage("That user does not exist on Glimesh.")
+    } else {
+      ChatMessages.glimboiMessage("User addded to GlimBoi!")
+    }
+  })
+}
 
 /**
  * Removes a user from chat
  * @param {string} user User to be removed
  */
- function delUserChat(user) {
-   ChatHandle.glimboiMessage("That action will be in a future glimboi release. Until then you can make that change in the users page.");
-   return
-    var exists = UserHandle.findByUserName(user);
-    exists.then(data => {
-      if (data == "ADDUSER") {
-        ChatHandle.glimboiMessage("No user was found with that name in GlimBoi.")
-      } else {
-        UserHandle.removeUser(user).then(deletedUser => { //removes the user from the db. Shows us afterwords
-          removeUserFromTable(deletedUser);
-          ChatHandle.glimboiMessage("User removed!")
-        })
-      }
-    })
-  }
+function delUserChat(user) {
+  var exists = UserHandle.findByUserName(user);
+  exists.then(data => {
+    if (data == "ADDUSER") {
+      ChatMessages.glimboiMessage("No user was found with that name in GlimBoi.")
+    } else {
+      UserHandle.removeUser(user).then(deletedUser => { //removes the user from the db. Shows us afterwords
+        removeUserFromTable(deletedUser);
+        ChatMessages.glimboiMessage("User removed!")
+      })
+    }
+  })
+}
 
 /**
  * Returns a random quote and sends it to chat.
  */
- function randomQuoteChat() {
-    QuoteHandle.randomQuote().then(data => {
-      if (data == null) {
-        ChatHandle.glimboiMessage(`No quotes exist.`)
-      } else {
-        ChatHandle.filterMessage(`@${data.user} - ${data.data}`, "glimboi")
-      }
-    })
-  }
+function randomQuoteChat() {
+  QuoteHandle.randomQuote().then(data => {
+    if (data == null) {
+      ChatMessages.glimboiMessage(`No quotes exist.`)
+    } else {
+      ChatMessages.filterMessage(`@${data.user} - ${data.data}`, "glimboi")
+    }
+  })
+}
 
 /**
  * Adds a quote from chat.
  * @param {object} data Message and other data
  * @param {string} user Who said the quote
  */
- function addQuoteChat(data, user) {
-    console.log(user, data.message);
-    var trimMessage = 10 + user.length + 2
-    QuoteHandle.addquote(user.toLowerCase(), data.message.substring(trimMessage)).then(data => {
-      if (data == "QUOTEFINISHED") {
-        ChatHandle.glimboiMessage(`Quote added.`)
-      } else {
-        ChatHandle.glimboiMessage(`That user does not exist.`)
-      } 
-    })
-  }
+function addQuoteChat(data, user) {
+  console.log(user, data.message);
+  var trimMessage = 10 + user.length + 2
+  QuoteHandle.addquote(user.toLowerCase(), data.message.substring(trimMessage)).then(data => {
+    if (data == "QUOTEFINISHED") {
+      ChatMessages.glimboiMessage(`Quote added.`)
+    } else {
+      ChatMessages.glimboiMessage(`That user does not exist.`)
+    }
+  })
+}
 
 /**
  * Removes a quote by username and ID. The paramaters are converted just to be safe.
@@ -88,19 +86,20 @@ function delQuoteChat(user, id) {
       })
     }
   }
+}
 
 /**
  * Returns a list of all commands to chat.
  */
- function commandList() {
-    var cmdList = [];
-    CommandHandle.getAll().then((data) => {
-      for (let index = 0; index < data.length; index++) {
-        cmdList.push(data[index].commandName);
-      }
-      var cmdmsg = cmdList.toString();
-      ChatHandle.filterMessage(cmdmsg);
-    });
-  }
+function commandList() {
+  var cmdList = [];
+  CommandHandle.getAll().then((data) => {
+    for (let index = 0; index < data.length; index++) {
+      cmdList.push(data[index].commandName);
+    }
+    var cmdmsg = cmdList.toString();
+    ChatMessages.filterMessage(cmdmsg);
+  });
+}
 
 module.exports = {addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, randomQuoteChat}

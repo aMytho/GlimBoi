@@ -7,7 +7,7 @@ var repeatSpamProtection = 15; // The minimum amount of non bot messages require
 
 /**
  * Loads and activates all the chat settings.
- * @param {object} settings 
+ * @param {object} settings
  */
 function loadChatSettings(settings) {
     startLogs(settings.chat.logging);
@@ -17,7 +17,7 @@ function loadChatSettings(settings) {
 
 /**
  * Updates the chat settings.
- * @param {object} settings 
+ * @param {object} settings
  */
 function updateChatSettings(settings) {
     updateHealth(settings.chat.health);
@@ -36,15 +36,15 @@ function stopChatSettings() {
 
 /**
  * Creates a health reminder if enabled.
- * @param {boolean} healthEnabled 
- * @param {number} healthReminder 
+ * @param {boolean} healthEnabled
+ * @param {number} healthReminder
  */
 function startHealth(healthReminder) {
   if (healthReminder !== 0) {
     console.log("Health reminders are enabled. Interval: " + healthReminder + " minutes.");
     healthInterval = setInterval(() => {
       if (healthReminder == true) {
-        ChatHandle.filterMessage(
+        ChatMessages.filterMessage(
           "You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
           "glimboi"
         );
@@ -57,8 +57,8 @@ function startHealth(healthReminder) {
 
 /**
  * Updates the health settings.
- * @param {boolean} healthEnabled 
- * @param {number} healthReminder 
+ * @param {boolean} healthEnabled
+ * @param {number} healthReminder
  */
 function updateHealth(healthReminder) {
     clearInterval(healthInterval); // Resets the health interval if it is already enabled
@@ -67,7 +67,7 @@ function updateHealth(healthReminder) {
 
 /**
  * Starts the logging process if it is enabled
- * @param {boolean} logEnabled 
+ * @param {boolean} logEnabled
  */
 function startLogs(logEnabled) {
     if (logEnabled) {
@@ -99,7 +99,7 @@ function isLoggingEnabled() {
 
 /**
  * Starts an interval to send repeating commands to chat. Dependent on repeat spam protection and delay.
- * @param {number} repeatDelay 
+ * @param {number} repeatDelay
  */
 function startRepeatingCommands(repeatDelay) {
     //Sends a random repeatable message to chat based on the user setting.
