@@ -90,7 +90,7 @@ function startRaffle() {
 
 /**
  * Adds a user to the list if they are not already on there.
- * @param {String} user 
+ * @param {String} user
  */
 function raffleUsersUpdate(user) {
     console.log(user)
@@ -132,7 +132,7 @@ function startPoll(user, message, GUI, stringMessage) {
                     setTimeout(() => {
                         pollError.innerText = ""
                     }, 3000);
-                } 
+                }
             })
             $("#modalPoll").modal("hide");
         } else {
@@ -174,23 +174,23 @@ function startPoll(user, message, GUI, stringMessage) {
 
 function openGlimRealm(user) {
     if (EventHandle.getGlimrealmStatus() == "active") {
-        ChatHandle.filterMessage("The portal to the Glimrealm is already open! Type !portal to enter the world of the Glimdrops.");
+        ChatMessages.filterMessage("The portal to the Glimrealm is already open! Type !portal to enter the world of the Glimdrops.");
     } else if (EventHandle.getGlimrealmStatus() == "charging") {
-        ChatHandle.filterMessage("The portal to Glimrealm is charging. You must wait until it finishes to enter the world of the Glimdrops.", "glimboi")
+        ChatMessages.filterMessage("The portal to Glimrealm is charging. You must wait until it finishes to enter the world of the Glimdrops.", "glimboi")
     } else if (EventHandle.getGlimrealmStatus() == "ready") {
         EventHandle.openGlimrealm();
         arrayOfEvents.push("glimrealm")
-        ChatHandle.filterMessage("The portal to the Glimrealm has been opened! Type !portal to enter the world of the Glimdrops!", "glimboi");
+        ChatMessages.filterMessage("The portal to the Glimrealm has been opened! Type !portal to enter the world of the Glimdrops!", "glimboi");
     }
-    
+
 }
 
 /**
- * 
- * @param {string} user 
- * @param {string} action 
- * @param {string} effect 
+ *
+ * @param {string} user
+ * @param {string} action
+ * @param {string} effect
  */
 function actionHandler(user, action, effect) {
-    
+
 }

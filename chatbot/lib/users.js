@@ -27,7 +27,7 @@ class User {
 /**
  * Adds a user to GlimBoi
  * @param {string} user The name of the user
- * @returns If successful returns the user. 
+ * @returns If successful returns the user.
  * @returns If the user doesn't exist on GLimesh returns code INVALIDUSER
  * @returns If the exists returns USEREXISTS
  */
@@ -67,10 +67,10 @@ async function addUser(user, inModal) {
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-    console.log("User path is " + GUI);
-    path = GUI;
-    usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
-  }
+  console.log("User path is " + GUI);
+  path = GUI;
+  usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
+}
 
   /**
  * Finds a user by their username.
@@ -134,13 +134,13 @@ async function removeUser(user, inModal) {
       }
     }
   });
- }) 
+ })
 }
 
 /**
- * Adds a quote. 
- * @param {string} quote 
- * @param {number} id 
+ * Adds a quote.
+ * @param {string} quote
+ * @param {number} id
  */
 async function addQuote(quote, id) {
   return new Promise(resolve => {
@@ -182,7 +182,7 @@ async function removeQuoteByID(id, user) {
         }
       }
     }
-  })    
+  })
   })
 }
 
@@ -223,7 +223,7 @@ async function editUserPoints(userName, points) {
 
 /**
  * Adds points and watch time to the users who are active
- * @param {Array} users 
+ * @param {Array} users
  */
 function earnPointsWT(users) {
   usersDB.update({ $or: users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err, numReplaced, affectedDocuments) {

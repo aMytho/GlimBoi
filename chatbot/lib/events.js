@@ -1,11 +1,11 @@
-// This file contains games and events. 
+// This file contains games and events.
 var raffleUsers = []; // array of users in the raffle. cleared on raffle end
 var raffleTimer = {} // 1 minute timer for the raffle. Contains functions for controlling raffles.
 
 var glimrealmUsers = [];
 var glimrealmStatus = "ready";
 /**
- * 
+ *
  */
 var pollHandle = {
     question: "",
@@ -18,9 +18,9 @@ var pollHandle = {
 
 /**
  * Event Handler. Inputs the event and does the required action with the other paramaters. This allows multiple events to be run at the same time.
- * @param {string} event 
- * @param {string} user 
- * @param {string} message 
+ * @param {string} event
+ * @param {string} user
+ * @param {string} message
  */
 function handleEvent(event, user, message) {
     switch (event) {
@@ -33,7 +33,7 @@ function handleEvent(event, user, message) {
             if (message.startsWith('!vote') || message.startsWith("!v")) {
                 message = message.split(" ");
                 if (message[1] == null || message[1] == undefined || message[1] == "") {
-                    ChatHandle.filterMessage("@" + user + ", Please respond with a number indicating your response. ex. !vote 1, !v 1", "glimboi");
+                    ChatMessages.filterMessage("@" + user + ", Please respond with a number indicating your response. ex. !vote 1, !v 1", "glimboi");
                 } else if (!pollHandle.users.includes(user)) {
                     // Note that the number is a string, since we only subtract it nothing breaks.
                     pollHandle.users.push(user);
@@ -51,11 +51,11 @@ function handleEvent(event, user, message) {
                             glimrealmUsers.push(user);
                             glimDropRealm(user, data)
                         } else {
-                            ChatHandle.filterMessage("You must be a user in the bot to join this game. Type !user new " + user.toLowerCase(), "glimboi") // the user doesn't exist
+                            ChatMessages.filterMessage("You must be a user in the bot to join this game. Type !user new " + user.toLowerCase(), "glimboi") // the user doesn't exist
                         }
                     })
                 } else {
-                    ChatHandle.filterMessage("@" + user + ", You have already entered the Glimrealm.", "glimboi")
+                    ChatMessages.filterMessage("@" + user + ", You have already entered the Glimrealm.", "glimboi")
                 }
             }
             break;
@@ -67,17 +67,17 @@ function handleEvent(event, user, message) {
 
 /**
  * Starts a raffle. Ends in one minute. Winner annoucned to chat and on GUI event page.
- * @param {number} time 
+ * @param {number} time
  * @async
  */
 async function startRaffle(time) {
     return new Promise(resolve => {
         console.log("Starting Raffle");
-        ChatHandle.filterMessage("A raffle has begun! Type !enter to join the raffle. You have one minute remaining.")
+        ChatMessages.filterMessage("A raffle has begun! Type !enter to join the raffle. You have one minute remaining.")
         raffleTimer.timer = setTimeout(() => {
         arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "raffle"}) // removes from current events
           if (raffleUsers.length == 0) {
-            ChatHandle.filterMessage("Nobody joined the raffle so nobody won.", "glimboi")
+            ChatMessages.filterMessage("Nobody joined the raffle so nobody won.", "glimboi")
             resolve("Nobody joined the raffle so nobody won.")
             return;
         }
@@ -87,13 +87,13 @@ async function startRaffle(time) {
         var index = Math.floor(Math.random()*raffleUsers.length)
         var winner = raffleUsers[index];
         raffleUsers = []
-        ChatHandle.filterMessage("Congratulations @" + winner + ", you won the raffle!" , "glimboi")
+        ChatMessages.filterMessage("Congratulations @" + winner + ", you won the raffle!" , "glimboi")
         resolve(winner)
     }, time);
         raffleTimer.cancel = function() {
             resolve({status:"CANCELLED", reson:"MANUAL CANCELLATION"})
         }
-    })  
+    })
 }
 
 /**
@@ -105,7 +105,7 @@ function getRaffleUsers() {
 
 /**
  * Adds a user to the raffle.
- * @param {string} user 
+ * @param {string} user
  */
 function addUserRaffle(user) {
     raffleUsers.push(user)
@@ -132,13 +132,13 @@ async function startPoll(poll, time) {
             console.log(poll)
             pollHandle.options = poll.options
 
-            ChatHandle.filterMessage("Poll Started! " + poll.user + " asks: " + poll.question, "glimboi");
+            ChatMessages.filterMessage("Poll Started! " + poll.user + " asks: " + poll.question, "glimboi");
             setTimeout(() => {
                 var messageOptions = ""
                 for (let index = 0; index < poll.options.length; index++) {
                     messageOptions = messageOptions.concat(`${index + 1}: ${poll.options[index]}, `)
                 }
-                ChatHandle.filterMessage("Choices: " + messageOptions + ". Respond with !vote NUMBER based on the option you choose.", "glimboi");
+                ChatMessages.filterMessage("Choices: " + messageOptions + ". Respond with !vote NUMBER based on the option you choose.", "glimboi");
             }, 1000);
 
             setTimeout(() => {
@@ -154,7 +154,7 @@ async function startPoll(poll, time) {
                     results = results.concat(`${pollHandle.options[key]}: ${pollHandle.results[key]}, `)
                 }
                 console.log(results);
-                ChatHandle.filterMessage("The results are in: " + results.slice(0, -1), "glimboi")
+                ChatMessages.filterMessage("The results are in: " + results.slice(0, -1), "glimboi")
             }, time);
         }
         pollHandle.cancel = function() {
@@ -174,11 +174,11 @@ function openGlimrealm() {
     console.log("Opening the portal to the Glimrealm");
     glimrealmStatus = "active";
     setTimeout(() => {
-        ChatHandle.filterMessage("The portal is beginning to destabilize...");
+        ChatMessages.filterMessage("The portal is beginning to destabilize...");
         setTimeout(() => {
-            ChatHandle.filterMessage("The portal is nearly closed. 20 seconds left!");
+            ChatMessages.filterMessage("The portal is nearly closed. 20 seconds left!");
             setTimeout(() => {
-                ChatHandle.filterMessage("Everyone returned from the Glimrealm just as the portal closed. The portal will need some time to recharge.");
+                ChatMessages.filterMessage("Everyone returned from the Glimrealm just as the portal closed. The portal will need some time to recharge.");
                 console.log("GLimrealm portal closed.");
                 glimrealmStatus = "charging";
                 arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "glimrealm"}) // removes from current events
@@ -200,14 +200,14 @@ function getGlimrealmStatus() {
 
 
 /**
- * Enters the world of the Glimdrops. 
- * @param {string} user 
+ * Enters the world of the Glimdrops.
+ * @param {string} user
  */
 function glimDropRealm(user, data) {
     console.log(data[0].points);
     var result = glimChance(); // get a random effect
     console.log(result);
-    ChatHandle.filterMessage(result.message, "glimboi"); // send the message to chat
+    ChatMessages.filterMessage(result.message, "glimboi"); // send the message to chat
     if (result.type == "add") {
         UserHandle.editUserPoints(user.toLowerCase(), data[0].points + result.result); // add the points
     } else {

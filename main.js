@@ -8,7 +8,7 @@ ipcMain.on('app_version', (event) => {
   console.log("The current version is recieved. " + app.getVersion());
   if (isDev) {
     event.sender.send('app_version', { version: app.getVersion(), isDev: true });
-    console.log("isdev") 
+    console.log("isdev")
   } else {
     event.sender.send('app_version', { version: app.getVersion() , isDev: false});
     console.log("Not dev")
@@ -94,8 +94,6 @@ app.on('activate', () => {
   }
 })
 
-
-
 var loggingFile;
 
 ipcMain.on("startLogging", event => {
@@ -122,7 +120,7 @@ ipcMain.on("logMessage", (event, arg) => {
     console.log(e);
   }
 })
-  
+
 ipcMain.on("logEnd", event => {
   try {loggingFile.end(); console.log("Finishes chat logs.");} catch(e) {console.log(e); event.reply("endedLog", e)}
   event.reply("endedLog", "The log has been ended.")
