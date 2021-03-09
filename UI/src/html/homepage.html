@@ -1,5 +1,5 @@
 <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
-        
+
   <div class="row">
   <div class="col-sm-6">
   <div class="introaaa">
@@ -20,6 +20,9 @@
       <div class="col">
       <button class="btn btn-info btn-block"  type="submit" id="authButton4" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
       </div>
+      <div class="col">
+        <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
+      </div>
       </div>
   </div>
   <div class="col-sm-6">
@@ -38,7 +41,7 @@
         <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
   </div>
   </div>
- 
+
   <div class="row">
   <div class="col-sm-6 mt-3">
   <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
@@ -63,11 +66,11 @@
 
 
       </div>
-      
-      
+
+
   </div>
   </div>
-  
+
   </div>
   <script>
     //Creates the chart. Only build the first time.
