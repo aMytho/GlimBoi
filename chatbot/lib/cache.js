@@ -25,6 +25,8 @@ class DumbCacheStore {
      * @param {string} key
      * @param {any} defaultValue
      * @param {any} setDefault
+     *
+     * @returns {any} returns null if undefined
      */
     get(key, defaultValue = null, setDefault = false) {
         var val = this.cache[key];
