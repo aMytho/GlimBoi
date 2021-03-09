@@ -102,7 +102,9 @@ function quoteSearch(user) {
     numberOfListItems = data.quotes.length,
     listItem,
     i;
-
+    if (numberOfListItems == 0) {
+        document.getElementsByClassName('removeQuoteList')[0].innerHTML = "That user does not have any quotes to delete!"
+    } else {
     // Add it to the page
     document.getElementsByClassName('removeQuoteList')[0].appendChild(listContainer);
     listContainer.appendChild(listElement);
@@ -117,6 +119,7 @@ function quoteSearch(user) {
         // Add listItem to the listElement
         listElement.appendChild(listItem);
     }
+}
     }
   })
 }
