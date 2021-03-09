@@ -70,19 +70,21 @@ function addQuoteChat(data, user) {
  * @param {Number} id The ID of the quote.
  */
 function delQuoteChat(user, id) {
-  console.log(user, id);
-  console.log(typeof id)
-  console.log(id)
-  if (user == "" || user == " " || id == "" || id == " " || user == undefined || id == undefined) {
-    ChatMessages.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
-  } else {
-    UserHandle.removeQuoteByID(Number(id), user.toLowerCase()).then(data => {
-      if (data == "NOQUOTEFOUND") {
-        ChatMessages.glimboiMessage("No quote was found with that ID.")
-      } else {
-        ChatMessages.glimboiMessage("Quote removed.")
-      }
-    })
+  ChatHandle.glimboiMessage("This action will be supported in a future update. Until then you can delete quotes from the users page.");
+  return
+  // The below code will be in place after the rank system exists/
+    console.log(user, id);
+    if (user == "" || user == " " || id == "" || id == " " || user == undefined || id == undefined) {
+      ChatHandle.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
+    } else {
+      UserHandle.removeQuoteByID(Number(id), user.toLowerCase()).then(data => {
+        if (data == "NOQUOTEFOUND") {
+            ChatHandle.glimboiMessage("No quote was found with that ID.")
+        } else {
+            ChatHandle.glimboiMessage("Quote removed.")
+        }
+      })
+    }
   }
 }
 

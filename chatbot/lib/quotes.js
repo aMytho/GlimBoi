@@ -37,7 +37,7 @@ async function addquote(quoteName, quoteData) {
   return new Promise(resolve => {
     var newquote = new Quote(quoteName, quoteData);
     newquote.quoteID.then(data => {
-      console.log('ID should be made now')
+      console.log('Quote ID created.')
       console.log(data)
       if (data == "ADDUSER") {
         console.log("Creating user " + quoteName);
@@ -53,13 +53,12 @@ async function addquote(quoteName, quoteData) {
         })
          return
       } else {
-        if (data[0].quotes.length == 0) {
+        if (data.quotes.length == 0) {
           newquote.quoteID = 1
         } else {
-          var count = data[0].quotes.length - 1;
-          console.log(count)
-          console.log(data[0].quotes[count])
-          newquote.quoteID = Number(data[0].quotes[count].quoteID) + 1
+          var count = data.quotes.length - 1;
+          console.log(data.quotes[count])
+          newquote.quoteID = Number(data.quotes[count].quoteID) + 1
         }
       console.log(newquote)
       try {
@@ -86,11 +85,9 @@ async function addquote(quoteName, quoteData) {
  * @param {string} quoteName The quote data
  */
 function removeQuote(id, user) {
-  console.log(id,user)
   try {
-    quotesDB.remove({ $and: [{quoteID: id}, {quoteName: user}] }, {}, function (err, numRemoved) {
+    quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
       console.log("Quote " + id + " was removed from the db");
-      console.log(numRemoved)
     });
   } catch (e) {
     console.log(e);
