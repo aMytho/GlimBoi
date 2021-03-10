@@ -118,9 +118,7 @@ function addCommandFilter(commandName, arguements, commandData, type) {
     ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
     return
   }
-  if (commandName.startsWith("!")) {
-    commandName = commandName.substring(1)
-  }
+  commandName = commandName.replace(new RegExp("^[\!]+"), "").trim();
   console.log(commandName, commandData);
   findCommand(commandName).then(data => {
     if (data !== null) {
@@ -248,11 +246,11 @@ function removeRepeat(commandName) {
  * @param data.user The user that activated the command
  */
 function checkCommand(data) {
-  var message = data.message.split(" "); //splits by space
-  message[0] = message[0].substring(1) // The command without the !
-  console.log(message)
+  var cleaned = data.message.replace(new RegExp("^[\!]+"), "").trim();
+  var message = cleaned.split(" "); //splits by space
+  console.log(message);
   timeCD = new Date();
-  var CD = timeCD - startCD // check the time since the last command was activated. (cooldown check)
+  var CD = timeCD - startCD; // check the time since the last command was activated. (cooldown check)
   if (CD < cooldown) {/*  if not enough time has passed do nothing*/} else { // We are past the cooldown, command time!
   try {
     var commandExists = false; // We assume the command does not exist.
