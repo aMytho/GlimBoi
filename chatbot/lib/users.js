@@ -203,6 +203,13 @@ async function getTopPoints() {
   })
 }
 
+/**
+ * Edits a users points and role
+ * @param {string} userName The user
+ * @param {string} role The role they will have
+ * @param {number} points The points they will have
+ * @returns {promise}
+ */
 async function editUser(userName, role, points) {
   return new Promise(resolve => {
     console.log(userName, role, points)
@@ -214,6 +221,12 @@ async function editUser(userName, role, points) {
   })
 }
 
+/**
+ * Edits how many points the user has
+ * @param {string} userName The user
+ * @param {number} points How many points they will have
+ * @returns {promise}
+ */
 async function editUserPoints(userName, points) {
   return new Promise(resolve => {
     console.log(userName, points)
@@ -252,6 +265,11 @@ function earnPointsWT(Users) {
   });
 }
 
+/**
+ * Removes the users points
+ * @param {string} user The user
+ * @param {number} value How many points will be removed
+ */
 function removePoints(user, value) {
   usersDB.update({ userName: user }, { $inc: { points: -value} }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
     console.log("Removing " + value + " points from " + user);
