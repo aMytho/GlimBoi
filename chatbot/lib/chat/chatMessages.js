@@ -8,6 +8,11 @@
  * @param {string} source Where the emssage is coming from. Either user or glimboi
  */
 function filterMessage(message, source) {
+  if (source !== 'user' && message.startsWith('!')) {
+    console.log(`Tried to send the message {$message} but that might be an infinite loop, so we stopped`);
+    sendMessage("Hi, we detected the potential for an infinite loop, and hopefully stopped it? Check your command response!");
+    return;
+  }
   if (message.length == 0 ) {
     console.log("Message was not long enough or no message was sent.");
     ChatMessages.sendMessage("The message was not long enough or no message was sent.")

@@ -52,6 +52,7 @@ function checkNewCommand() {
   var commandUses = Number($("#addCommandUses").text());
   var repeat = document.getElementById("commandRepeatableChoice").value
   var commandRank = document.getElementById("rankChoiceAdd").value;
+
   if (commandName.length == 0 || commandName == "!") {
     errorMessageCommandModal("You must enter a command name!", "addCommandName")
     return
@@ -107,6 +108,8 @@ function checkNewCommand() {
   } else {
     resetMessageCommandModal("addCommandUses")
   }
+
+  commandData = commandData.startsWith('!') ? commandData.substring(1) : commandData;
 
   if (repeat == "false") { repeat = false } else { repeat = true }
 
@@ -212,7 +215,7 @@ function checkEditCommand() {
 
 /**
  * Same as the add modal with the exception of the command name.
- * @returns 
+ * @returns
  */
 function editCommand() {
   console.log("Checking if command is valid.");
@@ -221,6 +224,8 @@ function editCommand() {
   var commandUses = Number($("#editCommandUses").text());
   var commandRank = document.getElementById("rankChoiceEdit").value;
   var repeat = document.getElementById("commandRepeatableChoiceEdit").value
+
+  commandData = commandData.startsWith('!') ? commandData.substring(1) : commandData;
 
   if (commandData.length >= 255) {
     //max length is 255.
@@ -323,21 +328,21 @@ function commandModalPrep() {
     document.getElementById("commandAddModalBody").innerHTML = addCommandModal();
     document.getElementById("errorMessageAdd").innerHTML = "";
   }).on('show.bs.modal', function (e) {
-      $("#addCommandPoints").keypress(function (e) {
-        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-      });
-      $("#addCommandUses").keypress(function (e) {
-        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-      });
-    })
-    $('#modalEditCommand').on('hidden.bs.modal', function (e) {
-      console.log("Resetting edit add modal.");
-      document.getElementById("editModal").innerHTML = editCommandReset();
-      document.getElementById("errorMessageEdit").innerHTML = "";
-    })
-    $('#modalDelete').on('hidden.bs.modal', function (e) {
-      console.log("Resetting command remove modal.");
-      document.getElementById("removeModal").innerHTML = removeCommandReset();
-      document.getElementById("errorMessageDelete").innerHTML = "";
-    })
+    $("#addCommandPoints").keypress(function (e) {
+      if (e.which === 13 || isNaN(String.fromCharCode(e.which))) e.preventDefault();
+    });
+    $("#addCommandUses").keypress(function (e) {
+      if (e.which === 13 || isNaN(String.fromCharCode(e.which))) e.preventDefault();
+    });
+  });
+  $('#modalEditCommand').on('hidden.bs.modal', function (e) {
+    console.log("Resetting edit add modal.");
+    document.getElementById("editModal").innerHTML = editCommandReset();
+    document.getElementById("errorMessageEdit").innerHTML = "";
+  });
+  $('#modalDelete').on('hidden.bs.modal', function (e) {
+    console.log("Resetting command remove modal.");
+    document.getElementById("removeModal").innerHTML = removeCommandReset();
+    document.getElementById("errorMessageDelete").innerHTML = "";
+  });
 }
