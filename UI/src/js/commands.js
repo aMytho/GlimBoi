@@ -53,18 +53,10 @@ function checkNewCommand() {
   var repeat = document.getElementById("commandRepeatableChoice").value
   var commandRank = document.getElementById("rankChoiceAdd").value;
 
+  commandName = commandName.replace(new RegExp("^[\!]+"), "").trim();
   if (commandName.length == 0 || commandName == "!") {
     errorMessageCommandModal("You must enter a command name!", "addCommandName")
     return
-  } else if (commandName.startsWith("!")) {
-    //Removes the ! if it exists
-    commandName = commandName.substring(1);
-    CommandHandle.findCommand(commandName).then(data => {
-      if (data !== null) {
-        errorMessageCommandModal("That command already exists!", "addCommandName")
-        return
-      }
-    })
   } else {
     CommandHandle.findCommand(commandName).then(data => {
       if (data !== null) {
@@ -109,7 +101,7 @@ function checkNewCommand() {
     resetMessageCommandModal("addCommandUses")
   }
 
-  commandData = commandData.startsWith('!') ? commandData.substring(1) : commandData;
+  commandData = commandData.replace(new RegExp("^[\!]+"), "").trim();
 
   if (repeat == "false") { repeat = false } else { repeat = true }
 
@@ -143,9 +135,8 @@ function checkNewCommand() {
 //removes commands
 function checkRemoveCommand() {
   var commandToBeRemoved = $("#commandRemoveInput").val().toLowerCase()
-  if (commandToBeRemoved.startsWith("!")) {
-    commandToBeRemoved = commandToBeRemoved.substring(1);
-  }
+  commandToBeRemoved = commandToBeRemoved.replace(new RegExp("^[\!]+"), "").trim();
+
   try {
     CommandHandle.findCommand(commandToBeRemoved).then(data => {
       if (data !== null) {
@@ -180,9 +171,8 @@ function checkRemoveCommand() {
 function checkEditCommand() {
   commandToBeEdited = $("#commandEditInput").val().toLowerCase();
   var editErrorMessage = document.getElementById("editCommandMessage")
-  if (commandToBeEdited.startsWith("!")) {
-    commandToBeEdited = commandToBeEdited.substring(1);
-  }
+  commandToBeEdited = commandToBeEdited.replace(new RegExp("^[\!]+"), "").trim();
+
   //Make sure the command exists.
   try {
     CommandHandle.findCommand(commandToBeEdited).then(data => {
@@ -225,7 +215,7 @@ function editCommand() {
   var commandRank = document.getElementById("rankChoiceEdit").value;
   var repeat = document.getElementById("commandRepeatableChoiceEdit").value
 
-  commandData = commandData.startsWith('!') ? commandData.substring(1) : commandData;
+  commandData = commandData.replace(new RegExp("^[\!]+"), "").trim();
 
   if (commandData.length >= 255) {
     //max length is 255.
