@@ -65,6 +65,7 @@ function connectToGlimesh(access_token, channelID) {
     ChatSettings.loadChatSettings(settings);
     ChatActions  = require(appData[0] + "/chatbot/lib/chat/chatActions.js");
     ChatStats    = require(appData[0] + "/chatbot/lib/chat/chatStats.js");
+    ChatStats.loadChatStats();
     ChatMessages = require(appData[0] + "/chatbot/lib/chat/chatMessages.js");
 
     heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
@@ -253,6 +254,7 @@ function connectToGlimesh(access_token, channelID) {
       try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
       clearInterval(heartbeat) // stops the hearbteat
       ChatSettings.stopChatSettings(); // stops everything else
+      ChatStats.stopChatStats()
       } catch(e) {console.log(e)}
       if (event.wasClean) {
         console.log(
@@ -270,6 +272,7 @@ function connectToGlimesh(access_token, channelID) {
       try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
       clearInterval(heartbeat) // stops the hearbteat
       ChatSettings.stopChatSettings(); // stops everything else
+      ChatStats.stopChatStats();
       } catch(e) {console.log(e)}
       throw "error, it crashed. p l e a s e f i x n o w"
     };

@@ -73,10 +73,26 @@ function resetUserMessageCounter() {
 
 /**
  * Adds a user to the array of current users
- * @param {string} user 
+ * @param {string} user
  */
 function addCurrentUser(user) {
     currentUsers.push(user.toLowerCase())
 }
 
-module.exports = {addCurrentUser, getUserMessageCount, increaseUserMessageCounter, resetUserMessageCounter}
+/**
+ * Loads the chat ststs. Starts all stat intervals (views,follows,subs, points/watchtime)
+ */
+function loadChatStats() {
+    startChannelStats();
+    botToViewerRatio();
+}
+
+/**
+ * Stops all the interval related to chat stats
+ */
+function stopChatStats() {
+    clearInterval(stats);
+    clearInterval(checkForUsers);
+}
+
+module.exports = {addCurrentUser, getUserMessageCount, increaseUserMessageCounter, loadChatStats, resetUserMessageCounter, stopChatStats}
