@@ -318,6 +318,25 @@ function editUserTable(user, role, points) {
   }
 }
 
+function editUserWatchTime(user, watchTime) {
+    try {
+      watchTime = Number(watchTime);
+      user = user.toLowerCase()
+      var indexes = userTable
+        .rows()
+        .indexes()
+        .filter(function (value, index) {
+          return user === userTable.row(value).data().userName;
+        });
+      var row = userTable.row(indexes[0]);
+      var data = row.data();
+      data.watchTime = watchTime;
+      row.data(data).draw();
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
 function loadUserTable() {
   userTable = $("#userTable").DataTable({
     data: UserHandle.getCurrentUsers(),

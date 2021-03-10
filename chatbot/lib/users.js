@@ -151,7 +151,7 @@ async function addQuote(quote, id) {
         if (users[i].userName == quote.quoteName) {
           users[i].quotes.push({quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id});
           break;
-        }  
+        }
       }
       syncQuotes(quote.quoteName, quote, "add");
       resolve("USERQUOTEADDED")
@@ -219,7 +219,13 @@ async function editUserPoints(userName, points) {
     console.log(userName, points)
     usersDB.update({ userName: userName }, { $set: {points: Number(points) } }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
       console.log("Edited " + userName);
-      console.log(affectedDocuments)
+      console.log(affectedDocuments);
+      for (let i = 0; i < users.length; i++) {
+          if (userName == users[i].userName) {
+            users[i].points = Number(points);
+            editUserTable(userName, affectedDocuments.role, Number(points))
+          }
+      }
       resolve(affectedDocuments);
     });
   })
@@ -227,13 +233,21 @@ async function editUserPoints(userName, points) {
 
 /**
  * Adds points and watch time to the users who are active
- * @param {Array} users
+ * @param {Array} Users
  */
-function earnPointsWT(users) {
-  usersDB.update({ $or: users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err, numReplaced, affectedDocuments) {
+function earnPointsWT(Users) {
+  usersDB.update({ $or: Users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err, numReplaced, affectedDocuments) {
     console.log("Adding " + settings.Points.accumalation + " points to " + numReplaced + " users.");
-    affectedDocuments.forEach(element => {
-      editUserTable(element.userName, element.role, element.points)
+    affectedDocuments.forEach(function(item, index) {
+      editUserTable(item.userName, item.role, item.points);
+      editUserWatchTime(item.userName, item.watchTime)
+      for (let i = 0; i < users.length; i++) {
+          if (item.userName == users[i].userName) {
+              users[i].points = affectedDocuments[index].points;
+              users[i].watchTime = affectedDocuments[index].watchTime;
+              break;
+          }
+      }
     });
   });
 }
@@ -241,7 +255,13 @@ function earnPointsWT(users) {
 function removePoints(user, value) {
   usersDB.update({ userName: user }, { $inc: { points: -value} }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
     console.log("Removing " + value + " points from " + user);
-    editUserTable(user, affectedDocuments.role, affectedDocuments.points)
+    for (let i = 0; i < users.length; i++) {
+        if (userName == users[i].userName) {
+          users[i].points = affectedDocuments.points;
+          editUserTable(user, affectedDocuments.role, affectedDocuments.points)
+          break
+        }
+    }
   });
 }
 
