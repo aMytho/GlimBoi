@@ -254,6 +254,7 @@ function checkCommand(data) {
   if (CD < cooldown) {/*  if not enough time has passed do nothing*/} else { // We are past the cooldown, command time!
   try {
     var commandExists = false; // We assume the command does not exist.
+    message[0] = message[0].toLowerCase()
     for (let index = 0; index < commands.length && commandExists == false; index++) { // Runs a loop to search for the command in the commands array
       try {
         if (commands[index].commandName == message[0]) { // We found the command!
