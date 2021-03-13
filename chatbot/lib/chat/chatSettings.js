@@ -40,20 +40,20 @@ function stopChatSettings() {
  * @param {number} healthReminder
  */
 function startHealth(healthReminder) {
-  if (healthReminder !== 0) {
-    console.log("Health reminders are enabled. Interval: " + healthReminder + " minutes.");
-    console.log(healthInterval, healthReminder)
-    healthInterval = setInterval(() => {
-      if (healthReminder !== 0) {
-        ChatMessages.filterMessage(
-          "You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
-          "glimboi"
-        );
-      }
-    }, healthReminder*60000);
-  } else {
-      console.log("Health reminders are disabled.")
-  }
+  	if (healthReminder !== 0) {
+    	console.log("Health reminders are enabled. Interval: " + healthReminder + " minutes.");
+    	console.log(healthInterval, healthReminder)
+    	healthInterval = setInterval(() => {
+      		if (healthReminder !== 0) {
+        		ChatMessages.filterMessage(
+          		"You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
+          		"glimboi"
+        		);
+      		}
+    	}, healthReminder*60000);
+  	} else {
+      	console.log("Health reminders are disabled.")
+  	}
 }
 
 /**
@@ -105,12 +105,12 @@ function isLoggingEnabled() {
 function startRepeatingCommands(repeatDelay) {
     //Sends a random repeatable message to chat based on the user setting.
     repeatCommand = setInterval(() => {
-      if (ChatStats.getUserMessageCount() <= repeatSpamProtection) {
-        console.log("There is not enough non bot messages to send a repeat message. Waitng till next time.");
-      } else {
-          console.log("Sending a repeating command.")
-        CommandHandle.randomRepeatCommand() // Gets a repeatable command
-      }
+      	if (ChatStats.getUserMessageCount() <= repeatSpamProtection) {
+        	console.log("There is not enough non bot messages to send a repeat message. Waitng till next time.");
+      	} else {
+          	console.log("Sending a repeating command.")
+        	CommandHandle.randomRepeatCommand() // Gets a repeatable command
+      	}
     }, repeatDelay*60000);
 }
 

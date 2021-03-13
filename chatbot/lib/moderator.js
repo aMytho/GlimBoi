@@ -12,18 +12,18 @@ function timeoutByUsername(type, user, origin, ID) {
         if (origin == "chat") {
             ApiHandle.timeoutUser(type, channelID, ID).then(data => handleTimeout(user, origin, data))
         } else {
-        ApiHandle.getUserID(user).then(data => {
-            if (typeof data == "number") {
-                ApiHandle.timeoutUser(type, channelID, data).then(data => handleTimeout(user, origin, data))
-            } else if (data == null) {
-                console.log("The user doesn't exist.");
-                errorMessageTM("Error: The user does not exist or you do not have permission to moderate.")
-            } else {
-                console.log("Error with timeout");
-                errorMessageTM("Error: The user does not exist or you do not have permission to moderate.")
-            }
-        })
-    }
+            ApiHandle.getUserID(user).then(data => {
+                if (typeof data == "number") {
+                    ApiHandle.timeoutUser(type, channelID, data).then(data => handleTimeout(user, origin, data))
+                } else if (data == null) {
+                    console.log("The user doesn't exist.");
+                    errorMessageTM("Error: The user does not exist or you do not have permission to moderate.")
+                } else {
+                    console.log("Error with timeout");
+                    errorMessageTM("Error: The user does not exist or you do not have permission to moderate.")
+                }
+            })
+        }
     } else {
         console.log("No channel ID for timeout");
         errorMessageTM("You must be in a channel to use this feature.")
@@ -192,7 +192,6 @@ function scanMessage(user, message, userID) {
                 timeoutByUsername("short", user, "chat", userID);
                 break
             }
-
         }
     }
 }
@@ -205,13 +204,13 @@ function updateFilter(status) {
 function importFilter() {
     fs.readFile(appData[0] + '/chatbot/resources/badWordFilter.json', 'utf8' , (err, data) => {
         if (err) {
-          console.error(err);
-          errorMessage(err, "Filter Error. The chat filter did not load correctly. You may need to reload the bot.");
-          badWords = []; // We make it an array so if the filter is still used it won't break the bot when badWords.indexOf() is called
-          return
+            console.error(err);
+            errorMessage(err, "Filter Error. The chat filter did not load correctly. You may need to reload the bot.");
+            badWords = []; // We make it an array so if the filter is still used it won't break the bot when badWords.indexOf() is called
+            return
         }
         badWords = JSON.parse(data);
-      })
+    })
 }
 
 module.exports = { banByUsername, importFilter, scanMessage, timeoutByUsername, timeoutByUserID, unBanByUsername, updateFilter }
