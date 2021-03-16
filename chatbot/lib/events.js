@@ -28,7 +28,7 @@ function handleEvent(event, user, message) {
             if (message.startsWith('!enter')) {
                 addUserRaffle(user)
             }
-            break;
+        break;
         case "poll":
             if (message.startsWith('!vote') || message.startsWith("!v")) {
                 message = message.split(" ");
@@ -42,7 +42,7 @@ function handleEvent(event, user, message) {
                     console.log("The user " + user + " has already entered the poll or tried a conflicting command.");
                 }
             }
-            break;
+        break;
         case "glimrealm":
             if (message.startsWith('!portal')) {
                 if (!glimrealmUsers.includes(user)) {
@@ -58,10 +58,10 @@ function handleEvent(event, user, message) {
                     ChatMessages.filterMessage("@" + user + ", You have already entered the Glimrealm.", "glimboi")
                 }
             }
-            break;
+        break;
 
         default:
-            break;
+        break;
     }
 }
 
@@ -75,21 +75,21 @@ async function startRaffle(time) {
         console.log("Starting Raffle");
         ChatMessages.filterMessage("A raffle has begun! Type !enter to join the raffle. You have one minute remaining.")
         raffleTimer.timer = setTimeout(() => {
-        arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "raffle"}) // removes from current events
-          if (raffleUsers.length == 0) {
-            ChatMessages.filterMessage("Nobody joined the raffle so nobody won.", "glimboi")
-            resolve("Nobody joined the raffle so nobody won.")
-            return;
-        }
-        raffleUsers = [...new Set(raffleUsers)]
-        console.log(raffleUsers.length + " users joined the raffle.")
-        console.log(raffleUsers)
-        var index = Math.floor(Math.random()*raffleUsers.length)
-        var winner = raffleUsers[index];
-        raffleUsers = []
-        ChatMessages.filterMessage("Congratulations @" + winner + ", you won the raffle!" , "glimboi")
-        resolve(winner)
-    }, time);
+        	arrayOfEvents = arrayOfEvents.filter(function(e) {return e !== "raffle"}) // removes from current events
+          	if (raffleUsers.length == 0) {
+            	ChatMessages.filterMessage("Nobody joined the raffle so nobody won.", "glimboi")
+            	resolve("Nobody joined the raffle so nobody won.")
+            	return;
+        	}
+        	raffleUsers = [...new Set(raffleUsers)]
+        	console.log(raffleUsers.length + " users joined the raffle.")
+        	console.log(raffleUsers)
+        	var index = Math.floor(Math.random()*raffleUsers.length)
+        	var winner = raffleUsers[index];
+        	raffleUsers = []
+        	ChatMessages.filterMessage("Congratulations @" + winner + ", you won the raffle!" , "glimboi")
+        	resolve(winner)
+    	}, time);
         raffleTimer.cancel = function() {
             resolve({status:"CANCELLED", reson:"MANUAL CANCELLATION"})
         }
@@ -147,7 +147,7 @@ async function startPoll(poll, time) {
                 pollHandle.results = pollHandle.responses.reduce(function(obj, b) {
                     obj[b] = ++obj[b] || 1;
                     return obj;
-                  }, {});
+                }, {});
                 var results = ""
                 console.log(pollHandle)
                 for (const key in pollHandle.results) {
