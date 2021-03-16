@@ -58,7 +58,7 @@ window.onload = function() {
                 	if (linkEl.id == "PointsLink") {getPoints()}
                 	if (linkEl.id == "SettingsLink") {showSettings()}
                 	if (linkEl.id == "ChatLink") {loadChatWindow();} //Builds the data table
-
+                  if (linkEl.id == "RanksLink") {rankPrep()}
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
             	})

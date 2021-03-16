@@ -342,3 +342,36 @@ function setModalEditButtons() {
       	document.getElementById('editUserPoints').innerHTML
     )`
 }
+
+function resetModalRankAdd() {
+    return `
+    <!--Body-->
+          <div class="modal-body">
+            <div class="icon-input-container">
+              <input class="icon-input" type="text" placeholder="Rank Name" id="rankAddInput">
+              <p id="addCommandRank" class="errorMessage"></p>
+            </div>
+          </div>`
+}
+
+function resetModalRankRemove() {
+    return `
+    <!--Body-->
+          <div class="modal-body">
+            <div class="icon-input-container">
+              <input class="icon-input" type="text" placeholder="Rank Name" id="rankRemoveInput">
+              <p id="removeRank" class="errorMessage"></p>
+            </div>
+          </div>`
+}
+
+function loadSpecificRank(rank) {
+    document.getElementById("rankName").innerText = rank.rank;
+    document.getElementById("rankMessage").innerText = "Make sure to save your changes!";
+    document.getElementById("addCommandsRank").checked = rank.canAddCommands;
+    document.getElementById("editCommandsRank").checked = rank.canEditCommands;
+    document.getElementById("removeCommandsRank").checked = rank.canRemoveCommands;
+    document.getElementById("addPointsRank").checked = rank.canAddPoints;
+    document.getElementById("editPointsRank").checked = rank.canEditPoints;
+    document.getElementById("removePointsRank").checked = rank.canRemovePoints;
+}
