@@ -51,14 +51,14 @@ naviLinks.forEach((linkEl) => {
                 contentEl.innerHTML = "";
                 contentEl.insertAdjacentHTML("beforeend", data);
                 changeNavHighlight(id) //Changes the highlight
-                if (linkEl.id == "CommandLink") {loadCommandTable()} //Builds the data table
-                if (linkEl.id == "GlimBoiHeader") {getBasicData(); rememberID();} //Builds the homepage charts and check for auth ino for the buttons
+                if (linkEl.id == "CommandLink") {loadCommandTable()}
+                if (linkEl.id == "GlimBoiHeader") {getBasicData(); rememberID()} //Builds the homepage charts and check for auth ino for the buttons
                 if (linkEl.id == "EventsLink") {loadEvents()}
                 if (linkEl.id == "UsersLink") {loadUsers()}
                 if (linkEl.id == "PointsLink") {getPoints()}
                 if (linkEl.id == "SettingsLink") {showSettings()}
-                if (linkEl.id == "ChatLink") {loadChatWindow();} //Builds the data table
-
+                if (linkEl.id == "ChatLink") {loadChatWindow()}
+                if (linkEl.id == "RanksLink") {rankPrep()}
                 // Make sure tooltips are triggered so they work
                 $('[data-toggle=tooltip]').tooltip();
             })

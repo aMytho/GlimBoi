@@ -4,26 +4,28 @@
             <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 row">
                 <div class="text-center btn-group-vertical d-inline row col-12 justify-content-md-center m-0 p-0">
                     <a class="col-lg-12 col-3 btn btn-primary mt-2" href="#" data-toggle="modal"
-                        data-target="#modalUserAdd">Add Rank</a>
+                        data-target="#modalRankAdd">Add Rank</a>
                     <a class="col-lg-12 col-3 btn btn-danger mt-2" href="#" data-toggle="modal"
-                        data-target="#modalUserEdit">Remove Rank</a>
+                        data-target="#modalRankremove">Remove Rank</a>
                     <hr style="border-color: aliceblue;width: 50%;" class="my-2">
                     <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
-                        data-target="#modalUserAdd">Streamer</a>
+                        data-target="#modalUserAdd" onclick="displayRank('Streamer')">Streamer</a>
                     <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
-                        data-target="#modalUserEdit">Moderator</a>
+                        data-target="#modalUserEdit" onclick="displayRank('Mod')">Mod</a>
                     <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
-                        data-target="#modalUserEdit">Viewer</a>
+                        data-target="#modalUserEdit" onclick="displayRank('user')">user</a>
+                    <hr style="border-color: aliceblue;width: 50%;" class="my-2">
+                    <div id="customRankButtons"></div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-10">
-        <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 row h-100">
+        <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 row h-100" id="rankDetails">
             <div class="row px-3">
                 <div class="col-12 whiteText px-3">
-                    <h2 id="rankName">Rank: User</h2>
-                    <p>Edit the permissions for this rank</p>
+                    <h2 id="rankName">Rank: None Selected</h2>
+                    <p id="rankMessage">Select a rank to edit permissions!</p>
                     <hr style="border-color: aliceblue;" class="mt-2">
                 </div>
             </div>
@@ -33,7 +35,7 @@
                 </div>
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
-                        <input type="checkbox" id="loggingEnabled">
+                        <input type="checkbox" id="addCommandsRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -42,7 +44,7 @@
                 </div>
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
-                        <input type="checkbox" id="loggingEnabled">
+                        <input type="checkbox" id="editCommandsRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -51,7 +53,7 @@
                 </div>
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
-                        <input type="checkbox" id="loggingEnabled">
+                        <input type="checkbox" id="removeCommandsRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -62,7 +64,7 @@
                 </div>
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
-                        <input type="checkbox" id="loggingEnabled">
+                        <input type="checkbox" id="addPointsRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -71,7 +73,7 @@
                 </div>
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
-                        <input type="checkbox" id="loggingEnabled">
+                        <input type="checkbox" id="editPointsRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -80,7 +82,7 @@
                 </div>
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
-                        <input type="checkbox" id="loggingEnabled">
+                        <input type="checkbox" id="removePointsRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -153,3 +155,59 @@
       border-radius: 50%;
     }
     </style>
+
+    <!-- Modal: Add Rank -->
+<div class="modal fade" id="modalRankAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="myModalLabelEdit">Create Rank</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalRankAddBody">
+          <!--Body-->
+          <div class="modal-body">
+            <div class="icon-input-container">
+              <input class="icon-input" type="text" placeholder="Rank Name" id="rankAddInput">
+              <p id="addRank" class="errorMessage"></p>
+            </div>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-primary" onclick="addRank()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: modalCart -->
+
+      <!-- Modal: Remove Rank -->
+<div class="modal fade" id="modalRankremove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="myModalLabelEdit">Remove Rank</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalRankRemoveBody">
+          <!--Body-->
+          <div class="modal-body">
+            <div class="icon-input-container">
+              <input class="icon-input" type="text" placeholder="Rank Name" id="rankRemoveInput">
+              <p id="removeRank" class="errorMessage"></p>
+            </div>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-danger" onclick="removeRank()">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: modalCart -->

@@ -2,14 +2,15 @@
 var rankDB; //Controls the Rank DB
 var ranks = [];
 var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false};
-var modRank = {rank: "mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true};
-var streamerRank = {rank: "streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true};
+var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true};
+var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true};
+
 /**
  * A new Rank
  */
 class Rank {
     constructor(rank) {
-        this.rank = rank.toLowerCase();
+        this.rank = rank;
         this.canAddCommands = false;
         this.canEditCommands = false;
         this.canRemoveCommands = false;
@@ -49,10 +50,10 @@ function getAll() {
  */
 function createRank(rank) {
     return new Promise(resolve => {
-        if (getRankPerms(rank.toLowerCase()) !== null) {
+        if (getRankPerms(rank) == null) {
             console.log("Creating " + rank);
             var rankData = new Rank(rank);
-            rankDB.insert({ rankData }, function (err, newDocs) {
+            rankDB.insert([rankData], function (err, newDocs) {
                 ranks.push(rankData);
                 resolve("RANKADDED");
             });
@@ -68,16 +69,21 @@ function createRank(rank) {
  */
 function removeRank(rank) {
   // We don't delete the base ranks.
-  if (rank !== "user" && rank !== "mod" && rank !== "streamer") {
-    for (let i = 0; i < ranks.length; i++) {
-      if (ranks[i].rank == rank) {
-        ranks.splice(i, 1);
-        rankDB.remove({ rank: rank }, {}, function (err, numRemoved) {
-          console.log("Removed " + numRemoved + "ranks");
-        });
+  return new Promise(resolve => {
+    if (rank !== "user" && rank !== "mod" && rank !== "streamer") {
+        for (let i = 0; i < ranks.length; i++) {
+          if (ranks[i].rank == rank) {
+            ranks.splice(i, 1);
+            resolve("RANKREMOVED")
+            rankDB.remove({ rank: rank }, {}, function (err, numRemoved) {
+              console.log("Removed " + numRemoved + " ranks");
+            });
+          }
+        }
+        resolve("NORANKFOUND")
       }
-    }
-  }
+  })
+
 }
 
 
@@ -117,4 +123,4 @@ function getCurrentRanks() {
     return ranks
 }
 
-module.exports = {createRank, getAll, getCurrentRanks, rankController, removeRank, updatePath}
+module.exports = {createRank, getAll, getCurrentRanks, getRankPerms, rankController, removeRank, updatePath}
