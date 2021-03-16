@@ -28,26 +28,26 @@ function loadEvents() {
     $('#modalPoll').on('hide.bs.modal', function (e) {
         document.getElementById('modalPollBody').innerHTML = `
         <div class="modal-body" id="modalPollBody">
-                <p class="text-center">Any blank options will be removed. The question and options must not exceed the chat limit.</p>
-                <table class="table table-hover" id="pollData">
-                    <thead>
-                       <tr>
-                          <th>Type</th>
-                          <th>Data</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                       <tr>
-                          <td data-toggle="tooltip" data-placement="top" title="The poll question">Question</td>
-                          <td contenteditable="true" id="pollQuestion"></td>
-                       </tr>
-                       <tr>
-                          <td data-toggle="tooltip" data-placement="top" title="Poll response">Option</td>
-                          <td contenteditable="true" class="pollOption"></td>
-                       </tr>
-                    </tbody>
-                 </table>
-            </div>`
+            <p class="text-center">Any blank options will be removed. The question and options must not exceed the chat limit.</p>
+            <table class="table table-hover" id="pollData">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-toggle="tooltip" data-placement="top" title="The poll question">Question</td>
+                        <td contenteditable="true" id="pollQuestion"></td>
+                    </tr>
+                    <tr>
+                        <td data-toggle="tooltip" data-placement="top" title="Poll response">Option</td>
+                        <td contenteditable="true" class="pollOption"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`
         console.log('Resetting poll modal')
     })
 }
@@ -67,22 +67,22 @@ function startRaffle() {
         arrayOfEvents.push("raffle");
         EventHandle.startRaffle(60000).then(data => {
             if (typeof data !== "object") {
-            console.log("The winner is " + data);
-            try {
-                $("#RaffleUserList").empty();
-                if (data == "Nobody joined the raffle so nobody won.") {
-                    document.getElementById('raffleWinner').innerText = data
-                } else {
-                    document.getElementById('raffleWinner').innerText = data + " won!"
-                }
-            } catch (e) { }
-        } else {
-            try {
-                $("#RaffleUserList li").remove()
-                document.getElementById("raffleWinner").innerText = "Raffle Cancelled"
-            } catch(e) {
-            }
-        }
+            	console.log("The winner is " + data);
+            	try {
+                	$("#RaffleUserList").empty();
+                	if (data == "Nobody joined the raffle so nobody won.") {
+                    	document.getElementById('raffleWinner').innerText = data
+                	} else {
+                    	document.getElementById('raffleWinner').innerText = data + " won!"
+                	}
+            	} catch (e) { }
+        	} else {
+            	try {
+                	$("#RaffleUserList li").remove()
+                	document.getElementById("raffleWinner").innerText = "Raffle Cancelled"
+            	} catch(e) {
+            	}
+        	}
         })
     }
 }
@@ -136,29 +136,29 @@ function startPoll(user, message, GUI, stringMessage) {
             })
             $("#modalPoll").modal("hide");
         } else {
-        arrayOfEvents.push("poll");
-        console.log(stringMessage);
-        stringMessage = stringMessage.slice(6)
-        var questionEnd = stringMessage.indexOf("?");
-        console.log(questionEnd);
-        var question = stringMessage.substring(questionEnd + 1);
-        var possibleAnswers = question.split('|');
-        console.log(possibleAnswers);
-        for (let index = 0; index < possibleAnswers.length; index++) {
-           possibleAnswers[index] = possibleAnswers[index].trim()
-        }
-        console.log(possibleAnswers);
-        EventHandle.startPoll({ question: stringMessage.slice(0, questionEnd + 1), options: possibleAnswers, user: user }, 60000).then(data => {
-            if (data == "POLLFINISHED") {
-                console.log("The poll has finsished");
-            } else if (data == {status:"CANCELLED", reson:"MANUAL CANCELLATION"}){
-                try {
-                    document.getElementById("pollResults").innerText = "Poll Cancelled"
-                } catch (e) {
-                }
-            }
-        })
-      }
+        	arrayOfEvents.push("poll");
+        	console.log(stringMessage);
+        	stringMessage = stringMessage.slice(6)
+        	var questionEnd = stringMessage.indexOf("?");
+        	console.log(questionEnd);
+        	var question = stringMessage.substring(questionEnd + 1);
+        	var possibleAnswers = question.split('|');
+        	console.log(possibleAnswers);
+        	for (let index = 0; index < possibleAnswers.length; index++) {
+           		possibleAnswers[index] = possibleAnswers[index].trim()
+        	}
+        	console.log(possibleAnswers);
+        	EventHandle.startPoll({ question: stringMessage.slice(0, questionEnd + 1), options: possibleAnswers, user: user }, 60000).then(data => {
+            	if (data == "POLLFINISHED") {
+                	console.log("The poll has finsished");
+            	} else if (data == {status:"CANCELLED", reson:"MANUAL CANCELLATION"}){
+                	try {
+                    	document.getElementById("pollResults").innerText = "Poll Cancelled"
+                	} catch (e) {
+                	}
+            	}
+        	})
+      	}
     }
 }
 
@@ -173,7 +173,6 @@ function openGlimRealm(user) {
         arrayOfEvents.push("glimrealm")
         ChatMessages.filterMessage("The portal to the Glimrealm has been opened! Type !portal to enter the world of the Glimdrops!", "glimboi");
     }
-
 }
 
 /**

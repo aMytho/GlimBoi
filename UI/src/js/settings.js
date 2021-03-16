@@ -136,21 +136,21 @@ function showSettings() {
     switch (settings.Commands.cooldown) {
         case 0:
             document.getElementById("cdNone").toggleAttribute("selected");
-            break;
+        break;
         case 30:
             document.getElementById("cd30").toggleAttribute("selected");
-            break;
+        break;
         case 60:
             document.getElementById("cd60").toggleAttribute("selected");
-            break;
+        break;
         case 180:
             document.getElementById("cd180").toggleAttribute("selected");
-            break;
+        break;
         case 300:
             document.getElementById("cd300").toggleAttribute("selected");
-            break;
+        break;
         default:
-            break;
+        break;
     }
     // repeat handlers
     var repeatDelay = document.getElementById("repeatDelaySlider");
@@ -163,35 +163,35 @@ function showSettings() {
     switch (settings.Commands.repeatSpamProtection) {
         case 5:
             document.getElementById("rp5").toggleAttribute("selected")
-            break;
+        break;
         case 15:
             document.getElementById("rp15").toggleAttribute("selected")
-            break;
+        break;
         case 30:
             document.getElementById("rp30").toggleAttribute("selected")
-            break;
+        break;
         case 60:
             document.getElementById("rp60").toggleAttribute("selected")
-            break;
+        break;
         default:
-            break;
+        break;
     }
 
     switch (settings.chat.health) {
         case 0:
             document.getElementById("hr0").toggleAttribute("selected")
-            break;
+        break;
         case 30:
             document.getElementById("hr30").toggleAttribute("selected")
-            break;
+        break;
         case 60:
             document.getElementById("hr60").toggleAttribute("selected")
-            break;
+        break;
         case 120:
             document.getElementById("hr120").toggleAttribute("selected")
-            break;
+        break;
         default:
-            break;
+        break;
     }
 }
 
@@ -205,19 +205,19 @@ function saveSettings() {
         switch (value) {
             case "None (default)":
                 return 0
-                break;
+            break;
             case "30 seconds":
                 return 30
-                break;
+            break;
             case "1 Minute":
                 return 60
-                break;
+            break;
             case "3 Minutes":
                 return 180
-                break;
+            break;
             case "5 Minutes":
                 return 300
-                break;
+            break;
         }
     }
     function getRepeatProtection() {
@@ -225,16 +225,16 @@ function saveSettings() {
         switch (value) {
             case "5 (not recommended)":
                 return 5
-                break;
+            break;
             case "15 (default)":
                 return 15
-                break;
+            break;
             case "30":
                 return 30
-                break;
+            break;
             case "60":
                 return 60
-                break;
+            break;
         }
     }
     function getHealthInterval() {
@@ -242,16 +242,16 @@ function saveSettings() {
         switch (value) {
             case "Disabled (default)":
                 return 0
-                break;
+            break;
             case "30 minutes":
                 return 30
-                break;
+            break;
             case "60 minutes":
                 return 60
-                break;
+            break;
             case "2 hours":
                 return 120
-                break;
+            break;
         }
     }
     settings = {
