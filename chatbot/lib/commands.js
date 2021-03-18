@@ -289,29 +289,28 @@ function checkCommand(data) {
  * @async
  */
 async function permissionCheck(command, user) {
-  	return new Promise(resolve => {
-    	if (command.points !== 0 ) {
-      		UserHandle.findByUserName(user).then(data => {
-        		if (data == "ADDUSER") {
-          			resolve("This command requires points to use. You must be a user to have points.")
-          			return
-        		} else if ((data.points - command.points) < 0) {
-          			resolve(`You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${data.points}`);
-          			return
-        		} else {
-          			UserHandle.removePoints(user, command.points)
-          			resolve("ACCEPTED")
-        		}
-      		})
-    	} else {
-      		resolve("ACCEPTED")
-    	}
-    	/*
-    	if (commands.rank == 0) {
+    if (command.rank !== "Everyone") {
+        var rankPerms = await UserHandle.findByUserName(user)
+        console.log(rankPerms.role);
+        console.log(command.rank)
+        if (rankPerms == "ADDUSER" || rankPerms.role !== command.rank) {
+            return "You don't have the required rank to use that command!"
+        }
+    }
 
-    	}
-    	*/
-  	})
+    if (command.points !== 0) {
+        var userHasPoints = await UserHandle.findByUserName(user)
+        console.log(userHasPoints);
+        console.log(command.points)
+        if (userHasPoints == "ADDUSER") {
+            return "This command requires points to use. You must be a user to have points."
+        } else if ((userHasPoints.points - command.points) < 0) {
+            return `You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${userHasPoints.points}`
+        } else {
+            UserHandle.removePoints(user, command.points)
+        }
+    }
+    return "ACCEPTED"
 }
 
 /**
