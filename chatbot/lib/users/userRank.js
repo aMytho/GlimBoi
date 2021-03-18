@@ -1,9 +1,9 @@
 // This file manages the rank system
 var rankDB; //Controls the Rank DB
 var ranks = [];
-var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false};
-var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true};
-var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true};
+var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false};
+var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true};
+var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true, canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true};
 
 /**
  * A new Rank
@@ -17,6 +17,12 @@ class Rank {
         this.canAddPoints = false;
         this.canEditPoints = false;
         this.canRemovePoints = false;
+        this.canAddUsers = false;
+        this.canEditUsers = false;
+        this.canRemoveUsers = false;
+        this.canAddQuotes = false;
+        this.canEditQuotes = false;
+        this.canRemoveQuotes = false;
     }
 }
 
@@ -70,7 +76,7 @@ function createRank(rank) {
 function removeRank(rank) {
   // We don't delete the base ranks.
   return new Promise(resolve => {
-    if (rank !== "user" && rank !== "mod" && rank !== "streamer") {
+    if (rank !== "user" && rank !== "Mod" && rank !== "Streamer") {
         for (let i = 0; i < ranks.length; i++) {
           if (ranks[i].rank == rank) {
             ranks.splice(i, 1);
@@ -81,23 +87,53 @@ function removeRank(rank) {
           }
         }
         resolve("NORANKFOUND")
+      } else {
+          resolve("INVALIDRANK")
       }
   })
-
 }
 
+function editRank(rank) {
+    for (let i = 0; i < ranks.length; i++) {
+        if (rank.rank == ranks[i].rank) {
+            ranks[i] = rank
+        }
+    }
+    rankDB.update({ rank: rank.rank }, { $set: {
+        canAddCommands: rank.canAddCommands, canEditCommands: rank.canEditCommands,
+        canRemoveCommands: rank.canRemoveCommands, canAddPoints: rank.canAddPoints, canEditPoints: rank.canEditPoints,
+        canRemovePoints: rank.canRemovePoints, canAddQuotes: rank.canAddQuotes, canEditQuotes: rank.canEditQuotes,
+        canRemoveQuotes: rank.canRemoveQuotes, canAddUsers: rank.canAddUsers, canEditUsers: rank.canEditUsers,
+        canRemoveUsers: rank.canRemoveUsers}
+    }, {}, function (err, numReplaced) {
+        console.log("Rank settings updated");
+    });
+}
 
 /**
  * Ensures the user can do the specified action
- * @param {string} currentRank The current rank of the user
+ * @param {string} user The user who will be tested
  * @param {string} action What the user is attempting to access
- * @param {string} type The type of the action. We use this to determine if we look for boolean,number,string,etc
+ * @param {string} type The type of the action. We use this to determine if we look for boolean, number, string, etc
  */
-function rankController(currentRank, action, type) {
-    getRankPerms(currentRank).then(data => {
-        if (data !== null && data[`${action}`] == true) {
-            return true
-        }
+function rankController(user, action, type) {
+    return new Promise(resolve => {
+        UserHandle.findByUserName(user).then(data => {
+            if (data !== "ADDUSER") {
+                var rankInfo = getRankPerms(data.role);
+                if (type == "string") {
+                    if (rankInfo !== null && rankInfo[`${action}`] == true) {
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                } else {
+                    resolve(false)
+                }
+            } else {
+                resolve(null)
+            }
+        })
     })
 }
 
@@ -123,4 +159,4 @@ function getCurrentRanks() {
     return ranks
 }
 
-module.exports = {createRank, getAll, getCurrentRanks, getRankPerms, rankController, removeRank, updatePath}
+module.exports = {createRank, editRank, getAll, getCurrentRanks, getRankPerms, rankController, removeRank, updatePath}

@@ -5,7 +5,7 @@ function rankPrep() {
     currentRanks.forEach(element => {
         if (element.rank !== "Mod" && element.rank !== "Streamer" && element.rank !== "user") {
             var rankButton = document.createElement("a");
-            rankButton.classList = `col-lg-12 col-3 btn btn-info mt-2`
+            rankButton.classList = `col-lg-12 col-3 btn btn-info mt-2 CUSTOM_RANK`
             rankButton.innerHTML = element.rank;
             rankButton.setAttribute("onclick", `displayRank("${element.rank}")`)
             document.getElementById("customRankButtons").append(rankButton)
@@ -43,10 +43,33 @@ function removeRank() {
                     item.remove()
                 }
             }
+        } else if (data == "INVALIDRANK") {
+            document.getElementById("removeRank").innerText = "You cannot remove that rank."
         } else {
             document.getElementById("removeRank").innerText = "That rank does not exist."
         }
     })
+}
+
+function saveRankSettings(rank) {
+    var updatedRank = {
+        rank: rank,
+        canAddCommands: document.getElementById("addCommandsRank").checked,
+        canEditCommands: document.getElementById("editCommandsRank").checked,
+        canRemoveCommands: document.getElementById("removeCommandsRank").checked,
+        canAddPoint: document.getElementById("addPointsRank").checked,
+        canEditPoints: document.getElementById("editPointsRank").checked,
+        canRemovePoints: document.getElementById("removePointsRank").checked,
+        canAddUsers: document.getElementById("addUsersRank").checked,
+        canEditUsers: document.getElementById("editUsersRank").checked,
+        canRemoveUsers: document.getElementById("removeUsersRank").checked,
+        canAddQuotes: document.getElementById("addQuotesRank").checked,
+        canEditQuotes: document.getElementById("editQuotesRank").checked,
+        canRemoveQuotes: document.getElementById("removeQuotesRank").checked
+    }
+    console.log(updatedRank);
+    RankHandle.editRank(updatedRank);
+    successMessage("Rank Settings Updated", "Your new rank settings have been applied.")
 }
 
 
@@ -54,6 +77,7 @@ function displayRank(rank) {
     var rankExists = RankHandle.getRankPerms(rank)
     if (rankExists !== null) {
         loadSpecificRank(rankExists);
+        document.getElementById("saveRankSettings").classList.remove("disabled")
     }
 }
 
@@ -68,5 +92,4 @@ function rankModalPrep() {
         console.log("Resetting rank remove modal");
         document.getElementById("modalRankRemoveBody").innerHTML = resetModalRankRemove()
       })
-
 }
