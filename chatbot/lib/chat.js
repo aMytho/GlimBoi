@@ -121,8 +121,14 @@ function connectToGlimesh(access_token, channelID) {
                   				switch (message[1]) {
                     				case "add":
                     				case "new":
-                    					CommandHandle.addCommandFilter(message[2], null, messageChat, message[0])
+                                        ChatActions.addCommand(userChat.toLowerCase(), message[2], messageChat, message[0])
                       				break;
+                                    case "del":
+                                    case "remove":
+                                    case "delete":
+                                        ChatActions.removeCommand(userChat.toLowerCase(), message[2].toLowerCase())
+                                        break;
+                                    case "":
                     				case "help":
                     				case "info":
                       					CommandHandle.info()
@@ -140,12 +146,12 @@ function connectToGlimesh(access_token, channelID) {
                       				break;
                     				case "add":
                     				case "new": // adds a new quote
-                    					ChatActions.addQuoteChat(chatMessage[4].result.data.chatMessage, message[2])
+                    					ChatActions.addQuoteChat(userChat.toLowerCase(), chatMessage[4].result.data.chatMessage, message[2])
                       				break;
                     				case "remove": // removes a quote
                     				case "delete": // removes a quote
                     				case "del": // removes a quote
-                    					ChatActions.delQuoteChat(message[2], message[3]);
+                    					ChatActions.delQuoteChat(userChat.toLowerCase(), message[2], message[3]);
                       				break;
                     				default:
                       				break;
@@ -211,17 +217,20 @@ function connectToGlimesh(access_token, channelID) {
                   					switch (message[1]) {
                     					case "new":
                     					case "add": // adds a user
-                    						ChatActions.addUserChat(message[2])
+                    						ChatActions.addUserChat(userChat.toLowerCase(), message[2])
                       					break;
                     					case "remove":
                     					case "del":
                     					case "delete": // removes a user
-                    						ChatActions.delUserChat(message[2])
+                    						ChatActions.delUserChat(userChat.toLowerCase(), message[2])
                       					break;
                     					default:
                       					break;
                   					}
                   				break;
+                                case "!rank":
+                                      ChatActions.getRank(userChat.toLowerCase())
+                                break;
                 				default: //its not a glimboi command, may be a stream command. We need to check and send the output to chat.
                   					CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
                   				break;
@@ -229,7 +238,6 @@ function connectToGlimesh(access_token, channelID) {
             			}
             			try { // We try to log the message to the chat box (glimboi) and may log to a file
               				globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl]);
-
               				globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
               				ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
               				ModHandle.scanMessage(userChat.toLowerCase(), messageChat.toLowerCase(), userID) // filter the message if needed
@@ -255,9 +263,7 @@ function connectToGlimesh(access_token, channelID) {
       		ChatStats.stopChatStats()
       	} catch(e) {console.log(e)}
       		if (event.wasClean) {
-        		console.log(
-          			`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`
-        		);
+        		console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
       		} else {
         		console.log("[close] Connection died");
         		errorMessage([event.code, event.reason], "Chat Error")
