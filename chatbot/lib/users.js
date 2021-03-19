@@ -215,7 +215,12 @@ async function editUser(userName, role, points) {
     	console.log(userName, role, points)
     	usersDB.update({ userName: userName }, { $set: { role: role, points: Number(points) } }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
       		console.log("Edited " + userName);
-      		console.log(affectedDocuments)
+      		console.log(affectedDocuments);
+            for (let i = 0; i < users.length; i++) {
+                if (userName == users[i].userName) {
+                    users[i].role = role
+                }
+            }
       		resolve(affectedDocuments);
     	});
   	})
@@ -274,7 +279,7 @@ function removePoints(user, value) {
   	usersDB.update({ userName: user }, { $inc: { points: -value} }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
     	console.log("Removing " + value + " points from " + user);
     	for (let i = 0; i < users.length; i++) {
-        	if (userName == users[i].userName) {
+        	if (user == users[i].userName) {
           		users[i].points = affectedDocuments.points;
           		editUserTable(user, affectedDocuments.role, affectedDocuments.points)
           		break

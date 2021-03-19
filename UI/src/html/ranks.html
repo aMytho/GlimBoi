@@ -5,6 +5,8 @@
                 <div class="text-center btn-group-vertical d-inline row col-12 justify-content-md-center m-0 p-0">
                     <a class="col-lg-12 col-3 btn btn-primary mt-2" href="#" data-toggle="modal"
                         data-target="#modalRankAdd">Add Rank</a>
+                    <a class="col-lg-12 col-3 btn btn-success mt-2 disabled" href="#"
+                        id="saveRankSettings" onclick="saveRankSettings(document.getElementById('rankName').innerText)">Save Changes</a>
                     <a class="col-lg-12 col-3 btn btn-danger mt-2" href="#" data-toggle="modal"
                         data-target="#modalRankremove">Remove Rank</a>
                     <hr style="border-color: aliceblue;width: 50%;" class="my-2">
@@ -13,7 +15,7 @@
                     <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
                         data-target="#modalUserEdit" onclick="displayRank('Mod')">Mod</a>
                     <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
-                        data-target="#modalUserEdit" onclick="displayRank('user')">user</a>
+                        data-target="#modalUserEdit" onclick="displayRank('user')">user (default)</a>
                     <hr style="border-color: aliceblue;width: 50%;" class="my-2">
                     <div id="customRankButtons"></div>
                 </div>
@@ -54,6 +56,64 @@
                 <div class="col-1 whiteText px-3">
                     <label class="switch">
                         <input type="checkbox" id="removeCommandsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Add Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="addUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Edit Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="editUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Remove Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="removeUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Add Quotes</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="addQuotesRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Edit Quotes</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="editQuotesRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Remove Quotes</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="removeQuotesRank">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -177,7 +237,7 @@
         <!--Footer-->
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-outline-primary" onclick="addRank()">Add</button>
+          <button class="btn btn-outline-primary" onclick="addRank()" id="addingRankButton">Add</button>
         </div>
       </div>
     </div>
@@ -205,7 +265,7 @@
         <!--Footer-->
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-outline-danger" onclick="removeRank()">Remove</button>
+          <button class="btn btn-outline-danger" onclick="removeRank()" id="rankRemoveButton">Remove</button>
         </div>
       </div>
     </div>

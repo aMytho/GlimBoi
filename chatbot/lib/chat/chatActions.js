@@ -4,34 +4,40 @@
  * Adds a user from Glimesh chat.
  * @param {string} user The user who will be added
  */
-function addUserChat(user) {
-	UserHandle.addUser(user, false).then(data => {
-    	if (data == "USEREXISTS") {
-      		ChatMessages.glimboiMessage("That user is already added to GlimBoi.")
-    	} else if (data == "INVALIDUSER") {
-      		ChatMessages.glimboiMessage("That user does not exist on Glimesh.")
-    	} else {
-      		ChatMessages.glimboiMessage("User addded to GlimBoi!")
-    	}
-  	})
+async function addUserChat(user, newUser) {
+    var hasPermission = await RankHandle.rankController(user, "canAddUsers", "string");
+    if (hasPermission == false) {
+        ChatMessages.glimboiMessage("You do not have the sufficient rank to do this action.")
+    } else {
+        var userAdded = await UserHandle.addUser(newUser, false)
+        if (userAdded == "USEREXISTS") {
+            ChatMessages.glimboiMessage("That user is already added to GlimBoi.")
+        } else if (userAdded == "INVALIDUSER") {
+            ChatMessages.glimboiMessage("That user does not exist on Glimesh.")
+        } else {
+            ChatMessages.glimboiMessage("User addded to GlimBoi!")
+        }
+    }
 }
 
 /**
  * Removes a user from chat
  * @param {string} user User to be removed
  */
-function delUserChat(user) {
-  	var exists = UserHandle.findByUserName(user);
-  	exists.then(data => {
-    	if (data == "ADDUSER") {
-      		ChatMessages.glimboiMessage("No user was found with that name in GlimBoi.")
-    	} else {
-      		UserHandle.removeUser(user).then(deletedUser => { //removes the user from the db. Shows us afterwords
-        		removeUserFromTable(deletedUser);
-        		ChatMessages.glimboiMessage("User removed!")
-      		})
-    	}
-  	})
+async function delUserChat(user, newUser) {
+    var hasPermission = await RankHandle.rankController(user, "canRemoveUsers", "string");
+    if (hasPermission == false || hasPermission == null) {
+        ChatMessages.glimboiMessage("You do not have the sufficient rank or you are not a user in GlimBoi.")
+    } else {
+        var exists = await UserHandle.findByUserName(newUser);
+        if (exists == "ADDUSER") {
+            ChatMessages.glimboiMessage("No user was found with that name in GlimBoi.")
+        } else {
+            var deletedUser = await UserHandle.removeUser(newUser);
+            ChatMessages.glimboiMessage("User removed!");
+            removeUserFromTable(deletedUser);
+        }
+    }
 }
 
 /**
@@ -52,16 +58,20 @@ function randomQuoteChat() {
  * @param {object} data Message and other data
  * @param {string} user Who said the quote
  */
-function addQuoteChat(data, user) {
-  	console.log(user, data.message);
-  	var trimMessage = 10 + user.length + 2
-  	QuoteHandle.addquote(user.toLowerCase(), data.message.substring(trimMessage)).then(data => {
-    	if (data == "QUOTEFINISHED") {
-      		ChatMessages.glimboiMessage(`Quote added.`)
-    	} else {
-      		ChatMessages.glimboiMessage(`That user does not exist.`)
-    	}
-  	})
+async function addQuoteChat(user, data, creator) {
+    var hasPermission = await RankHandle.rankController(user, "canAddQuotes", "string");
+    if (hasPermission == false || hasPermission == null) {
+        ChatMessages.glimboiMessage("You do not have the sufficient rank or you are not a user in GlimBoi.")
+    } else {
+        console.log(creator, data.message);
+        var trimMessage = 10 + creator.length + 2
+        var quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage))
+        if (quoteResult == "QUOTEFINISHED") {
+            ChatMessages.glimboiMessage(`Quote added.`)
+        } else {
+            ChatMessages.glimboiMessage(`That user does not exist.`)
+        }
+    }
 }
 
 /**
@@ -69,23 +79,66 @@ function addQuoteChat(data, user) {
  * @param {String} user The user who said the quote
  * @param {Number} id The ID of the quote.
  */
-function delQuoteChat(user, id) {
-  	ChatHandle.glimboiMessage("This action will be supported in a future update. Until then you can delete quotes from the users page.");
-  	return
-  	// The below code will be in place after the rank system exists/
-    console.log(user, id);
-    if (user == "" || user == " " || id == "" || id == " " || user == undefined || id == undefined) {
-      	ChatHandle.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
+async function delQuoteChat(user, creator, id) {
+    var hasPermission = await RankHandle.rankController(user, "canRemoveQuotes", "string");
+    if (hasPermission == false || hasPermission == null) {
+        ChatMessages.glimboiMessage("You do not have the sufficient rank or you are not a user in GlimBoi.")
     } else {
-      	UserHandle.removeQuoteByID(Number(id), user.toLowerCase()).then(data => {
-        	if (data == "NOQUOTEFOUND") {
-            	ChatHandle.glimboiMessage("No quote was found with that ID.")
-        	} else {
-            	ChatHandle.glimboiMessage("Quote removed.")
-        	}
-      	})
+        console.log(creator, id);
+        if (creator == "" || creator == " " || id == "" || id == " " || creator == undefined || id == undefined) {
+            ChatHandle.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
+        } else {
+            var quoteResult = await UserHandle.removeQuoteByID(Number(id), creator.toLowerCase())
+            if (quoteResult == "NOQUOTEFOUND") {
+                ChatHandle.glimboiMessage("No quote was found with that ID.")
+            } else {
+                ChatHandle.glimboiMessage("Quote removed.")
+            }
+        }
     }
 }
+
+/**
+ * Removes a command if it exists and the use has sufficient permissions.
+ * @param {string} user The user who is removing the command
+ * @param {string} command The command that will be removed
+ */
+async function removeCommand(user, command) {
+    if (command.startsWith("!")) {
+        command = command.substring(1)
+    }
+    var commandExists = await CommandHandle.findCommand(command);
+    if (commandExists !== null) {
+        var commandRemoved = await RankHandle.rankController(user, "canRemoveCommands", "string");
+        if (commandRemoved == false || commandRemoved == null) {
+            ChatMessages.filterMessage("You do not have the sufficient rank or you are not a user in GlimBoi.", 'glimboi');
+        } else {
+            CommandHandle.removeCommand(command);
+            ChatMessages.filterMessage("Command Removed", 'glimboi');
+            removeCommandFromTable(command);
+        }
+    } else {
+        ChatMessages.filterMessage("That command does not exist!", 'glimboi');
+    }
+}
+
+
+/**
+ * Checks if the user has the sufficient rank to add a command and if so sends it to the filter.
+ * @param {string} user The user who is adding the command
+ * @param {string} command The command name
+ * @param {string} commandData The command data
+ * @param {string} type !command or !cmd
+ */
+async function addCommand(user, command, commandData, type) {
+    var hasPermission = await RankHandle.rankController(user, "canAddCommands", "string");
+    if (hasPermission == false || hasPermission == null) {
+        ChatMessages.filterMessage("You do not have the sufficient rank or you are not a user in GlimBoi.", 'glimboi');
+    } else {
+        CommandHandle.addCommandFilter(command, null, commandData, type)
+    }
+}
+
 
 /**
  * Returns a list of all commands to chat.
@@ -101,4 +154,17 @@ function commandList() {
   	});
 }
 
-module.exports = {addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, randomQuoteChat}
+/**
+ * Returns a users rank
+ * @param {string} user The user who we need the rank for
+ */
+async function getRank(user) {
+    var rank = await UserHandle.findByUserName(user);
+    if (rank == "ADDUSER") {
+        ChatMessages.filterMessage(`${user} has not been added to glimboi. Type !user new ${user}`, "glimboi");
+    } else {
+    ChatMessages.filterMessage(`${user} has the rank of ${rank.role}`, "glimboi");
+    }
+}
+
+module.exports = {addCommand, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, getRank, randomQuoteChat, removeCommand}

@@ -40,11 +40,8 @@ function addCommandModal() {
         		<tr>
             		<td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
             		<td id="addCommandRank">
-               			<select name="cars" id="rankChoiceAdd" disabled>
+               			<select name="cars" id="rankChoiceAdd" >
                   			<option value="Everyone">Everyone (Default)</option>
-                  			<option value="Moderator">Moderator</option>
-                  			<option value="Editor">Editor</option>
-                  			<option value="Streamer">Streamer</option>
                			</select>
             		</td>
         		</tr>
@@ -62,7 +59,19 @@ function addCommandModal() {
 	</div>`
 }
 
-function editCommandModal(command) {
+function editCommandModal(command, options) {
+    var select = document.createElement("select")
+    select.id = "rankChoiceEdit"
+    select.innerHTML += "<option value=\"" + "Everyone" + "\">" + "Everyone (Default)" + "</option>";
+    for (var i = 0; i < options.length; i++) {
+        var opt = options[i].rank;
+        if (command.rank == opt) {
+            select.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
+        } else {
+            select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+    console.log(select)
    	return `
 	<div class="modal-header text-center">
    		<h4 class="modal-title w-100" id="myModalLabel">Edit a command</h4>
@@ -93,14 +102,9 @@ function editCommandModal(command) {
             		<td contenteditable="true" id="editCommandUses">${command.uses}</td>
          		</tr>
          		<tr>
-            		<td data-toggle="tooltip" data-placement="top" title="The minimum rank to use the command">Rank</td>
+            		<td data-toggle="tooltip" data-placement="top" title="Restrict a command to a specific rank.">Rank</td>
             		<td id="editCommandRank">
-               			<select name="cars" id="rankChoiceEdit" disabled>
-                  			<option value="Everyone">Everyone (Default)</option>
-                  			<option value="Moderator">Moderator</option>
-                  			<option value="Editor">Editor</option>
-                  			<option value="Streamer">Streamer</option>
-               			</select>
+               			${select.outerHTML}
             		</td>
          		</tr>
          		<tr>
@@ -305,7 +309,18 @@ function removeQuoteReset() {
    	</div>`
 }
 
-function setModalEditBody(data) {
+function setModalEditBody(data, options) {
+    var select = document.createElement("select")
+    select.id = "userEditRankChoice"
+    for (var i = 0; i < options.length; i++) {
+        var opt = options[i].rank;
+        if (data.role == opt) {
+            select.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
+        } else {
+            select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+    console.log(select)
    	return `
    	<table class="table table-hover">
      	<thead>
@@ -316,8 +331,10 @@ function setModalEditBody(data) {
      	</thead>
      	<tbody>
        		<tr>
-         		<td data-toggle="tooltip" data-placement="top" title="Rank">Chat role</td>
-         		<td contenteditable="false" id="EditUserRank">${data.role}</td>
+         		<td data-toggle="tooltip" data-placement="top" title="Rank">Rank</td>
+         		<td contenteditable="false" id="EditUserRank">
+                 ${select.outerHTML}
+                 </td>
        		</tr>
        		<tr>
          		<td data-toggle="tooltip" data-placement="top" title="The amount of points the user has">Points</td>
@@ -332,13 +349,13 @@ function setModalEditButtons() {
    	return `
    	editUserTable(
       	tempUser,
-      	document.getElementById('EditUserRank').innerHTML,
+      	$("#userEditRankChoice").val(),
       	document.getElementById('editUserPoints').innerHTML
     ),
     $('#modalUserEdit').modal('hide'),
     UserHandle.editUser(
       	tempUser.toLowerCase(),
-      	document.getElementById('EditUserRank').innerHTML,
+        $("#userEditRankChoice").val(),
       	document.getElementById('editUserPoints').innerHTML
     )`
 }
@@ -374,4 +391,10 @@ function loadSpecificRank(rank) {
     document.getElementById("addPointsRank").checked = rank.canAddPoints;
     document.getElementById("editPointsRank").checked = rank.canEditPoints;
     document.getElementById("removePointsRank").checked = rank.canRemovePoints;
+    document.getElementById("addUsersRank").checked = rank.canAddUsers;
+    document.getElementById("editUsersRank").checked = rank.canEditUsers;
+    document.getElementById("removeUsersRank").checked = rank.canRemoveUsers;
+    document.getElementById("addQuotesRank").checked = rank.canAddQuotes;
+    document.getElementById("editQuotesRank").checked = rank.canEditQuotes;
+    document.getElementById("removeQuotesRank").checked = rank.canRemoveQuotes;
 }

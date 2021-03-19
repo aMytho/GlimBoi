@@ -141,13 +141,7 @@ function checkRemoveCommand() {
     	CommandHandle.findCommand(commandToBeRemoved).then(data => {
       		if (data !== null) {
         		console.log("The command " + commandToBeRemoved + " will now be removed from the table");
-        		var filteredData = table
-          		.rows()
-          		.indexes()
-          		.filter(function (value, index) {
-            		return table.row(value).data().commandName == commandToBeRemoved;
-          		});
-        		table.rows(filteredData).remove().draw();
+        		removeCommandFromTable(commandToBeRemoved)
         		CommandHandle.removeCommand(commandToBeRemoved);
       		} else {
         		var removeCommandMessageError = document.getElementById("removeCommandMessage")
@@ -179,7 +173,7 @@ function checkEditCommand() {
       		if (data !== null) {
         		console.log("Editing " + commandToBeEdited);
         		//We replace the html of the modal with new html
-        		document.getElementById("editModal").innerHTML = editCommandModal(data);
+        		document.getElementById("editModal").innerHTML = editCommandModal(data, RankHandle.getCurrentRanks());
         		editErrorMessage.innerHTML = "";
         		$("#editCommandPoints").keypress(function (e) {
           			if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
@@ -324,6 +318,12 @@ function commandModalPrep() {
     	$("#addCommandUses").keypress(function (e) {
       		if (e.which === 13 || isNaN(String.fromCharCode(e.which))) e.preventDefault();
     	});
+        var select = document.getElementById("rankChoiceAdd");
+        var options = RankHandle.getCurrentRanks();
+        for (var i = 0; i < options.length; i++) {
+            var opt = options[i].rank;
+            select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
   	});
   	$('#modalEditCommand').on('hidden.bs.modal', function (e) {
     	console.log("Resetting edit add modal.");
@@ -335,4 +335,16 @@ function commandModalPrep() {
     	document.getElementById("removeModal").innerHTML = removeCommandReset();
     	document.getElementById("errorMessageDelete").innerHTML = "";
   	});
+}
+
+function removeCommandFromTable(command) {
+    try {
+        var filteredData = table
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+                return table.row(value).data().commandName == command;
+            });
+        table.rows(filteredData).remove().draw();
+    } catch (e) { }
 }

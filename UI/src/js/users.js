@@ -197,14 +197,18 @@ function removeUser() { //removes the user
 
 // Removes the user from a table. This only affects the table
 function removeUserFromTable(deletedUser) {
-  	console.log("The user " + deletedUser + " will now be deleted from the table.");
-  	var filteredData = userTable
-    .rows()
-    .indexes()
-    .filter(function (value, index) {
-      	return userTable.row(value).data().userName == deletedUser;
-    });
-  	userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
+    console.log("The user " + deletedUser + " will now be deleted from the table.");
+    try {
+        var filteredData = userTable
+        .rows()
+        .indexes()
+        .filter(function (value, index) {
+            return userTable.row(value).data().userName == deletedUser;
+        });
+        userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
+    } catch (e) {
+
+    }
 }
 
 function makeList(user) { //Similir to above function, makes a list and displays it under the table.
@@ -278,7 +282,7 @@ function userSearch(user) {
       		}, 3500);
     	} else {
       		console.log("Editing user");
-      		document.getElementById("modalEditBody").innerHTML = setModalEditBody(data);
+      		document.getElementById("modalEditBody").innerHTML = setModalEditBody(data, RankHandle.getCurrentRanks());
       		// Prevents non numbers from being entered.
       		$("#editUserPoints").keypress(function (e) {
         		if (isNaN(String.fromCharCode(e.which))) e.preventDefault();

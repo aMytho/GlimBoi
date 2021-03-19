@@ -91,6 +91,8 @@ $(document).on('keypress','input, textarea', function (event) {
     if (id === 'userremoveInput') $('#removeUserFinish').click()
     if (id === 'whichUser') $(this).closest('.modal-content').find('#targetActionButton').click();
     if (id === 'newChatName') $('#triggerNewChatAdd').click()
+    if (id === 'rankAddInput') $('#addingRankButton').click()
+    if (id === 'rankRemoveInput') $('#rankRemoveButton').click()
 
     event.preventDefault();
 });
