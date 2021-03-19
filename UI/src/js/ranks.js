@@ -22,7 +22,7 @@ function addRank() {
             var rankButton = document.createElement("a");
             rankButton.classList = `col-lg-12 col-3 btn btn-info mt-2 CUSTOM_RANK`;
             rankButton.innerHTML = rankName;
-            rankButton.setAttribute("onclick", `displayRank("${rankName})"`)
+            rankButton.setAttribute("onclick", `displayRank('${rankName}')`)
             document.getElementById("customRankButtons").append(rankButton);
             $('#modalRankAdd').modal('hide');
         } else {
@@ -57,7 +57,7 @@ function saveRankSettings(rank) {
         canAddCommands: document.getElementById("addCommandsRank").checked,
         canEditCommands: document.getElementById("editCommandsRank").checked,
         canRemoveCommands: document.getElementById("removeCommandsRank").checked,
-        canAddPoint: document.getElementById("addPointsRank").checked,
+        canAddPoints: document.getElementById("addPointsRank").checked,
         canEditPoints: document.getElementById("editPointsRank").checked,
         canRemovePoints: document.getElementById("removePointsRank").checked,
         canAddUsers: document.getElementById("addUsersRank").checked,
