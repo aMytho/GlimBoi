@@ -5,9 +5,9 @@
       <h3 class="whiteText">Raffle</h3>
       <p class="whiteText">_______________</p>
       <p class="whiteText">Starts a raffle. One winner is chosen.</p>
-      <button class="btn btn-success mt-2" type="submit" id="leaveChat" onclick="startRaffle()">Start</button>
+      <button class="btn btn-success mt-2" type="submit" id="leaveChat" onclick="EventHandle.raffle.checkRaffleStatus(true, ChatHandle.isConnected())">Start</button>
       <button class="btn btn-info mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalRaffleList">View Participants</button>
-      <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopRaffle()">End</button>
+      <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.raffle.stopRaffle()">End</button>
       <h4 class="whiteText mt-3" id="raffleWinner"></h4>
     </div>
   </div>
@@ -19,7 +19,7 @@
       <p class="whiteText">Starts a Poll. Responses listed at the end of the poll.</p>
       <button class="btn btn-success mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalPoll">Start</button>
       <button class="btn btn-info mt-2 disabled" disabled type="submit" id="leaveChat" data-toggle="modal" data-target="#pollUserList">View Poll (Coming Soon!)</button>
-      <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.stopPoll()">End</button>
+      <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.poll.stopPoll()">End</button>
       <h4 class="whiteText mt-3" id="pollResults"></h4>
     </div>
   </div>
@@ -94,7 +94,7 @@
         <p id="PollModalText"></p>
         <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-outline-info" onclick="$('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption'></td></tr>`)">Add Option</button>
-        <button type="button" class="btn btn-outline-success" onclick="startPoll(null, document.getElementById('pollQuestion').innerText, true)">Start Poll</button>
+        <button type="button" class="btn btn-outline-success" onclick="EventHandle.poll.checkPollStatus(null, document.getElementById('pollQuestion').innerText, true)">Start Poll</button>
       </div>
     </div>
   </div>

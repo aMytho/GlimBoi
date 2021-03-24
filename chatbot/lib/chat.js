@@ -10,7 +10,6 @@ var path = "./";
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-  	console.log("User path is " + GUI);
   	path = GUI;
 }
 
@@ -68,6 +67,9 @@ function connectToGlimesh(access_token, channelID) {
     	ChatStats.loadChatStats();
     	ChatMessages = require(appData[0] + "/chatbot/lib/chat/chatMessages.js");
 
+        //Loads events.
+        EventHandle.loadEvents()
+
     	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
     	}, 30000);
@@ -87,7 +89,7 @@ function connectToGlimesh(access_token, channelID) {
       		} catch (e) {
         		console.log(e)
       		}
-    	})
+    	});
   	});
 
   	connection.on("message", function (data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
@@ -104,8 +106,7 @@ function connectToGlimesh(access_token, channelID) {
             			var messageChat = chatMessage[4].result.data.chatMessage.message;
             			var userID = Number(chatMessage[4].result.data.chatMessage.user.id)
             			console.log(userChat + ": " + messageChat);
-            			arrayOfEvents.forEach(element => {
-              				console.log(arrayOfEvents)
+            			EventHandle.getCurrentEvents().forEach(element => {
               				EventHandle.handleEvent(element, userChat, messageChat)
             			});
             			ChatStats.addCurrentUser(userChat)
@@ -205,13 +206,13 @@ function connectToGlimesh(access_token, channelID) {
                   					ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
                   				break;
                 				case "!raffle":
-                  					startRaffle()
+                  					EventHandle.raffle.checkRaffleStatus(false, ChatHandle.isConnected())
                   				break;
                 				case "!poll":
-                  					startPoll(userChat, null, null, messageChat);
+                  					EventHandle.poll.checkPollStatus(userChat, null, null, messageChat);
                   				break;
                 				case "!glimrealm":
-                  					openGlimRealm(userChat.toLowerCase())
+                  					EventHandle.glimRealm.openGlimRealm()
                   				break;
                 				case "!user":
                   					switch (message[1]) {
