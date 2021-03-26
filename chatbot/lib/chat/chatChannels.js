@@ -5,7 +5,6 @@ var path = "./";
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-    console.log("User path is " + GUI);
     path = GUI;
     recentChannelsDB = new Datastore({ filename: `${path}/data/recentChannels.db`, autoload: true });
 }

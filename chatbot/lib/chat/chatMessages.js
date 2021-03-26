@@ -63,7 +63,7 @@ function glimboiMessage(data) {
   	msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message:{message:\""+data+"\"}) {message }}","variables":{}});
   	var test = JSON.stringify(msgArray);
   	try {
-    	console.log(test)
+    	//console.log(test)
     	ChatHandle.getConnection().send(test)
   	} catch(e) {
     	console.log(e);

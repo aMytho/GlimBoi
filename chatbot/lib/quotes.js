@@ -2,7 +2,7 @@ var path = "./";
 let quotesDB;
 
 /**
- * A quote. 
+ * A quote.
  * @constructor quotename - User who said the quote
  * @constructor quotedata - The quote itself
  */
@@ -14,13 +14,12 @@ class Quote {
     	this.quoteID = generateID(quoteName) //ID of the users quotes. The DB ID is different.
     	this.date = generateDate(); //Tik toc
   	}
-} 
+}
 
 /**
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-  	console.log("Quote path is " + GUI);
   	path = GUI;
   	quotesDB = new Datastore({
     	filename: `${path}/data/quotes.db`,
@@ -67,7 +66,7 @@ async function addquote(quoteName, quoteData) {
           				UserHandle.addQuote(newquote, doc._id).then(data => {
             				try { document.getElementById('errorMessageAddQuote').innerText = `Quote Created!`} catch(e) {}
             				resolve("QUOTEFINISHED")
-          				})    
+          				})
         			});
       			} catch (e) {
         			console.log(e);

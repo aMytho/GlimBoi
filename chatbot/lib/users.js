@@ -27,6 +27,7 @@ class User {
 /**
  * Adds a user to GlimBoi
  * @param {string} user The name of the user
+ * @param {boolean} inModal Is the user added from the GUI?
  * @returns If successful returns the user.
  * @returns If the user doesn't exist on GLimesh returns code INVALIDUSER
  * @returns If the exists returns USEREXISTS
@@ -67,7 +68,6 @@ async function addUser(user, inModal) {
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-  	console.log("User path is " + GUI);
   	path = GUI;
   	usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
 }
@@ -271,6 +271,17 @@ function earnPointsWT(Users) {
 }
 
 /**
+ * Adds some points to a user
+ * @param {string} user The user who will be getting points
+ * @param {number} points The amount of points to add
+ */
+function addPoints(user, points) {
+    usersDB.update({userName: user}, {$inc: {points: points}}, {}, function() {
+        console.log(`Added ${points} points to ${user}.`)
+    })
+}
+
+/**
  * Removes the users points
  * @param {string} user The user
  * @param {number} value How many points will be removed
@@ -288,4 +299,4 @@ function removePoints(user, value) {
   	});
 }
 
-module.exports = {addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
+module.exports = {addPoints, addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}

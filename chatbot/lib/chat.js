@@ -214,6 +214,8 @@ function connectToGlimesh(access_token, channelID) {
                 				case "!glimrealm":
                   					EventHandle.glimRealm.openGlimRealm()
                   				break;
+                                case "!bankheist":
+                                    EventHandle.bankHeist.startBankHeist(userChat.toLowerCase())
                 				case "!user":
                   					switch (message[1]) {
                     					case "new":
