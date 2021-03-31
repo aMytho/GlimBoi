@@ -148,7 +148,7 @@ function escapeSequence(justTriggeredAlarm, currencyLooted) {
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`:glimmoney: The team escaped with ${currencyGained} ${settings.Points.name}!`, "glimboi");
+                    ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${settings.Points.name}!`, "glimboi");
                     distributePoints(currencyLooted, users);
                 }
             } else {
@@ -163,7 +163,7 @@ function escapeSequence(justTriggeredAlarm, currencyLooted) {
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`:glimmoney: The team escaped with ${currencyGained} ${settings.Points.name}! It will be divided among the successful raiders`, "glimboi");
+                    ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${settings.Points.name}! It will be divided among the successful raiders`, "glimboi");
                     distributePoints(currencyLooted, users)
                 }
             } else {
@@ -180,7 +180,7 @@ function escapeSequence(justTriggeredAlarm, currencyLooted) {
 function bankHeistFailed() {
     console.log("BankHeist failed!");
     setTimeout(() => {
-        ChatMessages.filterMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.");
+        ChatMessages.filterMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.", "glimboi");
         resetUsers()
         bankHeistStatus = "cooldown";
         setTimeout(() => {
