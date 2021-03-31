@@ -178,17 +178,19 @@ function connectToGlimesh(access_token, channelID) {
                       					})
                       				break;
                                     case "add":
-                                    case "inc": ChatActions.addPointsChat(userChat, message[2].toLowerCase(), message[3])
+                                    case "+":
+                                    case "inc": ChatActions.addPointsChat(userChat, message[2], message[3])
                                     break;
                                     case "sub":
-                                    case "del": ChatActions.removePointsChat(userChat, message[2].toLowerCase(), message[3])
+                                    case "-":
+                                    case "del": ChatActions.removePointsChat(userChat, message[2], message[3])
                                     break;
                                     case "set":
-                                    case "=": ChatActions.editPointsChat(userChat, message[2].toLowerCase(), message[3])
+                                    case "=": ChatActions.editPointsChat(userChat, message[2], message[3])
                                     break;
-                                    case "get":
-
-
+                                    case "get": ChatActions.getPointsChat(message[2])
+                                    break;
+                                    case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
                                     break;
                     				default:
                       					if (!isNaN(message[1])) {

@@ -282,7 +282,7 @@ function addPoints(user, points) {
         for (let i = 0; i < users.length; i++) {
             if (user == users[i].userName) {
                 users[i].points = users[i].points + points
-                editUserTable(user, affectedDocuments.role, Number(points))
+                editUserTable(user, affectedDocuments.role, Number(users[i].points))
                 break
             }
 

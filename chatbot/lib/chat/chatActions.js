@@ -187,91 +187,120 @@ function checkAmount(amount) {
  * @param {number} count The amount of points to add
  */
 async function addPointsChat(user, target, count) {
-    var hasPerms = await RankHandle.rankController(user, "canAddPoints", "string");
-    if (hasPerms) {
-        if (checkAmount(count) == true) {
-            var targetExists = await UserHandle.findByUserName(target);
-            if (targetExists !== "ADDUSER") {
-                UserHandle.addPoints(target, count);
-                ChatMessages.filterMessage(count + " " + settings.Points.name + " were added to " + target, "glimboi");
-            } else {
-                var userAdded = await UserHandle.addUser(target, false);
-                if (userAdded !== "INVALIDUSER") {
-                    ChatMessages.filterMessage(target + " has been added to glimboi.");
-                    UserHandle.addPoints(target, count);
-                    ChatMessages.filterMessage(count + " " + settings.Points.name + " were added to " + target, "glimboi");
+    if (target !== undefined) {
+        target = target.toLowerCase();
+        var hasPerms = await RankHandle.rankController(user, "canAddPoints", "string");
+        if (hasPerms) {
+            if (checkAmount(count) == true) {
+                var targetExists = await UserHandle.findByUserName(target);
+                if (targetExists !== "ADDUSER") {
+                    UserHandle.addPoints(target, Math.round(Number(count)));
+                    ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
                 } else {
-                    ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
+                    var userAdded = await UserHandle.addUser(target, false);
+                    if (userAdded !== "INVALIDUSER") {
+                        ChatMessages.filterMessage(target + " has been added to glimboi.");
+                        UserHandle.addPoints(target, Math.round(Number(count)));
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
+                    } else {
+                        ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
+                    }
                 }
+            } else {
+                ChatMessages.filterMessage(Math.round(Number(count)) + " is an invalid number.", "glimboi");
             }
         } else {
-            ChatMessages.filterMessage(count + " is an invalid number.", "glimboi");
+            ChatMessages.filterMessage(user + "'s rank cannot add points.", "glimboi");
         }
     } else {
-        ChatMessages.filterMessage(user + "'s rank cannot add points.", "glimboi");
+        ChatMessages.filterMessage("The target was not included. !points add/inc/+ Mytho 100", "glimboi")
     }
 }
 
 async function removePointsChat(user, target, count) {
-    var hasPerms = await RankHandle.rankController(user, "canRemovePoints", "string");
-    if (hasPerms) {
-        if (checkAmount(count) == true) {
-            var targetExists = await UserHandle.findByUserName(target);
-            if (targetExists !== "ADDUSER") {
-                if ((targetExists.points - Number(count)) < 0) {
-                    UserHandle.editUserPoints(target, 0);
-                    ChatMessages.filterMessage(count + " " + settings.Points.name + " were removed from " + target, "glimboi");
-                } else {
-                    UserHandle.removePoints(target, Number(count));
-                    ChatMessages.filterMessage(count + " " + settings.Points.name + " were removed from " + target, "glimboi");
-                }
-            } else {
-                var userAdded = await UserHandle.addUser(target, false);
-                if (userAdded !== "INVALIDUSER") {
-                    if ((userAdded.points - Number(count)) < 0) {
+    if (target !== undefined) {
+        target = target.toLowerCase()
+        var hasPerms = await RankHandle.rankController(user, "canRemovePoints", "string");
+        if (hasPerms) {
+            if (checkAmount(count) == true) {
+                var targetExists = await UserHandle.findByUserName(target);
+                if (targetExists !== "ADDUSER") {
+                    if ((targetExists.points - Math.round(Number(count))) < 0) {
                         UserHandle.editUserPoints(target, 0);
-                        ChatMessages.filterMessage(count + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
                     } else {
-                        UserHandle.removePoints(target, Number(count));
-                        ChatMessages.filterMessage(count + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        UserHandle.removePoints(target, Math.round(Number(count)));
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
                     }
                 } else {
-                    ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
+                    var userAdded = await UserHandle.addUser(target, false);
+                    if (userAdded !== "INVALIDUSER") {
+                        if ((userAdded.points - Math.round(Number(count))) < 0) {
+                            UserHandle.editUserPoints(target, 0);
+                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        } else {
+                            UserHandle.removePoints(target, Math.round(Number(count)));
+                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        }
+                    } else {
+                        ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
+                    }
                 }
+            } else {
+                ChatMessages.filterMessage(Math.round(Number(count)) + " is an invalid number.", "glimboi");
             }
         } else {
-            ChatMessages.filterMessage(count + " is an invalid number.", "glimboi");
+            ChatMessages.filterMessage(user + "'s rank cannot remove points.", "glimboi");
         }
     } else {
-        ChatMessages.filterMessage(user + "'s rank cannot remove points.", "glimboi");
+        ChatMessages.filterMessage("The user was not included. !points sub/dec/- Mytho 100", "glimboi")
     }
 }
 
 
 async function editPointsChat(user, target, count) {
-    var hasPerms = await RankHandle.rankController(user, "canEditPoints", "string");
-    if (hasPerms) {
-        if (checkAmount(count) == true) {
-            var targetExists = await UserHandle.findByUserName(target);
-            if (targetExists !== "ADDUSER") {
-                UserHandle.editUserPoints(target, Number(count));
-                ChatMessages.filterMessage(target + " now has "+  count + " " + settings.Points.name, "glimboi");
-            } else {
-                var userAdded = await UserHandle.addUser(target, false);
-                if (userAdded !== "INVALIDUSER") {
-                    ChatMessages.filterMessage(target + " has been added to glimboi.");
-                    UserHandle.editUserPoints(target, Number(count));
-                    ChatMessages.filterMessage(target + " now has "+  count + " " + settings.Points.name, "glimboi");
+    if (target !== undefined) {
+        target = target.toLowerCase()
+        var hasPerms = await RankHandle.rankController(user, "canEditPoints", "string");
+        if (hasPerms) {
+            if (checkAmount(count) == true) {
+                var targetExists = await UserHandle.findByUserName(target);
+                if (targetExists !== "ADDUSER") {
+                    UserHandle.editUserPoints(target, Math.round(Number(count)));
+                    ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
                 } else {
-                    ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
+                    var userAdded = await UserHandle.addUser(target, false);
+                    if (userAdded !== "INVALIDUSER") {
+                        ChatMessages.filterMessage(target + " has been added to glimboi.");
+                        UserHandle.editUserPoints(target, Math.round(Number(count)));
+                        ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
+                    } else {
+                        ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
+                    }
                 }
+            } else {
+                ChatMessages.filterMessage(Math.round(Number(count)) + " is an invalid number.", "glimboi");
             }
         } else {
-            ChatMessages.filterMessage(count + " is an invalid number.", "glimboi");
+            ChatMessages.filterMessage(user + "'s rank cannot edit points.", "glimboi");
         }
     } else {
-        ChatMessages.filterMessage(user + "'s rank cannot edit points.", "glimboi");
+        ChatMessages.filterMessage("The user was not included. !points set/= Mytho 100", "glimboi")
     }
 }
 
-module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getRank, randomQuoteChat, removeCommand, removePointsChat}
+async function getPointsChat(target) {
+    if (target !== undefined) {
+        target = target.toLowerCase();
+        var targetExists = await UserHandle.findByUserName(target);
+        if (targetExists !== "ADDUSER") {
+            ChatMessages.filterMessage(target + " has " + targetExists.points + + " " + settings.Points.name, "glimboi");
+        } else {
+            ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly and the user exists in glimboi.", "glimboi");
+        }
+    } else {
+        ChatMessages.filterMessage("The user was not specified. !points get Mytho", "glimboi")
+    }
+}
+
+module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getPointsChat, getRank, randomQuoteChat, removeCommand, removePointsChat}
