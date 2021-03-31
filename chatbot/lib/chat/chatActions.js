@@ -294,7 +294,7 @@ async function getPointsChat(target) {
         target = target.toLowerCase();
         var targetExists = await UserHandle.findByUserName(target);
         if (targetExists !== "ADDUSER") {
-            ChatMessages.filterMessage(target + " has " + targetExists.points + + " " + settings.Points.name, "glimboi");
+            ChatMessages.filterMessage(target + " has " + targetExists.points + " " + settings.Points.name, "glimboi");
         } else {
             ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly and the user exists in glimboi.", "glimboi");
         }
