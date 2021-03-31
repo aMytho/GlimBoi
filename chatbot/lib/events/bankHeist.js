@@ -10,7 +10,7 @@ let currencyGained = 0; // how much money the raiders recieve
  */
 function startBankHeist(user) {
     if (bankHeistStatus == "ready") {
-        ChatMessages.filterMessage(user + " had just started a bankheist. Type !bankheist to join!");
+        ChatMessages.filterMessage(user + " had just started a bankheist. Type !bankheist to join! Starts in 30 seconds.");
         users.push(user);
         bankHeistStatus = "prep"
         startPrep()
@@ -39,13 +39,14 @@ function startPrep() {
             ChatMessages.filterMessage("Your team approaches the bank. You enter through the front door.");
             walkIn()
         }
-    }, 10000);
+    }, 30000);
 }
 
 /**
  * Enter the bank.
  */
 function walkIn() {
+    currencyGained = 0
     setTimeout(() => {
         // 50% to go undetected
         if (probability(0.5)) {
@@ -127,7 +128,7 @@ function bankDoor(alramActivated) {
             ChatMessages.filterMessage(`Your team starts to loot the vault. The backup security system kicks in and the alarm is raised! Your teams scrables to leave the vault and begins to escape`, "glimboi")
             currencyInBank()
             escapeSequence(true, currencyGained)
-        }, 5000);
+        }, 8000);
     }
 }
 
@@ -170,7 +171,7 @@ function escapeSequence(justTriggeredAlarm, currencyLooted) {
                 distributePoints(currencyLooted, users)
             }
         }
-    }, 2500);
+    }, 3500);
 }
 
 /**
@@ -194,10 +195,10 @@ function bankHeistFailed() {
  * @param {array} users Array of users who succeeded
  * @async
  */
-async function distributePoints(points, users) {
+function distributePoints(points, users) {
     setTimeout(() => {
         var pointsPerUser = Math.round(points / users.length);
-        users.forEach(function(element) {
+        users.forEach(async function (element) {
             var userExists = await UserHandle.findByUserName(element);
             if (userExists !== "ADDUSER") {
                 UserHandle.addPoints(element, pointsPerUser);
@@ -213,7 +214,7 @@ async function distributePoints(points, users) {
         bankHeistStatus = "cooldown";
         setTimeout(() => {
             bankHeistStatus = "ready"
-        }, 60000);
+        }, 600000);
     }, 5000);
 }
 

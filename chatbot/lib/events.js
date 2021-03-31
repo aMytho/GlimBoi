@@ -2,7 +2,7 @@
 var arrayOfEvents = [];
 
 /**
- * Manages Bankheist events
+ * Manages events
  */
 var bankHeist = require(appData[0] + "/chatbot/lib/events/bankHeist.js");
 var poll = require(appData[0] + "/chatbot/lib/events/poll.js");
@@ -64,13 +64,6 @@ function handleEvent(event, user, message) {
 
 
 /**
- * Loads the events. (chat games, etc)
- */
-function loadEvents() {
-    console.log("Loading all of the events.")
-}
-
-/**
  * Returns current events
  * @returns {array}
  */
@@ -87,4 +80,4 @@ function setCurrentEvents(data) {
     console.log(arrayOfEvents)
 }
 
-module.exports = {bankHeist, duel, getCurrentEvents, glimRealm, handleEvent, loadEvents, poll, raffle, setCurrentEvents}
+module.exports = {bankHeist, duel, getCurrentEvents, glimRealm, handleEvent, poll, raffle, setCurrentEvents}
