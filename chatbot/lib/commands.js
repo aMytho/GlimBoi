@@ -55,7 +55,9 @@ var listofvariables = [
   	"$guilded", // guilded invite URL
   	"$instagram", // instagram URL
   	"$youtube", // youtube channel URL
-  	"$twitter" // twitter profile URL
+  	"$twitter", // twitter profile URL
+    "$catfact", // Random cat fact
+    "$dogfact" // Random dog fact
 ];
 
 
@@ -64,7 +66,6 @@ var listofvariables = [
  * @param {string} GUI The file path before /data/commands.db
  */
 function updatePath(GUI) {
-  	console.log("path is " + GUI);
   	path = GUI;
   	commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
 }
@@ -336,6 +337,8 @@ async function runCommand(arguements, index, user) {
     variableList[10] = chatMessage.includes("$instagram");
     variableList[11] = chatMessage.includes("$youtube");
     variableList[12] = chatMessage.includes("$twitter");
+    variableList[13] = chatMessage.includes("$catfact");
+    variableList[14] = chatMessage.includes("$dogfact");
   	//We check if the command has variables against the variable list.
   	for (let i = 0; i < variableList.length; i++) {
     	//For every variable we check if it is in the chatMessage
@@ -418,6 +421,14 @@ async function replaceVariable(variable, arguements, user) {
       		var twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Twitter Error');
       		variableList[12] = "https://twitter.com/" + twitter
       	break;
+        case "$catfact":
+            var catFact = await ApiHandle.randomCatFact();
+            variableList[13] = catFact
+        break;
+        case "$dogfact":
+            var dogFact = await ApiHandle.randomDogFact();
+            variableList[14] = dogFact
+        break;
     	default:
       	break;
   	}

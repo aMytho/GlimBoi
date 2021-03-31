@@ -10,7 +10,6 @@ var path = "./";
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-  	console.log("User path is " + GUI);
   	path = GUI;
 }
 
@@ -87,7 +86,7 @@ function connectToGlimesh(access_token, channelID) {
       		} catch (e) {
         		console.log(e)
       		}
-    	})
+    	});
   	});
 
   	connection.on("message", function (data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
@@ -104,8 +103,7 @@ function connectToGlimesh(access_token, channelID) {
             			var messageChat = chatMessage[4].result.data.chatMessage.message;
             			var userID = Number(chatMessage[4].result.data.chatMessage.user.id)
             			console.log(userChat + ": " + messageChat);
-            			arrayOfEvents.forEach(element => {
-              				console.log(arrayOfEvents)
+            			EventHandle.getCurrentEvents().forEach(element => {
               				EventHandle.handleEvent(element, userChat, messageChat)
             			});
             			ChatStats.addCurrentUser(userChat)
@@ -179,6 +177,21 @@ function connectToGlimesh(access_token, channelID) {
                         					}
                       					})
                       				break;
+                                    case "add":
+                                    case "+":
+                                    case "inc": ChatActions.addPointsChat(userChat, message[2], message[3])
+                                    break;
+                                    case "sub":
+                                    case "-":
+                                    case "del": ChatActions.removePointsChat(userChat, message[2], message[3])
+                                    break;
+                                    case "set":
+                                    case "=": ChatActions.editPointsChat(userChat, message[2], message[3])
+                                    break;
+                                    case "get": ChatActions.getPointsChat(message[2])
+                                    break;
+                                    case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
+                                    break;
                     				default:
                       					if (!isNaN(message[1])) {
                         					UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
@@ -201,18 +214,15 @@ function connectToGlimesh(access_token, channelID) {
                       				break;
                   				}
                   				break;
-                				case "!test":
-                  					ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
+                				case "!test": ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
                   				break;
-                				case "!raffle":
-                  					startRaffle()
+                				case "!raffle": EventHandle.raffle.checkRaffleStatus(false, ChatHandle.isConnected())
                   				break;
-                				case "!poll":
-                  					startPoll(userChat, null, null, messageChat);
+                				case "!poll": EventHandle.poll.checkPollStatus(userChat, null, null, messageChat);
                   				break;
-                				case "!glimrealm":
-                  					openGlimRealm(userChat.toLowerCase())
+                				case "!glimrealm": EventHandle.glimRealm.openGlimRealm()
                   				break;
+                                case "!bankheist": EventHandle.bankHeist.startBankHeist(userChat.toLowerCase())
                 				case "!user":
                   					switch (message[1]) {
                     					case "new":
@@ -228,8 +238,7 @@ function connectToGlimesh(access_token, channelID) {
                       					break;
                   					}
                   				break;
-                                case "!rank":
-                                      ChatActions.getRank(userChat.toLowerCase())
+                                case "!rank": ChatActions.getRank(userChat.toLowerCase())
                                 break;
                 				default: //its not a glimboi command, may be a stream command. We need to check and send the output to chat.
                   					CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)

@@ -1,10 +1,10 @@
 //This file handles connecting the users dev app to glimesh.tv
 //It creates an express server so glimesh can redirect the user back to the bot. It is closed when the auth is completed.
 var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
-var serverisOn = false; //tells us if the user started but didn't complete the auth. 
+var serverisOn = false; //tells us if the user started but didn't complete the auth.
 var client = "" //Client ID
 var secret = "" //secret ID
-var authDB; //Auth database containing all auth info 
+var authDB; //Auth database containing all auth info
 
 var token = {access_token: "", refresh_token: "", code: "", scope: "", creation: "", expire: ""} //Can be used for auth purposes
 
@@ -17,7 +17,7 @@ function startAuthServer(authScheme) {
   	const http = require('http'); // server modules
   	const url = require('url'); // needed for parsing
   	if (serverisOn == true) { // If the server is already running we just send them to glimesh again.
-      	console.log('server is already running, if this is a mistake restart glimboi'); // They have already opened the server. We log it and open it the wbesite again. 
+      	console.log('server is already running, if this is a mistake restart glimboi'); // They have already opened the server. We log it and open it the wbesite again.
       	shell.openExternal(`https://glimesh.tv/oauth/authorize?response_type=code&state=&client_id=${authScheme.clientID}&scope=public%20chat&redirect_uri=http://localhost:3000/success`)
   	} else { // This is their first time opening a server.
       	console.log('Starting auth server');
@@ -107,7 +107,7 @@ function Auth() {
  * Updates the path to the DB. The path variable is updated
  */
 function updatePath(GUI) {
-  	console.log("path is " + GUI);
+  	console.log("Path is " + GUI);
   	path = GUI;
   	authDB = new Datastore({ filename: `${path}/data/auth.db`, autoload: true });
 }
@@ -138,7 +138,7 @@ async function readAuth() {
 
 
 /**
- * Refreshes the users access token. 
+ * Refreshes the users access token.
  * @param {string} refresh_token The users refresh token
  * @param {*} client_id Client ID
  * @param {*} client_secret Secret Key
@@ -187,7 +187,7 @@ async function updateID(client, secret) {
     		console.log("Updated the auth IDs.");
     		resolve("UPDATEDID")
   		});
- 	}) 
+ 	})
 }
 
 /**
@@ -222,8 +222,8 @@ async function createID(client, secret) {
         	console.log("No auth info recieved. No changes to auth.db")
         	resolve("NOAUTH");
         	return
-      	}   
-   	}) 
+      	}
+   	})
 }
 
 /**
