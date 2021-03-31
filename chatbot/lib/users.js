@@ -276,8 +276,17 @@ function earnPointsWT(Users) {
  * @param {number} points The amount of points to add
  */
 function addPoints(user, points) {
-    usersDB.update({userName: user}, {$inc: {points: points}}, {}, function() {
-        console.log(`Added ${points} points to ${user}.`)
+    points = Number(points)
+    usersDB.update({userName: user}, {$inc: {points: points}}, {returnUpdatedDocs: true}, function(err, numReplaced, affectedDocuments) {
+        console.log(`Added ${points} points to ${user}.`);
+        for (let i = 0; i < users.length; i++) {
+            if (user == users[i].userName) {
+                users[i].points = users[i].points + points
+                editUserTable(user, affectedDocuments.role, Number(points))
+                break
+            }
+
+        }
     })
 }
 

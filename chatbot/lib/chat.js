@@ -67,9 +67,6 @@ function connectToGlimesh(access_token, channelID) {
     	ChatStats.loadChatStats();
     	ChatMessages = require(appData[0] + "/chatbot/lib/chat/chatMessages.js");
 
-        //Loads events.
-        EventHandle.loadEvents()
-
     	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
     	}, 30000);
@@ -180,6 +177,19 @@ function connectToGlimesh(access_token, channelID) {
                         					}
                       					})
                       				break;
+                                    case "add":
+                                    case "inc": ChatActions.addPointsChat(userChat, message[2].toLowerCase(), message[3])
+                                    break;
+                                    case "sub":
+                                    case "del": ChatActions.removePointsChat(userChat, message[2].toLowerCase(), message[3])
+                                    break;
+                                    case "set":
+                                    case "=": ChatActions.editPointsChat(userChat, message[2].toLowerCase(), message[3])
+                                    break;
+                                    case "get":
+
+
+                                    break;
                     				default:
                       					if (!isNaN(message[1])) {
                         					UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
@@ -202,20 +212,15 @@ function connectToGlimesh(access_token, channelID) {
                       				break;
                   				}
                   				break;
-                				case "!test":
-                  					ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
+                				case "!test": ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
                   				break;
-                				case "!raffle":
-                  					EventHandle.raffle.checkRaffleStatus(false, ChatHandle.isConnected())
+                				case "!raffle": EventHandle.raffle.checkRaffleStatus(false, ChatHandle.isConnected())
                   				break;
-                				case "!poll":
-                  					EventHandle.poll.checkPollStatus(userChat, null, null, messageChat);
+                				case "!poll": EventHandle.poll.checkPollStatus(userChat, null, null, messageChat);
                   				break;
-                				case "!glimrealm":
-                  					EventHandle.glimRealm.openGlimRealm()
+                				case "!glimrealm": EventHandle.glimRealm.openGlimRealm()
                   				break;
-                                case "!bankheist":
-                                    EventHandle.bankHeist.startBankHeist(userChat.toLowerCase())
+                                case "!bankheist": EventHandle.bankHeist.startBankHeist(userChat.toLowerCase())
                 				case "!user":
                   					switch (message[1]) {
                     					case "new":
@@ -231,8 +236,7 @@ function connectToGlimesh(access_token, channelID) {
                       					break;
                   					}
                   				break;
-                                case "!rank":
-                                      ChatActions.getRank(userChat.toLowerCase())
+                                case "!rank": ChatActions.getRank(userChat.toLowerCase())
                                 break;
                 				default: //its not a glimboi command, may be a stream command. We need to check and send the output to chat.
                   					CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
