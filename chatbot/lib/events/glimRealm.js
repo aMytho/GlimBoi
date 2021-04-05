@@ -18,8 +18,7 @@ var glimrealmStatus = "ready";
                 console.log("Glimrealm portal closed.");
                 glimrealmStatus = "charging";
                 var currentEvents = EventHandle.getCurrentEvents();
-                currentEvents.filter(function(e) {return e !== "glimrealm"});
-                EventHandle.setCurrentEvents(currentEvents);
+                EventHandle.setCurrentEvents(currentEvents.filter(function(e) {return e !== "glimrealm"}));
                 glimrealmUsers = [];
                 setTimeout(() => {
                     glimrealmStatus = "ready"

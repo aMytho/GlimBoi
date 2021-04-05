@@ -149,11 +149,11 @@ function escapeSequence(justTriggeredAlarm, currencyLooted) {
                     bankHeistFailed()
                 } else {
                     ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${settings.Points.name}!`, "glimboi");
-                    distributePoints(currencyLooted, users);
+                    distributePoints(currencyLooted);
                 }
             } else {
                 ChatMessages.filterMessage(`The team escaped without being captured! Your team gained a total of ${currencyLooted} ${settings.Points.name}. It will be divided among the successful raiders.`, "glimboi");
-                distributePoints(currencyLooted, users)
+                distributePoints(currencyLooted)
             }
         } else {
             if (probability(0.7)) {
@@ -164,11 +164,11 @@ function escapeSequence(justTriggeredAlarm, currencyLooted) {
                     bankHeistFailed()
                 } else {
                     ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${settings.Points.name}! It will be divided among the successful raiders`, "glimboi");
-                    distributePoints(currencyLooted, users)
+                    distributePoints(currencyLooted)
                 }
             } else {
                 ChatMessages.filterMessage(`:glimmoney: The team escaped with ${currencyGained} ${settings.Points.name} ! It will be divided among the successful raiders`, "glimboi");
-                distributePoints(currencyLooted, users)
+                distributePoints(currencyLooted)
             }
         }
     }, 3500);
@@ -195,7 +195,7 @@ function bankHeistFailed() {
  * @param {array} users Array of users who succeeded
  * @async
  */
-function distributePoints(points, users) {
+function distributePoints(points) {
     setTimeout(() => {
         var pointsPerUser = Math.round(points / users.length);
         users.forEach(async function (element) {
