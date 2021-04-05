@@ -25,29 +25,34 @@ function loadEvents() {
         console.log("Showing raffle user list.");
     })
 
-    $('#modalPoll').on('hide.bs.modal', function (e) {
-        document.getElementById('modalPollBody').innerHTML = `
-        <div class="modal-body" id="modalPollBody">
-            <p class="text-center">Any blank options will be removed. The question and options must not exceed the chat limit.</p>
-            <table class="table table-hover" id="pollData">
+    $('#pollUserList').on('hidden.bs.modal', function (e) {
+        document.getElementById('pollUserList').innerHTML = `
+        <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="raffleList">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h4 class="modal-title w-100">User List</h4>
+          </div>
+          <!--Body-->
+          <div class="modal-body" id="modalRaffleListBody">
+            <p class="whitetext">The results of the poll will appear as they come in.</p>
+            <table id="pollTable" class="w-100">
                 <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Data</th>
+                    <tr id="pollOptionsHeader">
+                        <th scope="col">User</th>
                     </tr>
+
                 </thead>
-                <tbody>
-                    <tr>
-                        <td data-toggle="tooltip" data-placement="top" title="The poll question">Question</td>
-                        <td contenteditable="true" id="pollQuestion"></td>
-                    </tr>
-                    <tr>
-                        <td data-toggle="tooltip" data-placement="top" title="Poll response">Option</td>
-                        <td contenteditable="true" class="pollOption"></td>
-                    </tr>
-                </tbody>
             </table>
-        </div>`
+            </ul>
+          </div>
+          <!--Footer-->
+          <div class="modal-footer">
+            <p id="RaffleListModalText"></p>
+            <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>`
         console.log('Resetting poll modal')
     })
 }

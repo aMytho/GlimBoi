@@ -18,7 +18,7 @@
       <p class="whiteText">_______________</p>
       <p class="whiteText">Starts a Poll. Responses listed at the end of the poll.</p>
       <button class="btn btn-success mt-2" type="submit" id="leaveChat" data-toggle="modal" data-target="#modalPoll">Start</button>
-      <button class="btn btn-info mt-2 disabled" disabled type="submit" id="leaveChat" data-toggle="modal" data-target="#pollUserList">View Poll (Coming Soon!)</button>
+      <button class="btn btn-info mt-2" type="submit" id="leaveChat" onclick="EventHandle.poll.getPollStatus()" data-toggle="modal" data-target="#pollUserList">View Poll Live</button>
       <button class="btn btn-danger mt-2" type="submit" id="ComingSoon" onclick="EventHandle.poll.stopPoll()">End</button>
       <h4 class="whiteText mt-3" id="pollResults"></h4>
     </div>
@@ -110,13 +110,20 @@
       </div>
       <!--Body-->
       <div class="modal-body" id="modalRaffleListBody">
-        <p class="whitetext">Note that if a user joins multiple times they will only be counted once.</p>
-        <ul id="pollResults">
+        <p class="whitetext">The results of the poll will appear as they come in.</p>
+        <table id="pollTable" class="w-100">
+            <thead>
+                <tr id="pollOptionsHeader">
+                    <th scope="col">User</th>
+                </tr>
+
+            </thead>
+        </table>
         </ul>
       </div>
       <!--Footer-->
       <div class="modal-footer">
-        <p id="RaffleListModalText"></p>
+        <p id="PollListModalText"></p>
         <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
       </div>
     </div>

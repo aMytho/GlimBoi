@@ -16,6 +16,7 @@ function startPoll(poll, time) {
             resolve("NOPOLL");
             return;
         } else {
+            try { $('#pollUserList').modal('hide')} catch(e){}
             console.log(poll)
             pollHandle.options = poll.options
 
@@ -40,13 +41,11 @@ function startPoll(poll, time) {
                 var results = ""
                 console.log(pollHandle)
                 for (const key in pollHandle.results) {
-                    console.log(key);
-                    console.log(pollHandle.options[key]);
-                    console.log(pollHandle.options)
                     results = results.concat(`${pollHandle.options[key]}: ${pollHandle.results[key]}, `)
                 }
                 console.log(results);
                 ChatMessages.filterMessage("The results are in: " + results.slice(0, -1), "glimboi");
+                try {document.getElementById("PollListModalText").innerText = results.slice(0, -1)} catch(e) {}
                 pollHandle.options = [];
                 pollHandle.responses = [];
                 pollHandle.results = {};
@@ -160,12 +159,72 @@ function getUsers() {
 }
 
 /**
- * We use this function to add a user to a poll or to reset it.
+ * We use this function to add a user to a poll and display it.
  * @param {array} data Updated array
  */
 function updatePollData(user, response) {
+    console.log(user, response)
     pollHandle.users.push(user);
     pollHandle.responses.push(response);
+    try {
+        let newRow = document.createElement("tr");
+        let userPoll = document.createElement("td");
+        userPoll.innerText = user;
+        newRow.appendChild(userPoll);
+        for (let i = 0; i < pollHandle.options.length; i++) {
+            let userChoice = document.createElement("td");
+            let icon = document.createElement("span");
+
+            if (pollHandle.options.indexOf(pollHandle.options[i]) == response) {
+                icon.innerHTML = `<i class="fas fa-check"></i>`
+                userChoice.appendChild(icon)
+            } else {
+                icon.innerHTML = `<i class="fas fa-times"></i>`
+                userChoice.appendChild(icon)
+            }
+            newRow.appendChild(userChoice)
+        }
+        document.getElementById("pollDataTableBody").appendChild(newRow)
+    } catch(e) {console.log(e)}
 }
 
-module.exports = {checkPollStatus , getUsers, startPoll, stopPoll, updatePollData}
+function getPollStatus() {
+    // Creates the options in the table
+    for (let i = 0; i < pollHandle.options.length; i++) {
+        let option = document.createElement("th");
+        option.innerText = pollHandle.options[i];
+        option.scope = "col";
+        document.getElementById("pollOptionsHeader").appendChild(option)
+    }
+    var body = document.createElement("tbody");
+    body.id = "pollDataTableBody"
+    // Now we log the users choices
+    for (let i = 0; i < pollHandle.responses.length; i++) {
+        let userRow = document.createElement("tr"); // for each user that responds
+        let userName = document.createElement("td");
+        userName.innerText = pollHandle.users[i];
+        userRow.appendChild(userName)
+        // fill the options with data
+        for (let index = 0; index < pollHandle.options.length; index++) {
+            let userChoice = document.createElement("td");
+            if (index == (pollHandle.responses[i])) {
+                var icon = document.createElement("span");
+                icon.innerHTML = `<i class="fas fa-check"></i>`
+                userChoice.appendChild(icon)
+            } else {
+                var icon = document.createElement("span");
+                icon.innerHTML = `<i class="fas fa-times"></i>`
+                userChoice.appendChild(icon)
+            }
+            userRow.appendChild(userChoice)
+        }
+        body.appendChild(userRow)
+    }
+    document.getElementById("pollTable").appendChild(body)
+}
+
+function getPoll() {
+    return pollHandle
+}
+
+module.exports = {checkPollStatus , getPollStatus, getUsers, startPoll, stopPoll, updatePollData, getPoll}
