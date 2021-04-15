@@ -1,12 +1,12 @@
 // This file handles filtering and mod actions.
 
-var filterLevel = false;
-var warnings = {};
-var badWords;
+let filterLevel = false;
+let warnings = {};
+let badWords;
 
 function timeoutByUsername(type, user, origin, ID) {
     console.log(type + "timeout sent to " + user);
-    var channelID = ApiHandle.getID();
+    let channelID = ApiHandle.getID();
     if (channelID !== "") {
         // The main difference is we have the ID and respond to the tm in chat.
         if (origin == "chat") {
@@ -67,7 +67,7 @@ function timeoutByUserID(type, ID, modal) {
 }
 
 function banByUsername(user, origin) {
-    var channelID = ApiHandle.getID();
+    let channelID = ApiHandle.getID();
     if (channelID !== "") {
         ApiHandle.getUserID(user).then(data => {
             console.log(data);
@@ -120,7 +120,7 @@ function handleBan(user, origin, data) {
 }
 
 function unBanByUsername(user, origin) {
-    var channelID = ApiHandle.getID();
+    let channelID = ApiHandle.getID();
     if (channelID !== "") {
         ApiHandle.getUserID(user).then(data => {
             console.log(data);

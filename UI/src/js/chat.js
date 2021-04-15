@@ -13,7 +13,6 @@ const ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
 const ChatChannels = require(appData[0] + "/chatbot/lib/chat/chatChannels.js");
 const ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
 
-ChatHandle.updatePath(appData[1]);
 ChatChannels.updatePath(appData[1]);
 
 /**

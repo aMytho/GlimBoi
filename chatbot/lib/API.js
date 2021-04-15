@@ -1,11 +1,11 @@
 // Handles some of the API requests to Glimesh and other services.
 // Be aware that some non glimesh services may have rate limits in place.
 // If you fork this change the user agent from glimboi to your own project please :)
-var clientID = ""
-var token = ""
-var channelID = ""
-var streamer = ""; // Streamer name
-var accountName = null;
+let clientID = ""
+let token = ""
+let channelID = ""
+let streamer = ""; // Streamer name
+let accountName = null;
 
 /**
  * This function updates the access token so we can make glimesh API requests with full permissions.
@@ -47,7 +47,7 @@ function getID() {
  * @returns The ID or null if unsuccessful.
  */
 async function getChannelID(channel) {
-  	var ID = await new Promise(resolve => {
+  	let ID = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel (username: "${channel}"){id, streamer {displayname}}}`, headers: { Authorization: `Bearer ${token}` }})
     	.then((res) => {
       		res.json().then((data) => {
@@ -78,7 +78,7 @@ async function getChannelID(channel) {
  * @returns {Promise<number>} The user ID. If failed returns null
  */
 async function getUserID(user) {
-  	var ID = await new Promise(resolve => {
+  	let ID = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${user}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
     	.then((res) => {
       		res.json().then((data) => {
@@ -106,7 +106,7 @@ async function getUserID(user) {
  * @returns {Promise} The category. If failed returns null
  */
 async function getCurrentGame() {
-  	var category = await new Promise(resolve => {
+  	let category = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(username: "mytho") {stream {category {slug}}}}`, headers: { Authorization: `Client-ID ${clientID}` }})
     	.then((res) => {
       		res.json().then((data) => {
@@ -134,7 +134,7 @@ async function getCurrentGame() {
  * @returns {Promise}
  */
 async function getStats() {
-  	var viewers = await new Promise(resolve => {
+  	let viewers = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel(id:${channelID}) {stream {countViewers,newSubscribers}},followers(streamerUsername: "${streamer}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
     	.then((res) => {
       		res.json().then((data) => {
@@ -165,7 +165,7 @@ async function getStats() {
 async function getBotAccount() {
   	if (accountName !== null) return new Promise((resolve) => resolve(accountName));
 
-  	var bot = await new Promise(resolve => {
+  	let bot = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {myself {username}}`, headers: { Authorization: `bearer ${token}` }})
     	.then((res) => {
       		res.json().then((data) => {
@@ -195,7 +195,7 @@ async function getBotAccount() {
  */
 async function timeoutUser(type, channel, user) {
   	return new Promise(resolve => {
-    	var body;
+    	let body;
     	if (type == "short") {
       		body = `mutation { shortTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`
     	} else {
@@ -288,7 +288,7 @@ async function unBanUser(channel, user) {
  * @returns {Promise} Returns random advice. If fails returns- "Advice Failed :glimsad:"
  */
 async function getAdvice() {
-  	var advice = await new Promise(resolve => {
+  	let advice = await new Promise(resolve => {
     	fetch("https://api.adviceslip.com/advice", { method: "GET"})
     	.then((res) => {
       		res.json().then((data) => {
@@ -313,7 +313,7 @@ async function getAdvice() {
  * @returns Returns a dad joke. If failed returns- "Joke Failed :glimsad:"
  */
 async function getDadJoke() {
-  	var joke = await new Promise(resolve => {
+  	let joke = await new Promise(resolve => {
     	fetch("https://icanhazdadjoke.com/", { method: "GET", headers: {'User-Agent': `https://github.com/aMytho/GlimBoi Look at the readme file for contact info`, Accept: "application/json"}})
     	.then((res) => {
       		res.json().then((data) => {
@@ -338,7 +338,7 @@ async function getDadJoke() {
   * @returns {Promise}
   */
 async function getSocials(social, channel) {
-  	var socialLink = await new Promise(resolve => {
+  	let socialLink = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${channel}") {socialDiscord, socialGuilded, socialInstagram, socialYoutube, socials {username, platform}}}`, headers: { Authorization: `bearer ${token}` } })
       	.then((res) => {
         	res.json().then((data) => {
@@ -365,7 +365,7 @@ async function getSocials(social, channel) {
 }
 
 function randomCatFact() {
-    var catFact = new Promise(resolve => {
+    let catFact = new Promise(resolve => {
     	fetch("https://some-random-api.ml/facts/cat", { method: "GET" })
       	.then((res) => {
         	res.json().then((data) => {
@@ -382,7 +382,7 @@ function randomCatFact() {
 }
 
 function randomDogFact() {
-    var dogFact = new Promise(resolve => {
+    let dogFact = new Promise(resolve => {
     	fetch("https://some-random-api.ml/facts/dog", { method: "GET" })
       	.then((res) => {
         	res.json().then((data) => {

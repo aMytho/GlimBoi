@@ -2,7 +2,7 @@ const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron 
 const log = require('electron-log');
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 const { autoUpdater } = require('electron-updater'); //handles updates
-var isDev = require("electron-is-dev")
+const isDev = require("electron-is-dev")
 
 ipcMain.on('app_version', (event) => {
   	console.log("The current version is recieved. " + app.getVersion());
@@ -34,7 +34,7 @@ ipcMain.on('restart_app', () => {
 
 //console.log(autoUpdater.fullChangelog);
 
-var win; // The main window
+let win; // The main window
 
 
 function createWindow () { //make Win a window
@@ -94,11 +94,11 @@ app.on('activate', () => {
   	}
 })
 
-var loggingFile;
+let loggingFile;
 
 ipcMain.on("startLogging", event => {
-  	var { dialog } = require("electron");
-  	var fs = require("fs") //handles Files (writing and reading)
+  	let { dialog } = require("electron");
+  	let fs = require("fs") //handles Files (writing and reading)
   	dialog.showSaveDialog(win, {title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation', 'promptToCreate ', ], filters: [{name: "Chat Logs", extensions: ["txt"]}]}).then(data => {
     	console.log(data)
     	if (data == undefined || data.canceled == true) {

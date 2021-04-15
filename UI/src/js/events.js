@@ -1,6 +1,5 @@
 // Runs the UI for events
-var EventHandle = require(appData[0] + "/chatbot/lib/events.js");
-var arrayOfEvents = [];
+const EventHandle = require(appData[0] + "/chatbot/lib/events.js");
 
 /**
  * Ran when the event page is opened. The listeners are destroyed when the tab is closed.
@@ -18,7 +17,7 @@ function loadEvents() {
 
     $('#modalRaffleList').on('show.bs.modal	', function (e) {
         $("#RaffleUserList").empty();
-        var set = EventHandle.raffle.getRaffleUsers();
+        let set = EventHandle.raffle.getRaffleUsers();
         set.forEach(element => {
             $("#RaffleUserList").append("<li>" + element + "</li>")
         });
@@ -66,7 +65,7 @@ function loadEvents() {
 function raffleUsersUpdate(user) {
     console.log(user)
     try {
-        var inList = false;
+        let inList = false;
         $("#RaffleUserList li").each((id, elem) => {
             if (elem.innerText == user) {
                 inList = true;
@@ -75,14 +74,4 @@ function raffleUsersUpdate(user) {
         if (inList == false) {
             $("#RaffleUserList").append("<li>" + user + "</li>")}
     } catch (e) { }
-}
-
-/**
- *
- * @param {string} user
- * @param {string} action
- * @param {string} effect
- */
-function actionHandler(user, action, effect) {
-
 }

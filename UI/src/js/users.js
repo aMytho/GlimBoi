@@ -1,14 +1,14 @@
-var UserHandle = require(appData[0] + "/chatbot/lib/users.js");
+const UserHandle = require(appData[0] + "/chatbot/lib/users.js");
 UserHandle.updatePath(appData[1]);
 
-var QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js");
+const QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js");
 QuoteHandle.updatePath(appData[1]);
 
-var RankHandle = require(appData[0] + "/chatbot/lib/users/userRank.js");
+const RankHandle = require(appData[0] + "/chatbot/lib/users/userRank.js");
 RankHandle.updatePath(appData[1]);
 
-var userTable; //physical table showing user data
-var tempUser;
+let userTable; //physical table showing user data
+let tempUser;
 
 function loadUsers() { //Runs at startup (on page load (on page click (only the first time )))
   	$(document).ready(function () {

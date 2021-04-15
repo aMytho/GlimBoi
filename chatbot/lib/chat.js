@@ -1,17 +1,8 @@
 //This file handles connecting the bot to a chat.
-const WebSocket = require("ws"); // websocket library
-var connection; // the websocket connection
-var heartbeat; //heartbeat
-var botName = "GlimBoi"; //The username of the bot in normal caps
-var messageHistoryCount = 20;
-var path = "./";
-
-/**
- * Updates the path to the DB. The path variable is updated
- */
-function updatePath(GUI) {
-  	path = GUI;
-}
+let connection; // the websocket connection
+let heartbeat; //heartbeat
+let botName = "GlimBoi"; //The username of the bot in normal caps
+let messageHistoryCount = 20;
 
 /**
  * Tries to join a glimesh chat. Returns an error if the attempt failed.
@@ -54,7 +45,7 @@ function connectToGlimesh(access_token, channelID) {
   	connection = new WebSocket(url); // Connection is now an offical connection!
   	chatID = channelID // The channel ID is now an accessible variable for this module
 
-  	connection.on("open", function open() { // When the connection opens...
+  	connection.onopen = function () { // When the connection opens...
     	console.log("Connected to the Glimesh API");
     	connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
     	connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
@@ -66,6 +57,8 @@ function connectToGlimesh(access_token, channelID) {
     	ChatStats    = require(appData[0] + "/chatbot/lib/chat/chatStats.js");
     	ChatStats.loadChatStats();
     	ChatMessages = require(appData[0] + "/chatbot/lib/chat/chatMessages.js");
+        // Load Overlay
+        OBSHandle.startServer()
 
     	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
@@ -87,21 +80,21 @@ function connectToGlimesh(access_token, channelID) {
         		console.log(e)
       		}
     	});
-  	});
+  	};
 
-  	connection.on("message", function (data) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
+  	connection.onmessage = function (event) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
     	try {
       		//First check for heartbeat message.
-      		var chatMessage = JSON.parse(data);
+      		let chatMessage = JSON.parse(event.data);
       		if (chatMessage[4].status !== undefined) {
         		console.log("Status: " + chatMessage[4].status);
       		} else {
         		//Its probably a chat message
         		try {
           			if (chatMessage[4].result.data !== undefined) {
-            			var userChat = chatMessage[4].result.data.chatMessage.user.username;
-            			var messageChat = chatMessage[4].result.data.chatMessage.message;
-            			var userID = Number(chatMessage[4].result.data.chatMessage.user.id)
+            			let userChat = chatMessage[4].result.data.chatMessage.user.username;
+            			let messageChat = chatMessage[4].result.data.chatMessage.message;
+            			let userID = Number(chatMessage[4].result.data.chatMessage.user.id)
             			console.log(userChat + ": " + messageChat);
             			EventHandle.getCurrentEvents().forEach(element => {
               				EventHandle.handleEvent(element, userChat, messageChat)
@@ -109,7 +102,7 @@ function connectToGlimesh(access_token, channelID) {
             			ChatStats.addCurrentUser(userChat)
             			if (messageChat.startsWith("!")) { //If it is a command of some sort...
               				console.log("Searching for command");
-              				var message = messageChat.split(" ")
+              				let message = messageChat.split(" ")
               				switch (message[0]) {
                 				case "!commands": // Returns a list of all commands
                 					ChatActions.commandList();
@@ -196,7 +189,7 @@ function connectToGlimesh(access_token, channelID) {
                       					if (!isNaN(message[1])) {
                         					UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
                           						if (data.length > 0) {
-                            						var pointsPosition = Number(message[1])
+                            						let pointsPosition = Number(message[1])
                             						console.log(pointsPosition)
                             						if (pointsPosition <= 0) {
                               							ChatMessages.filterMessage("That number is not valid.")
@@ -263,7 +256,7 @@ function connectToGlimesh(access_token, channelID) {
     	} catch (e1) {
       		console.log(e1);
     	}
-  	});
+  	};
 
     connection.onclose = function (event) { //The connection closed, if error the error will be triggered too
       	try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
@@ -296,7 +289,7 @@ function connectToGlimesh(access_token, channelID) {
  */
 function disconnect(displayMessage = true) {
   	try {
-    	connection.close(1001, "So long and thanks for all the fish.") // closes the websocket
+    	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
     	if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
     	if (ChatSettings.isLoggingEnabled() == true) {
       		setTimeout(() => {
@@ -313,7 +306,7 @@ function disconnect(displayMessage = true) {
  */
 function disconnectError() {
   	try {
-    	connection.close(1001, "So long and thanks for all the fish.")
+    	connection.close(1000, "So long and thanks for all the fish.")
     	errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
     	if (ChatSettings.isLoggingEnabled() == true) {
       		setTimeout(() => {
@@ -333,4 +326,4 @@ function getBotName() {
 }
 
 
-module.exports = { getConnection, updatePath, isConnected, connectToGlimesh, disconnect, getBotName, join}
+module.exports = { getConnection, isConnected, connectToGlimesh, disconnect, getBotName, join}
