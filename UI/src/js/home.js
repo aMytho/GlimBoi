@@ -1,12 +1,10 @@
 //Handles the charts for the homepage and the auth.
-var refreshed = false;
-var AuthHandle = require(appData[0] + "/chatbot/lib/auth.js");
+const AuthHandle = require(appData[0] + "/chatbot/lib/auth.js");
 AuthHandle.updatePath(appData[1]);
 
 function rememberID(firstRun) { // checks if an id has been entered for auth
-  	var auth = AuthHandle.readAuth();
-  	auth.then(data => {
-    	//Checks if any data is there, this is seeing if a file even exists.
+  	AuthHandle.readAuth().then(data => {
+    	//Checks if any data is there, this is checking if a file even exists.
     	if (data.length == 0) {
       		console.log("The auth file does not yet exist.")
       		//Now we set the buttons/ inputs on the home page to be empty.
@@ -32,24 +30,15 @@ function rememberID(firstRun) { // checks if an id has been entered for auth
       		document.getElementById("secretID").setAttribute("placeholder", "ID Saved!")
       		document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
       		document.getElementById("saveAuth").innerHTML = "Edit Auth";
-      		if (refreshed !== true) {
-        		updateStatus(1);
-      		}
       		if (firstRun) {
-        		if (data[0].access_token.length > 5 && refreshed == false && isDev == false) { // They have a token as well as the other info, we need to refresh it.
-          			console.log("They alread have an access token, we will begin refreshing it.");
+                updateStatus(1); // sets to  request a token status message
+        		if (isDev == false) { //They have entered auth info, request a token
+          			console.log("Getting the first token for this session");
           			document.getElementById("joinChannelBOT").removeAttribute("disabled");
-          			AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(refresh => {
-            			if (refresh == "SUCCESS") {
-              				document.getElementById("authButton").innerHTML = "Auth has beeen refreshed. ";
-              				successMessage(refresh, "Auth has been refreshed. Ready to join chat.")
-            			} else {
-              				errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
-            			}
-          			})
+          			AuthHandle.requestToken(data[0].clientID, data[0].secret, false)
         		} else { errorMessage("Possbile Error", "You have already been authenticated. If you belive this to be false you can restart GlimBoi.") }
       		}
-      		// If the above sstatement is true the below statement will run as well. Not efficient, need to fix.
+      		// If the above statement is true the below statement will run as well. Not efficient, need to fix.
       		if (data[0].access_token.length > 5) {
         		document.getElementById("joinChannelBOT").removeAttribute("disabled");
       		}
@@ -105,7 +94,7 @@ function syncQuotes(user, quote, action) {
       		makeList(user);
     	} else if (action == "add") {
       		console.log(user);
-      		var filteredData = userTable
+      		let filteredData = userTable
       		.rows()
       		.indexes()
       		.filter(function (value, index) {
@@ -126,7 +115,7 @@ function syncUsers(data, action) {
       		addUserTable(data);
     	} else {
       		console.log("The user " + data + " will now be deleted from the table.");
-      		var filteredData = userTable
+      		let filteredData = userTable
       		.rows()
       		.indexes()
       		.filter(function (value, index) {

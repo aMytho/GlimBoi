@@ -6,7 +6,7 @@
       <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
   </div>
   <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. This also allows the bot to have a custom name.</p>
-        <p> When you are finished enter the client ID and secret key. Save them to GlimBoi. Then press authorize to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
+  <p> When you are finished enter the client ID and secret key. Save them to GlimBoi. Then press authorize to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
   <div class="row">
       <div class="col">
       <button class="btn btn-info btn-block" type="submit" id="authButton1" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
@@ -16,9 +16,6 @@
       </div>
       <div class="col">
       <button class="btn btn-info btn-block" type="submit" id="authButton3"  onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
-      </div>
-      <div class="col">
-      <button class="btn btn-info btn-block"  type="submit" id="authButton4" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
       </div>
       <div class="col">
         <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
@@ -37,8 +34,8 @@
           </div>
         </form>
         <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-        <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authorize</button>
-        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
+        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.requestToken(data[0].clientID, data[0].secret, true))">Request Token</button>
+        <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial <span class="badge badge-primary">Updated</span></button>
   </div>
   </div>
 
