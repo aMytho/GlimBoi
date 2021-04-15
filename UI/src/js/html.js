@@ -18,12 +18,6 @@ function addCommandModal() {
             		</td>
         		</tr>
         		<tr>
-            		<td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
-            		<td>
-               			<div id="addCommandArguements" contentEditable="true" data-text="null"></div>
-            		</td>
-        		</tr>
-        		<tr>
             		<td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
             		<td placeholder="test">
                			<div id="addCommandData" contentEditable="true" data-text="Command response"></div>
@@ -54,24 +48,76 @@ function addCommandModal() {
                			</select>
             		</td>
         		</tr>
+                <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Play a sound on activation">Sound</td>
+                <td id="commandSound">
+                  <select name="commandSelect" id="commandSoundSelect">
+                    <option value="null">None (Default)</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Show media on activation">Image/GIF/Video</td>
+                <td id="commandMedia">
+                  <select name="commandSelectMedia" id="commandSelectMedia">
+                    <option value="null">None (Default)</option>
+                  </select>
+                </td>
+              </tr>
     		</tbody>
    		</table>
 	</div>`
 }
 
 function editCommandModal(command, options) {
-    var select = document.createElement("select")
+    let select = document.createElement("select")
     select.id = "rankChoiceEdit"
     select.innerHTML += "<option value=\"" + "Everyone" + "\">" + "Everyone (Default)" + "</option>";
-    for (var i = 0; i < options.length; i++) {
-        var opt = options[i].rank;
+    for (let i = 0; i < options.length; i++) {
+        let opt = options[i].rank;
         if (command.rank == opt) {
             select.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
         } else {
             select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
         }
     }
-    console.log(select)
+    let soundSelect = document.createElement("select");
+    soundSelect.id = "commandEditSound";
+    let soundOptions = OBSHandle.getSounds();
+    let soundDefault = document.createElement("option");
+    soundDefault.value = null;
+    soundDefault.selected = true;
+    soundDefault.innerText = "None (Default)"
+    soundSelect.appendChild(soundDefault)
+    for (let i = 0; i < soundOptions.length; i++) {
+        let opt = soundOptions[i].name;
+        if (command.sound == opt) {
+            soundDefault.selected = false
+            soundSelect.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + "</option>";
+        } else {
+            soundSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+    let mediaSelect = document.createElement("select");
+    mediaSelect.id = "commandMediaSelect";
+    let mediaOptions = OBSHandle.getImages();
+    let mediaOptions2 = OBSHandle.getVideos();
+    mediaOptions = mediaOptions.concat(mediaOptions2);
+    let mediaDefault = document.createElement("option");
+    mediaDefault.value = null;
+    mediaDefault.selected = true;
+    mediaDefault.innerText = "None (Default)"
+    mediaSelect.appendChild(soundDefault)
+    for (let i = 0; i < mediaOptions.length; i++) {
+        let opt = mediaOptions[i].name;
+        if (command.media == opt) {
+            mediaDefault.selected = false
+            mediaSelect.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + "</option>";
+        } else {
+            mediaSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+
    	return `
 	<div class="modal-header text-center">
    		<h4 class="modal-title w-100" id="myModalLabel">Edit a command</h4>
@@ -86,10 +132,6 @@ function editCommandModal(command, options) {
       		</thead>
       		<tbody>
          		<tr>
-            		<td data-toggle="tooltip" data-placement="top" title="Arguements">Arguements</td>
-            		<td contenteditable="true" id="editCommandArguements">${command.arguements}</td>
-         		</tr>
-         		<tr>
             		<td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
             		<td contenteditable="true" id="editCommandData">${command.message}</td>
          		</tr>
@@ -102,7 +144,7 @@ function editCommandModal(command, options) {
             		<td contenteditable="true" id="editCommandUses">${command.uses}</td>
          		</tr>
          		<tr>
-            		<td data-toggle="tooltip" data-placement="top" title="Restrict a command to a specific rank.">Rank</td>
+            		<td data-toggle="tooltip" data-placement="top" title="Restrict a command to a specific rank">Rank</td>
             		<td id="editCommandRank">
                			${select.outerHTML}
             		</td>
@@ -116,6 +158,19 @@ function editCommandModal(command, options) {
                			</select>
             		</td>
          		</tr>
+                 <tr>
+                 <td data-toggle="tooltip" data-placement="top" title="Play a sound on activation">Sound</td>
+                 <td id="editCommandSound">
+                        ${soundSelect.outerHTML}
+                 </td>
+              </tr>
+              </tr>
+                 <tr>
+                 <td data-toggle="tooltip" data-placement="top" title="Show media on activation">Image/GIF/Video</td>
+                 <td id="editCommandMedia">
+                        ${mediaSelect.outerHTML}
+                 </td>
+              </tr>
       		</tbody>
    		</table>
 	</div>
@@ -397,4 +452,161 @@ function loadSpecificRank(rank) {
     document.getElementById("addQuotesRank").checked = rank.canAddQuotes;
     document.getElementById("editQuotesRank").checked = rank.canEditQuotes;
     document.getElementById("removeQuotesRank").checked = rank.canRemoveQuotes;
+}
+
+function addMediaModal() {
+    return `
+    <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Add Media</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="addMediaBody">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Media</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Name of media">Name</td>
+                <td><div id="addMediaName" contentEditable="true" data-text="Ex. Fireworks"></div></td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Position of the image/video">Position (Non audio elements)</td>
+                <td>
+                    <select id="addMediaPosition">
+                        <option value="topLeft">Top Left</option>
+                        <option value="topMid">Top Middle</option>
+                        <option value="topRight">Top Right</option>
+                        <option value="midLeft">Middle Left</option>
+                        <option value="midMid">Middle Middle</option>
+                        <option value="midRight">Middle Right</option>
+                        <option value="bottomLeft">Bottom Left</option>
+                        <option value="bottomMiddle">Bottom Middle</option>
+                        <option value="bottomRight">Bottom Right</option>
+                    </select>
+                </td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Media file">File</td>
+                <td>
+                    <label for="avatar">Upload Media:</label>
+                    <input type="file"
+                        id="addMediaInput" name="input"
+                        accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="addMediaError"></p>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-primary" onclick="addMedia()">Add</button>
+        </div>
+      </div>`
+}
+
+function fillMediaEdit(media) {
+    document.getElementById("mediaEditButton").onclick = function() {editMediaCheck()}
+    document.getElementById("mediaEditName").innerText = "Edit " + media.name
+    let positionArray = ["topLeft", "topMid", "topRight", "midLeft", "midMid", "midRight", "bottomLeft", "bottomMid", "bottomRight"]
+    let select = document.createElement("select")
+    select.id = "editMediaFileInput"
+    for (let i = 0; i < positionArray.length; i++) {
+        let opt = positionArray[i];
+        if (media.position == opt) {
+            select.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
+        } else {
+            select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+    return `
+    <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Media</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Position of the image/video">Position (Non audio elements)</td>
+                <td>
+                    ${select.outerHTML}
+                </td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Media file">File</td>
+                <td>
+                    <label for="avatar">Upload Media:</label>
+                    <input type="file"
+                        id="editMediaInput" name="input"
+                        accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
+                </td>
+              </tr>
+            </tbody>
+    </table>`
+}
+
+function editMediaModal() {
+    return `
+    <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="mediaEditName">Edit Media</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="editMediaBody">
+            <div class="icon-input-container">
+                <input class="icon-input" type="text" placeholder="Media Name" id="mediaEditInput">
+                <p id="editMediaMessage" class="errorMessage"></p>
+              </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="editMediaError"></p>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-success" id="mediaEditButton" onclick="editMedia(document.getElementById('mediaEditInput').value)">Edit</button>
+        </div>
+    `
+}
+
+function removeMediaModal() {
+    return `
+    <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Remove Media</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="removeMediaBody">
+            <div class="icon-input-container">
+                <input class="icon-input" type="text" placeholder="Media Name" id="mediaRemoveInput">
+              </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="RemoveMediaError"></p>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-danger" id="mediaEditButton" onclick="removeMedia(document.getElementById('mediaRemoveInput').value)">Remove</button>
+        </div>`
+}
+
+function audioResetModal() {
+    return `
+    <select id="playAudioModalSelect">
+                <option value="null">None</option>
+            </select>
+            <p id="audioMessage">Select the audio to be played in the overlay</p>`
+}
+
+function imageResetModal() {
+    return `
+    <select id="playImageModalSelect">
+                <option value="none">None</option>
+            </select>
+            <p>Select the Image or GIF to be shown in the overlay</p>`
 }

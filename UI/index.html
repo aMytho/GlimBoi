@@ -27,6 +27,7 @@
         <script src="src/js/users.js"></script>
         <script src="src/js/ranks.js"></script>
         <script src="src/js/commands.js"></script>
+        <script src="src/js/OBS.js"></script>
         <script src="src/js/charts.js"></script>
         <script src="src/js/chat.js"></script>
         <script src="src/js/events.js"></script>
@@ -55,6 +56,9 @@
                     </li>
                     <li class="nav-item glimNavItem" id="Ranks">
                         <a class="nav-link disabled" href="UI/src/html/ranks.html" id="RanksLink">Ranks</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="OBS">
+                        <a class="nav-link disabled" href="UI/src/html/OBS.html" id="OBSLink">Overlay</a>
                     </li>
                     <li class="nav-item glimNavItem" id="Settings">
                         <a class="nav-link disabled" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
@@ -108,9 +112,6 @@
                                 <button class="btn btn-info btn-block" type="submit" id="authButton4" onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
                             </div>
                             <div class="col">
-                                <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
-                            </div>
-                            <div class="col">
                                 <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
                             </div>
                         </div>
@@ -127,8 +128,8 @@
                             </div>
                         </form>
                         <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-                        <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authorize</button>
-                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
+                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.requestToken(data[0].clientID, data[0].secret, true))">Request Token</button>
+                        <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial <span class="badge badge-primary">Updated</span></button>
                     </div>
                 </div>
 

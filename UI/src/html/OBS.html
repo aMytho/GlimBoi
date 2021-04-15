@@ -1,0 +1,258 @@
+<div class="card-deck m-3">
+    <div class="col-lg-2 col-12 p-0">
+      <div class="card glimPanel m-0 mr-lg-2">
+        <div class="btn-group-vertical pb-2 pb-lg-0 d-inline-block row mx-auto justify-content-md-center">
+          <a class="offset-lg-0 offset-1 col-lg-12 col-2 btn btn-primary mt-2 btn-inline" href="#" data-toggle="modal" data-target="#addMediaModal">Add Media</a>
+          <a class="col-lg-12 col-2 btn btn-success mt-2 btn-inline" href="#" data-toggle="modal" data-target="#editMediaModal">Edit Media</a>
+          <a class="col-lg-12 col-2 btn btn-danger mt-2 btn-inline" href="#" data-toggle="modal" data-target="#removeMediaModal">Remove Media</a>
+          <hr style="border-color: aliceblue;width: 50%;" class="my-2">
+          <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#showMediaModal" onclick="OBSHandle.startServer()">Launch Overlay</a>
+          <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#playAudioModal">Play Audio</a>
+          <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#playImageModal">Display Media</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-10 mx-lg-0 mt-3 mt-lg-2 col-12 p-0">
+      <div class="card glimPanel whiteTex overflow-auto p-3 w-100 m-0">
+        <table id="obsResources" class="display table w-100"></table>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    </style>
+
+<!-- Modal: Add Media -->
+<div class="modal fade" id="addMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="mediaAddModalContent">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Add Media</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="addMediaBody">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Media</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Name of media">Name</td>
+                <td><div id="addMediaName" contentEditable="true" data-text="Ex. Fireworks"></div></td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Position for the image/video to show in.">Position (Non audio elements)</td>
+                <td>
+                    <select id="addMediaPosition">
+                        <option value="topLeft">Top Left</option>
+                        <option value="topMid">Top Middle</option>
+                        <option value="topRight">Top Right</option>
+                        <option value="midLeft">Middle Left</option>
+                        <option value="midMid">Middle Middle</option>
+                        <option value="midRight">Middle Right</option>
+                        <option value="bottomLeft">Bottom Left</option>
+                        <option value="bottomMiddle">Bottom Middle</option>
+                        <option value="bottomRight">Bottom Right</option>
+                    </select>
+                </td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="THe media file">File</td>
+                <td>
+                    <label for="avatar">Upload Media:</label>
+                    <input type="file"
+                        id="addMediaInput" name="input"
+                        accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="addMediaError"></p>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-primary" onclick="addMedia()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: modalCart -->
+
+
+<!-- Modal: Edit Media -->
+<div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="mediaEditModalContent">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="mediaEditName">Edit Media</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="editMediaBody">
+            <div class="icon-input-container">
+                <input class="icon-input" type="text" placeholder="Media Name" id="mediaEditInput">
+                <p id="editMediaMessage" class="errorMessage"></p>
+              </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="editMediaError"></p>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-success" id="mediaEditButton" onclick="editMedia(document.getElementById('mediaEditInput').value)">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: Media -->
+
+  <!-- Modal: Remove Media -->
+<div class="modal fade" id="removeMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Remove Media</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="removeMediaBody">
+            <div class="icon-input-container">
+                <input class="icon-input" type="text" placeholder="Media Name" id="mediaRemoveInput">
+              </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="RemoveMediaError"></p>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-danger" id="mediaEditButton" onclick="removeMedia(document.getElementById('mediaRemoveInput').value)">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Modal: Media -->
+
+<div class="modal fade" id="showMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Overlay Launched</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body whiteText">
+            <p>The OBS overlay has launched. Open index.html in <span><a onclick="shell.openPath(appData[0] + '/chatbot/lib/OBS')" href="#">this</a></span> directory. Click on the document to allow media to play. When you have finished testing add it as a browser source in your streaming software.</p>
+            <p class="mt-2">The overlay will launch automatically when you join a chat. This button is only for testing purposes. If you encounter any issues with the overlay be sure to let us know! Usually a simple restart fixes it.</p>
+              </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="playAudioModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Play Audio</h4>
+        </div>
+        <div class="modal-body whiteText text-center" id="audioBodyModal">
+            <select id="playAudioModalSelect">
+                <option value="null">None</option>
+            </select>
+            <p id="audioMessage">Select the audio to be played in the overlay</p>
+              </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="OBSHandle.playSound(document.getElementById('playAudioModalSelect').value)">Play</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="playImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Display Image/GIF/Video</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body whiteText text-center" id="displayImageModalBody">
+            <select id="playImageModalSelect">
+                <option value="none">None</option>
+            </select>
+            <p>Select the media to be shown in the overlay</p>
+              </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="OBSHandle.displayImage(OBSHandle.getMediaByName(document.getElementById('playImageModalSelect').value))">Display</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,6 +1,7 @@
 // This file reads all data and displays it in a chart. Chart is shown on start page. This is only used for the start page.
 var userCount, pointCount, commandCount, quoteCount, introChart, pollChart
 function getBasicData() {
+    OBSHandle.getAll()
   	var users = UserHandle.getAll().then(a => {
     	userCount = a.length;
     	var points = QuoteHandle.getAll().then(b => {

@@ -1,8 +1,8 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
-var CommandHandle = require(appData[0] + "/chatbot/lib/commands.js");
+const CommandHandle = require(appData[0] + "/chatbot/lib/commands.js");
 CommandHandle.updatePath(appData[1]);
-var table; //The physical table for the UI
-var commandToBeEdited; // A global var because I was too lazy to find another solution. Must have for editing.
+let table; //The physical table for the UI
+let commandToBeEdited; // A global var because I was too lazy to find another solution. Must have for editing.
 
 //Loads the command table.
 function loadCommandTable() {
@@ -14,10 +14,6 @@ function loadCommandTable() {
         		{
     	      		title: "Commands",
 	          		data: "commandName",
-        		},
-        		{
-    	      		title: "Arguements",
-	          		data: "arguements",
         		},
         		{
     	      		title: "Data",
@@ -46,12 +42,14 @@ function loadCommandTable() {
  */
 function checkNewCommand() {
   	console.log("Checking if command is valid.");
-  	var commandName = $("#addCommandName").text().trim().toLowerCase();
-  	var commandData = $("#addCommandData").text().trim();
-  	var commandPoints = Number($("#addCommandPoints").text());
-  	var commandUses = Number($("#addCommandUses").text());
-  	var repeat = document.getElementById("commandRepeatableChoice").value
-  	var commandRank = document.getElementById("rankChoiceAdd").value;
+  	let commandName = $("#addCommandName").text().trim().toLowerCase();
+  	let commandData = $("#addCommandData").text().trim();
+  	let commandPoints = Number($("#addCommandPoints").text());
+  	let commandUses = Number($("#addCommandUses").text());
+  	let repeat = document.getElementById("commandRepeatableChoice").value
+  	let commandRank = document.getElementById("rankChoiceAdd").value;
+    let commandSound = document.getElementById("commandSoundSelect").value
+    let commandMedia = document.getElementById("commandSelectMedia").value
 
   	commandName = commandName.replace(new RegExp("^[\!]+"), "").trim();
   	if (commandName.length == 0 || commandName == "!") {
@@ -105,9 +103,9 @@ function checkNewCommand() {
 
   	if (repeat == "false") { repeat = false } else { repeat = true }
 
-  	console.log(commandName, commandData, commandPoints, commandUses, commandRank, null, repeat);
+  	console.log(commandName, commandData, commandPoints, commandUses, commandRank, null, repeat, commandSound, commandMedia);
   	//Adds a command to the DB
-  	CommandHandle.addCommand(commandName, null, commandData, commandUses, commandPoints, commandRank, null, repeat);
+  	CommandHandle.addCommand(commandName, commandData, commandUses, commandPoints, commandRank, null, repeat, commandSound, commandMedia);
   	//adds a row to the table with the new command info
   	addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank)
   	$("#modalCart").modal("hide");
@@ -203,11 +201,13 @@ function checkEditCommand() {
  */
 function editCommand() {
   	console.log("Checking if command is valid.");
-  	var commandData = $("#editCommandData").text().trim().toLowerCase();
-  	var commandPoints = Number($("#editCommandPoints").text());
-  	var commandUses = Number($("#editCommandUses").text());
-  	var commandRank = document.getElementById("rankChoiceEdit").value;
-  	var repeat = document.getElementById("commandRepeatableChoiceEdit").value
+  	let commandData = $("#editCommandData").text().trim().toLowerCase();
+  	let commandPoints = Number($("#editCommandPoints").text());
+  	let commandUses = Number($("#editCommandUses").text());
+  	let commandRank = document.getElementById("rankChoiceEdit").value;
+  	let repeat = document.getElementById("commandRepeatableChoiceEdit").value
+    let commandSound = document.getElementById("commandEditSound").value
+    let commandMedia = document.getElementById("commandMediaSelect").value
 
   	commandData = commandData.replace(new RegExp("^[\!]+"), "").trim();
 
@@ -245,9 +245,10 @@ function editCommand() {
 
   	if (repeat == "false") { repeat = false } else { repeat = true }
 
-  	console.log(commandData, commandPoints, commandUses, commandRank, repeat);
+  	console.log(commandData, commandPoints, commandUses, commandRank, repeat, commandSound, commandMedia);
+
   	// Adds it to the db and table
-  	CommandHandle.editCommand(commandToBeEdited, null, commandData, commandUses, commandPoints, commandRank, null, repeat); //Edit the DB
+  	CommandHandle.editCommand(commandToBeEdited, commandData, commandUses, commandPoints, commandRank, null, repeat, commandSound, commandMedia); //Edit the DB
   	CommandHandle.findCommand(commandToBeEdited).then(data => {
     	if (data !== null) {
       		var filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
@@ -257,7 +258,7 @@ function editCommand() {
           		return table.row(value).data().commandName == commandToBeEdited;
         	});
       		table.rows(filteredData).remove();
-      		table.row.add({ commandName: commandToBeEdited, arguements: null, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank });
+      		table.row.add({ commandName: commandToBeEdited, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank });
       		table.draw();
       		$("#modalEditCommand").modal("hide");
       		document.getElementById("editModal").innerHTML = editCommandModalEntry()
@@ -290,7 +291,7 @@ function editReset() {
 
 // Adds a command to the table.
 function addCommandTable(commandName, commandData, commandUses, commandPoints, commandRank) {
-  	table.row.add({ commandName: commandName, arguements: null, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank })
+  	table.row.add({ commandName: commandName, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank })
   	table.draw(); //Show changes
 }
 
@@ -318,11 +319,28 @@ function commandModalPrep() {
     	$("#addCommandUses").keypress(function (e) {
       		if (e.which === 13 || isNaN(String.fromCharCode(e.which))) e.preventDefault();
     	});
-        var select = document.getElementById("rankChoiceAdd");
-        var options = RankHandle.getCurrentRanks();
-        for (var i = 0; i < options.length; i++) {
-            var opt = options[i].rank;
+
+        let select = document.getElementById("rankChoiceAdd");
+        let options = RankHandle.getCurrentRanks();
+        for (let i = 0; i < options.length; i++) {
+            let opt = options[i].rank;
             select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+
+        let soundSelect = document.getElementById("commandSoundSelect");
+        let soundOptions = OBSHandle.getSounds();
+        for (let i = 0; i < soundOptions.length; i++) {
+            let opt = soundOptions[i].name;
+            soundSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+
+        let mediaSelect = document.getElementById("commandSelectMedia");
+        let imageOptions = OBSHandle.getImages();
+        let videoOptions = OBSHandle.getVideos();
+        let mediaOptions = imageOptions.concat(videoOptions);
+        for (let i = 0; i < mediaOptions.length; i++) {
+            let opt = mediaOptions[i].name;
+            mediaSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
         }
   	});
   	$('#modalEditCommand').on('hidden.bs.modal', function (e) {
