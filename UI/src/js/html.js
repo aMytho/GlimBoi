@@ -493,7 +493,7 @@ function addMediaModal() {
               <tr>
                 <td data-toggle="tooltip" data-placement="top" title="Media file">File</td>
                 <td>
-                    <label for="avatar">Upload Media:</label>
+                    <label for="avatar">Audio, Image/GIF, Video</label>
                     <input type="file"
                         id="addMediaInput" name="input"
                         accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
@@ -543,7 +543,7 @@ function fillMediaEdit(media) {
               <tr>
                 <td data-toggle="tooltip" data-placement="top" title="Media file">File</td>
                 <td>
-                    <label for="avatar">Upload Media:</label>
+                    <label for="avatar">Audio, Image/GIF, Video</label>
                     <input type="file"
                         id="editMediaInput" name="input"
                         accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">

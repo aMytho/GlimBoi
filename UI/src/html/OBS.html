@@ -9,6 +9,7 @@
           <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#showMediaModal" onclick="OBSHandle.startServer()">Launch Overlay</a>
           <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#playAudioModal">Play Audio</a>
           <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#playImageModal">Display Media</a>
+          <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#overlayInfo">Overlay Info</a>
         </div>
       </div>
     </div>
@@ -60,7 +61,7 @@
               <tr>
                 <td data-toggle="tooltip" data-placement="top" title="THe media file">File</td>
                 <td>
-                    <label for="avatar">Upload Media:</label>
+                    <label for="avatar">Audio, Image/GIF, Video</label>
                     <input type="file"
                         id="addMediaInput" name="input"
                         accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
@@ -190,6 +191,27 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-outline-primary" onclick="OBSHandle.displayImage(OBSHandle.getMediaByName(document.getElementById('playImageModalSelect').value))">Display</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="overlayInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Overlay Info</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body whiteText text-center">
+            <p>You can have various actions in the bot trigger media. You can play audio and display images,GIFs, and videos. You must add the overlay as a browser source in OBS. The overlay is index.html in <span><a onclick="shell.openPath(appData[0] + '/chatbot/lib/OBS')" href="#">this</a></span> directory. It will allow your viewers to hear and see the media.</p>
+            <p class="mt-2">The overlay will launch when you join a chat. To test it without joining a chat you can launch it from the overlay tab. Then open the file in the browser. Click anywhere on the page and it will become active.</p>
+            <p class="mt-2">To add media on command acitvation edit a command and choose the media in the dropdown menu. <b>You must add the media on this page first.</b> Then the rest of the bot can use it.</p>
+              </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
