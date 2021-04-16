@@ -361,7 +361,7 @@ async function runCommand(arguements, index, user) {
     addCommandCount(arguements[0]); // Increments the command uses by one.
     if (commands[index].sound !== undefined && commands[index].sound !== "null" && commands[index].sound !== null) {
         let sound = OBSHandle.getMediaByName(commands[index].sound)
-        if (sound !== null) {
+        if (sound !== null && sound.type.startsWith("audio")) {
             OBSHandle.playSound(sound);
         }
     }

@@ -46,7 +46,7 @@ function addMedia() {
     console.log(mName, media);
     if (OBSHandle.getMediaByName(mName) == null && mName !== "null") {
         OBSHandle.addMedia(mName, media.files[0].path, media.files[0].type, document.getElementById("addMediaPosition").value);
-        OBSTable.row.add({ name: mName.trim(), type: media.files[0].type, path: media.files[0].path, position: document.getElementById("addMediaPosition").value })
+        OBSTable.row.add({ name: mName.toLowerCase(), type: media.files[0].type, path: media.files[0].path, position: document.getElementById("addMediaPosition").value })
         OBSTable.draw(); //Show changes
         $("#addMediaModal").modal("hide");
         document.getElementById("mediaAddModalContent").innerHTML = addMediaModal()
@@ -65,7 +65,7 @@ function editMedia(name) {
 }
 
 function editMediaCheck() {
-    let newName = document.getElementById("mediaEditName").innerText.substring(4).trim()
+    let newName = document.getElementById("mediaEditName").innerText.substring(4).trim().toLowerCase()
     let newPosition = document.getElementById("editMediaFileInput").value
     let newPath = document.getElementById("editMediaInput");
     console.log(newPosition, newPath)
@@ -97,7 +97,7 @@ function editMediaCheck() {
 }
 
 function removeMedia(media) {
-    media = media.trim()
+    media = media.trim().toLowerCase()
     if (media.length == 0) {
         document.getElementById("RemoveMediaError").innerText = "You must enter a media name!"
         return
@@ -135,9 +135,8 @@ function prepMediaModals() {
     	let selectElement = document.getElementById("playAudioModalSelect");
         let audioItems = OBSHandle.getSounds();
         for (var i = 0; i < audioItems.length; i++) {
-            let path = audioItems[i].path;
             let name = audioItems[i].name
-            selectElement.innerHTML += "<option value=\"" + path + "\">" + name + "</option>";
+            selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
   	})
     $('#playImageModal').on('hidden.bs.modal', function (e) {

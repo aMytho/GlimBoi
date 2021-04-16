@@ -87,7 +87,7 @@ function editCommandModal(command, options) {
     let soundDefault = document.createElement("option");
     soundDefault.value = null;
     soundDefault.selected = true;
-    soundDefault.innerText = "None (Default)"
+    soundDefault.appendChild(document.createTextNode("None (Default)"))
     soundSelect.appendChild(soundDefault)
     for (let i = 0; i < soundOptions.length; i++) {
         let opt = soundOptions[i].name;
@@ -107,7 +107,7 @@ function editCommandModal(command, options) {
     mediaDefault.value = null;
     mediaDefault.selected = true;
     mediaDefault.innerText = "None (Default)"
-    mediaSelect.appendChild(soundDefault)
+    mediaSelect.appendChild(mediaDefault)
     for (let i = 0; i < mediaOptions.length; i++) {
         let opt = mediaOptions[i].name;
         if (command.media == opt) {

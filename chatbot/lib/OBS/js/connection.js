@@ -3,12 +3,12 @@
 function connect() {
     let connection = new WebSocket("ws://localhost:8080");
 
-    connection.onopen = function(event) {
+    connection.onopen = function (event) {
         console.log("connected to glimboi server")
     }
 
 
-    connection.onmessage = function(event) {
+    connection.onmessage = function (event) {
         console.log(event.data);
         let message = JSON.parse(event.data)
         if (message.action !== undefined) {
@@ -22,21 +22,21 @@ function connect() {
                 newImage.src = message.data.path;
                 document.getElementById(message.data.position).appendChild(newImage);
                 setTimeout(() => {
-                   newImage.remove()
-                }, 7000);
+                    newImage.remove()
+                }, 7777);
             } else if (message.action == "video") {
                 console.log("Displaying Video");
                 let newVid = document.createElement("video");
                 newVid.src = message.data.path;
                 document.getElementById(message.data.position).appendChild(newVid);
                 setTimeout(() => {
-                   newVid.remove()
-                }, 7000);
+                    newVid.remove()
+                }, 7777);
             }
         }
     }
 
-    connection.onclose = function(event) {
+    connection.onclose = function (event) {
         console.log("disconnected from the server");
         setTimeout(() => {
             console.log("Attempting to reconnect")

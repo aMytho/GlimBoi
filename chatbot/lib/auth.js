@@ -19,6 +19,10 @@ function requestToken(clientID, secretKey, firstTime) {
                     console.log(data)
                     token.access_token = data.access_token;
                     token.creation = data.created_at;
+                    if (token.access_token == undefined) {
+                        errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
+                        return
+                    }
                     //Updates the DB with the info
                     authDB.update({}, { $set: { access_token: data.access_token, created_at: data.created_at } }, { multi: true }, function (err, numReplaced) {
                         console.log("Access token recieved and added to the database. Ready to join chat!");
@@ -27,7 +31,7 @@ function requestToken(clientID, secretKey, firstTime) {
                     });
                 } catch (e) {
                     console.log(e); // in case of errors...
-                    errorMessage(refresh, "Refreshing has failed. Please reauthenicate with Glimesh.");
+                    errorMessage(e, "Auth Error")
                 }
             });
         })
@@ -155,6 +159,5 @@ function getID() {
     	})
   	})
 }
-
 
 module.exports = { Auth, createID ,getID, getToken ,readAuth, recieveID, requestToken, updateID ,updatePath}; //Send to the main file.

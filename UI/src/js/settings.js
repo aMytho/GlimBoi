@@ -317,6 +317,6 @@ function updateSettings() {
     CommandHandle.cooldownChange(settings.Commands.cooldown);
     ModHandle.updateFilter(settings.chat.filter);
     if (ChatSettings !== undefined) {
-        ChatSettings.updateChatSettings(settings)
+        ChatSettings.updateChatSettings(settings);
     }
 }

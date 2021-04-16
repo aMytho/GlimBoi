@@ -30,17 +30,13 @@ function rememberID(firstRun) { // checks if an id has been entered for auth
       		document.getElementById("secretID").setAttribute("placeholder", "ID Saved!")
       		document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
       		document.getElementById("saveAuth").innerHTML = "Edit Auth";
+            document.getElementById("joinChannelBOT").removeAttribute("disabled");
       		if (firstRun) {
                 updateStatus(1); // sets to  request a token status message
         		if (isDev == false) { //They have entered auth info, request a token
           			console.log("Getting the first token for this session");
-          			document.getElementById("joinChannelBOT").removeAttribute("disabled");
           			AuthHandle.requestToken(data[0].clientID, data[0].secret, false)
         		} else { errorMessage("Possbile Error", "You have already been authenticated. If you belive this to be false you can restart GlimBoi.") }
-      		}
-      		// If the above statement is true the below statement will run as well. Not efficient, need to fix.
-      		if (data[0].access_token.length > 5) {
-        		document.getElementById("joinChannelBOT").removeAttribute("disabled");
       		}
     	}
   	})
@@ -53,20 +49,21 @@ function saveAuth() { //sets the state to saved
   	document.getElementById("saveAuth").setAttribute("onclick", "editAuth()")
   	document.getElementById("saveAuth").innerHTML = "Edit Auth";
   	AuthHandle.createID(document.getElementById("clientID").value, document.getElementById("secretID").value).then(data => {
+        document.getElementById("joinChannelBOT").removeAttribute("disabled");
     	if (data == "NOAUTH") { // no changes
       		errorMessage("No Changes", "No changes were made to the auth file. The client ID and secret ID will not be updated.")
       		// Both IDs updated
     	} else if (data.clientID !== undefined && data.clientID.length > 2 && data.secret !== undefined && data.secret.length > 2) {
-      		successMessage("Auth Updated", "The client ID and secret ID have been updated. To complete the authentication process select authorize on the homepage.");
+      		successMessage("Auth Updated", "The client ID and secret ID have been updated. To complete the authentication process select request token on the homepage.");
       		ApiHandle.updateID();
       		updateStatus(1);
       		// The client ID was updated but the secret was not.
     	} else if (data.clientID !== undefined && data.clientID.length > 2 && (data.secret == "" || data.secret == undefined)) {
-      		successMessage("Auth Updated", "The client ID has been updated. If the secret ID has already been saved you can authorize the bot. Otherwise you need to enter the secret ID.");
+      		successMessage("Auth Updated", "The client ID has been updated. If the secret ID has already been saved you can request a token. Otherwise you need to enter the secret ID.");
       		ApiHandle.updateID();
       		// The secret was updated but the client Id was not
     	} else if (data.secret !== undefined && data.secret.length > 2 && (data.clientID == "" || data.clientID == undefined)) {
-      		successMessage("Auth Updated", "The secret ID has been updated. If the client ID has already been saved you can authorize the bot. Otherwise you need to enter the client ID.");
+      		successMessage("Auth Updated", "The secret ID has been updated. If the client ID has already been saved you can request a token. Otherwise you need to enter the client ID.");
     	}
   	});
   	console.log(document.getElementById("clientID").value, document.getElementById("secretID").value)

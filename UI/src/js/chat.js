@@ -164,7 +164,7 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
   	var chatToJoin = $('#newChatName').val();
   	AuthHandle.getToken().then(data => {
     	if (data == undefined || data.length == 0) {
-      		errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and auth again.")
+      		errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and request a token.")
     	} else {
       		// Authenticate if we can and check the channel
       		ApiHandle.updatePath(data); //Sends the API module our access token.
