@@ -1,238 +1,239 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>GlimBoi</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="src/style.css">
-    <!-- jQuery library -->
-    <script src="src/js/jquery.js"></script>
-    <script>
-    window.jQuery || document.write('<script src="src/js/jquery.js"><\/script>') //Imports it if it failed initially.
-    </script>
-    <link rel="stylesheet" href="src/css/bootstrap.min.css">
-    <!-- Popper JS -->
-    <script src="src/js/popper.js"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="src/js/bootstrap/bootstrap.min.js"></script>
-    <link href="src/css/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="src/js/dataTables/dataTables.css">
-    <script src="src/js/dataTables/dataTables.js"></script>
-    <!--Apex Charts-->
-    <script src="src/js/apexCharts/apexCharts.js"></script>
-    <!--custom scripts-->
-    <script src="src/electronNav.js"></script>
-    <script src="src/js/home.js"></script>
-    <script src="src/js/html.js"></script>
-    <script src="src/js/users.js"></script>
-    <script src="src/js/commands.js"></script>
-    <script src="src/js/charts.js"></script>
-    <script src="src/js/chat.js"></script>
-    <script src="src/js/events.js"></script>
-    <script src="src/js/settings.js"></script>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>GlimBoi</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="src/style.css">
+        <!-- jQuery library -->
+        <script src="src/js/jquery.js"></script>
+        <script>
+            window.jQuery || document.write('<script src="src/js/jquery.js"><\/script>') //Imports it if it failed initially.
         </script>
+        <link rel="stylesheet" href="src/css/bootstrap.min.css">
+        <!-- Popper JS -->
+        <script src="src/js/popper.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="src/js/bootstrap/bootstrap.min.js"></script>
+        <link href="src/css/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="src/js/dataTables/dataTables.css">
+        <script src="src/js/dataTables/dataTables.js"></script>
+        <!--Apex Charts-->
+        <script src="src/js/apexCharts/apexCharts.js"></script>
+        <!--custom scripts-->
+        <script src="src/electronNav.js"></script>
+        <script src="src/js/home.js"></script>
+        <script src="src/js/html.js"></script>
+        <script src="src/js/users.js"></script>
+        <script src="src/js/ranks.js"></script>
+        <script src="src/js/commands.js"></script>
+        <script src="src/js/charts.js"></script>
+        <script src="src/js/chat.js"></script>
+        <script src="src/js/events.js"></script>
+        <script src="src/js/settings.js"></script>
+    </head>
+    <body>
         <i id="maximize" class="fa fa-window-maximize" style="color: skyblue;position: absolute;right: 2px;top:1px;z-index: 2;"></i>
         <i id="minimize" class="fa fa-window-minimize" style="color: skyblue;position: absolute;right: 25px;top:1px;z-index: 3;"></i>
         <i id="refresh" class="fas fa-sync" style="color: skyblue;position: absolute;right: 45px;top:1px;z-index: 4;"></i>
 
         <!-- A grey horizontal navbar that becomes vertical on small screens -->
         <nav class="navbar navbar-expand-md navbar-dark glimNav mt-3 ml-4" style="padding-bottom: 5px;-webkit-app-region: drag" >
-          <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item glimNavItem" id="Commands">
-                    <a class="nav-link disabled" href="UI/src/html/commands.html" id="CommandLink">Commands</a>
-                </li>
-                <li class="nav-item glimNavItem" id="Quotes">
-                    <a class="nav-link disabled" href="UI/src/html/points.html" id="PointsLink">Points</a>
-                </li>
-                <li class="nav-item glimNavItem" id="Events">
-                    <a class="nav-link disabled" href="UI/src/html/events.html" id="EventsLink">Events</a>
-                </li>
-                <li class="nav-item glimNavItem" id="DB">
-                    <a class="nav-link disabled" href="UI/src/html/users.html" id="UsersLink">Users</a>
-                </li>
-                <li class="nav-item glimNavItem" id="Settings">
-                    <a class="nav-link disabled" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
-                </li>
-                <li class="nav-item glimNavItem" id="Chat">
-                  <a class="nav-link disabled" href="UI/src/html/chat.html" id="ChatLink">Chat</a>
-              </li>
-            </ul>
-        </div>
-        <div class="mx-auto order-0">
-            <a class="navbar-brand mx-auto nav-link glimNavItem" href="UI/src/html/homepage.html" style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
-        </div>
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item glimNavItem">
-                    <a class="nav-link disabled" href="#" >
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item glimNavItem" id="Commands">
+                        <a class="nav-link disabled" href="UI/src/html/commands.html" id="CommandLink">Commands</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="Quotes">
+                        <a class="nav-link disabled" href="UI/src/html/points.html" id="PointsLink">Points</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="Events">
+                        <a class="nav-link disabled" href="UI/src/html/events.html" id="EventsLink">Events</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="DB">
+                        <a class="nav-link disabled" href="UI/src/html/users.html" id="UsersLink">Users</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="Ranks">
+                        <a class="nav-link disabled" href="UI/src/html/ranks.html" id="RanksLink">Ranks</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="Settings">
+                        <a class="nav-link disabled" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
+                    </li>
+                    <li class="nav-item glimNavItem" id="Chat">
+                        <a class="nav-link disabled" href="UI/src/html/chat.html" id="ChatLink">Chat</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mx-auto order-0">
+                <a class="navbar-brand mx-auto nav-link glimNavItem" href="UI/src/html/homepage.html" style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item glimNavItem">
+                        <a class="nav-link disabled" href="#" >
                         <i class="fa fa-ban" id="authStatus" aria-hidden="true" title="Not authenticated" style="color: rgb(134, 34, 34);"> <span style="color: rgb(189, 57, 57);">Not Authenticated! Some features will not work!</span> </i></a>
-                </li>
-                <li class="nav-item glimNavItem">
-                    <a class="nav-link disabled" href="#"><span class="badge badge-pill badge-info">Beta</span>
-                    </a>
-                </li>
-                <li class="nav-item glimNavItem">
-                    <a class="nav-link" href="#" id="close">Exit</a>
-                </li>
-            </ul>
-        </div>
-  </nav>
-  <!--End of Navbar-->
+                    </li>
+                    <li class="nav-item glimNavItem">
+                        <a class="nav-link disabled" href="#"><span class="badge badge-pill badge-info">Beta</span>
+                        </a>
+                    </li>
+                    <li class="nav-item glimNavItem">
+                        <a class="nav-link" href="#" id="close">Exit</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!--End of Navbar-->
 
 
-  <!-- Layout for home page -->
-  <div class="pane h-100">
-    <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
+        <!-- Layout for home page -->
+        <div class="pane h-100">
+            <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
 
-        <div class="row">
-        <div class="col-sm-6">
-        <div class="introaaa">
-            <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
-        </div>
-        <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. This also allows the bot to have a custom name.</p>
-        <p> When you are finished enter the client ID and secret key. Save them to GlimBoi. Then press authorize to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
-        <div class="row">
-            <div class="col">
-            <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
-            </div>
-            <div class="col">
-            <button class="btn btn-info btn-block" type="submit" id="authButton3" onclick="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
-            </div>
-            <div class="col">
-            <button class="btn btn-info btn-block" type="submit" id="authButton4" onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
-            </div>
-            <div class="col">
-            <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
-            </div>
-            <div class="col">
-                <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
-            </div>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <form>
-                <div class="form-row">
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Client ID" id="clientID">
-                  </div>
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="Secret Key" id="secretID">
-                </div>
-                </div>
-              </form>
-              <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-              <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authorize</button>
-              <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
-        </div>
-        </div>
-
-        <div class="row">
-        <div class="col-sm-6 mt-3">
-        <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
-        <p>It was inspired by Scottybot on Mixer. Special thanks to Daddy Robot and Codestics for the help and inspiration. The goal of this bot is to provide an easy to use interface while using minimal resources.</p>
-        <p>Contributions are always welcome :)</p>
-        </div>
-        <div class="col-sm-6">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div id="chart">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="introaaa">
+                            <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
+                        </div>
+                        <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. This also allows the bot to have a custom name.</p>
+                        <p> When you are finished enter the client ID and secret key. Save them to GlimBoi. Then press authorize to connect the bot with your application. After the initial auth completion Glimboi will automatically authenticate itself on launch. If any problems arise you can simple authenticate again.</p>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-info btn-block" type="submit" id="authButton3" onclick="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-info btn-block" type="submit" id="authButton4" onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <form>
+                            <div class="form-row">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Client ID" id="clientID">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Secret Key" id="secretID">
+                                </div>
+                            </div>
+                        </form>
+                        <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
+                        <button class="btn btn-info btn-block" type="submit" id="authButton" onclick="AuthHandle.Auth()">Authorize</button>
+                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.refreshToken(data[0].refresh_token, data[0].clientID, data[0].secret).then(successMessage('Token Refreshed', 'GlimBoi is ready to join your chat!')))">Request Token</button>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <h6 class="text-center">GlimBoi to Chat:</h6>
-                    <p>1: Create Bot</p>
-                    <p>2: Create an application on Glimesh. Redirect URI must be http://localhost:3000/success</p>
-                    <p>3: Enter the client ID and secret ID from the application into GlimBoi. Save them.</p>
-                    <p>4: Select Authorize. It will open a new tab in your browser. Authorize your application.</p>
-                    <p>GlimBoi can join the chat!</p>
+
+                <div class="row">
+                    <div class="col-sm-6 mt-3">
+                        <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
+                        <p>It was inspired by Scottybot on Mixer. Special thanks to Daddy Robot and Codestics for the help and inspiration. The goal of this bot is to provide an easy to use interface while using minimal resources.</p>
+                        <p>Contributions are always welcome :)</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div id="chart">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 class="text-center">GlimBoi to Chat:</h6>
+                                <p>1: Create Bot</p>
+                                <p>2: Create an application on Glimesh. Redirect URI must be http://localhost:3000/success</p>
+                                <p>3: Enter the client ID and secret ID from the application into GlimBoi. Save them.</p>
+                                <p>4: Select Authorize. It will open a new tab in your browser. Authorize your application.</p>
+                                <p>GlimBoi can join the chat!</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <p id="version" class="whiteText ml-3"></p>
+        <div id="notification" class="hidden glimPanel">
+            <p id="message" class="whiteText"></p>
+            <button id="close-button" onClick="closeNotification()" class="hidden btn btn-outline-primary">
+                Close
+            </button>
+            <button id="restart-button" onClick="restartApp()" class="hidden btn btn-outline-success">
+                Restart
+            </button>
         </div>
-        </div>
-  </div>
-  <p id="version" class="whiteText ml-3"></p>
-  <div id="notification" class="hidden glimPanel">
-      <p id="message" class="whiteText"></p>
-      <button id="close-button" onClick="closeNotification()" class="hidden btn btn-outline-primary">
-        Close
-      </button>
-      <button id="restart-button" onClick="restartApp()" class="hidden btn btn-outline-success">
-        Restart
-      </button>
-    </div>
-    <style>
-        #notification {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        width: 200px;
-        padding: 20px;
-        border-radius: 5px;
-        background-color: white;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        }
-        .hidden {
-        display: none;
-        }
-    </style>
-<script>
-  //Creates the chart. Only build the first time. Also checks for updates
-  getBasicData()
-  checkForUpdate();
-  getSettings()
-  rememberID(true)
-      </script>
-</body>
+        <style>
+            #notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+        <script>
+            //Creates the chart. Only build the first time. Also checks for updates
+            getBasicData()
+            checkForUpdate();
+            getSettings()
+            rememberID(true)
+        </script>
+    </body>
 </html>
 
 
 <!-- Modal: Error Message -->
-<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="error modal"
-  aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText" id="errorModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="myModalError">Error</h4>
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="error modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="errorModal">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100" id="myModalError">Error</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body" id="modalErrorBody">
+                <p id="errorMessageText"></p>
+                <p id="errorMessageSolution"></p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            </div>
         </div>
-        <!--Body-->
-        <div class="modal-body" id="modalErrorBody">
-        <p id="errorMessageText"></p>
-        <p id="errorMessageSolution"></p>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-        </div>
-     </div>
-  </div>
+    </div>
 </div>
 <!-- Modal: Error Message -->
 
 <!-- Modal: Success Message -->
-<div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="success modal"
-  aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-     <div class="modal-content glimPanel whiteText" id="successModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-           <h4 class="modal-title w-100" id="myModalSuccess">Info</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body" id="modalSuccessBody">
-        <p id="successMessageText"></p>
-        <p id="successMessageSolution"></p>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-           <p id="otherMessageAdd"></p>
-           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-        </div>
-     </div>
-  </div>
+<div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  	<div class="modal-dialog" role="document">
+     	<div class="modal-content glimPanel whiteText" id="successModal">
+        	<!--Header-->
+        	<div class="modal-header text-center">
+           		<h4 class="modal-title w-100" id="myModalSuccess">Info</h4>
+        	</div>
+        	<!--Body-->
+        	<div class="modal-body" id="modalSuccessBody">
+        		<p id="successMessageText"></p>
+        		<p id="successMessageSolution"></p>
+        	</div>
+        	<!--Footer-->
+        	<div class="modal-footer">
+           		<p id="otherMessageAdd"></p>
+           		<button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        	</div>
+     	</div>
+  	</div>
 </div>
 <!-- Modal: Success Message -->
