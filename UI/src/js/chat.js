@@ -135,7 +135,7 @@ function joinChat(chat) {
         		if (response == null) {
           			errorMessage(response, "Please make sure that the channel exists. Check your spelling.")
         		} else if (response.status == "AUTHNEEDED") {
-          			errorMessage(response.data, "You need to authenticate again.")
+          			errorMessage(response.data, "You need to request a token.")
         		} else {
           			//We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
           			currentChatConnected = chatToJoin;

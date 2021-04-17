@@ -94,6 +94,8 @@ $(document).on('keypress','input, textarea', function (event) {
     if (id === 'newChatName') $('#triggerNewChatAdd').click()
     if (id === 'rankAddInput') $('#addingRankButton').click()
     if (id === 'rankRemoveInput') $('#rankRemoveButton').click()
+    if (id === 'mediaEditInput') $('#mediaEditButton').click()
+    if (id === 'mediaRemoveInput') $('#mediaRemoveButton').click()
 
     event.preventDefault();
 });

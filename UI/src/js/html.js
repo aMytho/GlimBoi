@@ -591,7 +591,7 @@ function removeMediaModal() {
         <div class="modal-footer">
           <p id="RemoveMediaError"></p>
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-outline-danger" id="mediaEditButton" onclick="removeMedia(document.getElementById('mediaRemoveInput').value)">Remove</button>
+          <button class="btn btn-outline-danger" id="mediaRemoveButton" onclick="removeMedia(document.getElementById('mediaRemoveInput').value)">Remove</button>
         </div>`
 }
 
