@@ -13,7 +13,6 @@ const ChatHandle = require(appData[0] + "/chatbot/lib/chat.js"); // Chat Module
 const ChatChannels = require(appData[0] + "/chatbot/lib/chat/chatChannels.js");
 const ModHandle = require(appData[0] + "/chatbot/lib/moderator.js"); // handles moderator actions
 
-ChatHandle.updatePath(appData[1]);
 ChatChannels.updatePath(appData[1]);
 
 /**
@@ -136,7 +135,7 @@ function joinChat(chat) {
         		if (response == null) {
           			errorMessage(response, "Please make sure that the channel exists. Check your spelling.")
         		} else if (response.status == "AUTHNEEDED") {
-          			errorMessage(response.data, "You need to authenticate again.")
+          			errorMessage(response.data, "You need to request a token.")
         		} else {
           			//We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
           			currentChatConnected = chatToJoin;
@@ -165,7 +164,7 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
   	var chatToJoin = $('#newChatName').val();
   	AuthHandle.getToken().then(data => {
     	if (data == undefined || data.length == 0) {
-      		errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and auth again.")
+      		errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.", "Go to the home page of Glimboi and request a token.")
     	} else {
       		// Authenticate if we can and check the channel
       		ApiHandle.updatePath(data); //Sends the API module our access token.

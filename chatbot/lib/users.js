@@ -1,10 +1,10 @@
 //Controls the User DB
-var usersDB;
-var path = "./";
+let usersDB;
+let path = "./";
 /**
  * An array of users
  */
-var users = [];
+let users = [];
 /**
  * A GlimBoi user
  */
@@ -33,7 +33,7 @@ class User {
  * @returns If the exists returns USEREXISTS
  */
 async function addUser(user, inModal) {
-  	var newUser = await new Promise(done => {
+  	let newUser = await new Promise(done => {
     	usersDB.find({ userName: user }, function (err, docs) {
       		if (docs.length == 0) {
         		console.log("No user was found with the name " + user);
@@ -43,7 +43,7 @@ async function addUser(user, inModal) {
             			done("INVALIDUSER")
           			} else {
             			console.log(ID)
-            			var tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
+            			let tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
             			usersDB.insert(tempUser, function (err, doc) {
               				console.log(doc);
               				users.push(tempUser)
@@ -80,7 +80,7 @@ function updatePath(GUI) {
  */
 async function findByUserName(name) {
   	name = name.toLowerCase()
-  	var queryResult = await new Promise(resolve => {
+  	let queryResult = await new Promise(resolve => {
     	for (let index = 0; index < users.length; index++) {
       		if (name == users[index].userName) {
         		resolve(users[index]);

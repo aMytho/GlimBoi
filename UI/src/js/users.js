@@ -1,14 +1,14 @@
-var UserHandle = require(appData[0] + "/chatbot/lib/users.js");
+const UserHandle = require(appData[0] + "/chatbot/lib/users.js");
 UserHandle.updatePath(appData[1]);
 
-var QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js");
+const QuoteHandle = require(appData[0] + "/chatbot/lib/quotes.js");
 QuoteHandle.updatePath(appData[1]);
 
-var RankHandle = require(appData[0] + "/chatbot/lib/users/userRank.js");
+const RankHandle = require(appData[0] + "/chatbot/lib/users/userRank.js");
 RankHandle.updatePath(appData[1]);
 
-var userTable; //physical table showing user data
-var tempUser;
+let userTable; //physical table showing user data
+let tempUser;
 
 function loadUsers() { //Runs at startup (on page load (on page click (only the first time )))
   	$(document).ready(function () {
@@ -16,14 +16,14 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
     	prepUserModals()
     	//makes clicking the button in the quotes column show the quotes under the table
     	$('#userTable tbody').on('click', 'button', function () {
-      		var data = userTable.row($(this).parents('tr')).data();
+      		let data = userTable.row($(this).parents('tr')).data();
       		UserHandle.findByUserName(data.userName).then(user => {
         		console.log('Building quote list with ' + user.userName)
         		makeList(data) //Builds the list of the users quotes.
       		})
     	});
     	$('#userTable tbody').on('click', 'a', function () {
-      		var data = userTable.row($(this).parents('tr')).data();
+      		let data = userTable.row($(this).parents('tr')).data();
       		loadLink("glimesh.tv/" + data.userName)
     	});
   	});
@@ -31,12 +31,12 @@ function loadUsers() { //Runs at startup (on page load (on page click (only the 
 
 function loadAllQuotes() { //loads all quotes and displays them under the table.
   	console.log("Loading Quotes.");
-  	var quotes = QuoteHandle.getAll(); //Gets all thq quotes
-  	var allQuotes = [];
+  	let quotes = QuoteHandle.getAll(); //Gets all thq quotes
+  	let allQuotes = [];
   	quotes.then(function (data) {
     	console.log("Quote query complete.");
     	for (const property in data) { //For every quote we make a temp array and push its array to allQuotes. It is wiped when the function ends.
-      		var tempArray = [
+      		let tempArray = [
         		data[`${property}`].quoteName,
         		data[`${property}`].quoteData,
       		];
@@ -76,8 +76,8 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
 
 
 function addQuote() { //Adds a quote to the db and table
-  	var quoteName = document.getElementById("userQuoteInputU").value.trim().toLowerCase(); //All db values are lower case
-  	var quoteData = document.getElementById("userQuoteInputQ").value.trim().toLowerCase(); //^^
+  	let quoteName = document.getElementById("userQuoteInputU").value.trim().toLowerCase();
+  	let quoteData = document.getElementById("userQuoteInputQ").value.trim().toLowerCase();
   	QuoteHandle.addquote(quoteName, quoteData);
 }
 
@@ -87,7 +87,7 @@ function quoteSearch(user) {
     	if (data == "ADDUSER") {
       		document.getElementById('editQuoteError').innerHTML = "No user was found with that name."
     	} else {
-      		var tempButtonUser = document.getElementById('userRemoveQuoteSearch')
+      		let tempButtonUser = document.getElementById('userRemoveQuoteSearch')
       		tempButtonUser.innerText = 'Remove';
       		tempButtonUser.setAttribute('onclick', `removeQuote(document.getElementById('quoteRemoveSearch').value, '${user}')`)
       		document.getElementById("modalRemoveQuote").innerHTML = `
@@ -148,8 +148,8 @@ function removeQuote(id, user) {
 }
 
 function addUser() { //Adds a user
-  	var user = document.getElementById("userAddInput").value.trim().toLowerCase(); //must be lower case
-  	var newUser = UserHandle.addUser(user); //adds it to the DB.
+  	let user = document.getElementById("userAddInput").value.trim().toLowerCase();
+  	let newUser = UserHandle.addUser(user); //adds it to the DB.
   	newUser.then(data => { //Displays it on our side.
     	if (data == "USEREXISTS") { //Tells the user that user exists.
       		document.getElementById("addUserMessage").innerHTML = "That user already exists."
@@ -174,9 +174,9 @@ function addUser() { //Adds a user
 }
 
 function removeUser() { //removes the user
-  	var user = document.getElementById("userremoveInput").value.trim().toLowerCase();
+  	let user = document.getElementById("userremoveInput").value.trim().toLowerCase();
   	//check if the user exists.
-  	var exists = UserHandle.findByUserName(user);
+  	let exists = UserHandle.findByUserName(user);
   	exists.then(data => {
     	if (data == "ADDUSER") {
       		document.getElementById("removeUserMessage").innerHTML = "User not found. Pleae enter the correct name."
@@ -199,16 +199,14 @@ function removeUser() { //removes the user
 function removeUserFromTable(deletedUser) {
     console.log("The user " + deletedUser + " will now be deleted from the table.");
     try {
-        var filteredData = userTable
+        let filteredData = userTable
         .rows()
         .indexes()
         .filter(function (value, index) {
             return userTable.row(value).data().userName == deletedUser;
         });
         userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
-    } catch (e) {
-
-    }
+    } catch (e) {}
 }
 
 function makeList(user) { //Similir to above function, makes a list and displays it under the table.
@@ -239,17 +237,17 @@ function makeList(user) { //Similir to above function, makes a list and displays
 }
 
 //This is the points section.
-var pointsTable;
+let pointsTable;
 function getPoints() {
-  	var arrayOfPoints = []
+  	let arrayOfPoints = []
   	document.getElementById("StartingPoints").innerHTML = settings.Points.StartingAmount;
   	document.getElementById("EarningPoints").innerHTML = settings.Points.accumalation;
   	document.getElementById("pointName").innerHTML = settings.Points.name
-  	var points = UserHandle.getTopPoints().then(data => {
+  	let points = UserHandle.getTopPoints().then(data => {
     	console.log(data);
     	pointsTable = document.getElementById("pointsTable");
     	for (const property in data) {
-      		var pointValue = [
+      		let pointValue = [
         		`${data[`${property}`].userName}`,
         		`${data[`${property}`].points}`,
         		`${data[`${property}`].team}`
@@ -287,7 +285,7 @@ function userSearch(user) {
       		$("#editUserPoints").keypress(function (e) {
         		if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
       		});
-      		var q = setModalEditButtons();
+      		let q = setModalEditButtons();
       		document.getElementById("userEditSearchButton").setAttribute('onclick', q);
       		document.getElementById("userEditSearchButton").innerText = "Edit";
     	}
@@ -300,7 +298,7 @@ function editUserTable(user, role, points) {
     	console.log(user, role, points);
     	user = user.toLowerCase()
     	// searches the table for the name of the user
-    	var indexes = userTable
+    	let indexes = userTable
       	.rows()
       	.indexes()
       	.filter(function (value, index) {
@@ -308,10 +306,10 @@ function editUserTable(user, role, points) {
       	});
     	console.log(indexes)
     	// Get the row for indexes
-    	var row = userTable.row(indexes[0]);
+    	let row = userTable.row(indexes[0]);
 
     	// Get the data for the row
-    	var data = row.data();
+    	let data = row.data();
     	// Change the row data
     	data.points = points;
     	data.role = role;
@@ -328,14 +326,14 @@ function editUserWatchTime(user, watchTime) {
     try {
       	watchTime = Number(watchTime);
       	user = user.toLowerCase()
-      	var indexes = userTable
+      	let indexes = userTable
         .rows()
         .indexes()
         .filter(function (value, index) {
           	return user === userTable.row(value).data().userName;
         });
-      	var row = userTable.row(indexes[0]);
-      	var data = row.data();
+      	let row = userTable.row(indexes[0]);
+      	let data = row.data();
       	data.watchTime = watchTime;
       	row.data(data).draw();
     } catch (e) {

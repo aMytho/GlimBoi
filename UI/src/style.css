@@ -23,15 +23,9 @@ th {
 .dataTables_wrapper label,
 .dataTables_wrapper select,
 .dataTables_wrapper input,
-.dataTables_wrapper #example_info,
-.dataTables_wrapper #userTable_info,
-.dataTables_wrapper #example_next,
-.dataTables_wrapper #example_previous,
-.dataTables_wrapper #userTable_next,
-.dataTables_wrapper #userTable_previous {
-    color: aliceblue;
-}
-#userTable_previous {
+.dataTables_wrapper #example_info, .dataTables_wrapper #userTable_info, .dataTables_wrapper #obsResources_info,
+.dataTables_wrapper #example_next, .dataTables_wrapper #userTable_next, .dataTables_wrapper #obsResources_next,
+.dataTables_wrapper #example_previous, .dataTables_wrapper #userTable_previous, .dataTables_wrapper #obsResources_previous {
     color: aliceblue;
 }
 

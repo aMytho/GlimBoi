@@ -1,9 +1,9 @@
 //handles sending users to different to parts of the app
-var {
+let {
   	shell, ipcRenderer
 } = require("electron");
-var Datastore = require('nedb')
-var appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
+const Datastore = require('nedb')
+let appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
 var globalChatMessages = [];
 
@@ -40,7 +40,7 @@ window.onload = function() {
         	e.preventDefault();
         	// Get the path to page content file
         	const href = linkEl.getAttribute("href");
-        	var id = linkEl.id
+        	let id = linkEl.id
         	if (href) {
             	// Use node.js fs-module to read the file
             	fs.readFile(`${appData[0]}/${href}`, (err, data) => {
@@ -52,13 +52,14 @@ window.onload = function() {
                 	contentEl.insertAdjacentHTML("beforeend", data);
                 	changeNavHighlight(id) //Changes the highlight
                 	if (linkEl.id == "CommandLink") {loadCommandTable()} //Builds the data table
-                	if (linkEl.id == "GlimBoiHeader") {getBasicData(); rememberID();} //Builds the homepage charts and check for auth ino for the buttons
+                	if (linkEl.id == "GlimBoiHeader") {getBasicData(); rememberID()} //Builds the homepage charts and check for auth ino for the buttons
                 	if (linkEl.id == "EventsLink") {loadEvents()}
                 	if (linkEl.id == "UsersLink") {loadUsers()}
                 	if (linkEl.id == "PointsLink") {getPoints()}
                 	if (linkEl.id == "SettingsLink") {showSettings()}
-                	if (linkEl.id == "ChatLink") {loadChatWindow();} //Builds the data table
-                  if (linkEl.id == "RanksLink") {rankPrep()}
+                    if (linkEl.id == "OBSLink") {loadOBSData()}
+                	if (linkEl.id == "ChatLink") {loadChatWindow()} //Builds the data table
+                    if (linkEl.id == "RanksLink") {rankPrep()}
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
             	})
@@ -71,13 +72,13 @@ window.onload = function() {
  * On Enter functions
  */
 $(document).on('keypress','input, textarea', function (event) {
-    var key = event.keyCode || event.which;
+    let key = event.keyCode || event.which;
 
     if (key != 13 || event.shiftKey === true) {
         return;
     }
 
-    var id = $(this).attr('id');
+    let id = $(this).attr('id');
 
     if (id === 'commandEditInput') $('#editCommandButtonFinish').click()
     if (id === 'commandRemoveInput') $('#removeCommandButtonFinish').click()
@@ -93,6 +94,8 @@ $(document).on('keypress','input, textarea', function (event) {
     if (id === 'newChatName') $('#triggerNewChatAdd').click()
     if (id === 'rankAddInput') $('#addingRankButton').click()
     if (id === 'rankRemoveInput') $('#rankRemoveButton').click()
+    if (id === 'mediaEditInput') $('#mediaEditButton').click()
+    if (id === 'mediaRemoveInput') $('#mediaRemoveButton').click()
 
     event.preventDefault();
 });

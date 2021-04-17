@@ -1,48 +1,51 @@
-var path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
+let path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 let commandsDB; //Database of commands.
-var commands = []; //Array that contains all the commands. The bot reads this
-var cooldown = 0; //Default cooldown time for commands
-var startCD = new Date(), timeCD; //When a command is activated to the next command. Subtract now from then.
-var repeatableArray = []; //Array of repeatable commands
+let commands = []; //Array that contains all the commands. The bot reads this
+let cooldown = 0; //Default cooldown time for commands
+let startCD = new Date(), timeCD; //When a command is activated to the next command. Subtract now from then.
+let repeatableArray = []; //Array of repeatable commands
 
 /**
  * @class Default command
  * @param {string} commandName The name of your command. Lowercase please!
- * @param {null} arguements null for now
  * @param {string} commandData The command response.
  * @param {number} uses The amount of times the command has been used.
  * @param {number} points The amount of points the command costs to run.
  * @param {string} rank The minimum rank to use this command
  * @param {null} special Not yet used. Null for now
  * @param {boolean} repeat Should the command repeat?
+ * @param {string} sound Play a sound
+ * @param {string} media Display an image or video
  */
 class Command {
   	constructor(
     	commandName,
-    	arguements,
     	commandData,
     	uses,
     	points,
     	rank,
     	special,
-    	repeat
+    	repeat,
+        sound,
+        media
   	) {
     	this.commandName = commandName; //The name of the command
-    	this.arguements = arguements; //Paramaters to send to the command
     	this.message = commandData; // No explanation here
     	this.uses = uses; //Times the command has been used.
     	this.points = points; //Points required per command
     	this.rank = rank; //Default is everyone
     	this.special = special; //oooo
     	this.repeat = repeat; // should this command be repeatable?
+        this.sound = sound; // Plays a sound on activation
+        this.media = media; // DIsplay an image or video on activation
   	}
 }
 
 //This array will be filled with every variable in a command and is reset once the command is sent.
-var variableList = [];
+let variableList = [];
 //This array contains all possible variables for commands. The order is important!!!
-//If you add a new var it must be at the bottom and you must link it is the replace variable function in the SAME ORDER!
-var listofvariables = [
+//If you add a new let it must be at the bottom and you must link it is the replace variable function in the SAME ORDER!
+let listofvariables = [
   	"$target", // The word after the command. ex !so Mytho (Mytho would be the target)
   	"$user", //The user who activated the command.
   	"$time", // The current time.
@@ -74,17 +77,18 @@ function updatePath(GUI) {
 /**
  * Creates a new command. Reloads the current commands after completion.
  * @param {string} commandName The name of your command. Lowercase please!
- * @param {null} arguements null for now
  * @param {string} commandData The command response.
  * @param {number} uses The amount of times the command has been used.
  * @param {number} points The amount of points the command costs to run.
  * @param {string} rank The minimum rank to use this command
  * @param {null} special Not yet used. Null for now
  * @param {boolean} repeat Should the command repeat?
+ * @param {string} sound Play a sound on activation
+ * @param {string} media Display an image or video on activation
  * @returns A command
  */
-function addCommand(commandName, arguements, commandData, uses, points, rank, special, repeat) {
-  	var newCommand = new Command(commandName, arguements, commandData, Number(uses), Number(points), rank, special, repeat);
+function addCommand(commandName, commandData, uses, points, rank, special, repeat, sound, media) {
+  	let newCommand = new Command(commandName, commandData, Number(uses), Number(points), rank, special, repeat, sound, media);
   	try {
     	//inserts a document as a command. Uses the command made above.
     	commandsDB.insert(newCommand, function(err, doc) {
@@ -101,7 +105,7 @@ function addCommand(commandName, arguements, commandData, uses, points, rank, sp
   	return newCommand;
 }
 
-function addCommandFilter(commandName, arguements, commandData, type) {
+function addCommandFilter(commandName, commandData, type) {
   	commandName = commandName.toLowerCase()
   	if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
     	ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
@@ -126,7 +130,7 @@ function addCommandFilter(commandName, arguements, commandData, type) {
       		console.log(commandName + " already exists.")
       		ChatMessages.filterMessage(commandName + " already exists", "glimboi")
     	} else {
-      		addCommand(commandName, null, commandData, 0, 0, "Everyone", null, false);
+      		addCommand(commandName, commandData, 0, 0, "Everyone", null, false, "null", "null");
       		ChatMessages.filterMessage(commandName + " added!", "glimboi");
       		try {
         		addCommandTable(commandName, commandData, 0, 0, "Everyone")
@@ -161,7 +165,6 @@ function removeCommand(commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  * @param {string} commandName The name of your command. Lowercase please!
- * @param {null} arguements null for now
  * @param {string} commandData The command response.
  * @param {number} uses The amount of times the command has been used.
  * @param {number} points The amount of points the command costs to run.
@@ -169,23 +172,23 @@ function removeCommand(commandName) {
  * @param {null} special Not yet used. Null for now
  * @param {boolean} repeat Should the command repeat?
  */
-function editCommand(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special, repeat) {
-  	console.log(commandName, arguements, commandData, commandUses, commandPoints, commandRank, special, repeat)
-  	commandsDB.update({ commandName: commandName }, { $set: { arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat } }, {}, function (err, numReplaced) {
+function editCommand(commandName, commandData, commandUses, commandPoints, commandRank, special, repeat, sound, media) {
+  	console.log(commandName, commandData, commandUses, commandPoints, commandRank, special, repeat, sound, media)
+  	commandsDB.update({ commandName: commandName }, { $set: { message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media} }, {}, function (err, numReplaced) {
     	console.log("Updating " + commandName);
     	for (let index = 0; index < commands.length; index++) {
       		if (commandName == commands[index].commandName) {
-        		commands.splice(index, 1, { commandName: commandName, arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat });
-        		var repeatExists = findRepeat(commandName);
+        		commands.splice(index, 1, { commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media });
+        		let repeatExists = findRepeat(commandName);
         		if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
           			console.log("Adding to repeat array.")
-          			repeatableArray.push({ commandName: commandName, arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat })
+          			repeatableArray.push({ commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media })
         		} else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
           			console.log("Removing from repeat array")
           			removeRepeat(commandName)
         		} else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
           			console.log("Editing command in repeat array.")
-          			repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, arguements: arguements, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat })
+          			repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media })
         		}
         		break;
       		}
@@ -246,14 +249,14 @@ function removeRepeat(commandName) {
  * @param data.user The user that activated the command
  */
 function checkCommand(data) {
-  	var cleaned = data.message.replace(new RegExp("^[\!]+"), "").trim();
-  	var message = cleaned.split(" "); //splits by space
+  	let cleaned = data.message.replace(new RegExp("^[\!]+"), "").trim();
+  	let message = cleaned.split(" "); //splits by space
   	console.log(message);
   	timeCD = new Date();
-  	var CD = timeCD - startCD; // check the time since the last command was activated. (cooldown check)
+  	let CD = timeCD - startCD; // check the time since the last command was activated. (cooldown check)
   	if (CD < cooldown) {/*  if not enough time has passed do nothing*/} else { // We are past the cooldown, command time!
   		try {
-    		var commandExists = false; // We assume the command does not exist.
+    		let commandExists = false; // We assume the command does not exist.
         message[0] = message[0].toLowerCase()
     		for (let index = 0; index < commands.length && commandExists == false; index++) { // Runs a loop to search for the command in the commands array
       			try {
@@ -291,7 +294,7 @@ function checkCommand(data) {
  */
 async function permissionCheck(command, user) {
     if (command.rank !== "Everyone") {
-        var rankPerms = await UserHandle.findByUserName(user)
+        let rankPerms = await UserHandle.findByUserName(user)
         console.log(rankPerms.role);
         console.log(command.rank)
         if (rankPerms == "ADDUSER" || rankPerms.role !== command.rank) {
@@ -300,7 +303,7 @@ async function permissionCheck(command, user) {
     }
 
     if (command.points !== 0) {
-        var userHasPoints = await UserHandle.findByUserName(user)
+        let userHasPoints = await UserHandle.findByUserName(user)
         console.log(userHasPoints);
         console.log(command.points)
         if (userHasPoints == "ADDUSER") {
@@ -321,8 +324,7 @@ async function permissionCheck(command, user) {
  * @param {string} user The user who activated the command.
  */
 async function runCommand(arguements, index, user) {
-  	console.log("Running !" + arguements[0]);
-  	var chatMessage = commands[index].message; //The command response
+  	let chatMessage = commands[index].message; //The command response
     //Check the command to see if it has any variables. variableList[i] is set to true if the var exists.
     variableList[0] = chatMessage.includes("$target");
     variableList[1] = chatMessage.includes("$user");
@@ -357,6 +359,22 @@ async function runCommand(arguements, index, user) {
     console.log(chatMessage + " is the final message");
     ChatMessages.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
     addCommandCount(arguements[0]); // Increments the command uses by one.
+    if (commands[index].sound !== undefined && commands[index].sound !== "null" && commands[index].sound !== null) {
+        let sound = OBSHandle.getMediaByName(commands[index].sound)
+        if (sound !== null && sound.type.startsWith("audio")) {
+            OBSHandle.playSound(sound);
+        }
+    }
+    if (commands[index].media !== undefined && commands[index].media !== "null" && commands[index].media !== null) {
+        let media = OBSHandle.getMediaByName(commands[index].media);
+        if (media !== null) {
+            if (media.type.startsWith("image")) {
+                OBSHandle.displayImage(media)
+            } else if (media.type.startsWith("video")) {
+                OBSHandle.playVideo(media)
+            }
+        }
+    }
     startCD = new Date(); // We save the time, use to determine if enough time has passed (cooldowns)
 }
 
@@ -380,13 +398,13 @@ async function replaceVariable(variable, arguements, user) {
       		variableList[2] = getTime();
       	break;
     	case "$watchtime":
-      		var watchTime = await UserHandle.findByUserName(user.username.toLowerCase())
+      		let watchTime = await UserHandle.findByUserName(user.username.toLowerCase())
       		if (watchTime == "ADDUSER") {variableList[3] = "(No user found)"} else {
       			variableList[3] = watchTime.watchTime
       		}
       	break;
     	case "$cmdcount":
-      		var count = await findCommand(arguements[0])
+      		let count = await findCommand(arguements[0])
       		variableList[4] = count.uses
       	break;
     	case "$game":
@@ -394,39 +412,39 @@ async function replaceVariable(variable, arguements, user) {
       		variableList[5] = user
       	break;
     	case "$advice":
-      		var advice = await ApiHandle.getAdvice().catch(reason => variableList[6] = 'Advice Error');
+      		let advice = await ApiHandle.getAdvice().catch(reason => variableList[6] = 'Advice Error');
       		variableList[6] = advice
       	break;
     	case "$dadjoke":
-      		var joke = await ApiHandle.getDadJoke().catch(reason => variableList[7] = 'Joke Error');
+      		let joke = await ApiHandle.getDadJoke().catch(reason => variableList[7] = 'Joke Error');
       		variableList[7] = joke
       	break;
     	case "$discord":
-      		var discord = await ApiHandle.getSocials("socialDiscord", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Discord Error');
+      		let discord = await ApiHandle.getSocials("socialDiscord", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Discord Error');
       		variableList[8] = "https://discord.gg/" + discord
       	break;
     	case "$guilded":
-      		var guilded = await ApiHandle.getSocials("socialGuilded", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Guilded Error');
+      		let guilded = await ApiHandle.getSocials("socialGuilded", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Guilded Error');
       		variableList[9] = "https://guilded.gg/" + guilded
       	break;
     	case "$instagram":
-      		var instagram = await ApiHandle.getSocials("socialInstagram", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Instagram Error');
+      		let instagram = await ApiHandle.getSocials("socialInstagram", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Instagram Error');
       		variableList[10] = "https://instagram.com/" + instagram
       	break;
     	case "$youtube":
-      		var youtube = await ApiHandle.getSocials("socialYoutube", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Youtube Error');
+      		let youtube = await ApiHandle.getSocials("socialYoutube", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Youtube Error');
       		variableList[11] = "https://youtube.com/" + youtube
       	break;
     	case "$twitter":
-      		var twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Twitter Error');
+      		let twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Twitter Error');
       		variableList[12] = "https://twitter.com/" + twitter
       	break;
         case "$catfact":
-            var catFact = await ApiHandle.randomCatFact();
+            let catFact = await ApiHandle.randomCatFact();
             variableList[13] = catFact
         break;
         case "$dogfact":
-            var dogFact = await ApiHandle.randomDogFact();
+            let dogFact = await ApiHandle.randomDogFact();
             variableList[14] = dogFact
         break;
     	default:
@@ -466,7 +484,7 @@ function getRepeats() {
  */
 function loadRepeats(command) {
   	repeatableArray = [] // reset the array, we don't want duplicates
-  	var repeatCount = 0; //Counter of repeatable commands
+  	let repeatCount = 0; //Counter of repeatable commands
   	for (let i = 0; i < command.length; i++) {
     	if (command[i] !== undefined && command[i].repeat == true) {
       		repeatableArray.push(command[i]) // adds it to the array
@@ -481,7 +499,7 @@ function loadRepeats(command) {
  * Loads a random repeatable command and activates it.
  */
 function randomRepeatCommand() {
-  	var index = Math.floor(Math.random()*repeatableArray.length)
+  	let index = Math.floor(Math.random()*repeatableArray.length)
   	console.log(repeatableArray[index]);
   	if (repeatableArray[index] !== undefined) {
   		console.log(repeatableArray[index].message);
@@ -496,7 +514,7 @@ function randomRepeatCommand() {
  * @returns The time
  */
 function getTime() {
-  	var theTime = new Date().toTimeString();
+  	let theTime = new Date().toTimeString();
   	return theTime;
 }
 

@@ -1,8 +1,9 @@
-var ApiHandle = require(appData[0] + "/chatbot/lib/API.js");
+const ApiHandle = require(appData[0] + "/chatbot/lib/API.js");
 ApiHandle.updateID(); // Gives the api file auth information
-var fs = require("fs");
-var settings = {}
-var updatedSettings = {
+const fs = require("fs");
+
+let settings = {}
+let updatedSettings = {
     Points: {
         enabled: true,
         name: "Points",
@@ -34,6 +35,7 @@ function unlockBot() {
         document.getElementById("ChatLink").classList.remove("disabled")
         document.getElementById("EventsLink").classList.remove("disabled")
         document.getElementById("RanksLink").classList.remove("disabled")
+        document.getElementById("OBSLink").classList.remove("disabled")
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
@@ -44,11 +46,11 @@ function unlockBot() {
 // Ran at startup and to get data for settings page
 function getSettings() {
     try { // Check if the file exists.
-        var raw = fs.readFileSync(appData[1] + '/data/settings.json');
+        let raw = fs.readFileSync(appData[1] + '/data/settings.json');
         settings = JSON.parse(raw)
     } catch (e) { // if not create the file
         console.log("no settings file exists, creating it")
-        var dataTemplate = JSON.stringify({
+        let dataTemplate = JSON.stringify({
             Points: {
                 enabled: true,
                 name: "Points",
@@ -108,27 +110,27 @@ function getSettings() {
 // Shows the settings on the settings page. Ran when that page is opened.
 function showSettings() {
     // Points - - -
-    var slider = document.getElementById("initialValueSlider");
+    let slider = document.getElementById("initialValueSlider");
     slider.value = settings.Points.StartingAmount
-    var output = document.getElementById("initialValueOutput");
+    let output = document.getElementById("initialValueOutput");
     output.innerHTML = slider.value;
     slider.oninput = function () {
         output.innerHTML = this.value;
     }
     document.getElementById("pointsNewName").value = settings.Points.name
-    var rateSlider = document.getElementById("rateValueSlider");
+    let rateSlider = document.getElementById("rateValueSlider");
     rateSlider.value = settings.Points.accumalation
-    var rateOutput = document.getElementById("rateValueOutput");
+    let rateOutput = document.getElementById("rateValueOutput");
     rateOutput.innerHTML = rateSlider.value;
     rateSlider.oninput = function () {
         rateOutput.innerHTML = this.value;
     }
     // Chat - - -
-    var loggingswitch = document.getElementById("loggingEnabled")
+    let loggingswitch = document.getElementById("loggingEnabled")
     if (settings.chat.logging == true) {
         loggingswitch.toggleAttribute("checked");
     }
-    var filterSwitch = document.getElementById("filterEnabled");
+    let filterSwitch = document.getElementById("filterEnabled");
     if (settings.chat.filter == true) {
         filterSwitch.toggleAttribute("checked")
     }
@@ -153,9 +155,9 @@ function showSettings() {
         break;
     }
     // repeat handlers
-    var repeatDelay = document.getElementById("repeatDelaySlider");
+    let repeatDelay = document.getElementById("repeatDelaySlider");
     repeatDelay.value = settings.Commands.repeatDelay;
-    var repeatDelayValue = document.getElementById("repeatDelayValue");
+    let repeatDelayValue = document.getElementById("repeatDelayValue");
     repeatDelayValue.innerHTML = repeatDelay.value;
     repeatDelay.oninput = function () {
         repeatDelayValue.innerHTML = this.value
@@ -201,7 +203,7 @@ function showSettings() {
 // saves the settings.
 function saveSettings() {
     function getCooldown() {
-        var value = document.getElementById("sel1").value
+        let value = document.getElementById("sel1").value
         switch (value) {
             case "None (default)":
                 return 0
@@ -221,7 +223,7 @@ function saveSettings() {
         }
     }
     function getRepeatProtection() {
-        var value = document.getElementById("repeatProtect").value
+        let value = document.getElementById("repeatProtect").value
         switch (value) {
             case "5 (not recommended)":
                 return 5
@@ -238,7 +240,7 @@ function saveSettings() {
         }
     }
     function getHealthInterval() {
-        var value = document.getElementById("healthReminder").value
+        let value = document.getElementById("healthReminder").value
         switch (value) {
             case "Disabled (default)":
                 return 0
@@ -315,6 +317,6 @@ function updateSettings() {
     CommandHandle.cooldownChange(settings.Commands.cooldown);
     ModHandle.updateFilter(settings.chat.filter);
     if (ChatSettings !== undefined) {
-        ChatSettings.updateChatSettings(settings)
+        ChatSettings.updateChatSettings(settings);
     }
 }

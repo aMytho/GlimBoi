@@ -5,11 +5,11 @@
  * @param {string} user The user who will be added
  */
 async function addUserChat(user, newUser) {
-    var hasPermission = await RankHandle.rankController(user, "canAddUsers", "string");
+    let hasPermission = await RankHandle.rankController(user, "canAddUsers", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to do this action.")
     } else {
-        var userAdded = await UserHandle.addUser(newUser, false)
+        let userAdded = await UserHandle.addUser(newUser, false)
         if (userAdded == "USEREXISTS") {
             ChatMessages.glimboiMessage("That user is already added to GlimBoi.")
         } else if (userAdded == "INVALIDUSER") {
@@ -25,15 +25,15 @@ async function addUserChat(user, newUser) {
  * @param {string} user User to be removed
  */
 async function delUserChat(user, newUser) {
-    var hasPermission = await RankHandle.rankController(user, "canRemoveUsers", "string");
+    let hasPermission = await RankHandle.rankController(user, "canRemoveUsers", "string");
     if (hasPermission == false || hasPermission == null) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank or you are not a user in GlimBoi.")
     } else {
-        var exists = await UserHandle.findByUserName(newUser);
+        let exists = await UserHandle.findByUserName(newUser);
         if (exists == "ADDUSER") {
             ChatMessages.glimboiMessage("No user was found with that name in GlimBoi.")
         } else {
-            var deletedUser = await UserHandle.removeUser(newUser);
+            let deletedUser = await UserHandle.removeUser(newUser);
             ChatMessages.glimboiMessage("User removed!");
             removeUserFromTable(deletedUser);
         }
@@ -59,13 +59,13 @@ function randomQuoteChat() {
  * @param {string} user Who said the quote
  */
 async function addQuoteChat(user, data, creator) {
-    var hasPermission = await RankHandle.rankController(user, "canAddQuotes", "string");
+    let hasPermission = await RankHandle.rankController(user, "canAddQuotes", "string");
     if (hasPermission == false || hasPermission == null) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank or you are not a user in GlimBoi.")
     } else {
         console.log(creator, data.message);
-        var trimMessage = 10 + creator.length + 2
-        var quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage))
+        let trimMessage = 10 + creator.length + 2
+        let quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage))
         if (quoteResult == "QUOTEFINISHED") {
             ChatMessages.glimboiMessage(`Quote added.`)
         } else {
@@ -80,7 +80,7 @@ async function addQuoteChat(user, data, creator) {
  * @param {Number} id The ID of the quote.
  */
 async function delQuoteChat(user, creator, id) {
-    var hasPermission = await RankHandle.rankController(user, "canRemoveQuotes", "string");
+    let hasPermission = await RankHandle.rankController(user, "canRemoveQuotes", "string");
     if (hasPermission == false || hasPermission == null) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank or you are not a user in GlimBoi.")
     } else {
@@ -88,7 +88,7 @@ async function delQuoteChat(user, creator, id) {
         if (creator == "" || creator == " " || id == "" || id == " " || creator == undefined || id == undefined) {
             ChatHandle.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
         } else {
-            var quoteResult = await UserHandle.removeQuoteByID(Number(id), creator.toLowerCase())
+            let quoteResult = await UserHandle.removeQuoteByID(Number(id), creator.toLowerCase())
             if (quoteResult == "NOQUOTEFOUND") {
                 ChatHandle.glimboiMessage("No quote was found with that ID.")
             } else {
@@ -107,9 +107,9 @@ async function removeCommand(user, command) {
     if (command.startsWith("!")) {
         command = command.substring(1)
     }
-    var commandExists = await CommandHandle.findCommand(command);
+    let commandExists = await CommandHandle.findCommand(command);
     if (commandExists !== null) {
-        var commandRemoved = await RankHandle.rankController(user, "canRemoveCommands", "string");
+        let commandRemoved = await RankHandle.rankController(user, "canRemoveCommands", "string");
         if (commandRemoved == false || commandRemoved == null) {
             ChatMessages.filterMessage("You do not have the sufficient rank or you are not a user in GlimBoi.", 'glimboi');
         } else {
@@ -131,11 +131,11 @@ async function removeCommand(user, command) {
  * @param {string} type !command or !cmd
  */
 async function addCommand(user, command, commandData, type) {
-    var hasPermission = await RankHandle.rankController(user, "canAddCommands", "string");
+    let hasPermission = await RankHandle.rankController(user, "canAddCommands", "string");
     if (hasPermission == false || hasPermission == null) {
         ChatMessages.filterMessage("You do not have the sufficient rank or you are not a user in GlimBoi.", 'glimboi');
     } else {
-        CommandHandle.addCommandFilter(command, null, commandData, type)
+        CommandHandle.addCommandFilter(command, commandData, type)
     }
 }
 
@@ -144,12 +144,12 @@ async function addCommand(user, command, commandData, type) {
  * Returns a list of all commands to chat.
  */
 function commandList() {
-  	var cmdList = [];
+  	let cmdList = [];
   	CommandHandle.getAll().then((data) => {
     	for (let index = 0; index < data.length; index++) {
       		cmdList.push(data[index].commandName);
     	}
-    	var cmdmsg = cmdList.toString();
+    	let cmdmsg = cmdList.toString();
     	ChatMessages.filterMessage(cmdmsg);
   	});
 }
@@ -159,7 +159,7 @@ function commandList() {
  * @param {string} user The user who we need the rank for
  */
 async function getRank(user) {
-    var rank = await UserHandle.findByUserName(user);
+    let rank = await UserHandle.findByUserName(user);
     if (rank == "ADDUSER") {
         ChatMessages.filterMessage(`${user} has not been added to glimboi. Type !user new ${user}`, "glimboi");
     } else {
@@ -189,15 +189,15 @@ function checkAmount(amount) {
 async function addPointsChat(user, target, count) {
     if (target !== undefined) {
         target = target.toLowerCase();
-        var hasPerms = await RankHandle.rankController(user, "canAddPoints", "string");
+        let hasPerms = await RankHandle.rankController(user, "canAddPoints", "string");
         if (hasPerms) {
             if (checkAmount(count) == true) {
-                var targetExists = await UserHandle.findByUserName(target);
+                let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     UserHandle.addPoints(target, Math.round(Number(count)));
                     ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
                 } else {
-                    var userAdded = await UserHandle.addUser(target, false);
+                    let userAdded = await UserHandle.addUser(target, false);
                     if (userAdded !== "INVALIDUSER") {
                         ChatMessages.filterMessage(target + " has been added to glimboi.");
                         UserHandle.addPoints(target, Math.round(Number(count)));
@@ -217,13 +217,19 @@ async function addPointsChat(user, target, count) {
     }
 }
 
+/**
+ * Removes points from a user
+ * @param {string} user The user who is removing points
+ * @param {string} target Who is about to lose points
+ * @param {number} count How many points will be removed
+ */
 async function removePointsChat(user, target, count) {
     if (target !== undefined) {
         target = target.toLowerCase()
-        var hasPerms = await RankHandle.rankController(user, "canRemovePoints", "string");
+        let hasPerms = await RankHandle.rankController(user, "canRemovePoints", "string");
         if (hasPerms) {
             if (checkAmount(count) == true) {
-                var targetExists = await UserHandle.findByUserName(target);
+                let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     if ((targetExists.points - Math.round(Number(count))) < 0) {
                         UserHandle.editUserPoints(target, 0);
@@ -233,7 +239,7 @@ async function removePointsChat(user, target, count) {
                         ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
                     }
                 } else {
-                    var userAdded = await UserHandle.addUser(target, false);
+                    let userAdded = await UserHandle.addUser(target, false);
                     if (userAdded !== "INVALIDUSER") {
                         if ((userAdded.points - Math.round(Number(count))) < 0) {
                             UserHandle.editUserPoints(target, 0);
@@ -257,19 +263,24 @@ async function removePointsChat(user, target, count) {
     }
 }
 
-
+/**
+ * Sets a point amount to a user
+ * @param {string} user The user who is editing points
+ * @param {string} target The user who is getting a new point value
+ * @param {number} count The amount of points that will be set
+ */
 async function editPointsChat(user, target, count) {
     if (target !== undefined) {
         target = target.toLowerCase()
-        var hasPerms = await RankHandle.rankController(user, "canEditPoints", "string");
+        let hasPerms = await RankHandle.rankController(user, "canEditPoints", "string");
         if (hasPerms) {
             if (checkAmount(count) == true) {
-                var targetExists = await UserHandle.findByUserName(target);
+                let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     UserHandle.editUserPoints(target, Math.round(Number(count)));
                     ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
                 } else {
-                    var userAdded = await UserHandle.addUser(target, false);
+                    let userAdded = await UserHandle.addUser(target, false);
                     if (userAdded !== "INVALIDUSER") {
                         ChatMessages.filterMessage(target + " has been added to glimboi.");
                         UserHandle.editUserPoints(target, Math.round(Number(count)));
@@ -289,10 +300,14 @@ async function editPointsChat(user, target, count) {
     }
 }
 
+/**
+ * Returns the amount of points a user has
+ * @param {string} target The user who you are getting the points for
+ */
 async function getPointsChat(target) {
     if (target !== undefined) {
         target = target.toLowerCase();
-        var targetExists = await UserHandle.findByUserName(target);
+        let targetExists = await UserHandle.findByUserName(target);
         if (targetExists !== "ADDUSER") {
             ChatMessages.filterMessage(target + " has " + targetExists.points + " " + settings.Points.name, "glimboi");
         } else {

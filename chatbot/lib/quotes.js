@@ -1,4 +1,4 @@
-var path = "./";
+let path = "./";
 let quotesDB;
 
 /**
@@ -34,13 +34,13 @@ function updatePath(GUI) {
  */
 async function addquote(quoteName, quoteData) {
   	return new Promise(resolve => {
-    	var newquote = new Quote(quoteName, quoteData);
+    	let newquote = new Quote(quoteName, quoteData);
     	newquote.quoteID.then(data => {
       		console.log('Quote ID created.')
       		console.log(data)
       		if (data == "ADDUSER") {
         		console.log("Creating user " + quoteName);
-        		var newUser = UserHandle.addUser(quoteName);
+        		let newUser = UserHandle.addUser(quoteName);
         		newUser.then(user => {
           			if (user == "INVALIDUSER") {
             			console.log("User not found, failed to create quote");
@@ -55,7 +55,7 @@ async function addquote(quoteName, quoteData) {
         		if (data.quotes.length == 0) {
           			newquote.quoteID = 1
         		} else {
-          			var count = data.quotes.length - 1;
+          			let count = data.quotes.length - 1;
           			console.log(data.quotes[count])
           			newquote.quoteID = Number(data.quotes[count].quoteID) + 1
         		}
@@ -143,7 +143,7 @@ async function getAll() {
  */
 async function generateID(quoteName) {
   	console.log("Generating ID");
-  	var usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
+  	let usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
   	return usedID
 }
 
@@ -151,7 +151,7 @@ async function generateID(quoteName) {
  * Generates the Date.
  */
 function generateDate() {
-  	var theTime = new Date().toTimeString();
+  	let theTime = new Date().toTimeString();
   	console.log(theTime);
   	return theTime;
 }
@@ -165,7 +165,7 @@ async function randomQuote() {
       		if (docs.length == 0 || docs == undefined) {
         		resolve(null)
       		} else {
-      			var randomQuote = Math.floor(Math.random() * docs.length);
+      			let randomQuote = Math.floor(Math.random() * docs.length);
       			console.log(docs[randomQuote].quoteName, docs[randomQuote].quoteData);
       			resolve({user:docs[randomQuote].quoteName, data: docs[randomQuote].quoteData})
       		}

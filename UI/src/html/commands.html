@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="col-lg-10 mx-lg-0 mt-3 mt-lg-2 col-12 p-0">
-    <div class="card glimPanel  whiteTex overflow-auto p-3 w-100 m-0">
+    <div class="card glimPanel whiteTex overflow-auto p-3 w-100 m-0">
       <table id="example" class="display table w-100"></table>
     </div>
   </div>
@@ -38,10 +38,6 @@
             <tr>
               <td data-toggle="tooltip" data-placement="top" title="Name of command">Name</td>
               <td><div id="addCommandName" contentEditable="true" data-text="ex. !follow"></div></td>
-            </tr>
-            <tr>
-              <td data-toggle="tooltip" data-placement="top" title="Arguments">Arguments</td>
-              <td><div id="addCommandArguements" contentEditable="true" data-text="null"></div></td>
             </tr>
             <tr>
               <td data-toggle="tooltip" data-placement="top" title="Command Message">Command Data</td>
@@ -72,6 +68,22 @@
                 </select>
               </td>
             </tr>
+            <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Play a sound on activation">Sound</td>
+                <td id="commandSound">
+                  <select name="commandSelect" id="commandSoundSelect">
+                    <option value="null">None (Default)</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" data-placement="top" title="Show media on activation">Image/GIF/Video</td>
+                <td id="commandMedia">
+                  <select name="commandSelectMedia" id="commandSelectMedia">
+                    <option value="null">None (Default)</option>
+                  </select>
+                </td>
+              </tr>
           </tbody>
         </table>
       </div>
