@@ -64,7 +64,7 @@
                     <label for="avatar">Audio, Image/GIF, Video</label>
                     <input type="file"
                         id="addMediaInput" name="input"
-                        accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
+                        accept="image/png, image/jpeg, image/gif, audio/mp3, audio/wav, video/mp4, video/webm, video/mov,">
                 </td>
               </tr>
             </tbody>
@@ -142,7 +142,8 @@
         </div>
         <!--Body-->
         <div class="modal-body whiteText">
-            <p>The OBS overlay has launched. Open index.html in <span><a onclick="shell.openPath(appData[0] + '/chatbot/lib/OBS')" href="#">this</a></span> directory. Click on the document to allow media to play. When you have finished testing add it as a browser source in your streaming software.</p>
+            <p>The OBS overlay has launched. Copy the following link and paste it in a browser source.</p>
+            <p class="mt-2" id="pathOfOverlay" style="color: aquamarine;"></p>
             <p class="mt-2">The overlay will launch automatically when you join a chat. This button is only for testing purposes. If you encounter any issues with the overlay be sure to let us know! Usually a simple restart fixes it.</p>
               </div>
         <!--Footer-->
@@ -164,10 +165,11 @@
                 <option value="null">None</option>
             </select>
             <p id="audioMessage">Select the audio to be played in the overlay</p>
+            <p class="mt-2 errorMessage" id="errorDisplayMedia2"></p>
               </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" onclick="OBSHandle.playSound(OBSHandle.getMediaByName(document.getElementById('playAudioModalSelect').value))">Play</button>
+          <button type="button" class="btn btn-outline-primary" onclick="displayMedia(document.getElementById('playAudioModalSelect').value, 'audio')">Play</button>
         </div>
       </div>
     </div>
@@ -186,11 +188,12 @@
                 <option value="none">None</option>
             </select>
             <p>Select the media to be shown in the overlay</p>
+            <p class="mt-2 errorMessage" id="errorDisplayMedia"></p>
               </div>
         <!--Footer-->
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" onclick="OBSHandle.displayImage(OBSHandle.getMediaByName(document.getElementById('playImageModalSelect').value))">Display</button>
+          <button type="button" class="btn btn-outline-primary" onclick="displayMedia(document.getElementById('playImageModalSelect').value)">Display</button>
         </div>
       </div>
     </div>

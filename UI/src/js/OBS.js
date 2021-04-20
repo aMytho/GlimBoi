@@ -119,6 +119,23 @@ function removeMedia(media) {
     }
 }
 
+function displayMedia(media, source) {
+    let content = OBSHandle.getMediaByName(media);
+    if (content == null) {
+        if (source == "audio") {
+            document.getElementById("errorDisplayMedia2").innerText = "The content type was not valid. Please select an audio file.";
+        } else {
+            document.getElementById("errorDisplayMedia").innerText = "The content type was not valid. Please select a video, image, or GIF.";
+        }
+    } else if(content.type.startsWith("image")) {
+        OBSHandle.displayImage(content);
+    } else if (content.type.startsWith("video")) {
+        OBSHandle.playVideo(content);
+    } else if (content.type.startsWith("audio")) {
+        OBSHandle.playSound(content);
+    }
+}
+
 function prepMediaModals() {
     $('#addMediaModal').on('hidden.bs.modal', function (e) {
     	document.getElementById("mediaAddModalContent").innerHTML = addMediaModal();
@@ -140,7 +157,7 @@ function prepMediaModals() {
         }
   	})
     $('#playImageModal').on('hidden.bs.modal', function (e) {
-    	document.getElementById("displayImageModalBody").innerHTML = imageResetModal()
+    	document.getElementById("displayImageModalBody").innerHTML = imageResetModal();
   	}).on('shown.bs.modal', function (e) {
     	let selectElement = document.getElementById("playImageModalSelect");
         let imageItems = OBSHandle.getImages();
@@ -151,4 +168,5 @@ function prepMediaModals() {
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
   	})
+    document.getElementById("pathOfOverlay").innerText = appData[0] + "\\chatbot\\lib\\OBS\\index.html"
 }
