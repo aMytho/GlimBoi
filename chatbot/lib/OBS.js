@@ -197,10 +197,18 @@ function startServer() {
                 ws.send(data)
             }
             ws.on("message", function responseHandler(message) {
-                console.log(message)
-                ws.send(JSON.stringify({ status: "connected" }))
+                try {
+                    if (isDev == true) {
+                        let parsedMessage = JSON.parse(message);
+                        console.log(parsedMessage);
+                    }
+                } catch(e) {console.log(e)}
             })
         })
+        let overlayStatusBar = document.getElementById("overlayStatus");
+        overlayStatusBar.title = "Overlay Active";
+        overlayStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);">Overlay: Active</span>`
+        overlayStatusBar.style.color = "rgb(17, 92, 33)"
     }
 }
 

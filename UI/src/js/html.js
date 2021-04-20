@@ -496,7 +496,7 @@ function addMediaModal() {
                     <label for="avatar">Audio, Image/GIF, Video</label>
                     <input type="file"
                         id="addMediaInput" name="input"
-                        accept="image/png, image/jpeg, audio/mp3, audio/wav, video/mp4, video/webm">
+                        accept="image/png, image/jpeg, image/gif, audio/mp3, audio/wav, video/mp4, video/webm, video/mov">
                 </td>
               </tr>
             </tbody>
@@ -600,7 +600,8 @@ function audioResetModal() {
     <select id="playAudioModalSelect">
                 <option value="null">None</option>
             </select>
-            <p id="audioMessage">Select the audio to be played in the overlay</p>`
+            <p id="audioMessage">Select the audio to be played in the overlay</p>
+            <p class="mt-2 errorClass" id="errorDisplayMedia2"></p>`
 }
 
 function imageResetModal() {
@@ -608,5 +609,6 @@ function imageResetModal() {
     <select id="playImageModalSelect">
                 <option value="none">None</option>
             </select>
-            <p>Select the Image or GIF to be shown in the overlay</p>`
+            <p>Select the Image or GIF to be shown in the overlay</p>
+            <p class="mt-2 errorClass" id="errorDisplayMedia"></p>`
 }
