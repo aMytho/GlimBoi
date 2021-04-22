@@ -81,6 +81,15 @@ function editCommandModal(command, options) {
             select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
         }
     }
+    let repeatEnabled = document.createElement("select");
+    repeatEnabled.id = "commandRepeatableChoiceEdit"
+    if (command.repeat == true) {
+        repeatEnabled.innerHTML += "<option value=\"" + "true" + "\" selected>" + "Enabled" + "</option>";
+        repeatEnabled.innerHTML += "<option value=\"" + "false" + "\">" + "Disabled (Default)" + "</option>";
+    } else if (command.repeat == false) {
+        repeatEnabled.innerHTML += "<option value=\"" + "true" + "\">" + "Enabled" + "</option>";
+        repeatEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
+    }
     let soundSelect = document.createElement("select");
     soundSelect.id = "commandEditSound";
     let soundOptions = OBSHandle.getSounds();
@@ -152,10 +161,7 @@ function editCommandModal(command, options) {
          		<tr>
             		<td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
             		<td id="commandRepeat">
-               			<select name="repeatableCommand" id="commandRepeatableChoiceEdit">
-                  			<option value="false">Disabled (Default)</option>
-                  			<option value="true">Enabled</option>
-               			</select>
+               			${repeatEnabled.outerHTML}
             		</td>
          		</tr>
                  <tr>
@@ -611,4 +617,47 @@ function imageResetModal() {
             </select>
             <p>Select the Image or GIF to be shown in the overlay</p>
             <p class="mt-2 errorClass" id="errorDisplayMedia"></p>`
+}
+
+function addActionHTML(action) {
+    if (action.type == "quote") {
+        let newDiv = document.createElement("div");
+        newDiv.classList = "chat-body1 clearfix testing"
+        let newText = document.createElement("p");
+        newText.innerText = `Quote: ${action.data} | Quote from ${action.target}`
+        newDiv.appendChild(newText);
+        document.getElementById("actions").appendChild(newDiv)
+    } else if (action.type == "userAdd") {
+        let newDiv = document.createElement("div");
+        newDiv.classList = "chat-body1 clearfix testing"
+        let newText = document.createElement("p");
+        newText.innerText = `User ${action.data} added to Glimboi!`
+        newDiv.appendChild(newText);
+        document.getElementById("actions").appendChild(newDiv)
+    }
+}
+
+function actionError(action) {
+    if (action.type == "quote") {
+        let newDiv = document.createElement("div");
+        newDiv.classList = "chat-body1 clearfix testing";
+        let newText = document.createElement("p");
+        newText.innerText = `Quote failed to add. Please ensure you are authenticated and the user exists.`;
+        newText.classList = "errorMessage"
+        newDiv.appendChild(newText);
+        document.getElementById("actions").appendChild(newDiv);
+    } else if (action.type == "userAdd") {
+        let newDiv = document.createElement("div");
+        newDiv.classList = "chat-body1 clearfix testing";
+        let newText = document.createElement("p");
+        if (action.error == "USEREXISTS") {
+            newText.innerText = `That user has already been added to Glimboi!`;
+        } else if (action.error == "INVALIDUSER") {
+            newText.innerText = `That user doesn't exist. Whoah, this shouldn't be possible!`;
+        }
+        newText.classList = "errorMessage"
+        newDiv.appendChild(newText);
+        document.getElementById("actions").appendChild(newDiv);
+    }
+
 }
