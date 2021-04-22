@@ -1,3 +1,5 @@
+const { desktopCapturer } = require("electron");
+
 var isDev = false; // We assume they are on a production release.
 var ChatSettings;
 var ChatActions;
@@ -5,7 +7,8 @@ var ChatStats;
 var ChatMessages;
 var chatID = "" // the channel ID
 
-var contextItem;
+var contentTarget;
+var contentBody;
 var globalChatMessages;
 var currentChatConnected = null;
 
@@ -318,25 +321,50 @@ function sendMessageInBox() {
 }
 
 function loadChatContextMenu(e) {
-  	contextItem = $(e.target).attr('name')
-  	console.log(contextItem)
-  	var top = e.pageY - 110;
-  	var left = e.pageX + 10;
-  	$("#context-menu").css({
-    	display: "block",
-    	top: top,
-    	left: left
-  	}).addClass("show");
-  	document.body.addEventListener("click", function() {$("#context-menu").removeClass("show").hide()},{once:true})
+    let source = e.path
+    for (let i = 0; i < source.length; i++) {
+        try {
+        if (source[i].getAttribute("contentLocation") !== null) {
+            source = source[i]
+            break
+        }
+        } catch(e) {}
+    }
+    console.log(source)
+
+    contentTarget = source.children[1].children[0].innerText.slice(0, -2);
+    contentBody = source.children[1].childNodes[1].data.trim()
+    console.log(contentTarget, contentBody)
+
+    var top = e.pageY - 110;
+    var left = e.pageX + 10;
+    $("#context-menu").css({
+        display: "block",
+        top: top,
+        left: left
+    }).addClass("show");
+    document.body.addEventListener("click", function () { $("#context-menu").removeClass("show").hide() }, { once: true })
 }
 
 function contextMenu(action) {
   	if (action == "ADDUSER") {
-    	UserHandle.addUser(contextItem.toLowerCase(), false).then(data => {
-
+    	UserHandle.addUser(contentTarget.toLowerCase(), false).then(data => {
+            if (data == "USEREXISTS") {
+                actionError({type: "userAdd", error: "USEREXISTS"})
+            } else if (data == "INVALIDUSER") {
+                actionError({type: "userAdd", error: "INVALIDUSER"})
+            } else {
+                addAction({type: "userAdd", target: contentTarget, data: contentBody })
+            }
     	})
   	} else if (action == "ADDQUOTE") {
-
+        QuoteHandle.addquote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
+            if (data == "QUOTEFINISHED") {
+                addAction({type: "quote", target: contentTarget, data: contentBody})
+            } else {
+                actionError({type: "quote", target: contentTarget, data: contentBody})
+            }
+        })
   	} else {
 
   	}
@@ -374,4 +402,10 @@ function actionBuilder(action) {
     	default:
       	break;
   	}
+}
+
+
+function addAction(action) {
+    addActionHTML(action);
+    console.log(action)
 }

@@ -61,9 +61,9 @@
             <ul class="list-unstyled chatList" id="chatList">
 
               <li class="left clearfix admin_chat" name='mytho'>
-                <div class="chat-body1 clearfix testing" oncontextmenu="loadChatContextMenu(event)" name='mytho'>
+                <div contentLocation="1" class="chat-body1 clearfix testing" oncontextmenu="loadChatContextMenu(event)">
                   <span class="chat-img1 pull-left" name='mytho'>
-                    <img src="Mytho.png" alt="User Avatar" class="rounded-circle" name='mytho'>
+                    <img src="Mytho.png" alt="User Avatar" class="rounded-circle">
                   </span>
                   <p name='mytho'><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
                   <!--<div class="whiteText pull-left">09:40PM</div> -->
@@ -88,48 +88,10 @@
     <div class="card-body">
       <h3 class="whiteText text-center">GlimBoi Actions</h3>
       <p class="whiteText text-center">_______________</p>
-      <h5 class="whiteText text-center">Demo Example (Coming soon!)</h5>
-      <table class="table whiteText mt-2">
-        <thead>
-          <tr>
-            <th scope="col">User</th>
-            <th scope="col">Action</th>
-            <th scope="col">Effect</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Billy</th>
-            <td>Time out</td>
-            <td>15 min</td>
-          </tr>
-          <tr>
-            <th scope="row">Bob</th>
-            <td>Ban</td>
-            <td>Permanant</td>
-          </tr>
-          <tr>
-            <th scope="row">aUser</th>
-            <td>Command added</td>
-            <td>!socials</td>
-          </tr>
-          <tr>
-            <th scope="row">aUser</th>
-            <td>Command added</td>
-            <td>!socials</td>
-          </tr>
-          <tr>
-            <th scope="row">aUser</th>
-            <td>Command added</td>
-            <td>!socials</td>
-          </tr>
-          <tr>
-            <th scope="row">aUser</th>
-            <td>Command added</td>
-            <td>!test</td>
-          </tr>
-        </tbody>
-      </table>
+      <h5 class="whiteText text-center">Alpha Test | Data removed when you leave the page | Right click a message</h5>
+        <div id="actions" style="overflow: auto; max-height: 400px;">
+
+        </div>
     </div>
   </div>
 </div>
@@ -157,9 +119,9 @@
   <!-- Modal: add new chat -->
 
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
-  <a class="dropdown-item" href="#" style="color: aquamarine;" onclick="contextMenu('ADDUSER')">Add User</a>
-  <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('ADDQUOTE')">Quote (Coming soon)</a>
-  <a class="dropdown-item disabled" disabled href="#" style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
+  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('ADDUSER')">Add User</a>
+  <a class="dropdown-item" disabled style="color: aquamarine;cursor: pointer;" onclick="contextMenu('ADDQUOTE')">Quote</a>
+  <a class="dropdown-item disabled" disabled style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
 </div>
 
 <!-- Modal: Moderate? -->

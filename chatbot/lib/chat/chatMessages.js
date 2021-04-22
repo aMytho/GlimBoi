@@ -81,8 +81,8 @@ function logMessage(user, message, avatar) {
   	var adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
 
   	$("#chatList").append(`
-    	<li class="left clearfix ${adminClass} w-100" name='${user}' oncontextmenu='loadChatContextMenu(event)'>
-      		<div class="chat-body1 clearfix testing" name='${user}'>
+    	<li class="left clearfix ${adminClass} w-100" name='${user}'>
+      		<div contentLocation="1" class="chat-body1 clearfix testing" name='${user}' oncontextmenu="loadChatContextMenu(event)">
       			<span class="chat-img1 pull-left" name='${user}'>
         			<img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
       			</span>
