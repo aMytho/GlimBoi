@@ -36,6 +36,7 @@ function unlockBot() {
         document.getElementById("EventsLink").classList.remove("disabled")
         document.getElementById("RanksLink").classList.remove("disabled")
         document.getElementById("OBSLink").classList.remove("disabled")
+        document.getElementById("MusicLink").classList.remove("disabled")
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")

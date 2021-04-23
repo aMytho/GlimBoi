@@ -1,0 +1,285 @@
+<div class="card-deck m-3">
+    <div class="card col-12 col-lg-9 glimPanel">
+      <div class="card-body">
+        <main class="player whiteText" style="margin: 0;box-sizing: border-box;">
+            <img id="artForMusic" src="" class="art">
+            <div class="info">
+                <h1 id="songTitle">Song Title</h1>
+                <p id="songAuthor">Select a folder to play music!</p>
+            </div>
+            <div class="prog">
+                <div class="prog-time">
+                    <p class="left">0:00</p>
+                    <p class="right">0:00</p>
+                </div>
+                <div class="prog-bar">
+                    <div class="prog-bar-inner"></div>
+                </div>
+            </div><!--  progress  -->
+            <ul class="buttons">
+                <a class="button button-sm">
+                    <i class="fas fa-random fa-sm" aria-hidden="true"></i>
+                    <span class="sr-only">Shuffle</span>
+                </a>
+                <a class="button button-md">
+                    <i class="fas fa-step-backward" aria-hidden="true"></i>
+                    <span class="sr-only">Previous Music</span>
+                </a>
+                <a class="button button-lg">
+                    <i class="fas fa-pause fa-lg" aria-hidden="true" aria-hidden="true"></i>
+                    <span class="sr-only">Pause</span>
+                </a>
+                <a class="button button-md">
+                    <i class="fas fa-step-forward"></i>
+                    <span class="sr-only">Next Music</span>
+                </a>
+                <a class="button button-sm">
+                    <i class="fas fa-circle-notch fa-sm" aria-hidden="true"></i>
+                    <span class="sr-only">Repeat Song</span>
+                </a>
+            </ul>
+            <hr style="border-color: aliceblue;width: 70%;">
+            <div class="mx-auto d-grid gap-2 col-6 text-center">
+            <button class="btn btn-warning mx-auto" type="button" data-toggle="modal" data-target="#musicFolderSelection">Music Overlay</button>
+            <button class="btn btn-info mx-auto" type="button">Chat Attribution</button>
+            </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="card col-12 col-lg-3 glimPanel">
+      <div class="card-body">
+          <div class="row">
+              <div class="col-6">
+                <h3 class="whiteText text-center" id="musicFolder">Epic Mix</h3>
+              </div>
+              <div class="col-6">
+                <div class="btn-group-vertical mx-auto justify-content-md-center">
+                    <a class="btn btn-success btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Select Folder</a>
+                    <a class="btn btn-success btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Play Specific Song</a>
+                  </div>
+              </div>
+              <p class="whiteText mx-auto">___________________</p>
+          </div>
+          <div class="row">
+              <div class="col-12">
+                  <div class="player h-100 w-100" style="margin:0 !important; overflow:auto">
+                    <div class="row">
+                        <div class="col-12">
+
+                        </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="modal fade" id="musicFolderSelection" tabindex="-1" role="dialog" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Music Selection</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalChatBody">
+            <input type="file"
+            id="addMediaInput" name="input"
+            accept="directory,">
+          <p id="chatMessageSolution" class="mt-2">Select a folder to play music from. The bot will play files at the top level, so you don't want folders in the folders.</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p></p>
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" id="targetActionButton">Select</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="chatModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="actionType">Action</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalChatBody">
+          <input type="text" class="form-control" placeholder="User" id="whichUser">
+          <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="moderateMessage"></p>
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="chatModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="actionType">Action</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalChatBody">
+          <input type="text" class="form-control" placeholder="User" id="whichUser">
+          <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <p id="moderateMessage"></p>
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<style>
+
+
+.player {
+    width: 100%;
+    min-height: 550px;
+    margin: 2rem auto;
+    padding: 3rem 1.25rem;
+    background-color: #1b2e4b;
+    border-radius: 15px;
+    border: 1px solid aquamarine;
+    position: relative;
+}
+
+.header {
+    height: 40px;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    align-items: center;
+    justify-items: center;
+}
+
+.header > .button {
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    color: var(--black);
+    background: linear-gradient(145deg, #fbfbfb, #d4d4d4);
+    border-radius: 6px;
+}
+
+.art {
+    display: block;
+    width: 175px;
+    height: 175px;
+    margin: 1rem auto;
+    border-radius: 50%;
+    border: 4px solid #EBEBED;
+}
+
+.info {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+.info h1 {
+    color: var(--black);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+.info p {
+    font-size: 1.15rem;
+    color: var(--prog);
+}
+
+.prog {
+    padding: 10px 0;
+}
+.prog-time {
+    padding: 3px 5px;
+    color: var(--prog);
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+.prog-time > p {
+    font-size: 0.65rem;
+}
+
+.prog-bar {
+    width: 100%;
+    height: 10px;
+    padding: 1px;
+    border-radius: 25px;
+
+    background: linear-gradient(145deg, #fbfbfb, #d4d4d4);
+
+}
+
+.prog-bar-inner {
+    height: 8px;
+    background: var(--prog);
+    border-radius: 25px;
+}
+
+.buttons {
+    margin: 2rem 0;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    color:#17a2b8;
+    border-radius: 50%;
+    margin: 0 5px;
+    display: flex;
+   /*justify-content: center;*/
+    align-items: center;
+}
+
+.button-sm {
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.75;
+}
+
+.button-md {
+    width: 2.5rem;
+    height: 2.5rem;
+    opacity: 0.85;
+}
+.button-lg {
+    width: 3.25rem;
+    height: 3.25rem;
+}
+
+.prog-bar-inner {
+    animation: timer 30s linear 0.1s;
+}
+
+/*      keyframes   */
+@keyframes timer {
+    0%      {width: 0%;}
+    100%    {width: 100%;}
+}
+</style>
