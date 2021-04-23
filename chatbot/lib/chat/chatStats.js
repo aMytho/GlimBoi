@@ -28,7 +28,7 @@ function startChannelStats() {
 }
 
 /**
- * Checks for the amount of users and distributes points to them
+ * Checks for the amount of users and distributes points to them. Adds any new users
  */
 function botToViewerRatio() {
     // Checks for new users
@@ -40,11 +40,15 @@ function botToViewerRatio() {
         if (currentUsersFiltered.length == 0) {
             console.log("No users in chat. No points will be sent out.")
         } else {
-            currentUsersFiltered.forEach(function (value, index) {
-                currentUsersFiltered[index] = { userName: value.toLowerCase() }
+            (async function() {
+                for (let i = 0; i < currentUsersFiltered.length; i++) {
+                    await UserHandle.addUser(currentUsersFiltered[i], false);
+                    currentUsersFiltered[i] = {userName: currentUsersFiltered[i].toLowerCase()}
+                }
+            })().then(data => {
+                console.log(currentUsersFiltered)
+                UserHandle.earnPointsWT(currentUsersFiltered);
             })
-            console.log(currentUsersFiltered)
-            UserHandle.earnPointsWT(currentUsersFiltered);
         }
     }, 900000);
 }

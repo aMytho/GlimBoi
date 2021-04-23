@@ -39,16 +39,22 @@ function handleEvent(event, user, message) {
         break;
         case "glimrealm":
             if (message.startsWith('!portal')) {
+                user = user.toLowerCase()
                 var glimrealmUsers = glimRealm.getGlimRealmUsers();
-                console.log(glimrealmUsers);
                 if (!glimrealmUsers.includes(user)) {
-                    UserHandle.findByUserName(user.toLowerCase()).then(data => {
+                    UserHandle.findByUserName(user).then(data => {
                         if (data !== "ADDUSER") {
                             glimrealmUsers.push(user);
                             glimRealm.setGlimRealmUsers(glimrealmUsers);
                             glimRealm.glimDropRealm(user, data);
                         } else {
-                            ChatMessages.filterMessage("You must be a user in the bot to join this game. Type !user new " + user.toLowerCase(), "glimboi") // the user doesn't exist
+                            UserHandle.addUser(user, false).then(userInfo => {
+                                if (data !== "INVALIDUSER") {
+                                    glimrealmUsers.push(userInfo.userName);
+                                    glimRealm.setGlimRealmUsers(glimrealmUsers);
+                                    glimRealm.glimDropRealm(userInfo.userName, userInfo);
+                                }
+                            })
                         }
                     })
                 } else {
