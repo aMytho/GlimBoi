@@ -42,7 +42,6 @@ async function addUser(user, inModal) {
             			console.log(ID);
             			done("INVALIDUSER")
           			} else {
-            			console.log(ID)
             			let tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
             			usersDB.insert(tempUser, function (err, doc) {
               				console.log(doc);
@@ -80,7 +79,7 @@ function updatePath(GUI) {
  */
 async function findByUserName(name) {
   	name = name.toLowerCase()
-  	let queryResult = await new Promise(resolve => {
+  	 return new Promise(resolve => {
     	for (let index = 0; index < users.length; index++) {
       		if (name == users[index].userName) {
         		resolve(users[index]);
@@ -89,7 +88,6 @@ async function findByUserName(name) {
     	}
     	resolve("ADDUSER")
   	})
-  	return queryResult
 }
 
 /**

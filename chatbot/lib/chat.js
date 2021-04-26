@@ -154,21 +154,10 @@ function connectToGlimesh(access_token, channelID) {
                     				case " ":
                     				case null:
                     				case undefined:
-                      					UserHandle.findByUserName(userChat.toLowerCase()).then(data => {
-                        					if (data == "ADDUSER") { ChatMessages.filterMessage("That user does not exist in the database yet. Type !user new " + userChat.toLowerCase(), "Glimboi") } else {
-                          						ChatMessages.filterMessage(userChat.toLowerCase() + " has " + data.points + " " + settings.Points.name, "Glimboi")
-                        					}
-                      					})
+                      					ChatActions.getOwnPointsChat(userChat);
                       				break;
                     				case "top":
-                      					UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
-                        					console.log(data)
-                        					if (data.length > 0) {
-                          						ChatMessages.filterMessage("The top user is " + data[0].userName, "glimboi")
-                        					} else {
-                          						ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
-                        					}
-                      					})
+                      					ChatActions.getTopPoints()
                       				break;
                                     case "add":
                                     case "+":
@@ -186,24 +175,7 @@ function connectToGlimesh(access_token, channelID) {
                                     case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
                                     break;
                     				default:
-                      					if (!isNaN(message[1])) {
-                        					UserHandle.getTopPoints(userChat.toLowerCase()).then(data => {
-                          						if (data.length > 0) {
-                            						let pointsPosition = Number(message[1])
-                            						console.log(pointsPosition)
-                            						if (pointsPosition <= 0) {
-                              							ChatMessages.filterMessage("That number is not valid.")
-                            						} else if (data[pointsPosition-1] !== undefined) {
-                              							pointsPosition = pointsPosition - 1
-                              							ChatMessages.filterMessage("Number " + (pointsPosition + 1) + " is " + data[pointsPosition].userName + " with " + data[pointsPosition].points)
-                            						} else {
-                              							ChatMessages.filterMessage("There is not a user with that position.")
-                            						}
-                          						} else {
-                            						ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
-                          						}
-                        					})
-                      					}
+                      					ChatActions.getTopPoints(message[1], true);
                       				break;
                   				}
                   				break;

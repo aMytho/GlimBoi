@@ -266,7 +266,16 @@ function checkCommand(data) {
         				permissionCheck(commands[index], data.user.username.toLowerCase()).then(value => {
           					if (value == "ACCEPTED") {
             					runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
-          					} else { // They don't have permission, we log this to chat.
+          					} else if (value == "NEWUSER") {
+                                permissionCheck(commands[index], data.user.username.toLowerCase()).then(newValue => {
+                                    if (newValue == "ACCEPTED") {
+                                        runCommand(message, index, data.user);
+                                    } else {
+                                        ChatMessages.filterMessage(newValue, "glimboi");
+            					        console.log(newValue)
+                                    }
+                                })
+                              } else { // They don't have permission, we log this to chat.
             					ChatMessages.filterMessage(value, "glimboi");
             					console.log(value)
           					}
@@ -293,26 +302,28 @@ function checkCommand(data) {
  * @async
  */
 async function permissionCheck(command, user) {
-    if (command.rank !== "Everyone") {
-        let rankPerms = await UserHandle.findByUserName(user)
-        console.log(rankPerms.role);
-        console.log(command.rank)
-        if (rankPerms == "ADDUSER" || rankPerms.role !== command.rank) {
-            return "You don't have the required rank to use that command!"
+    let userData = await UserHandle.findByUserName(user);
+    if (userData !== "ADDUSER") {
+        if (command.rank !== "Everyone") {
+            console.log(userData.role);
+            console.log(command.rank);
+            if (userData.role !== command.rank) {
+                return "You don't have the required rank to use that command!"
+            }
         }
-    }
-
-    if (command.points !== 0) {
-        let userHasPoints = await UserHandle.findByUserName(user)
-        console.log(userHasPoints);
-        console.log(command.points)
-        if (userHasPoints == "ADDUSER") {
-            return "This command requires points to use. You must be a user to have points."
-        } else if ((userHasPoints.points - command.points) < 0) {
-            return `You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${userHasPoints.points}`
-        } else {
-            UserHandle.removePoints(user, command.points)
+        if (command.points !== 0) {
+            console.log(command.points)
+            if ((userData.points - command.points) < 0) {
+                return `You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${userData.points}`
+            } else {
+                UserHandle.removePoints(user, command.points)
+            }
         }
+    } else {
+        let newUser = await UserHandle.addUser(user, false);
+        if (newUser !== "INVALIDUSER") {
+            return "NEWUSER"
+        } else { return "User Error" }
     }
     return "ACCEPTED"
 }
@@ -383,7 +394,7 @@ async function runCommand(arguements, index, user) {
  *
  * @param {string} variable The command variable ex $user, $dadjoke, $target,etc
  * @param {array} arguements An array of each word in the chat message
- * @param {string} user The user who activated the command
+ * @param {object} user The user who activated the command
  */
 async function replaceVariable(variable, arguements, user) {
   	//Checks the variablelist and replaces it with its new value.
@@ -398,8 +409,15 @@ async function replaceVariable(variable, arguements, user) {
       		variableList[2] = getTime();
       	break;
     	case "$watchtime":
-      		let watchTime = await UserHandle.findByUserName(user.username.toLowerCase())
-      		if (watchTime == "ADDUSER") {variableList[3] = "(No user found)"} else {
+      		let watchTime = await UserHandle.findByUserName(user.username)
+      		if (watchTime == "ADDUSER") {
+                  let newUser = await UserHandle.addUser(user.username, false);
+                  if (newUser !== "INVALIDUSER") {
+                    variableList[3] = newUser.watchTime;
+                  } else {
+                      variableList[3] = "No user found."
+                  }
+              } else {
       			variableList[3] = watchTime.watchTime
       		}
       	break;
