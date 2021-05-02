@@ -31,6 +31,7 @@
         <script src="src/js/charts.js"></script>
         <script src="src/js/chat.js"></script>
         <script src="src/js/events.js"></script>
+        <script src="src/js/music.js"></script>
         <script src="src/js/settings.js"></script>
     </head>
     <body>
@@ -76,6 +77,14 @@
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
+                    <li class="nav-item glimNavItem">
+                        <audio id="musicAudio">
+                            <source src="#" type="audio/mp3">
+                            Your browser does not support the audio element.
+                          </audio>
+                        <a class="nav-link disabled" href="#" >
+                        <i class="fas fa-music" id="musicStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Music: Inactive</span> </i></a>
+                    </li>
                     <li class="nav-item glimNavItem">
                         <a class="nav-link disabled" href="#" >
                         <i class="fa fa-wifi" id="overlayStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Overlay: Inactive</span> </i></a>

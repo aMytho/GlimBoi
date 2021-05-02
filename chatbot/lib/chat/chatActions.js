@@ -406,4 +406,14 @@ async function getTopPoints(requestedPosition, leaderBoard) {
     }
 }
 
-module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getOwnPointsChat, getPointsChat, getRank, getTopPoints, randomQuoteChat, removeCommand, removePointsChat}
+function getSong() {
+    if (musicPlaylist[currentSongIndex] && musicPlaylist[currentSongIndex].artists) {
+        ChatMessages.filterMessage(`Now playing ${musicPlaylist[currentSongIndex].name} by ${musicPlaylist[currentSongIndex].artists}`, "glimboi")
+    } else if (musicPlaylist[currentSongIndex]) {
+        ChatMessages.filterMessage(`Now playing ${musicPlaylist[currentSongIndex].name}`, "glimboi")
+    } else {
+        ChatMessages.filterMessage(`No song is currently playing.`, "glimboi")
+    }
+}
+
+module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, randomQuoteChat, removeCommand, removePointsChat}

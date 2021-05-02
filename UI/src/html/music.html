@@ -2,7 +2,7 @@
     <div class="card col-12 col-lg-9 glimPanel">
       <div class="card-body">
         <main class="player whiteText" style="margin: 0;box-sizing: border-box;">
-            <img id="artForMusic" src="" class="art">
+            <img id="artForMusic" src="././Icons/music.png" class="art">
             <div class="info">
                 <h1 id="songTitle">Song Title</h1>
                 <p id="songAuthor">Select a folder to play music!</p>
@@ -13,35 +13,40 @@
                     <p class="right">0:00</p>
                 </div>
                 <div class="prog-bar">
-                    <div class="prog-bar-inner"></div>
+                    <div class="prog-bar-inner" id="progressBarMusic"></div>
                 </div>
             </div><!--  progress  -->
             <ul class="buttons">
-                <a class="button button-sm">
-                    <i class="fas fa-random fa-sm" aria-hidden="true"></i>
+                <a class="button button-sm" onclick="shuffleEnabled = !shuffleEnabled">
+                    <i class="fas fa-random fa-md" aria-hidden="true"></i>
                     <span class="sr-only">Shuffle</span>
                 </a>
-                <a class="button button-md">
+                <a class="button button-md" onclick="nextOrPrevious('backward')">
                     <i class="fas fa-step-backward" aria-hidden="true"></i>
                     <span class="sr-only">Previous Music</span>
                 </a>
-                <a class="button button-lg">
-                    <i class="fas fa-pause fa-lg" aria-hidden="true" aria-hidden="true"></i>
+                <a class="button button-lg" onclick="toggleMusic()">
+                    <i class="fas fa-pause fa-lg" aria-hidden="true" aria-hidden="true" id="playPauseIcon"></i>
                     <span class="sr-only">Pause</span>
                 </a>
-                <a class="button button-md">
+                <a class="button button-md" onclick="nextOrPrevious('foward')">
                     <i class="fas fa-step-forward"></i>
                     <span class="sr-only">Next Music</span>
                 </a>
-                <a class="button button-sm">
-                    <i class="fas fa-circle-notch fa-sm" aria-hidden="true"></i>
+                <a class="button button-sm" onclick="repeatEnabled = !repeatEnabled">
+                    <i class="fas fa-circle-notch fa-md" aria-hidden="true"></i>
                     <span class="sr-only">Repeat Song</span>
                 </a>
             </ul>
+            <div class="text-center">
+                <i class="fas fa-volume-down fa-lg" aria-hidden="true" aria-hidden="true"></i>
+                <input type="range" class="form-range" min="0" max="1" step="0.01" id="musicVolumeSlider">
+                <i class="fas fa-volume-up fa-lg" aria-hidden="true" aria-hidden="true"></i>
+            </div>
             <hr style="border-color: aliceblue;width: 70%;">
             <div class="mx-auto d-grid gap-2 col-6 text-center">
-            <button class="btn btn-warning mx-auto" type="button" data-toggle="modal" data-target="#musicFolderSelection">Music Overlay</button>
-            <button class="btn btn-info mx-auto" type="button">Chat Attribution</button>
+            <button class="btn btn-info mx-auto" type="button" data-toggle="modal" data-target="#musicOverlay" onclick="OBSHandle.startServer()">Music Overlay</button>
+            <button class="btn btn-info mx-auto" type="button" onclick="document.getElementById('SettingsLink').click()">Music Settings</button>
             </div>
         </main>
       </div>
@@ -50,22 +55,23 @@
     <div class="card col-12 col-lg-3 glimPanel">
       <div class="card-body">
           <div class="row">
-              <div class="col-6">
-                <h3 class="whiteText text-center" id="musicFolder">Epic Mix</h3>
+              <div class="col-6 text-center">
+                <a class="btn btn-success btn-inline" href="#" data-toggle="modal" data-target="#musicFolderSelection">Select Folder</a>
               </div>
               <div class="col-6">
                 <div class="btn-group-vertical mx-auto justify-content-md-center">
-                    <a class="btn btn-success btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Select Folder</a>
-                    <a class="btn btn-success btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Play Specific Song</a>
+                    <a class="btn btn-success btn-inline" href="#" data-toggle="modal" data-target="#musicSongSelection">Select Song</a>
                   </div>
               </div>
               <p class="whiteText mx-auto">___________________</p>
           </div>
           <div class="row">
               <div class="col-12">
-                  <div class="player h-100 w-100" style="margin:0 !important; overflow:auto">
+                  <div class="player h-100 w-100 mini-scroll" style="margin:0 !important; overflow:auto;max-height: 1px;">
                     <div class="row">
                         <div class="col-12">
+                            <div class="playlist" id="musicPlaylist">
+                            </div>
 
                         </div>
                     </div>
@@ -88,16 +94,14 @@
         </div>
         <!--Body-->
         <div class="modal-body" id="modalChatBody">
-            <input type="file"
-            id="addMediaInput" name="input"
-            accept="directory,">
-          <p id="chatMessageSolution" class="mt-2">Select a folder to play music from. The bot will play files at the top level, so you don't want folders in the folders.</p>
+          <p class="mt-2">Select a folder to play music from. The bot will play files at the top level, so you don't want folders in the folders.</p>
+          <input type="file" id="musicFolderUpload" webkitdirectory accept="audio/*" title="Upload Folder">
         </div>
         <!--Footer-->
         <div class="modal-footer">
           <p></p>
-          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" id="targetActionButton">Select</button>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="loadSongs(document.getElementById('musicFolderUpload').files)" data-dismiss="modal">Select</button>
         </div>
       </div>
     </div>
@@ -105,23 +109,23 @@
 
 
 
-  <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal fade" id="musicSongSelection" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="chatModal">
+      <div class="modal-content glimPanel whiteText">
         <!--Header-->
         <div class="modal-header text-center">
-          <h4 class="modal-title w-100" id="actionType">Action</h4>
+          <h4 class="modal-title w-100">Play Song</h4>
         </div>
         <!--Body-->
         <div class="modal-body" id="modalChatBody">
-          <input type="text" class="form-control" placeholder="User" id="whichUser">
-          <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
+            <input type="file" id="musicFileUpload" accept="audio/*" title="Select Song">
+            <p class="mt-2">Choose a song to play. This will remove your queue.</p>
         </div>
         <!--Footer-->
         <div class="modal-footer">
           <p id="moderateMessage"></p>
-          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="loadSongs(document.getElementById('musicFileUpload').files)" data-dismiss="modal">Send</button>
         </div>
       </div>
     </div>
@@ -132,26 +136,25 @@
 
 
 
-  <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="modal fade" id="musicOverlay" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="chatModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100" id="actionType">Action</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body" id="modalChatBody">
-          <input type="text" class="form-control" placeholder="User" id="whichUser">
-          <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <p id="moderateMessage"></p>
-          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" id="targetActionButton">Send</button>
+        <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+          <!--Header-->
+          <div class="modal-header text-center">
+            <h4 class="modal-title w-100">Music Overlay Launched</h4>
+          </div>
+          <!--Body-->
+          <div class="modal-body whiteText">
+              <p>The Music overlay has launched. Copy the following link and paste it in a browser source.</p>
+              <p class="mt-2" id="pathOfMusicOverlay" style="color: aquamarine;"></p>
+              <p class="mt-2">The music overlay will start automatically when you join a chat. This button is only for testing purposes. If you encounter any issues with the overlay be sure to let us know! Usually a simple restart fixes it.</p>
+                </div>
+          <!--Footer-->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
-    </div>
   </div>
 
 <style>
@@ -187,13 +190,18 @@
     border-radius: 6px;
 }
 
+.button:link { text-decoration: none}
+.button:visited { text-decoration: none}
+.button:hover { text-decoration: none}
+.button:active { text-decoration: none}
+
 .art {
     display: block;
     width: 175px;
     height: 175px;
     margin: 1rem auto;
     border-radius: 50%;
-    border: 4px solid #EBEBED;
+    border: 4px solid aquamarine;
 }
 
 .info {
@@ -229,14 +237,13 @@
     height: 10px;
     padding: 1px;
     border-radius: 25px;
-
     background: linear-gradient(145deg, #fbfbfb, #d4d4d4);
 
 }
 
 .prog-bar-inner {
     height: 8px;
-    background: var(--prog);
+    background: cornflowerblue;
     border-radius: 25px;
 }
 
@@ -274,7 +281,8 @@
 }
 
 .prog-bar-inner {
-    animation: timer 30s linear 0.1s;
+    animation: timer linear 0.1s;
+    animation-play-state: paused;
 }
 
 /*      keyframes   */
@@ -282,4 +290,63 @@
     0%      {width: 0%;}
     100%    {width: 100%;}
 }
+
+
+.song {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  background-color: rgba(240, 255, 255, 0.65);
+  padding: 8px 16px;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.song:hover {
+    background-color: rgb(60 195 195 / 28%)
+}
+
+.song.active {
+  background-color: darkcyan
+}
+
+.song:active {
+  opacity: 0.8;
+}
+
+.song.active .option,
+.song.active .author,
+.song.active .title {
+  color: #fff;
+}
+
+.song .thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 20%;
+  background-size: cover;
+  margin: 0 8px;
+}
+
+.song .body {
+  flex: 1;
+  padding: 0 16px;
+}
+
+.song .title {
+  font-size: 18px;
+  color: #fff;
+}
+
+.song .author {
+  font-size: 15px;
+  color: black;
+}
+
+.mini-scroll::-webkit-scrollbar-button {
+    scroll-padding-top: 15px
+}
+
+
 </style>
