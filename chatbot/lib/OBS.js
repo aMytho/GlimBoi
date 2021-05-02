@@ -182,6 +182,14 @@ function playVideo(video) {
     }
 }
 
+function playSong(song) {
+    try {
+        wss.send(JSON.stringify({action: "newSong", data: song}))
+    } catch(e) {
+        //console.log(e)
+    }
+}
+
 /**
  * Starts the server for overlays
  */
@@ -209,6 +217,10 @@ function startServer() {
         overlayStatusBar.title = "Overlay Active";
         overlayStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);">Overlay: Active</span>`
         overlayStatusBar.style.color = "rgb(17, 92, 33)"
+        let musicStatusBar = document.getElementById("musicStatus");
+        musicStatusBar.title = "Music Active";
+        musicStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);"> Music: Active</span>`
+        musicStatusBar.style.color = "rgb(17, 92, 33)"
     }
 }
 
@@ -220,4 +232,4 @@ function stopServer() {
     wss.removeAllListeners("connection")
 }
 
-module.exports = {addMedia, displayImage, editMedia, getAll, getCurrentMedia, getImages, getMediaByName, getSounds, getVideos, playSound, playVideo, removeMedia, startServer, stopServer, updatePath}
+module.exports = {addMedia, displayImage, editMedia, getAll, getCurrentMedia, getImages, getMediaByName, getSounds, getVideos, playSong, playSound, playVideo, removeMedia, startServer, stopServer, updatePath}

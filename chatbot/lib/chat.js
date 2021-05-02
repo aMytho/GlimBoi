@@ -57,8 +57,8 @@ function connectToGlimesh(access_token, channelID) {
     	ChatStats    = require(appData[0] + "/chatbot/lib/chat/chatStats.js");
     	ChatStats.loadChatStats();
     	ChatMessages = require(appData[0] + "/chatbot/lib/chat/chatMessages.js");
-        // Load Overlay
-        OBSHandle.startServer()
+        // Load Overlay (OBS and Music)
+        OBSHandle.startServer();
 
     	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
@@ -203,7 +203,9 @@ function connectToGlimesh(access_token, channelID) {
                       					break;
                   					}
                   				break;
-                                case "!rank": ChatActions.getRank(userChat.toLowerCase())
+                                case "!rank": ChatActions.getRank(userChat.toLowerCase());
+                                break;
+                                case "!song" : ChatActions.getSong();
                                 break;
                 				default: //its not a glimboi command, may be a stream command. We need to check and send the output to chat.
                   					CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
