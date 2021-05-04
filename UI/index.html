@@ -31,6 +31,7 @@
         <script src="src/js/charts.js"></script>
         <script src="src/js/chat.js"></script>
         <script src="src/js/events.js"></script>
+        <script src="src/js/music.js"></script>
         <script src="src/js/settings.js"></script>
     </head>
     <body>
@@ -60,6 +61,9 @@
                     <li class="nav-item glimNavItem" id="OBS">
                         <a class="nav-link disabled" href="UI/src/html/OBS.html" id="OBSLink">Overlay</a>
                     </li>
+                    <li class="nav-item glimNavItem" id="Music">
+                        <a class="nav-link disabled" href="UI/src/html/music.html" id="MusicLink">Music Player</a>
+                    </li>
                     <li class="nav-item glimNavItem" id="Settings">
                         <a class="nav-link disabled" href="UI/src/html/settings.html" id="SettingsLink">Settings</a>
                     </li>
@@ -73,6 +77,14 @@
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
+                    <li class="nav-item glimNavItem">
+                        <audio id="musicAudio">
+                            <source src="#" type="audio/mp3">
+                            Your browser does not support the audio element.
+                          </audio>
+                        <a class="nav-link disabled" href="#" >
+                        <i class="fas fa-music" id="musicStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Music: Inactive</span> </i></a>
+                    </li>
                     <li class="nav-item glimNavItem">
                         <a class="nav-link disabled" href="#" >
                         <i class="fa fa-wifi" id="overlayStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Overlay: Inactive</span> </i></a>
@@ -242,3 +254,24 @@
   	</div>
 </div>
 <!-- Modal: Success Message -->
+
+<!-- Modal: Moderate? -->
+<div class="modal fade" id="reconnectModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Reconnecting</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <p id="chatMessageSolution" class="mt-2">Attempting to reconnect in 10 seconds...</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="clearTimeout(reconnectDelay)">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: Moderate -->

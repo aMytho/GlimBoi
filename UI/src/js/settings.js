@@ -22,6 +22,10 @@ let updatedSettings = {
         logging: false,
         filter: false,
         health: 0
+    },
+    music: {
+        chatAttribution: false,
+        writeToFile: false
     }
 }
 
@@ -36,6 +40,7 @@ function unlockBot() {
         document.getElementById("EventsLink").classList.remove("disabled")
         document.getElementById("RanksLink").classList.remove("disabled")
         document.getElementById("OBSLink").classList.remove("disabled")
+        document.getElementById("MusicLink").classList.remove("disabled")
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
@@ -69,6 +74,10 @@ function getSettings() {
                 logging: false,
                 filter: false,
                 health: 0
+            },
+            music: {
+                chatAttribution: false,
+                writeToFile: false
             }
         })
         try {
@@ -97,6 +106,10 @@ function getSettings() {
                 logging: false,
                 filter: false,
                 health: 0
+            },
+            music: {
+                chatAttribution: false,
+                writeToFile: false
             }
         }
     }
@@ -195,6 +208,14 @@ function showSettings() {
         default:
         break;
     }
+    // Music
+    if (settings.music.chatAttribution) {
+        document.getElementById("attributionMusicEnabled").toggleAttribute("checked");
+    }
+    if (settings.music.writeToFile) {
+        document.getElementById("fileMusicEnabled").toggleAttribute("checked");
+    }
+    document.getElementById("chatNavSelector").click();
 }
 
 
@@ -275,6 +296,10 @@ function saveSettings() {
             logging: document.getElementById("loggingEnabled").checked,
             filter: document.getElementById("filterEnabled").checked,
             health: getHealthInterval()
+        },
+        music: {
+            chatAttribution: document.getElementById("attributionMusicEnabled").checked,
+            writeToFile: document.getElementById("fileMusicEnabled").checked
         }
     }
     console.log(settings);
@@ -304,6 +329,10 @@ function resetSettings() {
             logging: false,
             filter: false,
             health: 0
+        },
+        music: {
+            chatAttribution: false,
+            writeToFile: false
         }
     }
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
@@ -312,7 +341,7 @@ function resetSettings() {
     successMessage("Settings Reset", "Your settings have been set to their original values.")
 }
 
-//applies the settings. THis is ran at launch after the file is read. Once finished the bot is fully ready
+//applies the settings. This is ran at launch after the file is read. Once finished the bot is fully ready
 function updateSettings() {
     CommandHandle.cooldownChange(settings.Commands.cooldown);
     ModHandle.updateFilter(settings.chat.filter);

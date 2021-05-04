@@ -65,7 +65,8 @@ function saveRankSettings(rank) {
         canRemoveUsers: document.getElementById("removeUsersRank").checked,
         canAddQuotes: document.getElementById("addQuotesRank").checked,
         canEditQuotes: document.getElementById("editQuotesRank").checked,
-        canRemoveQuotes: document.getElementById("removeQuotesRank").checked
+        canRemoveQuotes: document.getElementById("removeQuotesRank").checked,
+        canControlMusic: document.getElementById("controlMusicRank").checked
     }
     console.log(updatedRank);
     RankHandle.editRank(updatedRank);

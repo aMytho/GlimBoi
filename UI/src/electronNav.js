@@ -60,6 +60,7 @@ window.onload = function() {
                     if (linkEl.id == "OBSLink") {loadOBSData()}
                 	if (linkEl.id == "ChatLink") {loadChatWindow()} //Builds the data table
                     if (linkEl.id == "RanksLink") {rankPrep()}
+                    if (linkEl.id == "MusicLink") {loadMusicProgram()}
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
             	})

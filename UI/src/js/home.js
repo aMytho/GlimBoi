@@ -127,7 +127,7 @@ function syncUsers(data, action) {
 
 function updateStatus(stage) {
   	if (stage == 1) {
-    	document.getElementById("authStatus").innerHTML = ` <span style="color: rgb(149, 101, 22);"> Auth Saved. Authorize when ready!</span> `;
+    	document.getElementById("authStatus").innerHTML = ` <span style="color: rgb(149, 101, 22);"> Auth Saved. Request a Token!</span> `;
     	document.getElementById("authStatus").className = "fas fa-user-lock"
   	} else if (stage == 2) {
     	document.getElementById("authStatus").innerHTML = ` <span style="color: rgb(17, 92, 33);"> GlimBoi is ready to join the chat!</span> `;

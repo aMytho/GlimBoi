@@ -458,6 +458,7 @@ function loadSpecificRank(rank) {
     document.getElementById("addQuotesRank").checked = rank.canAddQuotes;
     document.getElementById("editQuotesRank").checked = rank.canEditQuotes;
     document.getElementById("removeQuotesRank").checked = rank.canRemoveQuotes;
+    document.getElementById("controlMusicRank").checked = rank.canControlMusic;
 }
 
 function addMediaModal() {

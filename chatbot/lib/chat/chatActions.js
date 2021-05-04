@@ -406,4 +406,144 @@ async function getTopPoints(requestedPosition, leaderBoard) {
     }
 }
 
-module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getOwnPointsChat, getPointsChat, getRank, getTopPoints, randomQuoteChat, removeCommand, removePointsChat}
+/**
+ * Sends the current song to chat.
+ */
+function getSong() {
+    if (musicPlaylist[currentSongIndex] && musicPlaylist[currentSongIndex].artists) {
+        ChatMessages.filterMessage(`Now playing ${musicPlaylist[currentSongIndex].name} by ${musicPlaylist[currentSongIndex].artists}`, "glimboi")
+    } else if (musicPlaylist[currentSongIndex]) {
+        ChatMessages.filterMessage(`Now playing ${musicPlaylist[currentSongIndex].name}`, "glimboi")
+    } else {
+        ChatMessages.filterMessage(`No song is currently playing.`, "glimboi")
+    }
+}
+/**
+ * Gets or sets the next song.
+ * @param {string} user The user who asked for or set the next song
+ * @param {string} action Whether we are getting or setting the next song
+ */
+async function nextSong(user, action) {
+    if (action == "set") {
+        let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
+        if (hasPerms == false) {
+            ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
+        } else if (hasPerms == null) {
+            let newUser = await UserHandle.addUser(user, false);
+            if (newUser !== "INVALIDUSER") { nextSong(newUser.userName, action) }
+        } else {
+            if (musicPlaylist[currentSongIndex]) {
+                nextOrPrevious("foward");
+            } else {
+                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+            }
+        }
+    } else {
+        if (musicPlaylist[currentSongIndex]) {
+            if (currentSongIndex + 1 >= musicPlaylist.length) {
+                ChatMessages.filterMessage("Next up is " + musicPlaylist[0].name, "glimboi");
+            } else {
+                ChatMessages.filterMessage("Next up is " + musicPlaylist[currentSongIndex + 1].name, "glimboi")
+            }
+        } else {
+            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+        }
+    }
+}
+
+/**
+ * Sets or gets the previous song
+ * @param {string} user The user who is requesting or setting the song
+ * @param {string} action Are we setttng or getting the song?
+ */
+async function previousSong(user, action) {
+    if (action == "set") {
+        let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
+        if (hasPerms == false) {
+            ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
+        } else if (hasPerms == null) {
+            let newUser = await UserHandle.addUser(user, false);
+            if (newUser !== "INVALIDUSER") { previousSong(newUser.userName, action) }
+        } else {
+            if (musicPlaylist[currentSongIndex]) {
+                nextOrPrevious("backward");
+            } else {
+                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+            }
+        }
+    } else {
+        if (musicPlaylist[currentSongIndex]) {
+            if (currentSongIndex - 1 < 0) {
+                ChatMessages.filterMessage("Last song was " + musicPlaylist[0].name, "glimboi");
+            } else {
+                ChatMessages.filterMessage("Last song was" + musicPlaylist[currentSongIndex - 1].name, "glimboi")
+            }
+        } else {
+            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+        }
+    }
+}
+
+/**
+ * Enables or Disbles repeat.
+ * @param {string} user The user who is wanting to replay a song
+ */
+async function replaySong(user) {
+    let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
+        if (hasPerms == false) {
+            ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
+        } else if (hasPerms == null) {
+            let newUser = await UserHandle.addUser(user, false);
+            if (newUser !== "INVALIDUSER") { replaySong(newUser.userName) }
+        } else {
+            if (musicPlaylist[currentSongIndex]) {
+                toggleShuffleRepeat(document.getElementById("repeatButton"), !repeatEnabled, "Repeat" );
+                ChatMessages.filterMessage("Repeat Toggled", "glimboi")
+            } else {
+                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+            }
+        }
+}
+
+/**
+ * Enables or Diables shuffle.
+ * @param {string} user The user who is wanting to shuffle the playlist
+ */
+async function toggleShuffle(user) {
+    let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
+    if (hasPerms == false) {
+        ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
+    } else if (hasPerms == null) {
+        let newUser = await UserHandle.addUser(user, false);
+        if (newUser !== "INVALIDUSER") { toggleShuffle(newUser.userName) }
+    } else {
+        if (musicPlaylist[currentSongIndex]) {
+            toggleShuffleRepeat(document.getElementById("shuffleButton"), !shuffleEnabled, "Shuffle" )
+            ChatMessages.filterMessage("Shuffle Toggled", "glimboi")
+        } else {
+            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+        }
+    }
+}
+
+/**
+ * Plays or pauses the music
+ * @param {string} user The user who is wanting to play or pause.
+ */
+ async function playPause(user, action) {
+    let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
+    if (hasPerms == false) {
+        ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
+    } else if (hasPerms == null) {
+        let newUser = await UserHandle.addUser(user, false);
+        if (newUser !== "INVALIDUSER") { playPause(newUser.userName, action) }
+    } else {
+        if (musicPlaylist[currentSongIndex]) {
+            toggleMusic()
+        } else {
+            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+        }
+    }
+}
+
+module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, nextSong, playPause, previousSong, randomQuoteChat, removeCommand, removePointsChat, replaySong, toggleShuffle}
