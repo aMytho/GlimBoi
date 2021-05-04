@@ -9,8 +9,8 @@ let messageHistoryCount = 20;
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
-function join(access_token, channelID) {
-  	try {connectToGlimesh(access_token, channelID)} catch(e) {
+function join(access_token, channelID, isReconnect) {
+  	try {connectToGlimesh(access_token, channelID, isReconnect)} catch(e) {
      	console.log("we caught the error, poggers");
      	errorMessage(e, "Chat Error")
   	}
@@ -40,7 +40,7 @@ function isConnected() {
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
-function connectToGlimesh(access_token, channelID) {
+function connectToGlimesh(access_token, channelID, isReconnect) {
   	const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}` // The websocket URL
   	connection = new WebSocket(url); // Connection is now an offical connection!
   	chatID = channelID // The channel ID is now an accessible variable for this module
@@ -80,6 +80,11 @@ function connectToGlimesh(access_token, channelID) {
         		console.log(e)
       		}
     	});
+        if (isReconnect) {
+            ChatMessages.filterMessage("Glimboi was disconnected and has now returned.", "glimboi");
+        } else {
+            ChatMessages.filterMessage("Glimboi has joined the chat :glimsmile:", "glimboi");
+        }
   	};
 
   	connection.onmessage = function (event) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
@@ -207,7 +212,48 @@ function connectToGlimesh(access_token, channelID) {
                                 break;
                                 case "!song" : ChatActions.getSong();
                                 break;
-                				default: //its not a glimboi command, may be a stream command. We need to check and send the output to chat.
+                                case "!sr":
+                  					if (message[1] !== undefined) {
+                                        switch (message[1].toLowerCase()) {
+                                            case "current":
+                                            case "now":
+                                                ChatActions.getSong();
+                                              break;
+                                            case "next":
+                                            case "n":
+                                                ChatActions.nextSong(userChat, "get")
+                                              break;
+                                            case "last":
+                                            case "l":
+                                                ChatActions.previousSong(userChat, "get")
+                                              break;
+                                            case "skip": ChatActions.nextSong(userChat, "set")
+                                            break;
+                                            case "previous": ChatActions.previousSong(userChat, "set");
+                                            break;
+                                            case "repeat":
+                                            case "loop":
+                                                ChatActions.replaySong(userChat)
+                                            break;
+                                            case "shuffle":
+                                            case "random":
+                                                ChatActions.toggleShuffle(userChat)
+                                            break;
+                                            case "toggle":
+                                                ChatActions.toggleShuffle(userChat, 1)
+                                            break;
+                                            //case "queue":
+                                            //case "list":
+                                                //ChatMessages.glimboiMessage("Feature coming soon");
+                                            //break;
+                                            default: ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle", "glimboi");
+                                              break;
+                                          }
+                                      } else {
+                                        ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle", "glimboi");
+                                      }
+                  				break;
+                				default: //its not a glimboi command, may be a streamer command. We need to check and send the output to chat.
                   					CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
                   				break;
               				}
@@ -242,7 +288,8 @@ function connectToGlimesh(access_token, channelID) {
         		console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
       		} else {
         		console.log("[close] Connection died");
-        		errorMessage([event.code, event.reason], "Chat Error")
+        		errorMessage([event.code, event.reason], "Chat Error. Attempting to reconnect...");
+                reconnect()
       		}
     	};
 

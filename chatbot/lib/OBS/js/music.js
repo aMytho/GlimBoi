@@ -2,6 +2,7 @@
 
 function connect() {
     let connection = new WebSocket("ws://localhost:8080");
+    let timer;
 
     connection.onopen = function (event) {
         console.log("connected to glimboi server");
@@ -10,6 +11,7 @@ function connect() {
 
     connection.onmessage = function (event) {
         try {
+            clearTimeout(timer)
             console.log(event.data);
             let message = JSON.parse(event.data)
             if (message.action !== undefined) {
@@ -22,7 +24,7 @@ function connect() {
                     } else {
                         document.getElementById("songAuthor").innerText = ""
                     }
-                    setTimeout(() => {
+                    timer = setTimeout(() => {
                         document.getElementById("songOverlay").style.opacity = 0
                         connection.send(JSON.stringify({ status: "ok", actionCompleted: "newSong", songName: message.data.name }))
                     }, 7777);

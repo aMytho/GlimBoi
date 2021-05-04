@@ -8,7 +8,7 @@
                 <p id="songAuthor">Select a folder to play music!</p>
             </div>
             <div class="prog">
-                <div class="prog-time">
+                <div class="prog-time d-none">
                     <p class="left">0:00</p>
                     <p class="right">0:00</p>
                 </div>
@@ -17,7 +17,7 @@
                 </div>
             </div><!--  progress  -->
             <ul class="buttons">
-                <a class="button button-sm" onclick="shuffleEnabled = !shuffleEnabled">
+                <a class="button button-sm" onclick="toggleShuffleRepeat(this, !shuffleEnabled, 'Shuffle')" data-toggle="tooltip" data-placement="top" title="Shuffle Disabled" id="shuffleButton">
                     <i class="fas fa-random fa-md" aria-hidden="true"></i>
                     <span class="sr-only">Shuffle</span>
                 </a>
@@ -33,7 +33,7 @@
                     <i class="fas fa-step-forward"></i>
                     <span class="sr-only">Next Music</span>
                 </a>
-                <a class="button button-sm" onclick="repeatEnabled = !repeatEnabled">
+                <a class="button button-sm" onclick="toggleShuffleRepeat(this, !repeatEnabled, 'Repeat')" data-toggle="tooltip" data-placement="top" title="Repeat Disabled" id="repeatButton">
                     <i class="fas fa-circle-notch fa-md" aria-hidden="true"></i>
                     <span class="sr-only">Repeat Song</span>
                 </a>
