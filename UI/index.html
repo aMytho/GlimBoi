@@ -254,3 +254,24 @@
   	</div>
 </div>
 <!-- Modal: Success Message -->
+
+<!-- Modal: Moderate? -->
+<div class="modal fade" id="reconnectModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Reconnecting</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <p id="chatMessageSolution" class="mt-2">Attempting to reconnect in 10 seconds...</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="clearTimeout(reconnectDelay)">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: Moderate -->

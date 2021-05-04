@@ -1,11 +1,10 @@
-const { desktopCapturer } = require("electron");
-
 var isDev = false; // We assume they are on a production release.
 var ChatSettings;
 var ChatActions;
 var ChatStats;
 var ChatMessages;
 var chatID = "" // the channel ID
+var reconnectDelay, currentChannelToRejoin;
 
 var contentTarget;
 var contentBody;
@@ -126,7 +125,7 @@ $(document).on('click', '#chatConnections button', function (event) {
  * Join a chat after ensuring everything is kosher, and display the connection
  * @param {string} chat
  */
-function joinChat(chat) {
+function joinChat(chat, isReconnect) {
   	var chatToJoin = chat;
 
   	AuthHandle.getToken().then(data => {
@@ -142,11 +141,11 @@ function joinChat(chat) {
         		} else {
           			//We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
           			currentChatConnected = chatToJoin;
-          			ChatHandle.join(data, response); // Joins the channel
+          			ChatHandle.join(data, response, isReconnect); // Joins the channel
           			successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
           			// Now we need to import the filter.
           			ModHandle.importFilter();
-
+                    currentChannelToRejoin = chat
           			addChannelAndDisplay(chatToJoin).then(function () {
             			if (chatToJoin.toLowerCase() === 'glimboi') {
               				var channelNameText = 'GlimBoi (TEST)';
@@ -408,4 +407,15 @@ function actionBuilder(action) {
 function addAction(action) {
     addActionHTML(action);
     console.log(action)
+}
+
+function reconnect() {
+    setTimeout(() => {
+        $('#modalError').modal('hide');
+        $('#reconnectModal').modal('toggle');
+        reconnectDelay = setTimeout(() => {
+            joinChat(currentChannelToRejoin, true);
+            $('#reconnectModal').modal('hide');
+        }, 10000);
+    }, 3000);
 }
