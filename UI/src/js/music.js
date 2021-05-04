@@ -22,7 +22,7 @@ function loadMusicProgram() {
             if (musicPlaylist[i].cover) {
                 newIMG.src = `data:${musicPlaylist[i].format};base64,${musicPlaylist[i].cover.toString('base64')}`;
             } else {
-                newIMG.src = "Icons/music.png"
+                newIMG.src = "resIcons/music.png"
             }
             newSong.appendChild(newIMG);
             newSong.innerHTML += `
@@ -84,7 +84,7 @@ async function loadSongs(files) {
             if (songCover) {
                 newIMG.src = `data:${songCover[1]};base64,${songCover[0].toString('base64')}`;
             } else {
-                newIMG.src = "Icons/music.png"
+                newIMG.src = "resIcons/music.png"
             }
             newSong.appendChild(newIMG);
             newSong.innerHTML += `
@@ -174,7 +174,7 @@ function updateInfo(info) {
         try {
             document.getElementById("artForMusic").src = `data:${info.format};base64,${info.cover.toString('base64')}`;
         } catch (e) {
-            document.getElementById("artForMusic").src = "Icons/music.png"
+            document.getElementById("artForMusic").src = "resIcons/music.png"
         }
         let allSongs = document.getElementsByClassName("song");
         for (let i = 0; i < allSongs.length; i++) {
