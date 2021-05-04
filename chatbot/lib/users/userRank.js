@@ -1,9 +1,9 @@
 // This file manages the rank system
 var rankDB; //Controls the Rank DB
 var ranks = [];
-var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false};
-var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true};
-var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true, canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true};
+var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false};
+var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true};
+var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true, canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true};
 
 /**
  * A new Rank
@@ -23,6 +23,7 @@ class Rank {
         this.canAddQuotes = false;
         this.canEditQuotes = false;
         this.canRemoveQuotes = false;
+        this.canControlMusic = false;
     }
 }
 
@@ -88,11 +89,15 @@ function removeRank(rank) {
         }
         resolve("NORANKFOUND")
       } else {
-          resolve("INVALIDRANK")
+        resolve("INVALIDRANK")
       }
   })
 }
 
+/**
+ * Updates a rank with new data
+ * @param {object} rank A rank with updated properties.
+ */
 function editRank(rank) {
     for (let i = 0; i < ranks.length; i++) {
         if (rank.rank == ranks[i].rank) {
@@ -104,10 +109,26 @@ function editRank(rank) {
         canRemoveCommands: rank.canRemoveCommands, canAddPoints: rank.canAddPoints, canEditPoints: rank.canEditPoints,
         canRemovePoints: rank.canRemovePoints, canAddQuotes: rank.canAddQuotes, canEditQuotes: rank.canEditQuotes,
         canRemoveQuotes: rank.canRemoveQuotes, canAddUsers: rank.canAddUsers, canEditUsers: rank.canEditUsers,
-        canRemoveUsers: rank.canRemoveUsers}
+        canRemoveUsers: rank.canRemoveUsers, canControlMusic: rank.canControlMusic}
     }, {}, function (err, numReplaced) {
         console.log("Rank settings updated");
     });
+}
+
+/**
+ * Adds a property to a specific rank
+ * @param {string} rank The rank we are adding the property to
+ * @param {string} property What property we are adding to the rank
+ */
+function addRankProperty(rank, property) {
+    for (let i = 0; i < ranks.length; i++) {
+        if (rank == ranks[i].rank) {
+            ranks[i][`${property}`] = false;
+        }
+    }
+    rankDB.update({rank: rank}, { $set: { [`${property}`]: false}}, {}, function (err, numReplaced) {
+        console.log(property + " was added to" + rank)
+    })
 }
 
 /**
@@ -122,10 +143,15 @@ function rankController(user, action, type) {
             if (data !== "ADDUSER") {
                 var rankInfo = getRankPerms(data.role);
                 if (type == "string") {
-                    if (rankInfo !== null && rankInfo[`${action}`] == true) {
-                        resolve(true)
-                    } else {
+                    if (rankInfo == null) { // the rank doesn't exist anymore
+                        resolve(false);
+                    } else if (rankInfo[`${action}`] == true) { // they have permission
+                        resolve(true);
+                    } else if (rankInfo[`${action}`] == false) {// they don't have permission
                         resolve(false)
+                    } else if (rankInfo[`${action}`] == undefined) { // this is a new permission, we deny it and add it to the db.
+                        addRankProperty(data.role, action);
+                        resolve(false);
                     }
                 } else {
                     resolve(false)
