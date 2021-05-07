@@ -62,7 +62,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
 
     	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
-    	}, 30000);
+    	}, 20000);
       	// Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
     	ApiHandle.getBotAccount().then(data => {
       		try {
