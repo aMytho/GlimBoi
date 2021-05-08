@@ -1,7 +1,5 @@
 //This file handles connecting the users dev app to glimesh.tv
 let path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
-let client = "" //Client ID
-let secret = "" //secret ID
 let authDB; //Auth database containing all auth info
 let token = {access_token: "", scope: "", creation: ""} //Can be used for auth purposes
 
@@ -9,10 +7,11 @@ let token = {access_token: "", scope: "", creation: ""} //Can be used for auth p
  * Requests an access token
  * @param {string} clientID The client ID of the user
  * @param {string} secretKey The secret key of the user
- * @param {boolean} firstTime Is this manually triggered?
+ * @param {boolean} isManual Is this manually triggered?
  */
-function requestToken(clientID, secretKey, firstTime) {
-    fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
+function requestToken(clientID, secretKey, isManual) {
+    return new Promise(resolve => {
+        fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
         .then((res) => {
             res.json().then((data) => { // parse and store the response
                 try {
@@ -27,24 +26,16 @@ function requestToken(clientID, secretKey, firstTime) {
                     authDB.update({}, { $set: { access_token: data.access_token, created_at: data.created_at } }, { multi: true }, function (err, numReplaced) {
                         console.log("Access token recieved and added to the database. Ready to join chat!");
                         updateStatus(2); // Everything is ready, they can join chat!
-                        firstTime ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null
+                        isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null
+                        resolve("ALLGOOD")
                     });
                 } catch (e) {
                     console.log(e); // in case of errors...
                     errorMessage(e, "Auth Error")
+                    resolve("NOTGOOD")
                 }
             });
         })
-}
-
-/**
- * Stores authentication information.The client/secret ID must be saved BEFORE this is called.
- */
-function Auth() {
-    readAuth().then(data => {
-      	client = data[0].clientID;
-      	secret = data[0].secret
-      	startAuthServer(client, secret) // Starts an auth server so the user can authorize their app.
     })
 }
 
@@ -55,16 +46,6 @@ function updatePath(GUI) {
   	console.log("Path is " + GUI);
   	path = GUI;
   	authDB = new Datastore({ filename: `${path}/data/auth.db`, autoload: true });
-}
-
-/**
- * Updates auth variables with info for authentication
- * @param {string} id Client ID
- * @param {string} id2 Secret Key
- */
-function recieveID(id, id2) {
-  	client = id;
-  	secret = id2
 }
 
 /**
@@ -101,7 +82,7 @@ function updateID(client, secret) {
  * @param {string} secret Secret ID
  */
 function createID(client, secret) {
-  	console.log(client,secret)
+  	console.log(client, secret)
   	return new Promise(resolve => {
     	if (client == "" && secret !== "") {
       		authDB.update({}, {$set: {secret: secret}} , { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
@@ -160,4 +141,4 @@ function getID() {
   	})
 }
 
-module.exports = { Auth, createID ,getID, getToken ,readAuth, recieveID, requestToken, updateID ,updatePath}; //Send to the main file.
+module.exports = { createID, getID, getToken, readAuth, requestToken, updateID, updatePath}; //Send to the main file.

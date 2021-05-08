@@ -410,12 +410,29 @@ function addAction(action) {
 }
 
 function reconnect() {
+    console.log("We were disconnected from chat, attempting to rejoin in 10 seconds.");
     setTimeout(() => {
         $('#modalError').modal('hide');
         $('#reconnectModal').modal('toggle');
         reconnectDelay = setTimeout(() => {
-            joinChat(currentChannelToRejoin, true);
-            $('#reconnectModal').modal('hide');
+            try {
+                AuthHandle.readAuth().then(data => {
+                    AuthHandle.requestToken(data[0].clientID, data[0].secret, false).then(data2 => {
+                        if (data2 == "ALLGOOD") {
+                            joinChat(currentChannelToRejoin, true);
+                            console.log("Rejoined chat. Hopefully..........")
+                            $('#reconnectModal').modal('hide');
+                        } else {
+                            console.log("We failed to rejoin chat because there was an ERROR with REQUESTING A TOKEN. VIP, SHOW THIS TO MYTHO");
+                            errorMessage("Failed to rejoin chat. Error occured because Glimboi could not request a token.", "Wait a few mintues and then request a new token. Then rejoin chat.")
+                        }
+
+                    })
+                })
+            } catch(e) {
+                errorMessage("Failed to rejoin Glimesh chat", "Wait a few minutes and request another token.");
+                $('#reconnectModal').modal('hide');
+            }
         }, 10000);
     }, 3000);
 }
