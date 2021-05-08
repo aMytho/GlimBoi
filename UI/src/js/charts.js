@@ -52,10 +52,8 @@ function getBasicData() {
             			},
           			],
         		};
-
         		introChart = new ApexCharts(document.getElementById("chart"), introChartOptions);
         		introChart.render();
-
       		})
     	})
   	})

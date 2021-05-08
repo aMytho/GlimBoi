@@ -295,7 +295,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
 
     connection.onerror = function (error) { // oh noes, an error!
       	console.log(`[error] ${error.message}`);
-      		console.log("Probably an auth issue. Please reauthenicate");
+      	console.log("Probably an auth issue. Please reauthenicate");
       	try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
       		clearInterval(heartbeat) // stops the hearbteat
       		ChatSettings.stopChatSettings(); // stops everything else
@@ -308,7 +308,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
 /**
  * Disconnects from Glimesh chat.
  */
-function disconnect(displayMessage = true) {
+function disconnect(displayMessage) {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
     	if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
@@ -323,7 +323,7 @@ function disconnect(displayMessage = true) {
 }
 
 /**
- * Disconnecting because of an error.
+ * Disconnecting because of an error parsing the message
  */
 function disconnectError() {
   	try {
@@ -345,6 +345,5 @@ function disconnectError() {
 function getBotName() {
   	return botName
 }
-
 
 module.exports = { getConnection, isConnected, connectToGlimesh, disconnect, getBotName, join}

@@ -1,5 +1,5 @@
 const mm = require("music-metadata");
-let musicPlaylist = [], currentDuration, startDuration, endDuration, isPlaying = false;
+let musicPlaylist = [], isPlaying = false;
 let currentSongIndex = 0, volume = "0.5", repeatEnabled = false, shuffleEnabled = false;
 
 /**

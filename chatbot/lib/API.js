@@ -19,16 +19,15 @@ function updatePath(accessToken) {
  * Tries to update the client ID. This var is only used in the API file, this does not affect the ID in the database.
  * If no ID is found we alert the user.
  */
-function updateID() {
-  	AuthHandle.getID().then(data => {
-    	if (data == null) {
-      		console.log("No ID exists yet.");
-      		successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!")
-    	} else {
-      		clientID = data;
-      		console.log("API.js is using the new client ID")
-    	}
-  	})
+async function updateID() {
+  	let newClientID = await AuthHandle.getID()
+    if (newClientID == null) {
+      	console.log("No ID exists yet.");
+      	successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!")
+    } else {
+      	clientID = newClientID;
+      	console.log("API.js is using the new client ID")
+    }
 }
 
 /**
