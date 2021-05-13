@@ -1,8 +1,9 @@
-let path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
+let path = "./"; //Call updatePath(path) to set to the right path for the db
 let commandsDB; //Database of commands.
 let commands = []; //Array that contains all the commands. The bot reads this
 let cooldown = 0; //Default cooldown time for commands
-let startCD = new Date(), timeCD; //When a command is activated to the next command. Subtract now from then.
+let startCD = new Date() // Current time, used in cooldowns
+let timeCD; // The current time, used in cooldowns
 let repeatableArray = []; //Array of repeatable commands
 
 /**
@@ -18,17 +19,7 @@ let repeatableArray = []; //Array of repeatable commands
  * @param {string} media Display an image or video
  */
 class Command {
-  	constructor(
-    	commandName,
-    	commandData,
-    	uses,
-    	points,
-    	rank,
-    	special,
-    	repeat,
-        sound,
-        media
-  	) {
+    constructor( commandName, commandData, uses, points, rank, special, repeat, sound, media) {
     	this.commandName = commandName; //The name of the command
     	this.message = commandData; // No explanation here
     	this.uses = uses; //Times the command has been used.
@@ -292,7 +283,6 @@ function checkCommand(data) {
     		console.log(error);
   		}
 	}
-
 }
 
 /**

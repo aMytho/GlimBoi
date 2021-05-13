@@ -7,11 +7,11 @@ let path = "./";
 let users = [];
 /**
  * A GlimBoi user
+ * @param {string} userName The username of the user
+ * @param {number} ID The user ID of the user (from glimesh.tv)
  */
 class User {
-    constructor(
-      	userName, ID
-    ) {
+    constructor(userName, ID) {
       	this.userName = userName;
       	this.points = Number(settings.Points.StartingAmount)
       	this.watchTime = 0;
@@ -283,7 +283,6 @@ function addPoints(user, points) {
                 editUserTable(user, affectedDocuments.role, Number(users[i].points))
                 break
             }
-
         }
     })
 }

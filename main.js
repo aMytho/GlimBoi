@@ -1,8 +1,8 @@
 const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
-const log = require('electron-log');
+const log = require('electron-log'); // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 const { autoUpdater } = require('electron-updater'); //handles updates
-const isDev = require("electron-is-dev")
+const isDev = require("electron-is-dev"); // detects if we are in dev mode
 
 ipcMain.on('app_version', (event) => {
   	console.log("The current version is recieved. " + app.getVersion());
