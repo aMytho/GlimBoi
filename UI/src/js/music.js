@@ -1,6 +1,6 @@
 const mm = require("music-metadata");
 let musicPlaylist = [], isPlaying = false;
-let currentSongIndex = 0, volume = "0.5", repeatEnabled = false, shuffleEnabled = false;
+let currentSongIndex = 0, volume = 0.5, repeatEnabled = false, shuffleEnabled = false;
 
 /**
  * Loads the music program. Changes all of the UI elements to match what is currently playing.
@@ -9,10 +9,13 @@ function loadMusicProgram() {
     document.getElementById("musicVolumeSlider").addEventListener("change", event => {
         document.getElementById("musicAudio").volume = Number(event.target.value);
         volume = Number(event.target.value);
+        CacheStore.set("musicVolume", volume)
     })
 
+    volume = CacheStore.get("musicVolume", 0.5, true)
+    document.getElementById("musicVolumeSlider").value = volume
+
     if (musicPlaylist[currentSongIndex]) {
-        document.getElementById("musicVolumeSlider").value = volume;
         for (let i = 0; i < musicPlaylist.length; i++) {
             let newSong = document.createElement("div");
             newSong.classList = "song";
@@ -61,9 +64,17 @@ async function loadSongs(files) {
     musicPlaylist = [];
     files = files;
     document.getElementById("musicPlaylist").innerHTML = ""
+    let musicDirectory, lastSong
     for (let i = 0; i < files.length; i++) {
+        let song = files[i]
         try {
-            let metadata = await mm.parseFile(files[i].path, { skipCovers: false });
+            if (!files[i].type) {
+                song.path = files[i].path
+                song.name = files[i].fileName
+            }
+            musicDirectory = song.path
+            lastSong = song.name
+            let metadata = await mm.parseFile(song.path, { skipCovers: false });
             let artists, songCover;
             if (metadata.common.artists) {
                 artists = metadata.common.artists.toString()
@@ -75,7 +86,7 @@ async function loadSongs(files) {
             } else {
                 songCover = false
             }
-            let newName = files[i].name.slice(0, files[i].name.indexOf("."))
+            let newName = song.name.slice(0, song.name.indexOf("."))
             let newSong = document.createElement("div");
             newSong.classList = "song";
             newSong.setAttribute("data-index", "3");
@@ -94,13 +105,16 @@ async function loadSongs(files) {
                                     <i class="fas fa-play fa-md" aria-hidden="true" onclick="playSongFromFolder(this, true)"></i>
                                 </div>`
             document.getElementById("musicPlaylist").appendChild(newSong)
-            musicPlaylist.push({ name: newName, path: files[i].path, artists: artists, cover: songCover[0], format: songCover[1] })
+            musicPlaylist.push({ name: newName, path: song.path, artists: artists, cover: songCover[0], format: songCover[1] })
         } catch (e) {
             console.log(e);
         }
     }
+    if (files.length > 0) {
     playSong(0, true);
     document.getElementById("musicFolderUpload").value = ""
+    CacheStore.set("lastPlayed", musicDirectory.substring(0, musicDirectory.lastIndexOf(lastSong) - 1))
+    }
 }
 
 /**
@@ -183,9 +197,7 @@ function updateInfo(info) {
                 allSongs[i].classList.add("active")
             }
         }
-    } catch(e) {
-
-    }
+    } catch(e) {}
     OBSHandle.playSong({ name: info.name, artists: info.artists });
     if (settings.music.chatAttribution && ChatHandle.isConnected()) {
         ChatMessages.filterMessage(artistsMedia, "glimboi");
@@ -212,27 +224,25 @@ function playSongFromFolder(info) {
  */
 async function playSong(songIndex, fadeIn) {
     currentSongIndex = songIndex;
-    document.getElementById("musicAudio").src = musicPlaylist[songIndex].path;
-    if (fadeIn) {
+    let musicAudio = document.getElementById("musicAudio");
+    musicAudio.src = musicPlaylist[songIndex].path;
+    musicAudio.volume = volume;
+    await musicAudio.play()
+    if (fadeIn && volume > 0) {
+        musicAudio.volume = volume / 2 / 2;
         setTimeout(() => {
-            document.getElementById("musicAudio").volume = 0.5
-        }, 300);
+            musicAudio.volume = volume / 2;
+        }, 400);
         setTimeout(() => {
-            document.getElementById("musicAudio").volume = 0.7
-        }, 600);
-        setTimeout(() => {
-            document.getElementById("musicAudio").volume = 1
-        }, 900);
+            musicAudio.volume = volume;
+        }, 800);
     }
-    await document.getElementById("musicAudio").play()
     isPlaying = true
-    document.getElementById("musicAudio").removeEventListener("ended", musicEndedHandler);
-    document.getElementById("musicAudio").addEventListener("ended", musicEndedHandler);
+    musicAudio.removeEventListener("ended", musicEndedHandler);
+    musicAudio.addEventListener("ended", musicEndedHandler);
     try {
         document.getElementById("playPauseIcon").classList = "fas fa-pause fa-lg";
-    } catch(e) {
-
-    }
+    } catch(e) {}
     updateInfo(musicPlaylist[songIndex]);
 }
 
@@ -240,7 +250,6 @@ async function playSong(songIndex, fadeIn) {
  * Runs when the song ends.
  */
 function musicEndedHandler() {
-    console.log("it ended")
     if (repeatEnabled) {
         playSong(currentSongIndex);
     } else if (shuffleEnabled) {
@@ -275,5 +284,33 @@ function toggleShuffleRepeat(type, value, name) {
         try {
             type.setAttribute("data-original-title", name + " Enabled");
         } catch(e) {}
+    }
+}
+
+/**
+ * Loads the previous folder if we can pull it from the cache.
+ */
+function loadPreviousFolder() {
+    let previouslyPlayed = CacheStore.get("lastPlayed", null, false)
+    if (previouslyPlayed) {
+        try {
+            fs.readdir(previouslyPlayed, (err, files) => {
+                let tempSongs = []
+                files.forEach(file => {
+                  tempSongs.push({path: previouslyPlayed + "/" + file, fileName: file})
+                });
+                console.log(tempSongs)
+                if (tempSongs.length > 0) {
+                    loadSongs(tempSongs)
+                } else {
+                    errorMessage("Glimboi was unable to find any songs in the folder.", "")
+                }
+              })
+        } catch(e) {
+            errorMessage("Glimboi was unable to load the last folder.", "The last directory used was not found.")
+            console.log(e)
+        }
+    } else {
+        errorMessage("GlimBoi cannot detect which folder was last played.", "Try playing a new folder. It will be automatically saved and preloaded for next time.")
     }
 }

@@ -39,12 +39,13 @@
                 </a>
             </ul>
             <div class="text-center">
-                <i class="fas fa-volume-down fa-lg" aria-hidden="true" aria-hidden="true"></i>
+                <i class="fas fa-volume-down fa-lg" aria-hidden="true" aria-hidden="true" onclick="volume=0.01;CacheStore.set('musicVolume', volume);document.getElementById('musicVolumeSlider').value = volume;document.getElementById('musicAudio').volume = volume"></i>
                 <input type="range" class="form-range" min="0" max="1" step="0.01" id="musicVolumeSlider">
-                <i class="fas fa-volume-up fa-lg" aria-hidden="true" aria-hidden="true"></i>
+                <i class="fas fa-volume-up fa-lg" aria-hidden="true" aria-hidden="true"  onclick="volume=0.99;CacheStore.set('musicVolume', volume);document.getElementById('musicVolumeSlider').value = volume;document.getElementById('musicAudio').volume = volume"></i>
             </div>
             <hr style="border-color: aliceblue;width: 70%;">
             <div class="mx-auto d-grid gap-2 col-6 text-center">
+            <button class="btn btn-info mx-auto" type="button" onclick="loadPreviousFolder()">Load Previous Playlist</button>
             <button class="btn btn-info mx-auto" type="button" data-toggle="modal" data-target="#musicOverlay" onclick="OBSHandle.startServer()">Music Overlay</button>
             <button class="btn btn-info mx-auto" type="button" onclick="document.getElementById('SettingsLink').click()">Music Settings</button>
             </div>
