@@ -1,6 +1,8 @@
 const ApiHandle = require(appData[0] + "/chatbot/lib/API.js");
 ApiHandle.updateID(); // Gives the api file auth information
 const fs = require("fs");
+const DumbCacheStore = require(appData[0] + "/chatbot/lib/cache.js");
+const CacheStore = new DumbCacheStore;
 
 let settings = {}
 let updatedSettings = {
@@ -52,7 +54,7 @@ function unlockBot() {
 function getSettings() {
     try { // Check if the file exists.
         let raw = fs.readFileSync(appData[1] + '/data/settings.json');
-        settings = JSON.parse(raw)
+        settings = JSON.parse(raw);
     } catch (e) { // if not create the file
         console.log("no settings file exists, creating it")
         let dataTemplate = JSON.stringify({
