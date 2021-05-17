@@ -41,7 +41,7 @@ function loadMusicProgram() {
         } else {
             document.getElementById("playPauseIcon").classList = "fas fa-play fa-lg"
         }
-        updateInfo(musicPlaylist[currentSongIndex])
+        updateInfo(musicPlaylist[currentSongIndex], false)
     }
 
 
@@ -86,7 +86,7 @@ async function loadSongs(files) {
             } else {
                 songCover = false
             }
-            let newName = song.name.slice(0, song.name.indexOf("."))
+            let newName = song.name.slice(0, song.name.lastIndexOf("."))
             let newSong = document.createElement("div");
             newSong.classList = "song";
             newSong.setAttribute("data-index", "3");
@@ -172,8 +172,9 @@ function nextOrPrevious(direction) {
 /**
  * SHows the song info on the player and send info to the music settings.
  * @param {object} info The song info
+ * @param {boolean} notMusicTab Is this function called because someone click on the tab?
  */
-function updateInfo(info) {
+function updateInfo(info, notMusicTab) {
     let artistsMedia = info.artists ? `Now playing ${info.name} by ${info.artists}` : `Now playing ${info.name}`;
     let artistsDisplay = info.artists ? info.artists : `No artists in metadata`;
     try {
@@ -199,10 +200,10 @@ function updateInfo(info) {
         }
     } catch(e) {}
     OBSHandle.playSong({ name: info.name, artists: info.artists });
-    if (settings.music.chatAttribution && ChatHandle.isConnected()) {
+    if (settings.music.chatAttribution && ChatHandle.isConnected() && notMusicTab) {
         ChatMessages.filterMessage(artistsMedia, "glimboi");
     }
-    if (settings.music.writeToFile) {
+    if (settings.music.writeToFile && notMusicTab) {
         fs.writeFile(appData[1] + '/data/nowPlaying.txt', artistsMedia, function (err, data) { });
     }
 }
@@ -243,7 +244,7 @@ async function playSong(songIndex, fadeIn) {
     try {
         document.getElementById("playPauseIcon").classList = "fas fa-pause fa-lg";
     } catch(e) {}
-    updateInfo(musicPlaylist[songIndex]);
+    updateInfo(musicPlaylist[songIndex], true);
 }
 
 /**
