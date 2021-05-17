@@ -1,13 +1,13 @@
 /**
  * For all your caching purposes
  */
-class DumbCacheStore {
+ class DumbCacheStore {
     /**
      * Cache constructor
      */
     constructor() {
-        this.path = appData[1] + "/data/cache.json"
-        this.cache = this.#setFile(this.path)
+        this.path = appData[1] + "/data/cache.json";
+        this.cache = this.#setFile(this.path);
     }
 
     /**
@@ -18,7 +18,7 @@ class DumbCacheStore {
      */
     set(key, value) {
         this.cache[key] = value;
-        fs.writeFileSync(this.path, JSON.stringify(this.cache))
+        fs.writeFileSync(this.path, JSON.stringify(this.cache));
     }
 
     /**
@@ -48,15 +48,15 @@ class DumbCacheStore {
      */
     #setFile(path) {
         try {
-            return JSON.parse(fs.readFileSync(path))
+            return JSON.parse(fs.readFileSync(path));
         } catch (e) {
             try {
-                fs.writeFileSync(path, JSON.stringify({}))
-                return JSON.parse(fs.readFileSync(path))
+                fs.writeFileSync(path, JSON.stringify({}));
+                return JSON.parse(fs.readFileSync(path));
             } catch(e2) {
                 fs.mkdirSync(appData[1] + '/data'); // Makes the folder
-                fs.writeFileSync(path, JSON.stringify({}))
-                return JSON.parse(fs.readFileSync(path))
+                fs.writeFileSync(path, JSON.stringify({}));
+                return JSON.parse(fs.readFileSync(path));
             }
         }
     }

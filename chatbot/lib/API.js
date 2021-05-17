@@ -1,9 +1,9 @@
 // Handles some of the API requests to Glimesh and other services.
 // Be aware that some non glimesh services may have rate limits in place.
 // If you fork this change the user agent from glimboi to your own project please :)
-let clientID = ""
-let token = ""
-let channelID = ""
+let clientID = "";
+let token = "";
+let channelID = "";
 let streamer = ""; // Streamer name
 let accountName = null;
 
@@ -20,13 +20,13 @@ function updatePath(accessToken) {
  * If no ID is found we alert the user.
  */
 async function updateID() {
-  	let newClientID = await AuthHandle.getID()
+  	let newClientID = await AuthHandle.getID();
     if (newClientID == null) {
       	console.log("No ID exists yet.");
-      	successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!")
+      	successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!");
     } else {
       	clientID = newClientID;
-      	console.log("API.js is using the new client ID")
+      	console.log("API.js is using the new client ID");
     }
 }
 
@@ -34,7 +34,7 @@ async function updateID() {
  * Returns the current channel the bot is in.
  */
 function getID() {
-  	return channelID
+  	return channelID;
 }
 
 
@@ -65,7 +65,7 @@ async function getChannelID(channel) {
       		});
     	})
     	.catch((err) => console.error(err));
-  	})
+  	});
   	return ID;
 }
 
@@ -82,13 +82,13 @@ async function getUserID(user) {
     	.then((res) => {
       		res.json().then((data) => {
         		try {
-          			console.log("The ID of " + user + " is " + data.data.user.id)
-          			resolve(Number(data.data.user.id))
+          			console.log("The ID of " + user + " is " + data.data.user.id);
+          			resolve(Number(data.data.user.id));
         		} catch(e) {
           			try {
-            			resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({data: data.errors[0].message, status: "AUTHNEEDED"});
           			} catch(e2) {
-            			resolve(null)
+            			resolve(null);
           			}
         		}
       		});
@@ -110,13 +110,13 @@ async function getCurrentGame() {
     	.then((res) => {
       		res.json().then((data) => {
         		try { //if it is null and nested this will prevent a crash.
-          			console.log("The ID of " + channel + " is " + data.data.channel.id)
-          			resolve(data.data.channel.id)
+          			console.log("The ID of " + channel + " is " + data.data.channel.id);
+          			resolve(data.data.channel.id);
           		} catch(e) {
             		try {
-              			resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
+              			resolve({data: data.errors[0].message, status: "AUTHNEEDED"});
             		} catch(e2) {
-              			resolve(null)
+              			resolve(null);
             		}
           		}
       		});
@@ -138,21 +138,21 @@ async function getStats() {
     	.then((res) => {
       		res.json().then((data) => {
         		try { //if it is null and nested this will prevent a crash.
-          			console.log(data)
-          			console.log("Current viewcount:" + data.data.channel.stream.countViewers + " Subscribers: " + data.data.channel.stream.newSubscribers + " Followers: " + data.data.followers.length)
-          			resolve(data.data)
+          			console.log(data);
+          			console.log("Current viewcount:" + data.data.channel.stream.countViewers + " Subscribers: " + data.data.channel.stream.newSubscribers + " Followers: " + data.data.followers.length);
+          			resolve(data.data);
         		} catch(e) {
           			try {
-            			resolve({data: data.errors[0].message, status: "NOSTREAMFOUND"})
+            			resolve({data: data.errors[0].message, status: "NOSTREAMFOUND"});
           			} catch(e2) {
-            			resolve(null)
+            			resolve(null);
           			}
         		}
       		});
     	})
     	.catch((err) => console.error(err));
   	});
-  	return viewers
+  	return viewers;
 }
 
 
@@ -170,20 +170,20 @@ async function getBotAccount() {
       		res.json().then((data) => {
         		try {
           			console.log("The bot has a username of " + data.data.myself.username);
-          			accountName = data.data.myself.username
+          			accountName = data.data.myself.username;
           			resolve(data.data.myself.username);
         		} catch(e) {
           			try {
-            			resolve({data: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({data: data.errors[0].message, status: "AUTHNEEDED"});
           			} catch(e2) {
-            			resolve(null)
+            			resolve(null);
           			}
         		}
       		});
     	})
     	.catch((err) => console.error(err));
   	});
-  	return bot
+  	return bot;
 }
 
 /**
@@ -196,30 +196,30 @@ async function timeoutUser(type, channel, user) {
   	return new Promise(resolve => {
     	let body;
     	if (type == "short") {
-      		body = `mutation { shortTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`
+      		body = `mutation { shortTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`;
     	} else {
-      		body = `mutation { longTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`
+      		body = `mutation { longTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`;
     	}
     	fetch("https://glimesh.tv/api", { method: "POST", body: body, headers: { Authorization: `bearer ${token}` }})
     	.then((res) => {
       		res.json().then((data) => {
         		try {
           			if (data.data.shortTimeoutUser !== null) {
-            			resolve(data)
+            			resolve(data);
           			} else {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
           			}
         		} catch(e) {
           			try {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
           			} catch(e2) {
-            			resolve(null)
+            			resolve(null);
           			}
         		}
       		});
     	})
     	.catch((err) => console.error(err));
-  	})
+  	});
 }
 
 /**
@@ -234,21 +234,21 @@ async function banUser(channel, user) {
       		res.json().then((data) => {
         		try {
           			if (data.data.banUser !== null) {
-            			resolve(data)
+            			resolve(data);
           			} else {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
           			}
         		} catch(e) {
           			try {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
           			} catch(e2) {
-            			resolve(null)
+            			resolve(null);
           			}
         		}
       		});
     	})
     	.catch((err) => console.error(err));
-  	})
+  	});
 }
 
 
@@ -264,21 +264,21 @@ async function unBanUser(channel, user) {
       		res.json().then((data) => {
         		try {
           			if (data.data.unbanUser !== null) {
-            			resolve(data)
+            			resolve(data);
           			} else {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
           			}
         		} catch(e) {
           			try {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"})
+            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
           			} catch(e2) {
-            			resolve(null)
+            			resolve(null);
           			}
         		}
       		});
     	})
     	.catch((err) => console.error(err));
-  	})
+  	});
 }
 
 /**
@@ -292,10 +292,10 @@ async function getAdvice() {
     	.then((res) => {
       		res.json().then((data) => {
         		try {
-          			console.log(data.slip.advice + data.slip.id)
-          			resolve(data.slip.advice)
+          			console.log(data.slip.advice + data.slip.id);
+          			resolve(data.slip.advice);
         		} catch(e) {
-          			resolve("Advice Failed :glimsad:")
+          			resolve("Advice Failed :glimsad:");
         		}
       		});
     	})
@@ -317,10 +317,10 @@ async function getDadJoke() {
     	.then((res) => {
       		res.json().then((data) => {
         		try {
-          			console.log(data)
-          			resolve(data.joke)
+          			console.log(data);
+          			resolve(data.joke);
         		} catch(e) {
-          			resolve("Joke Failed :glimsad:")
+          			resolve("Joke Failed :glimsad:");
         		}
       		});
     	})
@@ -344,23 +344,23 @@ async function getSocials(social, channel) {
           		try {
             		if (social == "twitter") { // Twitter is a verified link, the return value is different because of this
               			console.log("The requested social link is " + data.data.user.socials[0].username);
-              			resolve(data.data.user.socials[0].username)
+              			resolve(data.data.user.socials[0].username);
             		} else {
-              			console.log("The requested social link is " + data.data.user[`${social}`])
-              			resolve(data.data.user[`${social}`])
+              			console.log("The requested social link is " + data.data.user[`${social}`]);
+              			resolve(data.data.user[`${social}`]);
             		}
           		} catch (e) {
             		try {
-              			resolve({ data: data.errors[0].message, status: "AUTHNEEDED" })
+              			resolve({ data: data.errors[0].message, status: "AUTHNEEDED" });
             		} catch (e2) {
-              			resolve(null)
+              			resolve(null);
             		}
           		}
         	});
       	})
       	.catch((err) => console.error(err));
   	});
-  	return socialLink
+  	return socialLink;
 }
 
 function randomCatFact() {
@@ -369,15 +369,15 @@ function randomCatFact() {
       	.then((res) => {
         	res.json().then((data) => {
           		try {
-              		resolve(data.fact)
+              		resolve(data.fact);
           		} catch (e) {
-            		resolve(null)
+            		resolve(null);
           		}
         	});
       	})
       	.catch((err) => console.error(err));
   	});
-  	return catFact
+  	return catFact;
 }
 
 function randomDogFact() {
@@ -386,19 +386,19 @@ function randomDogFact() {
       	.then((res) => {
         	res.json().then((data) => {
           		try {
-              		resolve(data.fact)
+              		resolve(data.fact);
           		} catch (e) {
-            		resolve(null)
+            		resolve(null);
           		}
         	});
       	})
       	.catch((err) => console.error(err));
   	});
-  	return dogFact
+  	return dogFact;
 }
 
 function getStreamerName() {
-    return streamer
+    return streamer;
 }
 
-module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getUserID,  randomCatFact, randomDogFact, timeoutUser, unBanUser, updateID, updatePath}
+module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getUserID,  randomCatFact, randomDogFact, timeoutUser, unBanUser, updateID, updatePath};

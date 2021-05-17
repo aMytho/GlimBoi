@@ -1,7 +1,7 @@
 //This file handles connecting the users dev app to glimesh.tv
 let path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 let authDB; //Auth database containing all auth info
-let token = {access_token: "", scope: "", creation: ""} //Can be used for auth purposes
+let token = {access_token: "", scope: "", creation: ""}; //Can be used for auth purposes
 
 /**
  * Requests an access token
@@ -15,28 +15,28 @@ function requestToken(clientID, secretKey, isManual) {
         .then((res) => {
             res.json().then((data) => { // parse and store the response
                 try {
-                    console.log(data)
+                    console.log(data);
                     token.access_token = data.access_token;
                     token.creation = data.created_at;
                     if (token.access_token == undefined) {
                         errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
-                        return
+                        return;
                     }
                     //Updates the DB with the info
                     authDB.update({}, { $set: { access_token: data.access_token, created_at: data.created_at } }, { multi: true }, function (err, numReplaced) {
                         console.log("Access token recieved and added to the database. Ready to join chat!");
                         updateStatus(2); // Everything is ready, they can join chat!
-                        isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null
-                        resolve("ALLGOOD")
+                        isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null;
+                        resolve("ALLGOOD");
                     });
                 } catch (e) {
                     console.log(e); // in case of errors...
-                    errorMessage(e, "Auth Error")
-                    resolve("NOTGOOD")
+                    errorMessage(e, "Auth Error");
+                    resolve("NOTGOOD");
                 }
             });
-        })
-    })
+        });
+    });
 }
 
 /**
@@ -55,10 +55,10 @@ function updatePath(GUI) {
 function readAuth() {
    	return new Promise(resolve => {
     	authDB.find( {}, function (err, docs) {
-      		console.log(docs)
-      		resolve(docs)
+      		console.log(docs);
+      		resolve(docs);
     	});
-   	})
+   	});
 }
 
 
@@ -71,9 +71,9 @@ function updateID(client, secret) {
  	return new Promise(resolve => {
   		authDB.update({}, { $set: { clientID: client, secret: secret } }, { multi: true }, function (err, numReplaced) {
     		console.log("Updated the auth IDs.");
-    		resolve("UPDATEDID")
+    		resolve("UPDATEDID");
   		});
- 	})
+ 	});
 }
 
 /**
@@ -82,33 +82,33 @@ function updateID(client, secret) {
  * @param {string} secret Secret ID
  */
 function createID(client, secret) {
-  	console.log(client, secret)
+  	console.log(client, secret);
   	return new Promise(resolve => {
     	if (client == "" && secret !== "") {
       		authDB.update({}, {$set: {secret: secret}} , { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
         		console.log("Updated the Secret.");
-        		resolve(affectedDocuments)
-        		return
+        		resolve(affectedDocuments);
+        		return;
       		});
     	}
 		else if (secret == "" && client !== "") {
         	authDB.update({}, {$set: {clientID: client}}, { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
           		console.log("Updated the client ID");
-          		resolve(affectedDocuments)
-          		return
+          		resolve(affectedDocuments);
+          		return;
         	});
       	} else if (client.length > 2 && secret.length > 2) {
         	authDB.update({}, {$set: {clientID: client, secret: secret}}, { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments) {
           		console.log("Updated the client ID");
-          		resolve(affectedDocuments)
-          		return
+          		resolve(affectedDocuments);
+          		return;
         	});
       	} else if (client == "" && secret == ""){
-        	console.log("No auth info recieved. No changes to auth.db")
+        	console.log("No auth info recieved. No changes to auth.db");
         	resolve("NOAUTH");
-        	return
+        	return;
       	}
-   	})
+   	});
 }
 
 /**
@@ -117,13 +117,13 @@ function createID(client, secret) {
 function getToken() {
   	return new Promise(resolve => {
     	authDB.find( {}, function (err, docs) {
-      		console.log(docs)
+      		console.log(docs);
       		if (docs == undefined || docs.length == 0) {
-        		resolve(undefined)
+        		resolve(undefined);
             } else {
-        		resolve(docs[0].access_token)
+        		resolve(docs[0].access_token);
         	}
-      	})
+      	});
   	});
 }
 
@@ -134,11 +134,11 @@ function getID() {
   	return new Promise(resolve => {
     	authDB.find( {}, function (err, docs) {
       		console.log(docs);
-      		if (docs[0] == undefined) {resolve(null)} else {
-      			resolve(docs[0].clientID)
+      		if (docs[0] == undefined) {resolve(null);} else {
+      			resolve(docs[0].clientID);
       		}
-    	})
-  	})
+    	});
+  	});
 }
 
 module.exports = { createID, getID, getToken, readAuth, requestToken, updateID, updatePath}; //Send to the main file.
