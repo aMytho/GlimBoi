@@ -1,75 +1,93 @@
 <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
-
-  <div class="row">
-  <div class="col-sm-6">
-  <div class="introaaa">
-      <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
-  </div>
-  <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer Application</span> to connect the bot to Glimesh. <b>The account that creates the bot will be the account that the bot uses.</b></p>
-    <p>When you are finished enter the client ID and secret key on the right. Save them to GlimBoi. Then request a token. After the initial request Glimboi will automatically authenticate itself on launch. If any problems arise you can simply request another token.</p>
-  <div class="row">
-      <div class="col">
-      <button class="btn btn-info btn-block" type="submit" id="authButton1" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
-      </div>
-      <div class="col">
-      <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('github.com/aMytho/GlimBoi')" >Contributing</button>
-      </div>
-      <div class="col">
-      <button class="btn btn-info btn-block" type="submit" id="authButton3"  onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
-      </div>
-      <div class="col">
-        <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
-      </div>
-      </div>
-  </div>
-  <div class="col-sm-6">
-      <form>
-          <div class="form-row">
-            <div class="col">
-              <input type="text" class="form-control" placeholder="Client ID" id="clientID">
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <div class="introaaa">
+                <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
             </div>
-            <div class="col">
-              <input type="text" class="form-control" placeholder="Secret Key" id="secretID">
-          </div>
-          </div>
-        </form>
-        <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.requestToken(data[0].clientID, data[0].secret, true))">Request Token</button>
-        <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial <span class="badge badge-primary">Updated</span></button>
-  </div>
-  </div>
-
-  <div class="row">
-  <div class="col-sm-6 mt-3">
-  <p>GlimBoi is an open source project started by Mytho. It is written in Electron which is a framework for building desktop applications. Server side is NodeJS. Data storage is NEDB. The front end is HTML and Bootstrap CSS. DataTables are used for showing the database and Apex charts for that chart =></p>
-  <p>It was inspired by Scottybot on Mixer. Special thanks to Daddy Robot and Codestics for the help and inspiration. The goal of this bot is to provide an easy to use interface while using minimal resources.</p>
-  <p>Contributions are always welcome :)</p>
-  </div>
-  <div class="col-sm-6">
-      <div class="row">
-          <div class="col-sm-6">
-              <div id="chart">
-
-              </div>
-          </div>
-          <div class="col-sm-6">
-            <h6 class="text-center">GlimBoi to Chat:</h6>
-            <p>1: Create Bot</p>
-            <p>2: Create an application on Glimesh. Redirect URI must be http://localhost:3000/success</p>
-            <p>3: Enter the client ID and secret ID from the application into GlimBoi. Save them.</p>
-            <p>4: Request a token. This allows the bot to speak as your account.</p>
-            <p>GlimBoi can join the chat!</p>
-          </div>
-
-
-      </div>
-
-
-  </div>
-  </div>
-
-  </div>
-  <script>
+            <p>To get started select "create bot." You will create a <span style="color: violet;"> Developer
+                    Application</span> to connect the bot to Glimesh. <b>The account that creates the application will
+                    be the account that the bot uses.</b></p>
+            <p class="text-center">Use the following values</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Property</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody class="whiteText">
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>Glimboi CHANNEL_NAME</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Homepage</th>
+                        <td>http://localhost:3000</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>Glimboi chatbot for CHANNEL_NAME</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Image</th>
+                        <td>Optional</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Allowed Redirect URIs</th>
+                        <td>http://localhost:3000/success</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Save the application. Then enter the client ID and secret key on the right. Save them to GlimBoi. Then
+                request a token. After the initial request Glimboi will automatically authenticate itself on launch. If
+                any problems arise you can simply request another token.</p>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-info btn-block" type="submit" id="authButton1"
+                        onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-info btn-block" type="submit" id="authButton2"
+                        onclick="loadLink('github.com/aMytho/GlimBoi')">Contributing</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-info btn-block" type="submit" id="authButton3"
+                        onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-info btn-block" type="submit" id="authButton6"
+                        onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <form>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="Client ID" id="clientID">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="Secret Key" id="secretID">
+                    </div>
+                </div>
+            </form>
+            <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
+            <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled
+                onclick="AuthHandle.readAuth().then(data => AuthHandle.requestToken(data[0].clientID, data[0].secret, true))">Request
+                Token</button>
+            <button class="btn btn-info btn-block" type="submit" id="authButton5"
+                onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial <span
+                    class="badge badge-primary">Updated</span></button>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div id="chart">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
     //Creates the chart. Only build the first time.
-    getBasicData()
-  </script>
+    getBasicData();
+</script>

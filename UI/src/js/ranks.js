@@ -5,7 +5,7 @@ function rankPrep() {
     currentRanks.forEach(element => {
         if (element.rank !== "Mod" && element.rank !== "Streamer" && element.rank !== "user") {
             var rankButton = document.createElement("a");
-            rankButton.classList = `col-lg-12 col-3 btn btn-info mt-2 CUSTOM_RANK`
+            rankButton.classList = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`
             rankButton.innerHTML = element.rank;
             rankButton.setAttribute("onclick", `displayRank("${element.rank}")`)
             document.getElementById("customRankButtons").append(rankButton)
@@ -20,7 +20,7 @@ function addRank() {
     RankHandle.createRank(rankName).then(data => {
         if (data == "RANKADDED") {
             var rankButton = document.createElement("a");
-            rankButton.classList = `col-lg-12 col-3 btn btn-info mt-2 CUSTOM_RANK`;
+            rankButton.classList = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`;
             rankButton.innerHTML = rankName;
             rankButton.setAttribute("onclick", `displayRank('${rankName}')`)
             document.getElementById("customRankButtons").append(rankButton);

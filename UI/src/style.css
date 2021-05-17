@@ -16,6 +16,45 @@ body {
     color: aliceblue;
 }
 
+@media (max-width: 1200px) {
+    #betaNavIcon {
+        display: none
+    }
+}
+
+@media (max-width: 992px) {
+    #rankButtonContainer {
+        padding-bottom: 10px;
+    }
+    #rankContainer {
+        margin-top: 20px;
+    }
+    #musicNavIcon,
+    #overlayNavIcon,
+    #authNavIcon {
+        display: none;
+    }
+    #chatBoxDM,
+    #chatControls,
+    #chatChannelsDM,
+    #chatActionsDM {
+        flex: 0 0 100% !important;
+        max-width: 100%;
+        margin-top:0.5rem;
+    }
+    #clientID,
+    #secretID {
+        margin-top: 0.5rem;
+    }
+
+}
+
+@media (max-width:1500px) {
+    #chatInstructions {
+        max-width: 100% !important;
+    }
+}
+
 th {
     color: aliceblue;
 }
@@ -272,4 +311,16 @@ table.whiteText td {
 #chatConnections button:not(.btn-icon) {
     width: 75px;
     font-weight: bold;
+}
+
+@media (min-width:992px) {
+    #rankButtonContainer {
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 10px;
+    }
+}
+.border-radius-5 {
+    border-radius: 5px !important;
 }

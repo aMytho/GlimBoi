@@ -1,20 +1,20 @@
 <div class="row justify-content-md-center pt-3">
-    <div class="col-2">
+    <div class="col-lg-2 col-12">
         <div class="row ml-3">
-            <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 row">
-                <div class="text-center btn-group-vertical d-inline row col-12 justify-content-md-center m-0 p-0">
-                    <a class="col-lg-12 col-3 btn btn-primary mt-2" href="#" data-toggle="modal"
+            <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 w-100" id="rankButtonContainer">
+                <div class="text-center btn-group-vertical d-inline justify-content-md-center m-0 p-0">
+                    <a class="col-lg-12 col-11 btn btn-primary mt-2 border-radius-5" href="#" data-toggle="modal"
                         data-target="#modalRankAdd">Add Rank</a>
-                    <a class="col-lg-12 col-3 btn btn-success mt-2 disabled" href="#"
+                    <a class="col-lg-12 col-11 btn btn-success mt-2 disabled border-radius-5" href="#"
                         id="saveRankSettings" onclick="saveRankSettings(document.getElementById('rankName').innerText)">Save Changes</a>
-                    <a class="col-lg-12 col-3 btn btn-danger mt-2" href="#" data-toggle="modal"
+                    <a class="col-lg-12 col-11 btn btn-danger mt-2 border-radius-5" href="#" data-toggle="modal"
                         data-target="#modalRankremove">Remove Rank</a>
                     <hr style="border-color: aliceblue;width: 50%;" class="my-2">
-                    <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
+                    <a class="col-lg-12 col-11 btn btn-info mt-2 border-radius-5" href="#" data-toggle="modal"
                         data-target="#modalUserAdd" onclick="displayRank('Streamer')">Streamer</a>
-                    <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
+                    <a class="col-lg-12 col-11 btn btn-info mt-2 border-radius-5" href="#" data-toggle="modal"
                         data-target="#modalUserEdit" onclick="displayRank('Mod')">Mod</a>
-                    <a class="col-lg-12 col-3 btn btn-info mt-2" href="#" data-toggle="modal"
+                    <a class="col-lg-12 col-11 btn btn-info mt-2 border-radius-5" href="#" data-toggle="modal"
                         data-target="#modalUserEdit" onclick="displayRank('user')">user (default)</a>
                     <hr style="border-color: aliceblue;width: 50%;" class="my-2">
                     <div id="customRankButtons"></div>
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="col-10">
+    <div class="col-lg-10 col-12" id="rankContainer">
         <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 row h-100" id="rankDetails">
             <div class="row px-3">
                 <div class="col-12 whiteText px-3">

@@ -1,18 +1,296 @@
 <div class="card-deck m-3">
-  <div class="col-lg-2 col-12 p-0">
-    <div class="card glimPanel m-0 mr-lg-2" id="command-btn-panel">
-      <div class="btn-group-vertical pb-2 pb-lg-0 d-inline-block row mx-auto justify-content-md-center">
-        <a class="offset-lg-0 offset-1 col-lg-12 col-2 btn btn-primary mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
-        <a class="col-lg-12 col-2 btn btn-success mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
-        <a class="col-lg-12 col-2 btn btn-danger mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
-        <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalVar">View Variables</a>
-        <a class="col-lg-12 col-2 btn btn-info mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalCMD">GlimBoi Commands</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-10 mx-lg-0 mt-3 mt-lg-2 col-12 p-0">
-    <div class="card glimPanel whiteTex overflow-auto p-3 w-100 m-0">
-      <table id="example" class="display table w-100"></table>
+  <div class="col-lg-12 col-12 p-0">
+    <div class="card glimPanel m-0" id="command-btn-panel">
+        <div class="mx-auto">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item mx-2" role="presentation">
+                  <a class="btn btn-info active" id="pills-home-tab" data-toggle="pill" href="#cmdTableTab" role="tab" aria-controls="pills-home" aria-selected="true">Custom Commands</a>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                  <a class="btn btn-info" id="pills-profile-tab" data-toggle="pill" href="#glimboiTableTab" role="tab" aria-controls="pills-profile" aria-selected="false">Glimboi Commands</a>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                  <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#cmdVarTab" role="tab" aria-controls="pills-contact" aria-selected="false">Variables</a>
+                </li>
+              </ul>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <a class="btn btn-primary  btn-group mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
+                <a class="btn btn-success mt-2 btn-group btn-inline" href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
+                <a class="btn btn-danger btn-group mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="cmdTableTab" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <h5 class="whiteText text-center">Below lists all of the commands that you have made. You can add some here, or add them from chat. (Check Glimboi Commands)</h5>
+                    <table id="example" class="display table w-100"></table>
+                </div>
+                <div class="tab-pane fade" id="glimboiTableTab" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <h5 class="whiteText text-center">Glimboi commands are default system commands. They are controlled by the rank system.</h5>
+                    <h5 class="whiteText text-center">Words in all caps should be replaced with their value. Ex. NAME would be the name of the command.</h5>
+                    <h5 class="whiteText text-center">Commands with parentheses() have multiple triggers. Ex. both !cmd new and !cmd add are the same thing.</h5>
+                    <table class="table whiteText mt-1">
+                        <tbody>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Example</th>
+                            <th scope="col">Result</th>
+                            <th scope="col">Rank Perms</th>
+                        </tr>
+                        <tr>
+                            <td>!commands</td>
+                            <td>!commands</td>
+                            <td>Returns a list of commands.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!(cmd/command) (add/new) NAME DATA</td>
+                            <td>!cmd new !hello Hello there!</td>
+                            <td>Creates a new command. Variables supported.</td>
+                            <td>Add Commands</td>
+                        </tr>
+                        <tr>
+                            <td>!(cmd/command) (del/delete/remove) NAME</td>
+                            <td>!command remove !hello</td>
+                            <td>Removes a command.</td>
+                            <td>Remove Commands</td>
+                        </tr>
+                        <tr>
+                            <td>!(cmd/command) (help/info)</td>
+                            <td>!cmd info</td>
+                            <td>Retruns info about commands.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!user (add/new) USER</td>
+                            <td>!user new Mytho</td>
+                            <td>Adds a user to Glimboi.</td>
+                            <td>Add Users</td>
+                        </tr>
+                        <tr>
+                        <td>!user (del/delete/remove) USER</td>
+                            <td>!user del Mytho</td>
+                            <td>Removes a user from Glimboi.</td>
+                            <td>Remove Users</td>
+                            </tr>
+                        <tr>
+                            <td>!quote</td>
+                            <td>!quote</td>
+                            <td>Returns a random quote.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!quote (add/new) USER QUOTE</td>
+                            <td>!quote add Mytho Hellow World!</td>
+                            <td>Adds a new quote to the user specified.</td>
+                            <td>Add Quotes</td>
+                        </tr>
+                        <tr>
+                            <td>!quote (del/delete/remove) USER QUOTE-ID</td>
+                            <td>!quote delete Mytho 5</td>
+                            <td>Removes a quote from a specific user.</td>
+                            <td>Remove Quotes</td>
+                        </tr>
+                        <tr>
+                            <td>!points</td>
+                            <td>!points</td>
+                            <td>Returns how many points the user has.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!points top</td>
+                            <td>!points top</td>
+                            <td>Returns the user with the most points.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!points NUMBER</td>
+                            <td>!points 5</td>
+                            <td>Returns the user with the specified poition on the leaderboard.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!points (add/inc/+) USER AMOUNT</td>
+                            <td>!points add Mytho 500</td>
+                            <td>Adds points to a specific user.</td>
+                            <td>Add Points</td>
+                        </tr>
+                        <tr>
+                            <td>!points (sub/dec/-) USER AMOUNT</td>
+                            <td>!points - Mytho 500</td>
+                            <td>Removes points from a specifc user.</td>
+                            <td>Remove Points</td>
+                        </tr>
+                        <tr>
+                            <td>!points (set/=) USER AMOUNT</td>
+                            <td>!points set Mytho 500</td>
+                            <td>Sets a users points to a specific value.</td>
+                            <td>Edit Points</td>
+                        </tr>
+                        <tr>
+                            <td>!points get USER</td>
+                            <td>!points get Mytho</td>
+                            <td>Returns the specified users points.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!points help</td>
+                            <td>!points help</td>
+                            <td>Returns info about the point system.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!rank</td>
+                            <td>!rank</td>
+                            <td>Returns the rank of the user.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!song</td>
+                            <td>!song</td>
+                            <td>Returns the song that is currently playing.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!sr (current/now)</td>
+                            <td>!sr now</td>
+                            <td>Returns the song that is currently playing.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!sr (next/n)</td>
+                            <td>!sr next</td>
+                            <td>Returns the next song.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!sr (last/l)</td>
+                            <td>!sr l</td>
+                            <td>Returns the last song.</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>!sr skip</td>
+                            <td>!sr skip</td>
+                            <td>Plays the next song in the playlist (repeat dependent).</td>
+                            <td>Music Controls</td>
+                        </tr>
+                        <tr>
+                            <td>!sr previous</td>
+                            <td>!sr previous</td>
+                            <td>Plays the last song in the playlist (repeat dependent)</td>
+                            <td>Music Controls</td>
+                        </tr>
+                        <tr>
+                            <td>!sr (repeat/loop)</td>
+                            <td>!sr loop</td>
+                            <td>Toggles music loop setting.</td>
+                            <td>Music Controls</td>
+                        </tr>
+                        <tr>
+                            <td>!sr (shuffle/random)</td>
+                            <td>!sr shuffle</td>
+                            <td>Toggles shuffle play setting.</td>
+                            <td>Music Controls</td>
+                        </tr>
+                        <tr>
+                            <td>!sr toggle</td>
+                            <td>!sr toggle</td>
+                            <td>Plays or pauses the music.</td>
+                            <td>Music Controls</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                </div>
+                <div class="tab-pane fade" id="cmdVarTab" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    <h5 class="whiteText text-center"> Variables are inserted into the command as $NAME . They are replaced with specific data as listed below.</h5>
+                    <table class="table whiteText mt-1">
+                        <tbody>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Command Data Example</th>
+                            <th scope="col">Command Result</th>
+                            <th scope="col">Explanation</th>
+                        </tr>
+                        <tr>
+                            <td>$target</td>
+                            <td>Go follow $target at Glimesh.tv/$target</td>
+                            <td>!so Mytho | Go follow Mytho at Glimesh.tv/Mytho</td>
+                            <td>The first word after the command.</td>
+                        </tr>
+                        <tr>
+                            <td>$user</td>
+                            <td>$user looked in the mirror and saw $user</td>
+                            <td>!mirror | Mytho looked in the mirror and saw Mytho</td>
+                            <td>The user who used the command</td>
+                        </tr>
+                        <tr>
+                            <td>$watchtime</td>
+                            <td>You have watched the stream for $watchtime minutes</td>
+                            <td>!hours | You have watched the stream for 60 minutes</td>
+                            <td>The amount of time the user has watched the stream (15 min blocks)</td>
+                        </tr>
+                        <tr>
+                            <td>$cmdcount</td>
+                            <td>This command has been used $cmdcount times</td>
+                            <td>!count | This command has been used 5 times</td>
+                            <td>The amount of times the command has been used</td>
+                        </tr>
+                        <tr>
+                            <td>$advice</td>
+                            <td>Have some advice - $advice</td>
+                            <td>!advice | Have some advice: Drink some water</td>
+                            <td>Random piece of advice. May go over 255 characters</td>
+                        </tr>
+                        <tr>
+                            <td>$catfact</td>
+                            <td>Random fact about cats: $catfact</td>
+                            <td>!catfact | Random fact about cats: Cats have 230 bones.</td>
+                            <td>Returns a random cat fact. May go over 255 characters.</td>
+                        </tr>
+                        <tr>
+                            <td>$dogfact</td>
+                            <td>Random fact about dogs: $dogfact</td>
+                            <td>!dogfact | Random fact about dogs: Your dog can be left or right-pawed.</td>
+                            <td>Returns a random dog fact. May go over 255 characters.</td>
+                        </tr>
+                        <tr>
+                            <td>$discord</td>
+                            <td>Join our discord at $discord</td>
+                            <td>!discord | Join our discord at https://discord.com/invite/NZeqEjhHKf</td>
+                            <td>Returns the channels discord invite URL. Must be in the Glimesh API.</td>
+                        </tr>
+                        <tr>
+                            <td>$guilded</td>
+                            <td>Join our guilded at $guilded</td>
+                            <td>!guilded | Join our guilded at https://guided.gg/test</td>
+                            <td>Returns the channels guilded invite URL. Must be in the Glimesh API.</td>
+                        </tr>
+                        <tr>
+                            <td>$instagram</td>
+                            <td>Follow me on instagram at $instagram</td>
+                            <td>!instagram | Follow me on instagram at https://instagram.con/test</td>
+                            <td>Returns the channels instagram URL. Must be in the Glimesh API.</td>
+                        </tr>
+                        <tr>
+                            <td>$youtube</td>
+                            <td>Join our yotuube channel at $youtube</td>
+                            <td>!yt | Join our youtube channel at https://youtube.com/test</td>
+                            <td>Returns the channels youtube URL. Must be in the Glimesh API.</td>
+                        </tr>
+                        <tr>
+                            <td>$twitter</td>
+                            <td>Follow me on twitter at $twitter</td>
+                            <td>!twitter | Follow me on twitter at https://twitter.com/Glimboi</td>
+                            <td>Returns the channels twitter URL. Must be in the Glimesh API.</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                </div>
+              </div>
+        </div>
     </div>
   </div>
 </div>
@@ -152,88 +430,8 @@
 </div>
 <!-- Modal: modalCart -->
 
-<!--Modal variables-->
-<div class="modal fade" id="modalVar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100">Variables Info</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body">
-        <p class="whiteText mx-auto ">Variables are like a map for your commands. They tell the commands how to get certain information.</p>
-        <p class="whiteText mx-auto">Let's say you wanted a command to show the current game. You could manually update the command every stream. Instead you can use a variable.</p>
-        <p class="whiteText mx-auto">Variables will search for the data that they are supposed to hold and insert themselves into the command. A complete list of them is found below.</p>
-        <ul>
-          <li>$target : The first word after the command. ex. !so Mytho : Go follow Mytho at glimesh.tv/Mytho</li>
-          <li>$user : The user who said the command</li>
-          <li>$watchtime : The amount of watchtime of the user in minutes</li>
-          <li>$cmdcount : The number of times the command has been used.</li>
-          <li>$advice : Returns random advice.</li>
-          <li>$discord : Returns the channel's discord URL. </li>
-          <li>$guilded : Returns the channel's guilded URL.</li>
-          <li>$instagram : Returns the channel's instagram URL. </li>
-          <li>$youtube : Returns the channel's youtube channel URL. </li>
-          <li>$twitter : Returns the channel's twitter URL.</li>
-          <li>$catfact : Returns a random cat fact. (May exceed message length)</li>
-          <li>$dogfact : Returns a random dog fact. (May exceed message length)</li>
-        </ul>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <p>Need more info? View the <a href="#" onclick="loadLink('amytho.github.io/GlimBoi/docs/intro/commands/')">GlimBoi Tutorials</a></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal: modalCart -->
-
-<div class="modal fade" id="modalCMD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100">System Commands</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body">
-        <p class="whiteText mx-auto ">GlimBoi has built in commands (system commands). These commands cannot be deleted or modified.</p>
-        <p class="whiteText mx-auto">You should avoid having commands with conflicting names. A system command will take priority.</p>
-        <p class="whiteText mx-auto">System commands help the bot and inform your viewers about its capabilities. A complete list of them is found below.</p>
-        <ul>
-          <li>!commands : A list of commands</li>
-          <li>!quote : Sends a random quote.</li>
-          <li>!user (add/new, remove/del/delete) : User functions. Ex '!user new Mytho' would add Mytho to the user list.</li>
-          <li>!quote (add/new) USER QUOTE : Adds a new quote. Ex. !quote add Mytho Hello world!</li>
-          <li>!points : Returns how many points you have.</li>
-          <li>!points top : Returns the user with the most points.</li>
-          <li>!points NUMBER : Returns the points of the user with the position you typed.</li>
-          <li>!points (add/inc/+) USER AMOUNT : Increases a users point value</li>
-          <li>!points (sub/dec/-) USER AMOUNT : Lowers a users point value</li>
-          <li>!points (set/=) USER COUNT : Sets a users point value</li>
-          <li>!points get USER : Returns a users point value</li>
-          <li>!points help : Displays the above syntax</li>
-          <li>!rank : Returns the rank of the user.</li>
-          <li>!song : Returns the current song</li>
-          <li>!sr current/now | Returns the current song</li>
-          <li>!sr (next/n) : Returns the next song</li>
-          <li>!sr (last/l) : Returns the last song.</li>
-          <li>!sr skip : Skips to the next song (Rank permitting)</li>
-          <li>!sr previous : Returns to the previous song (rank permitting)</li>
-          <li>!sr (repeat/loop) : Enables the repeat function. The song will continue to play until turned off. (rank permitting)</li>
-          <li>!sr (shuffle/random) : Enables shuffle. The songs will play in a random order. (rank permitting)</li>
-          <li>!sr toggle : Pauses or plays the music (rank permitting)</li>
-        </ul>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <p>Need more info? View the <a href="#" onclick="loadLink('amytho.github.io/GlimBoi/docs/intro/commands/')">GlimBoi Tutorials</a></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal: modalCart -->
-
+<style>
+    .active {
+    border-color: #17a2b8 !important;
+}
+</style>

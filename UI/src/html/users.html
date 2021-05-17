@@ -1,20 +1,21 @@
 <div class="card-deck m-3">
-  <div class="col-lg-2 col-12 p-0">
-    <div class="card-transparent  mx-1 mx-lg-0 mr-lg-2 row">
-      <div class="text-center btn-group-vertical d-inline-block row col-12 justify-content-md-center m-0 p-0">
-        <a class="col-lg-12 col-3 btn btn-primary mt-2" href="#" data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
-        <a class="col-lg-12 col-3 btn btn-primary mt-2" data-toggle="modal" data-target="#modalQuoteAdd" onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
-        <a class="col-lg-12 col-3 btn btn-success mt-2" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit Users</a>
-      </div>
-      <div class="text-center btn-group-vertical d-inline-block row col-12 justify-content-md-center m-0 p-0">
-        <a class="col-lg-12 col-3 btn btn-info mt-2" onclick="loadAllQuotes()"> View All Quotes</a>
-        <a class="col-lg-12 col-3 btn btn-danger mt-2" href="#" data-toggle="modal" data-target="#modalUserRemove">Purge Users</a>
-        <a class="col-lg-12 col-3 btn btn-danger mt-2" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove Quote</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-10 col-12 p-0">
+  <div class="col-lg-12 col-12 p-0">
     <div class="card mx-1 glimPanel mt-lg-0 mt-4 whiteText p-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <a class="btn btn-primary btn-group mt-2" href="#" data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
+                <a class="btn btn-success btn-group mt-2" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit Users</a>
+                <a class="btn btn-danger btn-group mt-2" href="#" data-toggle="modal" data-target="#modalUserRemove">Remove Users</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <a class="btn btn-primary btn-group mt-2" data-toggle="modal" data-target="#modalQuoteAdd" onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
+                <a class="btn btn-info btn-group mt-2" onclick="loadAllQuotes()"> View All Quotes</a>
+                <a class="btn btn-danger btn-group mt-2" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove Quote</a>
+            </div>
+        </div>
+
       <table id="userTable" class="display table w-100"></table>
 
       <div class="userList"></div>
