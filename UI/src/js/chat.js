@@ -410,7 +410,7 @@ function addAction(action) {
 }
 
 function reconnect() {
-    console.log("We were disconnected from chat, attempting to rejoin in 10 seconds.");
+    console.log("We were disconnected from chat, attempting to rejoin in 5 seconds.");
     setTimeout(() => {
         $('#modalError').modal('hide');
         $('#reconnectModal').modal('toggle');
@@ -433,6 +433,6 @@ function reconnect() {
                 errorMessage("Failed to rejoin Glimesh chat", "Wait a few minutes and request another token.");
                 $('#reconnectModal').modal('hide');
             }
-        }, 10000);
+        }, 5000);
     }, 3000);
 }
