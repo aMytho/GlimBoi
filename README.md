@@ -6,9 +6,9 @@ A chatbot for Glimesh.tv
 Download the bot from the [releases](https://github.com/aMytho/GlimBoi/releases) page.
 Run the installer for your platform. Windows users can use the .exe file. Linux users can use the .deb file. Other platforms can build the app manually or use wine.
 
-> Note that only Windows users can recieve automatic updates. 
+> Note that only Windows users can recieve automatic updates.
 
-Windows may display a warning. This is due to the lack of official licensing. Select run anyway. Choose an installation location and install the bot. 
+Windows may display a warning. This is due to the lack of official licensing. Select run anyway. Choose an installation location and install the bot.
 
 ## Login
 GlimBoi uses oAuth to connect to the glimesh service. You must create a dev app to use GlimBoi. This allows for a *custom bot name.*
@@ -18,14 +18,14 @@ Go to https://glimesh.tv/users/settings/applications and make an application on 
 
 Save the app. Copy the client ID and secret ID. *Keep these private!*
 
-Go into Glimboi. Paste the client ID and secret ID in their respective inputs. Save the data and authorize the bot. This will open the page in your default browser. If you are not logged in beforehand GLimesh will ask you to sign in. Log in, then hit authorize again. You will then be able to accept your dev app. Glimboi is now ready to operate in your chat!
+Go into Glimboi. Paste the client ID and secret ID in their respective inputs. Save the data and request a token. Glimboi is now ready to operate in your chat!
 
 
 ## Usage
-GlimBoi has a basic GUI for interacting with the bot. You can create commands and manage users. You can also create a currency system for your viewers to spend points with. They can be used for games and trading. Your moderators can control basic functions of the bot. 
+GlimBoi has a basic GUI for interacting with the bot. You can create commands and manage users. You can also create a currency system for your viewers to spend points with. They can be used for games and trading. Your moderators can control basic functions of the bot through chat commands
 
 
 ## Updates
-Windows can recieve automatic updates. Other platforms must manually update. You can download any version of the bot from the releases page. If the platform you want is not supported you can manually build the bot from the source code. Your platform must support Electron. 
+Windows can recieve automatic updates. Other platforms must manually update. You can download any version of the bot from the releases page. If the platform you want is not supported you can manually build the bot from the source code. Your platform must support Electron.
 This is a work in progress.
 
