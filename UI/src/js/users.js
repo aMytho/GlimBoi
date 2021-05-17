@@ -70,6 +70,10 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
       		// Add listItem to the listElement
       		listElement.appendChild(listItem);
     	}
+        if (numberOfListItems == 0) {
+            listElement.innerHTML = "No quotes were found.";
+        }
+        window.scrollTo(0, document.body.scrollHeight)
   	})
 }
 
@@ -234,6 +238,10 @@ function makeList(user) { //Similir to above function, makes a list and displays
       	// Add listItem to the listElement
       	listElement.appendChild(listItem);
   	}
+      if (numberOfListItems == 0) {
+        listElement.innerHTML = `No quotes found for specified user.`
+      }
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 //This is the points section.
@@ -385,7 +393,8 @@ function loadUserTable() {
             	}
             	return data;
          	}
-  		}]
+  		}],
+        iDisplayLength: 25
   	});
 }
 

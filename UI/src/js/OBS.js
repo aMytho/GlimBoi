@@ -25,6 +25,7 @@ function loadOBSData() {
                     data: "position",
               },
       		],
+            iDisplayLength: 25
     	});
   	});
 }

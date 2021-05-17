@@ -32,6 +32,7 @@ function loadCommandTable() {
           			data: "rank",
         		},
       		],
+            iDisplayLength: 25
     	});
   	});
 } // End of start function
