@@ -5,6 +5,7 @@ let cooldown = 0; //Default cooldown time for commands
 let startCD = new Date() // Current time, used in cooldowns
 let timeCD; // The current time, used in cooldowns
 let repeatableArray = []; //Array of repeatable commands
+const ChatAction = require(appData[0] + "/chatbot/lib/commands/commandActionHandler.js")
 
 /**
  * @class Default command
@@ -17,19 +18,18 @@ let repeatableArray = []; //Array of repeatable commands
  * @param {boolean} repeat Should the command repeat?
  * @param {string} sound Play a sound
  * @param {string} media Display an image or video
+ * @param {array} actions What the command will do once activated
  */
 class Command {
-    constructor( commandName, commandData, uses, points, rank, special, repeat, sound, media) {
-    	this.commandName = commandName; //The name of the command
-    	this.message = commandData; // No explanation here
-    	this.uses = uses; //Times the command has been used.
-    	this.points = points; //Points required per command
-    	this.rank = rank; //Default is everyone
-    	this.special = special; //oooo
-    	this.repeat = repeat; // should this command be repeatable?
-        this.sound = sound; // Plays a sound on activation
-        this.media = media; // DIsplay an image or video on activation
-  	}
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions}) {
+        this.commandName = commandName; //The name of the command
+        this.uses = uses; //Times the command has been used.
+        this.points = points; //Points required per command
+        this.cooldown = cooldown; // How long until it can be activated again?
+        this.rank = rank; //Default is everyone
+        this.repeat = repeat; // should this command be repeatable?
+        this.actions = actions; // What the command will do once activated
+    }
 }
 
 //This array will be filled with every variable in a command and is reset once the command is sent.
@@ -68,24 +68,22 @@ function updatePath(GUI) {
 /**
  * Creates a new command. Reloads the current commands after completion.
  * @param {string} commandName The name of your command. Lowercase please!
- * @param {string} commandData The command response.
  * @param {number} uses The amount of times the command has been used.
  * @param {number} points The amount of points the command costs to run.
  * @param {string} rank The minimum rank to use this command
- * @param {null} special Not yet used. Null for now
  * @param {boolean} repeat Should the command repeat?
- * @param {string} sound Play a sound on activation
- * @param {string} media Display an image or video on activation
+ * @param {array} actions What the command will do once activated
  * @returns A command
  */
-function addCommand(commandName, commandData, uses, points, rank, special, repeat, sound, media) {
-  	let newCommand = new Command(commandName, commandData, Number(uses), Number(points), rank, special, repeat, sound, media);
+function addCommand(commandData) {
+    let newCommand = new Command(commandData);
+    console.log(newCommand);
   	try {
     	//inserts a document as a command. Uses the command made above.
     	commandsDB.insert(newCommand, function(err, doc) {
     		console.log('Inserted', doc.commandName, 'with ID', doc._id);
     		commands.push(newCommand);
-    		if (repeat == true) {
+    		if (newCommand.repeat == true) {
       			repeatableArray.push(newCommand)
     		}
   		});
@@ -121,7 +119,7 @@ function addCommandFilter(commandName, commandData, type) {
       		console.log(commandName + " already exists.")
       		ChatMessages.filterMessage(commandName + " already exists", "glimboi")
     	} else {
-      		addCommand(commandName, commandData, 0, 0, "Everyone", null, false, "null", "null");
+      		addCommand(commandName, null, 0, 0, "Everyone", null, false, "null", "null", new ChatAction.ChatMessage(commandData));
       		ChatMessages.filterMessage(commandName + " added!", "glimboi");
       		try {
         		addCommandTable(commandName, commandData, 0, 0, "Everyone")
@@ -155,36 +153,29 @@ function removeCommand(commandName) {
 
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
- * @param {string} commandName The name of your command. Lowercase please!
- * @param {string} commandData The command response.
- * @param {number} uses The amount of times the command has been used.
- * @param {number} points The amount of points the command costs to run.
- * @param {string} rank The minimum rank to use this command
- * @param {null} special Not yet used. Null for now
- * @param {boolean} repeat Should the command repeat?
  */
-function editCommand(commandName, commandData, commandUses, commandPoints, commandRank, special, repeat, sound, media) {
-  	console.log(commandName, commandData, commandUses, commandPoints, commandRank, special, repeat, sound, media)
-  	commandsDB.update({ commandName: commandName }, { $set: { message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media} }, {}, function (err, numReplaced) {
-    	console.log("Updating " + commandName);
-    	for (let index = 0; index < commands.length; index++) {
-      		if (commandName == commands[index].commandName) {
-        		commands.splice(index, 1, { commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media });
-        		let repeatExists = findRepeat(commandName);
-        		if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
-          			console.log("Adding to repeat array.")
-          			repeatableArray.push({ commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media })
-        		} else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
-          			console.log("Removing from repeat array")
-          			removeRepeat(commandName)
-        		} else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
-          			console.log("Editing command in repeat array.")
-          			repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media })
-        		}
-        		break;
-      		}
-    	}
-  	});
+function editCommand({ commandName, actions, uses, points, rank, repeat }) {
+    console.log(commandName, actions, uses, points, rank, repeat)
+    commandsDB.update({ commandName: commandName }, { $set: { actions: actions, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
+        console.log("Updating " + commandName);
+        for (let index = 0; index < commands.length; index++) {
+            if (commandName == commands[index].commandName) {
+                commands.splice(index, 1, { commandName: commandName, actions: actions, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat});
+                let repeatExists = findRepeat(commandName);
+                if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
+                    console.log("Adding to repeat array.")
+                    repeatableArray.push({ commandName: commandName, actions: actions, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
+                } else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
+                    console.log("Removing from repeat array")
+                    removeRepeat(commandName)
+                } else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
+                    console.log("Editing command in repeat array.")
+                    repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, actions: actions, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
+                }
+                break;
+            }
+        }
+    });
 }
 
 /**
@@ -559,4 +550,4 @@ function info() {
   	ChatMessages.filterMessage("placeholder", "glimboi")
 }
 
-module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
+module.exports = { addCommand, addCommandFilter, ChatAction, checkCommand, cooldownChange, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
