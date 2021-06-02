@@ -14,7 +14,6 @@ let updatedSettings = {
     },
     Commands: {
         enabled: true,
-        cooldown: 0,
         Prefix: "!",
         Error: true,
         repeatDelay: 10,
@@ -66,7 +65,6 @@ function getSettings() {
             },
             Commands: {
                 enabled: true,
-                cooldown: 0,
                 Prefix: "!",
                 Error: true,
                 repeatDelay: 10,
@@ -98,7 +96,6 @@ function getSettings() {
             },
             Commands: {
                 enabled: true,
-                cooldown: 0,
                 Prefix: "!",
                 Error: true,
                 repeatDelay: 10,
@@ -150,25 +147,6 @@ function showSettings() {
         filterSwitch.toggleAttribute("checked")
     }
     // Commands - - -
-    switch (settings.Commands.cooldown) {
-        case 0:
-            document.getElementById("cdNone").toggleAttribute("selected");
-        break;
-        case 30:
-            document.getElementById("cd30").toggleAttribute("selected");
-        break;
-        case 60:
-            document.getElementById("cd60").toggleAttribute("selected");
-        break;
-        case 180:
-            document.getElementById("cd180").toggleAttribute("selected");
-        break;
-        case 300:
-            document.getElementById("cd300").toggleAttribute("selected");
-        break;
-        default:
-        break;
-    }
     // repeat handlers
     let repeatDelay = document.getElementById("repeatDelaySlider");
     repeatDelay.value = settings.Commands.repeatDelay;
@@ -225,26 +203,6 @@ function showSettings() {
 
 // saves the settings.
 function saveSettings() {
-    function getCooldown() {
-        let value = document.getElementById("sel1").value
-        switch (value) {
-            case "None (default)":
-                return 0
-            break;
-            case "30 seconds":
-                return 30
-            break;
-            case "1 Minute":
-                return 60
-            break;
-            case "3 Minutes":
-                return 180
-            break;
-            case "5 Minutes":
-                return 300
-            break;
-        }
-    }
     function getRepeatProtection() {
         let value = document.getElementById("repeatProtect").value
         switch (value) {
@@ -288,7 +246,6 @@ function saveSettings() {
         },
         Commands: {
             enabled: true,
-            cooldown: getCooldown(),
             Prefix: "!",
             Error: true,
             repeatDelay: Number(document.getElementById("repeatDelayValue").innerText),
@@ -321,7 +278,6 @@ function resetSettings() {
         },
         Commands: {
             enabled: true,
-            cooldown: 0,
             Prefix: "!",
             Error: true,
             repeatDelay: 10,
@@ -345,7 +301,6 @@ function resetSettings() {
 
 //applies the settings. This is ran at launch after the file is read. Once finished the bot is fully ready
 function updateSettings() {
-    CommandHandle.cooldownChange(settings.Commands.cooldown);
     ModHandle.updateFilter(settings.chat.filter);
     if (ChatSettings !== undefined) {
         ChatSettings.updateChatSettings(settings);

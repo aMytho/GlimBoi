@@ -37,10 +37,12 @@ function loadCommandTable() {
                 data: "message",
                 render: function(data, type, row, meta){
                     if (data == undefined || data == null) {
-                        console.log(row);
                         let actionString = ""
                         for (let i = 0; i < row.actions.length; i++) {
-                            actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info}`])
+                            actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info}`]);
+                            if (row.actions.length -1 !== i) {
+                                actionString = actionString.concat(", ")
+                            }
                         }
                         return actionString
                     }
@@ -203,6 +205,39 @@ function determineActionAndCheck(action, mode) {
                     throw "The media selected was not found. Ensure it is located in the overlay tab."
                 }
             } catch (e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
+        case "Video":
+            try {
+                let possibleVideo = action.children[1].firstElementChild.firstElementChild.firstElementChild.value
+                if (possibleVideo == "None") {
+                    throw "No Video selection was made."
+                }
+                if (OBSHandle.getMediaByName(possibleVideo) !== null) {
+                    resetMessageCommandModal(action.firstElementChild, mode)
+                    return { type: "Video", source: possibleVideo };
+                } else {
+                    throw "The media selected was not found. Ensure it is located in the overlay tab."
+                }
+            } catch (e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
+        case "Wait":
+            try {
+                let possibleWait = strip(action.children[1].firstElementChild.firstElementChild.innerText.trim())
+                if (possibleWait.length == 0) {
+                    throw "You must enter a chat message"
+                } else if (isNaN(possibleWait) == true) { // Make sure it is a number
+                    throw "Wait must be a number."
+                } else if (Math.sign(parseFloat(possibleWait)) == -1) { // Make sure it is positive
+                    throw "Wait must be a positive number."
+                }
+                return {type: "Wait", wait: possibleWait}
+            } catch(e) {
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
@@ -390,36 +425,6 @@ function commandModalPrep() {
         if (e.relatedTarget) {
             CommandUI.loadModalAdd();
         }
-          /*
-    	$("#addCommandPoints").keypress(function (e) {
-      		if (e.which === 13 || isNaN(String.fromCharCode(e.which))) e.preventDefault();
-    	});
-    	$("#addCommandUses").keypress(function (e) {
-      		if (e.which === 13 || isNaN(String.fromCharCode(e.which))) e.preventDefault();
-    	});
-
-        let select = document.getElementById("rankChoiceAdd");
-        let options = RankHandle.getCurrentRanks();
-        for (let i = 0; i < options.length; i++) {
-            let opt = options[i].rank;
-            select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
-        }
-
-        let soundSelect = document.getElementById("commandSoundSelect");
-        let soundOptions = OBSHandle.getSounds();
-        for (let i = 0; i < soundOptions.length; i++) {
-            let opt = soundOptions[i].name;
-            soundSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
-        }
-
-        let mediaSelect = document.getElementById("commandSelectMedia");
-        let imageOptions = OBSHandle.getImages();
-        let videoOptions = OBSHandle.getVideos();
-        let mediaOptions = imageOptions.concat(videoOptions);
-        for (let i = 0; i < mediaOptions.length; i++) {
-            let opt = mediaOptions[i].name;
-            mediaSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
-        }*/
   	});
   	$('#modalEditCommand').on('hidden.bs.modal', function (e) {
     	console.log("Resetting edit add modal.");
