@@ -43,9 +43,26 @@ function prepareActions(mode) {
         }
     }
 
+    // NEEDS WORK, FAILS
+    document.getElementById(`${mode}CommandRun`).onclick = async function() {
+        let tempCommandActions = validateActions(mode);
+        if (!tempCommandActions) {
+            console.log("Command actions were not valid.");
+            return
+        }
+        console.log(tempCommandActions)
+        // Finally we build the actions and add them as a
+        for (let i = 0; i < tempCommandActions.length; i++) {
+            let tempAction = new CommandHandle.ChatAction[`${tempCommandActions[i].type}`](tempCommandActions[i])
+            await tempAction.run()
+        }
+    }
+
     document.getElementById("CreateChatMessage").onclick = () => addActionToUI("ChatMessage", mode);
     document.getElementById("CreateAudio").onclick = () => addActionToUI("Audio", mode);
-    document.getElementById("CreateImageGif").onclick = () => addActionToUI("ImageGif", mode)
+    document.getElementById("CreateImageGif").onclick = () => addActionToUI("ImageGif", mode);
+    document.getElementById("CreateVideo").onclick = () => addActionToUI("Video", mode);
+    document.getElementById("CreateWait").onclick = () => addActionToUI("Wait", mode);
 }
 
 function prepareModals(mode) {
@@ -88,7 +105,7 @@ function loadModalEdit(command) {
             throw err
         }
         document.getElementById(`commandContent`).innerHTML = data;
-        insertEditData(command);
+        await insertEditData(command);
         prepareModals("edit");
         prepareActions("edit");
     })
@@ -110,6 +127,11 @@ function addActionToUI(action, mode, data) {
 
         case "ImageGif": ActionCreator.buildImageGifUI(mode, data);
         break;
+
+        case "Video":ActionCreator.buildVideoUI(mode, data);
+        break;
+
+        case "Wait":ActionCreator.buildWaitUI(mode, data);
         default: null
         break
     }
@@ -119,13 +141,14 @@ function addActionToUI(action, mode, data) {
  * Fills the modal with the commands data
  * @param {object} command The command we are using
  */
-function insertEditData(command) {
+async function insertEditData(command) {
     // Sets the name, uses, and points
     document.getElementById("editCommandName").value = command.commandName
     document.getElementById("editCommandPoints").value = command.points
     document.getElementById("editCommandUses").value = command.uses
 
     // Sets the cooldown if any
+    console.log(command.cooldown)
     if (command.cooldown == undefined) {
         document.getElementById("editCommandCooldown").value = 0
     } else {
@@ -159,19 +182,35 @@ function insertEditData(command) {
     if (command.actions) {
         for (let i = 0; i < command.actions.length; i++) {
             switch (command.actions[i].action) {
-                case "ChatMessage":ActionCreator.buildChatMessageUI("edit", {message: command.actions[i].message})
+                case "ChatMessage": await ActionCreator.buildChatMessageUI("edit", {message: command.actions[i].message})
                 break;
-
+                case "Audio": await ActionCreator.buildAudioUI("edit", {source: command.actions[i].source})
+                break;
+                case "ImageGif": await ActionCreator.buildImageGifUI("edit", {source: command.actions[i].source})
+                break;
+                case "Video": await ActionCreator.buildVideoUI("edit", {source: command.actions[i].source})
+                break;
+                case "Wait": await ActionCreator.buildWaitUI("edit", {wait: command.actions[i].wait})
+                break;
                 default:
                     break;
             }
         }
     } else {
-        ActionCreator.buildChatMessageUI("edit", {message: command.message});
-        if (command.sound) {
-            ActionCreator.buildAudioUI("edit", {sound: command.sound})
-        } else if (command.media) {
-
+        await ActionCreator.buildChatMessageUI("edit", {message: command.message});
+        if (command.sound && command.sound !== "null") {
+            await ActionCreator.buildAudioUI("edit", {source: command.sound})
+        }
+        if (command.media && command.media !== "null") {
+            let media = OBSHandle.getMediaByName(command.media);
+            console.log(media)
+            if (media !== null && media !== "null") {
+                if (media.type.startsWith("image")) {
+                    await ActionCreator.buildImageGifUI("edit", {source: media.name})
+                } else if (media.type.startsWith("video")) {
+                    await ActionCreator.buildVideoUI("edit", {source: media.name})
+                }
+            }
         }
     }
 }

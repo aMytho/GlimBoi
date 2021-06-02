@@ -1,5 +1,7 @@
 // File creates and runs actions for commands.
 
+const ActionResources = require(appData[0] + "/chatbot/lib/commands/actionResources.js")
+
 /**
  * A ChatAction is a class with instructions on what to do based on the action.
  * @param action The action that we need to build
@@ -22,25 +24,10 @@ class ChatMessage extends ChatAction {
         this.message = message;
     }
 
-    run(data) {
-        ChatMessages.filterMessage(this.message, "glimboi");
-        return this.message
-    }
-}
-
-/**
- * Wait action. Waits a specified duration.
- * @param {number} time How long should we wait?
- */
-class Wait extends ChatAction {
-    constructor({time}) {
-        super("Wait", "Waits a specific amount of time", "wait")
-        this.wait = Number(time) * 1000;
-    }
-
-    async run(data) {
-        await setTimeout(() => {}, this.wait);
-        return data
+    async run({activation, user}) {
+        let chatMessage = await ActionResources.searchForVariables({activation: activation, user: user, message: this.message})
+        ChatMessages.filterMessage(chatMessage, "glimboi");
+        return chatMessage
     }
 }
 
@@ -68,10 +55,44 @@ class ImageGif extends ChatAction {
     run(data) {
         let toBeShown = OBSHandle.getMediaByName(this.source);
         if (toBeShown !== null) {
-            OBSHandle.playSound(toBeShown);
+            OBSHandle.displayImage(toBeShown);
         }
         return data
     }
 }
 
-module.exports = {Audio, ChatMessage, ImageGif, Wait}
+class Video extends ChatAction {
+    constructor({source}) {
+        super("Video", "Plays a video in the overlay", "source");
+        this.source = source;
+    }
+
+    run(data) {
+        let toBePlayed = OBSHandle.getMediaByName(this.source);
+        if (toBePlayed !== null) {
+            OBSHandle.playVideo(toBePlayed);
+        }
+        return data
+    }
+}
+
+
+/**
+ * Wait action. Waits a specified duration.
+ * @param {number} time How long should we wait?
+ */
+ class Wait extends ChatAction {
+    constructor({wait}) {
+        super("Wait", "Waits a specific amount of time", "wait")
+        this.wait = Number(wait);
+    }
+
+    async run(data) {
+        let wait = this.wait
+        return new Promise(function(resolve) {
+            setTimeout(resolve, wait * 1000);
+        })
+    }
+}
+
+module.exports = {Audio, ChatMessage, ImageGif, Video, Wait}
