@@ -43,12 +43,6 @@ function updatePath(GUI) {
 
 /**
  * Creates a new command. Reloads the current commands after completion.
- * @param {string} commandName The name of your command. Lowercase please!
- * @param {number} uses The amount of times the command has been used.
- * @param {number} points The amount of points the command costs to run.
- * @param {string} rank The minimum rank to use this command
- * @param {boolean} repeat Should the command repeat?
- * @param {array} actions What the command will do once activated
  * @returns A command
  */
 function addCommand(commandData) {
@@ -70,6 +64,12 @@ function addCommand(commandData) {
   	return newCommand;
 }
 
+/**
+ * Filters a command from chat and if valid adds it
+ * @param {string} commandName The name of the command
+ * @param {string} commandData The data for the chatmessage
+ * @param {string} type !command or !cmd
+ */
 function addCommandFilter(commandName, commandData, type) {
   	commandName = commandName.toLowerCase()
   	if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
@@ -83,7 +83,7 @@ function addCommandFilter(commandName, commandData, type) {
     	commandData = commandData.substring(8 + commandName.length + 2)
     	console.log(commandData)
   	}
-  	commandData = commandData.substring()
+  	commandData = commandData.trim()
   	if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
     	ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
     	return
@@ -95,10 +95,10 @@ function addCommandFilter(commandName, commandData, type) {
       		console.log(commandName + " already exists.")
       		ChatMessages.filterMessage(commandName + " already exists", "glimboi")
     	} else {
-      		addCommand(commandName, null, 0, 0, "Everyone", null, false, "null", "null", new ChatAction.ChatMessage(commandData));
+      		let newCMD = addCommand({commandName: commandName, uses: 0, points: 0, cooldown: 0, rank: "Everyone", repeat: false, actions: [new ChatAction.ChatMessage({message: commandData})]});
       		ChatMessages.filterMessage(commandName + " added!", "glimboi");
       		try {
-        		addCommandTable(commandName, commandData, 0, 0, "Everyone")
+        		addCommandTable({commandName: commandName, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions})
       		} catch(e) {
         		console.log(e)
       		}
@@ -140,13 +140,13 @@ function editCommand({ commandName, actions, cooldown, uses, points, rank, repea
                 let repeatExists = findRepeat(commandName);
                 if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
                     console.log("Adding to repeat array.")
-                    repeatableArray.push({ commandName: commandName, actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
+                    repeatableArray.push({ commandName: commandName, actions: actions, cooldown: 0, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
                 } else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
                     console.log("Removing from repeat array")
                     removeRepeat(commandName)
                 } else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
                     console.log("Editing command in repeat array.")
-                    repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
+                    repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, actions: actions, cooldown: 0, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
                 }
                 break;
             }
@@ -234,6 +234,7 @@ function loadRepeats(command) {
   	let repeatCount = 0; //Counter of repeatable commands
   	for (let i = 0; i < command.length; i++) {
     	if (command[i] !== undefined && command[i].repeat == true) {
+            command[i].cooldown = 0;
       		repeatableArray.push(command[i]) // adds it to the array
       		repeatCount++ // adds 1 to the counter
     	}
@@ -246,14 +247,12 @@ function loadRepeats(command) {
  * Loads a random repeatable command and activates it.
  */
 function randomRepeatCommand() {
-  	let index = Math.floor(Math.random()*repeatableArray.length)
-  	console.log(repeatableArray[index]);
-  	if (repeatableArray[index] !== undefined) {
-  		console.log(repeatableArray[index].message);
-  		//checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
-  		ChatMessages.filterMessage(`${repeatableArray[index].message}`, "glimboi")
-  		ChatStats.resetUserMessageCounter()
-  	}
+    let index = Math.floor(Math.random()*repeatableArray.length)
+    console.log(repeatableArray[index]);
+    if (repeatableArray[index] !== undefined) {
+        CommandRunner.runCommand({message: "!repeat", command: repeatableArray[index], user: ApiHandle.getStreamerName()})
+        ChatStats.resetUserMessageCounter()
+    }
 }
 
 
