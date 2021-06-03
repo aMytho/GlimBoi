@@ -57,7 +57,6 @@ function prepareActions(mode) {
             await tempAction.run()
         }
     }
-
     document.getElementById("CreateChatMessage").onclick = () => addActionToUI("ChatMessage", mode);
     document.getElementById("CreateAudio").onclick = () => addActionToUI("Audio", mode);
     document.getElementById("CreateImageGif").onclick = () => addActionToUI("ImageGif", mode);
@@ -117,24 +116,25 @@ function loadModalEdit(command) {
  * @param {string} mode add or edit
  * @param {object} data The action data
  */
-function addActionToUI(action, mode, data) {
+async function addActionToUI(action, mode, data) {
     switch (action) {
-        case "ChatMessage": ActionCreator.buildChatMessageUI(mode, data)
+        case "ChatMessage": await ActionCreator.buildChatMessageUI(mode, data)
             break;
 
-        case "Audio": ActionCreator.buildAudioUI(mode, data);
+        case "Audio": await ActionCreator.buildAudioUI(mode, data);
             break;
 
-        case "ImageGif": ActionCreator.buildImageGifUI(mode, data);
+        case "ImageGif": await ActionCreator.buildImageGifUI(mode, data);
         break;
 
-        case "Video":ActionCreator.buildVideoUI(mode, data);
+        case "Video": await ActionCreator.buildVideoUI(mode, data);
         break;
 
-        case "Wait":ActionCreator.buildWaitUI(mode, data);
+        case "Wait": await ActionCreator.buildWaitUI(mode, data);
         default: null
         break
     }
+    document.getElementById(`command${mode}ModalBody`).scrollTo(0,document.getElementById(`${mode}CommandList`).parentElement.scrollHeight);
 }
 
 /**
