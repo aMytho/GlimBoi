@@ -2,7 +2,6 @@
 const CommandHandle = require(appData[0] + "/chatbot/lib/commands.js");
 CommandHandle.updatePath(appData[1]);
 let table; //The physical table for the UI
-let commandToBeEdited; // A global var because I was too lazy to find another solution. Must have for editing.
 
 //Loads the command table.
 function loadCommandTable() {
@@ -277,132 +276,33 @@ function checkRemoveCommand() {
 
 //edits commands
 function checkEditCommand() {
-  	commandToBeEdited = $("#commandEditInput").val().toLowerCase();
-  	var editErrorMessage = document.getElementById("editCommandMessage")
-  	commandToBeEdited = commandToBeEdited.replace(new RegExp("^[\!]+"), "").trim();
+    let commandToBeEdited = $("#commandEditInput").val().toLowerCase();
+    var editErrorMessage = document.getElementById("editCommandMessage")
+    commandToBeEdited = commandToBeEdited.replace(new RegExp("^[\!]+"), "").trim();
 
-  	//Make sure the command exists.
-  	try {
-    	CommandHandle.findCommand(commandToBeEdited).then(data => {
-      		if (data !== null) {
-        		console.log("Editing " + commandToBeEdited);
-        		//We replace the html of the modal with new html
-        		document.getElementById("editModal").innerHTML = editCommandModal(data, RankHandle.getCurrentRanks());
-        		editErrorMessage.innerHTML = "";
-        		$("#editCommandPoints").keypress(function (e) {
-          			if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-        		});
-        		$("#editCommandUses").keypress(function (e) {
-          			if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-        		});
-      		} else {
-        		editErrorMessage.innerHTML = "This command does not exist.";
-        		setTimeout(() => {
-          			editErrorMessage.innerHTML = "";
-        		}, 4000);
-      		}
-    	})
-  	} catch (e) {
-    	console.log(e);
-    	editErrorMessage.innerHTML = "This command does not exist.";
-    	setTimeout(() => {
-      		editErrorMessage.innerHTML = ""
-    	}, 4000);
-  	}
-}
-
-/**
- * Same as the add modal with the exception of the command name.
- * @returns
- */
-function editCommand() {
-  	console.log("Checking if command is valid.");
-  	let commandData = $("#editCommandData").text().trim().toLowerCase();
-  	let commandPoints = Number($("#editCommandPoints").text());
-  	let commandUses = Number($("#editCommandUses").text());
-  	let commandRank = document.getElementById("rankChoiceEdit").value;
-  	let repeat = document.getElementById("commandRepeatableChoiceEdit").value
-    let commandSound = document.getElementById("commandEditSound").value
-    let commandMedia = document.getElementById("commandMediaSelect").value
-
-  	commandData = commandData.replace(new RegExp("^[\!]+"), "").trim();
-
-  	if (commandData.length >= 255) {
-    	//max length is 255.
-    	errorMessageCommandModal("The message is too long", "editCommandData");
-    	return
-  	} else if (commandData.length == 0) {
-    	errorMessageCommandModal("You must type a message", "editCommandData");
-    	return
-  	} else {
-    	commandData = strip(commandData);
-    	resetMessageCommandModal("editCommandData")
-  	}
-
-  	if (isNaN(commandPoints) == true) {
-    	errorMessageCommandModal("Points must be a number", "editCommandPoints");
-    	return
-  	} else if (Math.sign(parseFloat(commandPoints)) == -1) {
-    	errorMessageCommandModal("Points cannot be negative", "editCommandPoints");
-    	return
-  	} else {
-    	resetMessageCommandModal("editCommandPoints")
-  	}
-
-  	if (isNaN(commandUses) == true) {
-    	errorMessageCommandModal("Uses must be a number", "editCommandUses");
-    	return
-  	} else if (Math.sign(parseFloat(commandUses)) == -1) {
-    	errorMessageCommandModal("Uses cannot be negative", "editCommandUses");
-    	return
-  	} else {
-    	resetMessageCommandModal("editCommandUses")
-  	}
-
-  	if (repeat == "false") { repeat = false } else { repeat = true }
-
-  	console.log(commandData, commandPoints, commandUses, commandRank, repeat, commandSound, commandMedia);
-
-  	// Adds it to the db and table
-  	CommandHandle.editCommand(commandToBeEdited, commandData, commandUses, commandPoints, commandRank, null, repeat, commandSound, commandMedia); //Edit the DB
-  	CommandHandle.findCommand(commandToBeEdited).then(data => {
-    	if (data !== null) {
-      		var filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
-        	.rows()
-        	.indexes()
-        	.filter(function (value, index) {
-          		return table.row(value).data().commandName == commandToBeEdited;
-        	});
-      		table.rows(filteredData).remove();
-      		table.row.add({ commandName: commandToBeEdited, message: commandData, uses: commandUses, points: commandPoints, rank: commandRank });
-      		table.draw();
-      		$("#modalEditCommand").modal("hide");
-      		document.getElementById("editModal").innerHTML = editCommandModalEntry()
-    	}
-  	})
-
-  	// Shows an error in the modal
-  	function errorMessageCommandModal(message, errLocation) {
-    	var editCommandName = document.getElementById(errLocation).parentElement;
-    	var cmdErrorMessageEdit = document.getElementById("errorMessageEdit")
-    	editCommandName.classList.add("errorClass");
-    	cmdErrorMessageEdit.innerHTML = message;
-    	console.log("Command is not valid.");
-  	}
-
-  	// Resets the errors
-  	function resetMessageCommandModal(toBeReset) {
-    	try {
-      		document.getElementById(toBeReset).parentElement.classList.remove("errorClass");
-      		document.getElementById("errorMessageEdit").innerHTML = "";
-    	} catch (error) {
-      		console.log(error);
-    	}
-  	}
-}
-
-function editReset() {
-  	document.getElementById("editModal").innerHTML = editCommandReset()
+    //Make sure the command exists.
+    try {
+        CommandHandle.findCommand(commandToBeEdited).then(data => {
+            if (data !== null) {
+                console.log("Editing " + commandToBeEdited);
+                const CommandUI = require(`${appData[0]}/UI/src/js/commands/modalManager.js`);
+                $('#modalEditCommand').modal("hide");
+                $('#modalCart').modal("show");
+                CommandUI.loadModalEdit(data);
+            } else {
+                editErrorMessage.innerHTML = "This command does not exist.";
+                setTimeout(() => {
+                    editErrorMessage.innerHTML = "";
+                }, 4000);
+            }
+        })
+    } catch (e) {
+        console.log(e);
+        editErrorMessage.innerHTML = "This command does not exist.";
+        setTimeout(() => {
+            editErrorMessage.innerHTML = ""
+        }, 4000);
+    }
 }
 
 /**
@@ -412,6 +312,18 @@ function editReset() {
 function strip(html) {
   	let doc = new DOMParser().parseFromString(html, 'text/html');
   	return doc.body.textContent || "";
+}
+
+function moveAction(element, direction) {
+    if (direction == "up") {
+        if (element.previousElementSibling) {
+            element.parentNode.insertBefore(element, element.previousElementSibling)
+        }
+    } else {
+        if (element.nextElementSibling) {
+            element.parentNode.insertBefore(element.nextElementSibling, element)
+        }
+    }
 }
 
 /**
