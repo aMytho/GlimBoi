@@ -21,16 +21,16 @@ let listofvariables = [
 /**
  * Searches and replaces variables with their values
  * @param {object} data A bunch of revalant data
- * @param {string} data.message aaaaa
+ * @param {string} data.message message
  */
 async function searchForVariables(data) {
     for (let i = 0; i < listofvariables.length; i++) {
+        console.log(data.message)
         let varIndex = data.message.indexOf(listofvariables[i])
         if (varIndex !== -1) {
             let replacement = await replaceVariable({variable: listofvariables[i], activation: data.activation, user: data.user});
             console.log(replacement);
-            console.log(data.message);
-            data.message = data.message.replace(listofvariables[i], replacement)
+            data.message = data.message.replaceAll(listofvariables[i], replacement)
         }
     }
     return data.message
