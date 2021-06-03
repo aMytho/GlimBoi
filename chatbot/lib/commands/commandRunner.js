@@ -42,6 +42,7 @@ async function checkCommand(data) {
  * @param {string} user The user who activated the command.
  */
 async function runCommand({message, command, user}) {
+    // If a cooldown exists we add it to the cooldown array and remove it with a settimeout
     if (command.cooldown && command.cooldown > 0) {
         cooldownArray.push(command.commandName);
         setTimeout(() => {
@@ -50,9 +51,12 @@ async function runCommand({message, command, user}) {
                     cooldownArray.splice(i, 1)
                 }
             }
-            console.log("now" + cooldownArray)
         }, command.cooldown * 60000);
     }
+
+    // Increments the command uses by one.
+    CommandHandle.addCommandCount(command.commandName);
+
     // First we check for actions.
     if (command.actions) {
         for (let i = 0; i < command.actions.length; i++) {
@@ -63,32 +67,31 @@ async function runCommand({message, command, user}) {
         return
     }
 
+    // If legacy we create a ChatMessage action from the message property
     if (command.message) {
         let action = new CommandHandle.ChatAction.ChatMessage({message: command.message})
         await action.run({activation: message, user: user});
     }
 
+    // If legacy we create a Audio action from the sound property
     if (command.sound && command.sound !== "null") {
         let action = new CommandHandle.ChatAction.Audio({source: command.sound})
         await action.run();
     }
 
+    // If legacy we create a ImageGif or Video action from the media property
     if (command.media && command.media !== "null") {
         let media = OBSHandle.getMediaByName(command.media);
         if (media !== null) {
             if (media.type.startsWith("image")) {
-                let action = new CommandHandle.ImageGif(command.media)
+                let action = new CommandHandle.ChatAction.ImageGif({source: command.media})
                 await action.run();
             } else if (media.type.startsWith("video")) {
-                //OBSHandle.playVideo(media)
+                let action = new CommandHandle.ChatAction.Video({source: command.media});
+                await action.run()
             }
         }
     }
-
-  CommandHandle.addCommandCount(command.commandName); // Increments the command uses by one.
-  if (command.cooldown) {
-      cooldownArray.push(command.commandName)
-  }
 }
 
 /**
@@ -98,7 +101,6 @@ async function runCommand({message, command, user}) {
  * @async
  */
 async function permissionCheck(command, user) {
-    console.log("before" + cooldownArray)
     if (command.cooldown && cooldownArray.includes(command.commandName)) {
         console.log(`Cooldown for ${command.commandName} is still active.`);
         return `${command.commandName} is still on cooldown.`
@@ -127,4 +129,4 @@ async function permissionCheck(command, user) {
     return "ACCEPTED"
 }
 
-module.exports = {checkCommand}
+module.exports = {checkCommand, runCommand}
