@@ -52,11 +52,15 @@ function connect() {
     }
 
     connection.onclose = function (event) {
-        console.log("disconnected from the server");
+        console.log("disconnected from glimboi");
         setTimeout(() => {
             console.log("Attempting to reconnect")
             connect()
         }, 5000);
+    }
+
+    connection.onerror = function (event) {
+        connection.log("error", event);
     }
 }
 
