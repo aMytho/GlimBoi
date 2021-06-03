@@ -153,7 +153,6 @@ function validateActions(mode) {
 }
 
 function determineActionAndCheck(action, mode) {
-    console.log(action)
     switch (action.firstElementChild.firstElementChild.innerText) {
         case "Chat Message":
             try {
