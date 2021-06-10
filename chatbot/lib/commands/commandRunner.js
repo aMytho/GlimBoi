@@ -59,11 +59,18 @@ async function runCommand({message, command, user}) {
 
     // First we check for actions.
     if (command.actions) {
+        let varsGenerated = []
         for (let i = 0; i < command.actions.length; i++) {
             let action = new CommandHandle.ChatAction[`${command.actions[i].action}`](command.actions[i])
-            await action.run({activation: message, user: user});
-            console.log("Finished" + action.action)
+            let actionActivated = await action.run({activation: message, user: user});
+            if (actionActivated) {
+                actionActivated.forEach(element => {
+                    varsGenerated.push(element)
+                });
+            }
         }
+        CommandHandle.ChatAction.ActionResources.removeVariables(varsGenerated);
+        console.log(varsGenerated, "done")
         return
     }
 
