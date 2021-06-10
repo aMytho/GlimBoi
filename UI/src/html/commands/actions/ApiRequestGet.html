@@ -1,0 +1,101 @@
+<div class="topnav">
+    <h3 class="active">API Request (GET)</h3>
+    <div class="float-right" style="padding:12px 14px">
+        <i class="fas fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
+        <i class="fas fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
+        <i class="far fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
+    </div>
+</div>
+<div class="actionBody mt-2">
+    <div class="actionMain text-center row">
+        <div class="col-6">
+            <span class="textarea" role="textbox" contenteditable id="urlInput"
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+        </div>
+        <div class="col-6">
+            <select class="settingSelect">
+                <option value="text">Returns Text</option>
+                <option value="json">Returns JSON</option>
+            </select>
+        </div>
+    </div>
+    <div class="actionMain text-center row">
+        <div class="col-6">
+            <span class="textarea" role="textbox" contenteditable id="requestTextInput"
+            style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+        </div>
+        <div class="col-6">
+            <p>Enter the name of the variable to use the request data later.</p>
+        </div>
+        <div class="col-12 hidden">
+            <table style="width:100%" class="table">
+                <tr>
+                  <th>Add/Remove</th>
+                  <th>JSON Key</th>
+                  <th>Return Variable</th>
+                </tr>
+                <tr>
+                  <td>
+                    <a class="btn btn-primary btn-group mt-2 btn-inline" href="#"><i class="fas fa-plus"></i></a>
+                </td>
+                  <td><span class="textarea" role="textbox" contenteditable id="jsonKey"
+                    style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
+                  <td><span class="textarea" role="textbox" contenteditable id="varName"
+                    style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
+                </tr>
+              </table>
+        </div>
+        <div class="col-12 hidden">
+            <p>Enter the JSON keys to search for. Add the variable name to pull from later.</p>
+        </div>
+    </div>
+    <div class="actionMain text-center row">
+        <div class="col-12">
+            <table style="width:100%" class="table">
+                <tr>
+                  <th>Add/Remove</th>
+                  <th>Header Name</th>
+                  <th>Value</th>
+                </tr>
+                <tr>
+                  <td>
+                    <a class="btn btn-primary btn-group mt-2 btn-inline" href="#"><i class="fas fa-plus"></i></a>
+                </td>
+                  <td><span class="textarea" role="textbox" contenteditable id="headerName"
+                    style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
+                  <td><span class="textarea" role="textbox" contenteditable id="headerValue"
+                    style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
+                </tr>
+              </table>
+        </div>
+        <div class="col-12">
+            <p>Enter the headers with their values (if any)</p>
+        </div>
+    </div>
+</div>
+<style>
+#urlInput[contenteditable]:empty::before {
+  content: "Full URL to API including ? query strings";
+  color: gray;
+}
+#requestTextInput[contenteditable]:empty::before {
+  content: "Name of the variable to store the data in. Ex. $joke";
+  color: gray;
+}
+#jsonKey[contenteditable]:empty::before {
+  content: "JSON value to search for";
+  color: gray;
+}
+#varName[contenteditable]:empty::before {
+  content: "Name of the variable to store the data in. Ex. $joke";
+  color: gray;
+}
+#headerName[contenteditable]:empty::before {
+  content: "Name of the header";
+  color: gray;
+}
+#headerValue[contenteditable]:empty::before {
+  content: "Value";
+  color: gray;
+}
+</style>

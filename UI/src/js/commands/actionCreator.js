@@ -15,6 +15,100 @@ async function buildChatMessageUI(mode, commandInfo) {
     document.getElementById(`${mode}CommandList`).appendChild(action)
 }
 
+async function buildApiRequestGetUI(mode, commandInfo) {
+    let action = document.createElement("div");
+    let file = await fsPromise.readFile(`${appData[0]}/UI/src/html/commands/actions/ApiRequestGet.html`)
+    action.innerHTML = file.toString();
+    action.className = "action";
+    action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;";
+    action.children[1].firstElementChild.children[1].firstElementChild.addEventListener("change", event => {
+        switchAPIView(action.children[1].firstElementChild.children[1].firstElementChild.value, action)
+    })
+    // Onclick adds a new row to add a JSON search key
+    action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].firstElementChild.addEventListener("click", async event => {
+        await addJSONRow(action.children[1].children[1].children[2].firstElementChild.firstElementChild, mode, "ApiRow");
+        document.getElementById(`command${mode}ModalBody`).scrollTo(0,document.getElementById(`${mode}CommandList`).parentElement.scrollHeight);
+    })
+    //Onclick adds header row
+    action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].firstElementChild.firstElementChild.addEventListener("click", async event => {
+        await addJSONRow(action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild, mode, "HeaderRow");
+        document.getElementById(`command${mode}ModalBody`).scrollTo(0,document.getElementById(`${mode}CommandList`).parentElement.scrollHeight);
+    })
+    if (commandInfo) {
+        // Sets the URL
+        action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText = commandInfo.url;
+        // If the prop is null it is a text command, if not then its JSON.
+        if (commandInfo.returns[0].data == null) {
+            action.children[1].children[1].firstElementChild.firstElementChild.innerText = commandInfo.returns[0].variable
+        } else {
+            action.children[1].firstElementChild.children[1].firstElementChild.value = "json"
+            switchAPIView("json", action);
+            for (let i = 0; i < commandInfo.returns.length; i++) {
+                if (i == 0) {
+                    action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].children[1].firstElementChild.innerText = commandInfo.returns[i].data
+                    action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].children[2].firstElementChild.innerText = commandInfo.returns[i].variable
+                    continue;
+                }
+                addJSONRow(action.children[1].children[1].children[2].firstElementChild.firstElementChild, mode, "ApiRow", commandInfo.returns[i])
+            }
+        }
+        if (commandInfo.headers[0]) {
+            console.log(commandInfo.headers)
+            for (let i = 0; i < commandInfo.headers.length; i++) {
+                if (i == 0) {
+                    action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].children[1].firstElementChild.innerText = commandInfo.headers[i][0]
+                    action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].children[2].firstElementChild.innerText = commandInfo.headers[i][1]
+                    continue;
+                }
+                addJSONRow(action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild, mode, "HeaderRow", {variable: commandInfo.headers[i][1], data: commandInfo.headers[i][0]})
+            }
+        }
+    }
+    document.getElementById(`${mode}CommandList`).appendChild(action)
+}
+
+/**
+ * Adds a row to one of the tables for the API Action
+ * @param {HTMLElement} table The table (tbody) we are adding the row to
+ * @param {string} mode "Add or Edit"
+ * @param {string} filePath Which file we are adding (file contains the new row info)
+ */
+async function addJSONRow(table, mode, filePath, fill) {
+    let tr = document.createElement("tr");
+    let file = await fsPromise.readFile(`${appData[0]}/UI/src/html/commands/actions/resources/${filePath}.html`)
+    tr.innerHTML = file.toString();
+    tr.firstElementChild.firstElementChild.addEventListener("click", event => {
+        addJSONRow(table, mode, filePath);
+        document.getElementById(`command${mode}ModalBody`).scrollTo(0,document.getElementById(`${mode}CommandList`).parentElement.scrollHeight);
+    })
+    tr.firstElementChild.children[1].addEventListener("click", event => {
+        if (event.target.parentElement.parentElement.nodeName == "TR") {
+            event.target.parentElement.parentElement.remove()
+        } else {
+            event.target.parentElement.parentElement.parentElement.remove()
+        }
+    }, true);
+    if (fill) {
+        tr.children[1].firstElementChild.innerText = fill.data
+        tr.children[2].firstElementChild.innerText = fill.variable
+    }
+    table.appendChild(tr)
+}
+
+function switchAPIView(view, action) {
+    if (view == "text") {
+        action.children[1].children[1].firstElementChild.classList = "col-6";
+        action.children[1].children[1].children[1].classList = "col-6";
+        action.children[1].children[1].children[2].classList = "col-12 hidden";
+        action.children[1].children[1].children[3].classList = "col-12 hidden";
+    } else {
+        action.children[1].children[1].firstElementChild.classList = "col-6 hidden";
+        action.children[1].children[1].children[1].classList = "col-6 hidden";
+        action.children[1].children[1].children[2].classList = "col-12";
+        action.children[1].children[1].children[3].classList = "col-12";
+    }
+}
+
 async function buildAudioUI(mode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(`${appData[0]}/UI/src/html/commands/actions/Audio.html`)
@@ -41,17 +135,14 @@ async function buildAudioUI(mode, commandInfo) {
 async function buildImageGifUI(mode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(`${appData[0]}/UI/src/html/commands/actions/ImageGIF.html`)
-    // Takes the data and converts it to text (html). Also sets the styles
     action.innerHTML = file.toString();
     action.className = "action";
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
-    // Now we fill the dropdown with our sound effects. This is pulled from the media tab.
     let imageGifSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
     let options = OBSHandle.getImages()
     imageGifSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name
-        // If a sound was provided we have it be the selected item
         if (commandInfo && commandInfo.source == opt) {
             imageGifSelect.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
         } else {
@@ -87,11 +178,10 @@ async function buildWaitUI(mode, commandInfo) {
     action.innerHTML = file.toString();
     action.className = "action";
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
-    // If a message exists we add it to the action
     if (commandInfo) {
         action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText = commandInfo.wait
     }
     document.getElementById(`${mode}CommandList`).appendChild(action)
 }
 
-module.exports = {buildAudioUI, buildChatMessageUI, buildImageGifUI, buildVideoUI, buildWaitUI}
+module.exports = {buildApiRequestGetUI, buildAudioUI, buildChatMessageUI, buildImageGifUI, buildVideoUI, buildWaitUI}

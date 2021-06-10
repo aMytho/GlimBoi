@@ -25,12 +25,10 @@ let listofvariables = [
  */
 async function searchForVariables(data) {
     for (let i = 0; i < listofvariables.length; i++) {
-        console.log(data.message)
-        let varIndex = data.message.indexOf(listofvariables[i])
+        let varIndex = data.message.indexOf(listofvariables[i].name || listofvariables[i])
         if (varIndex !== -1) {
             let replacement = await replaceVariable({variable: listofvariables[i], activation: data.activation, user: data.user});
-            console.log(replacement);
-            data.message = data.message.replaceAll(listofvariables[i], replacement)
+            data.message = data.message.replaceAll(listofvariables[i].name || listofvariables[i], replacement);
         }
     }
     return data.message
@@ -105,16 +103,94 @@ async function searchForVariables(data) {
             return "https://twitter.com/" + twitter
         break;
       case "$catfact":
-          let catFact = await ApiHandle.randomCatFact();
+          let catFact = await ApiHandle.randomAnimalFact("cat");
           return catFact
       break;
       case "$dogfact":
-          let dogFact = await ApiHandle.randomDogFact();
+          let dogFact = await ApiHandle.randomAnimalFact("dog");
           return dogFact
       break;
-      default:
+      default: return replaceCustomVariable(variable);
         break;
     }
 }
 
-module.exports = {searchForVariables}
+function replaceCustomVariable(variable) {
+    for (let i = 0; i < listofvariables.length; i++) {
+        if (variable.name == listofvariables[i].name) {
+            return listofvariables[i].data
+        }
+    }
+}
+
+
+function addVariable(variable) {
+    listofvariables.push(variable)
+}
+
+function getv () {
+    return listofvariables
+}
+
+function removeVariables(variables = []) {
+    for (let i = 0; i < listofvariables.length; i++) {
+        if (listofvariables[i].name !== undefined) {
+            variables.forEach(element => {
+                console.log(element, listofvariables[i])
+                if (element == listofvariables[i].name) {
+                    listofvariables.splice(i, 1);
+                }
+            });
+        }
+    }
+}
+
+/**
+ * Requests data from an API
+ * @param {string} url The API URL
+ * @param {array} headers An array of headers to send with the request
+ * @param {string} mode "GET" or "POST"
+ * @param {string} request POST data if any
+ * @param {array} path The path to follow down the JSON tree if any
+ * @returns {string} The response from the API
+ */
+async function ApiRequest({ url, headers, mode, request, path, pathType }) {
+    if (!headers || headers == []) {
+        headers = {}
+    }
+    try {
+        if (mode == "GET") {
+            let response = await fetch(url, { method: "GET", headers: headers }).catch(function (e) {
+                console.log(e);
+            });
+            if (pathType == "text") {
+                response = await response.text();
+                addVariable({ name: path[0].variable, data: response });
+                return
+            }
+            response = await response.json();
+            for (let i = 0; i < path.length; i++) {
+                function findVal(object, key) {
+                    var value;
+                    Object.keys(object).some(function (k) {
+                        if (k === key) {
+                            value = object[k];
+                            return true;
+                        }
+                        if (object[k] && typeof object[k] === 'object') {
+                            value = findVal(object[k], key);
+                            return value !== undefined;
+                        }
+                    });
+                    return value;
+                }
+                addVariable({ name: path[i].variable, data: findVal(response, path[i].data)});
+            }
+        }
+    } catch(e) {
+        console.log(e);
+        console.log( url, headers, mode, request, path, pathType );
+    }
+}
+
+module.exports = {addVariable, ApiRequest, removeVariables, searchForVariables, getv}
