@@ -262,7 +262,6 @@ function randomRepeatCommand() {
  */
 function addCommandCount(command) {
   	commandsDB.update({ commandName: command }, { $inc: { uses: 1 } }, {}, function (err, numReplaced) {
-    	console.log("Updating uses of " + command);
     	err ? console.log(err) : null; // if error log it
     	for (let index = 0; index < commands.length; index++) {
       		if (command == commands[index].commandName) {

@@ -38,6 +38,10 @@ function loadCommandTable() {
                     if (data == undefined || data == null) {
                         let actionString = ""
                         for (let i = 0; i < row.actions.length; i++) {
+                            if (i==3) {
+                                actionString = actionString + "..."
+                                break
+                            }
                             actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info[0].length > 1 && row.actions[i].info[0] || row.actions[i].info}`]);
                             if (row.actions.length -1 !== i) {
                                 actionString = actionString.concat(", ")
@@ -290,12 +294,13 @@ function determineActionAndCheck(action, mode) {
             try {
                 let possibleWait = strip(action.children[1].firstElementChild.firstElementChild.innerText.trim())
                 if (possibleWait.length == 0) {
-                    throw "You must enter a chat message"
+                    throw "You must enter a duration."
                 } else if (isNaN(possibleWait) == true) { // Make sure it is a number
                     throw "Wait must be a number."
                 } else if (Math.sign(parseFloat(possibleWait)) == -1) { // Make sure it is positive
                     throw "Wait must be a positive number."
                 }
+                resetMessageCommandModal(action.firstElementChild, mode)
                 return {type: "Wait", wait: possibleWait}
             } catch(e) {
                 console.log(e);

@@ -70,7 +70,6 @@ async function runCommand({message, command, user}) {
             }
         }
         CommandHandle.ChatAction.ActionResources.removeVariables(varsGenerated);
-        console.log(varsGenerated, "done")
         return
     }
 

@@ -66,7 +66,7 @@ async function searchForVariables(data) {
             }
         break;
       case "$cmdcount":
-            let count = await findCommand(arguements[0])
+            let count = await CommandHandle.findCommand(activation.split(" ")[0])
             return count.uses
         break;
       case "$game":
@@ -136,7 +136,6 @@ function removeVariables(variables = []) {
     for (let i = 0; i < listofvariables.length; i++) {
         if (listofvariables[i].name !== undefined) {
             variables.forEach(element => {
-                console.log(element, listofvariables[i])
                 if (element == listofvariables[i].name) {
                     listofvariables.splice(i, 1);
                 }
