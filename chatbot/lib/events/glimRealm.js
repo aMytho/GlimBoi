@@ -85,7 +85,7 @@ function openGlimRealm() {
  * Returns a random glimdrop event.
  */
 function glimChance() {
-    var number = Math.floor(Math.random()*30)
+    var number = Math.floor(Math.random()*32)
     switch (number) {
         case 0: return {message: "The Glimdrops are hiding. No adjustment in points.", result: 0, type: "add"}
         case 1: return {message: ":glimwow: got his Glimesh T-shirt! You gained 100 points.", result: 100, type: "add"}
@@ -117,6 +117,9 @@ function glimChance() {
         case 27: return {message: ":glimlove: You help two Glimdrops fall in love. After a year they get married and have more Glimdrops! You gain 500 points!", result: 500, type: "add"}
         case 28: return {message: ":glimangry: A Glimdrop is angry. You failed to calm it down. You lost 100 points", result: 100, type: "sub"}
         case 29: return {message: "A glimdrop discovered your stream and became a regular! You gained 100 points!", result: 100, type: "add"}
+        case 30: return {message: ":glimcat: purrrrrrrrs softly next to you. You gain 200 points", result: 200, type: "add"}
+        case 31: return {message: ":glimangry: enrages the other Glimdrops. They form a mob! Oh no, they don't like visitors... You lost 600 points", result: 600, type: "sub"}
+        case 31: return {message: ":glimchicken: shows you chickencam! You spend the rest of the day watching together. You gained 300 points.", result: 300, type: "add"}
     }
 }
 

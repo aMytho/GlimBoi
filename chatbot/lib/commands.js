@@ -1,10 +1,9 @@
 let path = "./"; //Call updatePath(path) to set to the right path for the db
 let commandsDB; //Database of commands.
 let commands = []; //Array that contains all the commands. The bot reads this
-let cooldown = 0; //Default cooldown time for commands
-let startCD = new Date() // Current time, used in cooldowns
-let timeCD; // The current time, used in cooldowns
 let repeatableArray = []; //Array of repeatable commands
+const ChatAction = require(appData[0] + "/chatbot/lib/commands/commandActionHandler.js");
+const CommandRunner = require(appData[0] + "/chatbot/lib/commands/commandRunner.js");
 
 /**
  * @class Default command
@@ -17,42 +16,19 @@ let repeatableArray = []; //Array of repeatable commands
  * @param {boolean} repeat Should the command repeat?
  * @param {string} sound Play a sound
  * @param {string} media Display an image or video
+ * @param {array} actions What the command will do once activated
  */
 class Command {
-    constructor( commandName, commandData, uses, points, rank, special, repeat, sound, media) {
-    	this.commandName = commandName; //The name of the command
-    	this.message = commandData; // No explanation here
-    	this.uses = uses; //Times the command has been used.
-    	this.points = points; //Points required per command
-    	this.rank = rank; //Default is everyone
-    	this.special = special; //oooo
-    	this.repeat = repeat; // should this command be repeatable?
-        this.sound = sound; // Plays a sound on activation
-        this.media = media; // DIsplay an image or video on activation
-  	}
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions}) {
+        this.commandName = commandName; //The name of the command
+        this.uses = uses; //Times the command has been used.
+        this.points = points; //Points required per command
+        this.cooldown = cooldown; // How long until it can be activated again?
+        this.rank = rank; //Default is everyone
+        this.repeat = repeat; // should this command be repeatable?
+        this.actions = actions; // What the command will do once activated
+    }
 }
-
-//This array will be filled with every variable in a command and is reset once the command is sent.
-let variableList = [];
-//This array contains all possible variables for commands. The order is important!!!
-//If you add a new let it must be at the bottom and you must link it is the replace variable function in the SAME ORDER!
-let listofvariables = [
-  	"$target", // The word after the command. ex !so Mytho (Mytho would be the target)
-  	"$user", //The user who activated the command.
-  	"$time", // The current time.
-  	"$watchtime", // unused.
-  	"$cmdcount", // The amount of times a command has been used.
-  	"$game", // unused
-  	"$advice", // Random advice. View API.js
-  	"$dadjoke", // Random dad joke. View API.js
-  	"$discord", // discord invite URL
-  	"$guilded", // guilded invite URL
-  	"$instagram", // instagram URL
-  	"$youtube", // youtube channel URL
-  	"$twitter", // twitter profile URL
-    "$catfact", // Random cat fact
-    "$dogfact" // Random dog fact
-];
 
 
 /**
@@ -67,25 +43,17 @@ function updatePath(GUI) {
 
 /**
  * Creates a new command. Reloads the current commands after completion.
- * @param {string} commandName The name of your command. Lowercase please!
- * @param {string} commandData The command response.
- * @param {number} uses The amount of times the command has been used.
- * @param {number} points The amount of points the command costs to run.
- * @param {string} rank The minimum rank to use this command
- * @param {null} special Not yet used. Null for now
- * @param {boolean} repeat Should the command repeat?
- * @param {string} sound Play a sound on activation
- * @param {string} media Display an image or video on activation
  * @returns A command
  */
-function addCommand(commandName, commandData, uses, points, rank, special, repeat, sound, media) {
-  	let newCommand = new Command(commandName, commandData, Number(uses), Number(points), rank, special, repeat, sound, media);
+function addCommand(commandData) {
+    let newCommand = new Command(commandData);
+    console.log(newCommand);
   	try {
     	//inserts a document as a command. Uses the command made above.
     	commandsDB.insert(newCommand, function(err, doc) {
     		console.log('Inserted', doc.commandName, 'with ID', doc._id);
     		commands.push(newCommand);
-    		if (repeat == true) {
+    		if (newCommand.repeat == true) {
       			repeatableArray.push(newCommand)
     		}
   		});
@@ -96,6 +64,12 @@ function addCommand(commandName, commandData, uses, points, rank, special, repea
   	return newCommand;
 }
 
+/**
+ * Filters a command from chat and if valid adds it
+ * @param {string} commandName The name of the command
+ * @param {string} commandData The data for the chatmessage
+ * @param {string} type !command or !cmd
+ */
 function addCommandFilter(commandName, commandData, type) {
   	commandName = commandName.toLowerCase()
   	if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
@@ -109,7 +83,7 @@ function addCommandFilter(commandName, commandData, type) {
     	commandData = commandData.substring(8 + commandName.length + 2)
     	console.log(commandData)
   	}
-  	commandData = commandData.substring()
+  	commandData = commandData.trim()
   	if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
     	ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
     	return
@@ -121,10 +95,10 @@ function addCommandFilter(commandName, commandData, type) {
       		console.log(commandName + " already exists.")
       		ChatMessages.filterMessage(commandName + " already exists", "glimboi")
     	} else {
-      		addCommand(commandName, commandData, 0, 0, "Everyone", null, false, "null", "null");
+      		let newCMD = addCommand({commandName: commandName, uses: 0, points: 0, cooldown: 0, rank: "Everyone", repeat: false, actions: [new ChatAction.ChatMessage({message: commandData})]});
       		ChatMessages.filterMessage(commandName + " added!", "glimboi");
       		try {
-        		addCommandTable(commandName, commandData, 0, 0, "Everyone")
+        		addCommandTable({commandName: commandName, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions})
       		} catch(e) {
         		console.log(e)
       		}
@@ -155,36 +129,29 @@ function removeCommand(commandName) {
 
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
- * @param {string} commandName The name of your command. Lowercase please!
- * @param {string} commandData The command response.
- * @param {number} uses The amount of times the command has been used.
- * @param {number} points The amount of points the command costs to run.
- * @param {string} rank The minimum rank to use this command
- * @param {null} special Not yet used. Null for now
- * @param {boolean} repeat Should the command repeat?
  */
-function editCommand(commandName, commandData, commandUses, commandPoints, commandRank, special, repeat, sound, media) {
-  	console.log(commandName, commandData, commandUses, commandPoints, commandRank, special, repeat, sound, media)
-  	commandsDB.update({ commandName: commandName }, { $set: { message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media} }, {}, function (err, numReplaced) {
-    	console.log("Updating " + commandName);
-    	for (let index = 0; index < commands.length; index++) {
-      		if (commandName == commands[index].commandName) {
-        		commands.splice(index, 1, { commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media });
-        		let repeatExists = findRepeat(commandName);
-        		if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
-          			console.log("Adding to repeat array.")
-          			repeatableArray.push({ commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media })
-        		} else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
-          			console.log("Removing from repeat array")
-          			removeRepeat(commandName)
-        		} else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
-          			console.log("Editing command in repeat array.")
-          			repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, message: commandData, uses: Number(commandUses), points: Number(commandPoints), rank: commandRank, special: special, repeat: repeat, sound: sound, media: media })
-        		}
-        		break;
-      		}
-    	}
-  	});
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat }) {
+    console.log(commandName, actions, cooldown, uses, points, rank, repeat)
+    commandsDB.update({ commandName: commandName }, { $set: { actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
+        console.log("Updating " + commandName);
+        for (let index = 0; index < commands.length; index++) {
+            if (commandName == commands[index].commandName) {
+                commands.splice(index, 1, { commandName: commandName, actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat});
+                let repeatExists = findRepeat(commandName);
+                if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
+                    console.log("Adding to repeat array.")
+                    repeatableArray.push({ commandName: commandName, actions: actions, cooldown: 0, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
+                } else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
+                    console.log("Removing from repeat array")
+                    removeRepeat(commandName)
+                } else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
+                    console.log("Editing command in repeat array.")
+                    repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, actions: actions, cooldown: 0, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
+                }
+                break;
+            }
+        }
+    });
 }
 
 /**
@@ -234,234 +201,6 @@ function removeRepeat(commandName) {
 }
 
 /**
- * Checks if a command exists and runs it if it does.
- * @param {object} data An object full of data for the command to use.
- * @param data.message The chat message that triggered the command
- * @param data.user The user that activated the command
- */
-function checkCommand(data) {
-  	let cleaned = data.message.replace(new RegExp("^[\!]+"), "").trim();
-  	let message = cleaned.split(" "); //splits by space
-  	console.log(message);
-  	timeCD = new Date();
-  	let CD = timeCD - startCD; // check the time since the last command was activated. (cooldown check)
-  	if (CD < cooldown) {/*  if not enough time has passed do nothing*/} else { // We are past the cooldown, command time!
-  		try {
-    		let commandExists = false; // We assume the command does not exist.
-        message[0] = message[0].toLowerCase()
-    		for (let index = 0; index < commands.length && commandExists == false; index++) { // Runs a loop to search for the command in the commands array
-      			try {
-        			if (commands[index].commandName == message[0]) { // We found the command!
-        				commandExists = true // We log this. If it were false we would log it to the console.
-        				console.log(commands[index]);
-        				permissionCheck(commands[index], data.user.username.toLowerCase()).then(value => {
-          					if (value == "ACCEPTED") {
-            					runCommand(message, index, data.user); // Run the command passing the message, index (used to get the right cmd), and the user.
-          					} else if (value == "NEWUSER") {
-                                permissionCheck(commands[index], data.user.username.toLowerCase()).then(newValue => {
-                                    if (newValue == "ACCEPTED") {
-                                        runCommand(message, index, data.user);
-                                    } else {
-                                        ChatMessages.filterMessage(newValue, "glimboi");
-            					        console.log(newValue)
-                                    }
-                                })
-                              } else { // They don't have permission, we log this to chat.
-            					ChatMessages.filterMessage(value, "glimboi");
-            					console.log(value)
-          					}
-        				})
-        				break // stop the loop.
-        			}
-      			} catch(e) {}
-    		}
-    		if (commandExists == false) { //The command was not found. We log it to the console.
-      			console.log(message[0] + " is not a command");
-    		}
-  		} catch (error) {
-    		console.log("Error running command");
-    		console.log(error);
-  		}
-	}
-}
-
-/**
- * Encures the user has permission to use the command
- * @param {object} command The command
- * @param {string} user The user who activated the command
- * @async
- */
-async function permissionCheck(command, user) {
-    let userData = await UserHandle.findByUserName(user);
-    if (userData !== "ADDUSER") {
-        if (command.rank !== "Everyone") {
-            console.log(userData.role);
-            console.log(command.rank);
-            if (userData.role !== command.rank) {
-                return "You don't have the required rank to use that command!"
-            }
-        }
-        if (command.points !== 0) {
-            console.log(command.points)
-            if ((userData.points - command.points) < 0) {
-                return `You do not have enough points to use this command. ${command.commandName}: ${command.points} | ${user}: ${userData.points}`
-            } else {
-                UserHandle.removePoints(user, command.points)
-            }
-        }
-    } else {
-        let newUser = await UserHandle.addUser(user, false);
-        if (newUser !== "INVALIDUSER") {
-            return "NEWUSER"
-        } else { return "User Error" }
-    }
-    return "ACCEPTED"
-}
-
-/**
- * @async
- * @param {array} arguements Each array value is a word in the chat message.
- * @param {number} index The index to search for in the commands array.
- * @param {string} user The user who activated the command.
- */
-async function runCommand(arguements, index, user) {
-  	let chatMessage = commands[index].message; //The command response
-    //Check the command to see if it has any variables. variableList[i] is set to true if the var exists.
-    variableList[0] = chatMessage.includes("$target");
-    variableList[1] = chatMessage.includes("$user");
-    variableList[2] = chatMessage.includes("$time");
-    variableList[3] = chatMessage.includes("$watchtime");
-    variableList[4] = chatMessage.includes("$cmdcount");
-    variableList[5] = chatMessage.includes("$game");
-    variableList[6] = chatMessage.includes("$advice");
-    variableList[7] = chatMessage.includes("$dadjoke");
-    variableList[8] = chatMessage.includes("$discord");
-    variableList[9] = chatMessage.includes("$guilded");
-    variableList[10] = chatMessage.includes("$instagram");
-    variableList[11] = chatMessage.includes("$youtube");
-    variableList[12] = chatMessage.includes("$twitter");
-    variableList[13] = chatMessage.includes("$catfact");
-    variableList[14] = chatMessage.includes("$dogfact");
-  	//We check if the command has variables against the variable list.
-  	for (let i = 0; i < variableList.length; i++) {
-    	//For every variable we check if it is in the chatMessage
-    	if (variableList[`${i}`] == true && variableList[`${i}`] !== undefined) {
-      		//If the variable is in the string...
-      		console.log(listofvariables[`${i}`] + " is in the command.");
-      		await replaceVariable(listofvariables[`${i}`], arguements, user) //Temporilay replace the variable with its value. Will be reset when finished.
-        	console.log("Replacing " + listofvariables[i] + " with " + variableList[i]);
-        	chatMessage = chatMessage.replaceAll(
-          		`${listofvariables[i]}`, //Replace this (ex. $dadjoke)
-           		variableList[i] // With this (ex. Whats brown and sticky? A stick!)
-        	); //Replace the variable with its value in the chatmessage.
-        	variableList[i] = false; //Reset its value on the variable list.
-      	}
-    }
-    console.log(chatMessage + " is the final message");
-    ChatMessages.filterMessage(chatMessage, "glimboi"); // Sends the message to the chat.
-    addCommandCount(arguements[0]); // Increments the command uses by one.
-    if (commands[index].sound !== undefined && commands[index].sound !== "null" && commands[index].sound !== null) {
-        let sound = OBSHandle.getMediaByName(commands[index].sound)
-        if (sound !== null && sound.type.startsWith("audio")) {
-            OBSHandle.playSound(sound);
-        }
-    }
-    if (commands[index].media !== undefined && commands[index].media !== "null" && commands[index].media !== null) {
-        let media = OBSHandle.getMediaByName(commands[index].media);
-        if (media !== null) {
-            if (media.type.startsWith("image")) {
-                OBSHandle.displayImage(media)
-            } else if (media.type.startsWith("video")) {
-                OBSHandle.playVideo(media)
-            }
-        }
-    }
-    startCD = new Date(); // We save the time, use to determine if enough time has passed (cooldowns)
-}
-
-
-/**
- *
- * @param {string} variable The command variable ex $user, $dadjoke, $target,etc
- * @param {array} arguements An array of each word in the chat message
- * @param {object} user The user who activated the command
- */
-async function replaceVariable(variable, arguements, user) {
-  	//Checks the variablelist and replaces it with its new value.
-  	switch (variable) {
-    	case "$target": //The first word after the command
-      		variableList[0] = arguements[1];
-      	break;
-    	case "$user": //The user who said the message.
-     		variableList[1] = user.username
-      	break;
-    	case "$time": //Current time
-      		variableList[2] = getTime();
-      	break;
-    	case "$watchtime":
-      		let watchTime = await UserHandle.findByUserName(user.username)
-      		if (watchTime == "ADDUSER") {
-                  let newUser = await UserHandle.addUser(user.username, false);
-                  if (newUser !== "INVALIDUSER") {
-                    variableList[3] = newUser.watchTime;
-                  } else {
-                      variableList[3] = "No user found."
-                  }
-              } else {
-      			variableList[3] = watchTime.watchTime
-      		}
-      	break;
-    	case "$cmdcount":
-      		let count = await findCommand(arguements[0])
-      		variableList[4] = count.uses
-      	break;
-    	case "$game":
-      		user = await ApiHandle.getUserID(user.username)
-      		variableList[5] = user
-      	break;
-    	case "$advice":
-      		let advice = await ApiHandle.getAdvice().catch(reason => variableList[6] = 'Advice Error');
-      		variableList[6] = advice
-      	break;
-    	case "$dadjoke":
-      		let joke = await ApiHandle.getDadJoke().catch(reason => variableList[7] = 'Joke Error');
-      		variableList[7] = joke
-      	break;
-    	case "$discord":
-      		let discord = await ApiHandle.getSocials("socialDiscord", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Discord Error');
-      		variableList[8] = "https://discord.gg/" + discord
-      	break;
-    	case "$guilded":
-      		let guilded = await ApiHandle.getSocials("socialGuilded", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Guilded Error');
-      		variableList[9] = "https://guilded.gg/" + guilded
-      	break;
-    	case "$instagram":
-      		let instagram = await ApiHandle.getSocials("socialInstagram", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Instagram Error');
-      		variableList[10] = "https://instagram.com/" + instagram
-      	break;
-    	case "$youtube":
-      		let youtube = await ApiHandle.getSocials("socialYoutube", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Youtube Error');
-      		variableList[11] = "https://youtube.com/" + youtube
-      	break;
-    	case "$twitter":
-      		let twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => variableList[8] = 'Twitter Error');
-      		variableList[12] = "https://twitter.com/" + twitter
-      	break;
-        case "$catfact":
-            let catFact = await ApiHandle.randomCatFact();
-            variableList[13] = catFact
-        break;
-        case "$dogfact":
-            let dogFact = await ApiHandle.randomDogFact();
-            variableList[14] = dogFact
-        break;
-    	default:
-      	break;
-  	}
-}
-
-
-/**
  * @async
  * Returns every command in the database. Also loads the repeat commands.
  */
@@ -495,6 +234,7 @@ function loadRepeats(command) {
   	let repeatCount = 0; //Counter of repeatable commands
   	for (let i = 0; i < command.length; i++) {
     	if (command[i] !== undefined && command[i].repeat == true) {
+            command[i].cooldown = 0;
       		repeatableArray.push(command[i]) // adds it to the array
       		repeatCount++ // adds 1 to the counter
     	}
@@ -507,24 +247,14 @@ function loadRepeats(command) {
  * Loads a random repeatable command and activates it.
  */
 function randomRepeatCommand() {
-  	let index = Math.floor(Math.random()*repeatableArray.length)
-  	console.log(repeatableArray[index]);
-  	if (repeatableArray[index] !== undefined) {
-  		console.log(repeatableArray[index].message);
-  		//checkCommand({message: `!${repeatableArray[index].commandName}`, user: "GlimBoi"})
-  		ChatMessages.filterMessage(`${repeatableArray[index].message}`, "glimboi")
-  		ChatStats.resetUserMessageCounter()
-  	}
+    let index = Math.floor(Math.random()*repeatableArray.length)
+    console.log(repeatableArray[index]);
+    if (repeatableArray[index] !== undefined) {
+        CommandRunner.runCommand({message: "!repeat", command: repeatableArray[index], user: ApiHandle.getStreamerName()})
+        ChatStats.resetUserMessageCounter()
+    }
 }
 
-/**
- * Command creation time.
- * @returns The time
- */
-function getTime() {
-  	let theTime = new Date().toTimeString();
-  	return theTime;
-}
 
 /**
  * Increments the command uses by one. Updates the commands upon completion.
@@ -532,7 +262,6 @@ function getTime() {
  */
 function addCommandCount(command) {
   	commandsDB.update({ commandName: command }, { $inc: { uses: 1 } }, {}, function (err, numReplaced) {
-    	console.log("Updating uses of " + command);
     	err ? console.log(err) : null; // if error log it
     	for (let index = 0; index < commands.length; index++) {
       		if (command == commands[index].commandName) {
@@ -544,19 +273,10 @@ function addCommandCount(command) {
 }
 
 /**
- * Sets the cooldown timer.
- * @param {number} cd How many seconds should the cooldown be?
- */
-function cooldownChange(cd) {
-  	cooldown = cd*1000;
-  	console.log("Command cooldown is " + cooldown)
-}
-
-/**
  * Explains how to use commands in chat.
  */
 function info() {
   	ChatMessages.filterMessage("placeholder", "glimboi")
 }
 
-module.exports = { addCommand, addCommandFilter, checkCommand, cooldownChange, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
+module.exports = { addCommand, addCommandCount, addCommandFilter, ChatAction, CommandRunner, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.

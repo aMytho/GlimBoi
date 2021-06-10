@@ -96,6 +96,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
       		} else {
         		//Its probably a chat message
         		try {
+                    console.log(chatMessage[4], chatMessage)
           			if (chatMessage[4].result.data !== undefined) {
             			let userChat = chatMessage[4].result.data.chatMessage.user.username;
             			let messageChat = chatMessage[4].result.data.chatMessage.message;
@@ -106,7 +107,6 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
             			});
             			ChatStats.addCurrentUser(userChat)
             			if (messageChat.startsWith("!")) { //If it is a command of some sort...
-              				console.log("Searching for command");
               				let message = messageChat.split(" ")
               				switch (message[0]) {
                 				case "!commands": // Returns a list of all commands
@@ -254,7 +254,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
                                       }
                   				break;
                 				default: //its not a glimboi command, may be a streamer command. We need to check and send the output to chat.
-                  					CommandHandle.checkCommand(chatMessage[4].result.data.chatMessage)
+                  					CommandHandle.CommandRunner.checkCommand(chatMessage[4].result.data.chatMessage)
                   				break;
               				}
             			}

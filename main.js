@@ -32,7 +32,6 @@ ipcMain.on('restart_app', () => {
   	autoUpdater.quitAndInstall();
 });
 
-//console.log(autoUpdater.fullChangelog);
 
 let win; // The main window
 

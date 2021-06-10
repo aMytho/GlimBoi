@@ -145,7 +145,6 @@ function checkForUpdate() {
   	ipcRenderer.send('app_version');
   	ipcRenderer.on('app_version', (event, arg) => {
     	console.log("Recieved app_version with : " + arg.version)
-    	console.log("Removing all listeners for app_version.")
     	version.innerText = 'Version ' + arg.version;
     	if (arg.isDev == true) {
       		isDev = true;

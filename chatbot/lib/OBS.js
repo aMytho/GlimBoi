@@ -1,7 +1,8 @@
 // This file handles all obs actions
 let websocketServer, wss, OBSDB
 let wsController = {}
-let OBSData = []
+let OBSData = [];
+let mediaWait = [];
 
 /**
  * Sets the path to the database
@@ -151,8 +152,10 @@ function getVideos() {
  * @param {object} sound The media to be played
  */
 function playSound(sound) {
+    console.log("attemtping to send audio and stuff", sound)
     try {
-        wss.send(JSON.stringify({action: "soundEffect", data: sound}))
+        wss.send(JSON.stringify({action: "soundEffect", data: sound}));
+        mediaWait.push(sound)
     } catch(e) {
         console.log(e)
     }
@@ -164,7 +167,8 @@ function playSound(sound) {
  */
 function displayImage(image) {
     try {
-        wss.send(JSON.stringify({action: "imageGif", data: image}))
+        wss.send(JSON.stringify({action: "imageGif", data: image}));
+        mediaWait.push(image);
     } catch(e) {
         console.log(e)
     }
@@ -176,7 +180,8 @@ function displayImage(image) {
  */
 function playVideo(video) {
     try {
-        wss.send(JSON.stringify({action: "video", data: video}))
+        wss.send(JSON.stringify({action: "video", data: video}));
+        mediaWait.push(video)
     } catch(e) {
         console.log(e)
     }
@@ -206,8 +211,14 @@ function startServer() {
             }
             ws.on("message", function responseHandler(message) {
                 try {
+                    let parsedMessage = JSON.parse(message);
+                    for (let i = 0; i < mediaWait.length; i++) {
+                        console.log(mediaWait)
+                        if (mediaWait[i].path == parsedMessage.file) {
+                            mediaWait.splice(i);
+                        }
+                    }
                     if (isDev == true) {
-                        let parsedMessage = JSON.parse(message);
                         console.log(parsedMessage);
                     }
                 } catch(e) {console.log(e)}
@@ -232,4 +243,8 @@ function stopServer() {
     wss.removeAllListeners("connection")
 }
 
-module.exports = {addMedia, displayImage, editMedia, getAll, getCurrentMedia, getImages, getMediaByName, getSounds, getVideos, playSong, playSound, playVideo, removeMedia, startServer, stopServer, updatePath}
+function getMediaWait() {
+    return mediaWait
+}
+
+module.exports = {getMediaWait, addMedia, displayImage, editMedia, getAll, getCurrentMedia, getImages, getMediaByName, getSounds, getVideos, playSong, playSound, playVideo, removeMedia, startServer, stopServer, updatePath}

@@ -167,6 +167,11 @@ function commandList() {
       		cmdList.push(data[index].commandName);
     	}
     	let cmdmsg = cmdList.toString();
+        if (cmdmsg.length == 0) {
+            cmdmsg = "This streamer does not yet have any custom commands."
+        } else if (cmdmsg.length > 255) {
+            cmdmsg = "This streamer has so many commands we can't post them all to chat!"
+        }
     	ChatMessages.filterMessage(cmdmsg);
   	});
 }
