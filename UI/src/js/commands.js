@@ -38,7 +38,7 @@ function loadCommandTable() {
                     if (data == undefined || data == null) {
                         let actionString = ""
                         for (let i = 0; i < row.actions.length; i++) {
-                            actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info}`]);
+                            actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info[0].length > 1 && row.actions[i].info[0] || row.actions[i].info}`]);
                             if (row.actions.length -1 !== i) {
                                 actionString = actionString.concat(", ")
                             }
@@ -130,7 +130,11 @@ async function validateSettings(mode) {
     return {commandName: commandName, points: commandPoints, uses: commandUses, cooldown: commandCooldown, rank: commandRank, repeat: commandRepeat};
 }
 
-
+/**
+ * Makes sure the actions are valid
+ * @param {string} mode "add" or "edit" Which mode we are using
+ * @returns
+ */
 function validateActions(mode) {
     let actionsHTML = document.getElementById(`${mode}CommandList`).children;
     let actionsToBeCreated = []
@@ -151,6 +155,12 @@ function validateActions(mode) {
     }
 }
 
+/**
+ * Makes sure the action is alright
+ * @param {HTMLElement} action The action we are checking
+ * @param {string} mode Which mode we are in
+ * @returns
+ */
 function determineActionAndCheck(action, mode) {
     switch (action.firstElementChild.firstElementChild.innerText) {
         case "Chat Message":
@@ -169,8 +179,60 @@ function determineActionAndCheck(action, mode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode)
                 return false
             }
-
-            break;
+        case "API Request (GET)":
+            try {
+                let url = strip(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim())
+                if (url.length == 0) {
+                    throw "You must enter a URL"
+                }
+                let requestType = action.children[1].firstElementChild.children[1].firstElementChild.value
+                let varsToMake = []
+                if (requestType == "text") {
+                    let possibleTextVar = strip(action.children[1].children[1].firstElementChild.firstElementChild.innerText.trim());
+                    if (possibleTextVar.length == 0) {
+                        throw "You must enter a variable to pull the request info from."
+                    }
+                    varsToMake.push({variable: possibleTextVar, data: null});
+                } else {
+                    let jsonList = action.children[1].children[1].children[2].firstElementChild.firstElementChild.children
+                    for (let i = 0; i < jsonList.length; i++) {
+                        if (i == 0) {
+                            continue
+                        }
+                        if (strip(jsonList[i].children[1].firstElementChild.innerText.trim()).length <= 0) {
+                            throw "A JSON Key is not filled in."
+                        }
+                        if (strip(jsonList[i].children[2].firstElementChild.innerText.trim()).length <= 0) {
+                            throw "A variable name is not filled in."
+                        }
+                        varsToMake.push({variable: strip(jsonList[i].children[2].firstElementChild.innerText.trim()), data: strip(jsonList[i].children[1].firstElementChild.innerText.trim())})
+                    }
+                }
+                let headersToMake = [];
+                let headerList = action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children
+                    for (let i = 0; i < headerList.length; i++) {
+                        if (i == 0) {
+                            continue
+                        }
+                        let header = strip(headerList[i].children[1].firstElementChild.innerText.trim());
+                        let value = strip(headerList[i].children[2].firstElementChild.innerText.trim());
+                        if (header && !value) {
+                            throw "A value is not filled in."
+                        } else if (!header && value) {
+                            throw "A header is not filled in."
+                        }
+                        if (header.length == 0 && value.length == 0) {
+                            continue
+                        }
+                        headersToMake.push([header, value])
+                    }
+                resetMessageCommandModal(action.firstElementChild, mode);
+                return {type: "ApiRequestGet", url: url, headers: headersToMake, returns: varsToMake}
+            } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode)
+                return false
+            }
         case "Audio":
             try {
                 let possibleAudio = action.children[1].firstElementChild.firstElementChild.firstElementChild.value
@@ -249,15 +311,16 @@ function determineActionAndCheck(action, mode) {
 function checkRemoveCommand() {
   	var commandToBeRemoved = $("#commandRemoveInput").val().toLowerCase()
   	commandToBeRemoved = commandToBeRemoved.replace(new RegExp("^[\!]+"), "").trim();
+    var removeCommandMessageError = document.getElementById("removeCommandMessage")
 
   	try {
     	CommandHandle.findCommand(commandToBeRemoved).then(data => {
       		if (data !== null) {
         		console.log("The command " + commandToBeRemoved + " will now be removed from the table");
+                removeCommandMessageError.innerHTML = "Command Removed";
         		removeCommandFromTable(commandToBeRemoved)
         		CommandHandle.removeCommand(commandToBeRemoved);
       		} else {
-        		var removeCommandMessageError = document.getElementById("removeCommandMessage")
         		removeCommandMessageError.innerHTML = "This command does not exist.";
         		setTimeout(() => {
           			removeCommandMessageError.innerHTML = ""
@@ -266,7 +329,6 @@ function checkRemoveCommand() {
     	})
   	} catch (e) {
     	console.log(e);
-    	var removeCommandMessageError = document.getElementById("removeCommandMessage")
     	removeCommandMessageError.innerHTML = "This command does not exist.";
     	setTimeout(() => {
       		removeCommandMessageError.innerHTML = ""
@@ -332,18 +394,15 @@ function moveAction(element, direction) {
 function commandModalPrep() {
     const CommandUI = require(`${appData[0]}/UI/src/js/commands/modalManager.js`)
   	$('#modalCart').on('show.bs.modal', function (e) {
-        console.log("Preparing add command modal");
         if (e.relatedTarget) {
             CommandUI.loadModalAdd();
         }
   	});
   	$('#modalEditCommand').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting edit add modal.");
     	document.getElementById("editModal").innerHTML = editCommandReset();
     	document.getElementById("errorMessageEdit").innerHTML = "";
   	});
   	$('#modalDelete').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting command remove modal.");
     	document.getElementById("removeModal").innerHTML = removeCommandReset();
     	document.getElementById("errorMessageDelete").innerHTML = "";
   	});
@@ -377,7 +436,7 @@ function removeCommandFromTable(command) {
                 return table.row(value).data().commandName == command;
             });
         table.rows(filteredData).remove().draw();
-    } catch (e) { }
+    } catch (e) {}
 }
 
 // Highlights the part that has the error
