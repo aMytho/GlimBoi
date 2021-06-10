@@ -96,6 +96,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
       		} else {
         		//Its probably a chat message
         		try {
+                    console.log(chatMessage[4], chatMessage)
           			if (chatMessage[4].result.data !== undefined) {
             			let userChat = chatMessage[4].result.data.chatMessage.user.username;
             			let messageChat = chatMessage[4].result.data.chatMessage.message;

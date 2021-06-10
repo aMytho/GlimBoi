@@ -100,7 +100,7 @@ $(document).on('click', '#chatConnections button', function (event) {
     	}
 
     	$(listing).remove();
-    	ChatHandle.removeRecentChannelByID(channelid); // Remove from DB
+    	ChatChannels.removeRecentChannelByID(channelid); // Remove from DB
   	} else if (ChatHandle.isConnected()) {
     	// Always disconnect unless we're deleting
     	currentChatConnected = null;

@@ -363,42 +363,18 @@ async function getSocials(social, channel) {
   	return socialLink;
 }
 
-function randomCatFact() {
-    let catFact = new Promise(resolve => {
-    	fetch("https://some-random-api.ml/facts/cat", { method: "GET" })
-      	.then((res) => {
-        	res.json().then((data) => {
-          		try {
-              		resolve(data.fact);
-          		} catch (e) {
-            		resolve(null);
-          		}
-        	});
-      	})
-      	.catch((err) => console.error(err));
-  	});
-  	return catFact;
-}
-
-function randomDogFact() {
-    let dogFact = new Promise(resolve => {
-    	fetch("https://some-random-api.ml/facts/dog", { method: "GET" })
-      	.then((res) => {
-        	res.json().then((data) => {
-          		try {
-              		resolve(data.fact);
-          		} catch (e) {
-            		resolve(null);
-          		}
-        	});
-      	})
-      	.catch((err) => console.error(err));
-  	});
-  	return dogFact;
+async function randomAnimalFact(animal) {
+    try {
+        let animalFactData = await fetch(`https://some-random-api.ml/facts/${animal}`, { method: "GET" })
+        let animalFact = await animalFactData.json();
+        return animalFact.fact
+    } catch(e) {
+        return null
+    }
 }
 
 function getStreamerName() {
     return streamer;
 }
 
-module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getUserID,  randomCatFact, randomDogFact, timeoutUser, unBanUser, updateID, updatePath};
+module.exports = { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getUserID, randomAnimalFact, timeoutUser, unBanUser, updateID, updatePath};

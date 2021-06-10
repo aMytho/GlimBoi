@@ -30,12 +30,12 @@ function prepareActions(mode) {
         });
         // Now we add the actions to the settings. We send the settings to be added as a new command. Command complete!
         commandSettings.actions = commandActions;
+        console.log(commandSettings)
         if (mode == "add") {
             CommandHandle.addCommand(commandSettings);
             addCommandTable(commandSettings);
             $("#modalCart").modal("hide");
         } else {
-            console.log(commandSettings);
             console.info("Command Edit Finished");
             CommandHandle.editCommand(commandSettings);
             editCommandTable(commandSettings);
@@ -58,6 +58,7 @@ function prepareActions(mode) {
         }
     }
     document.getElementById("CreateChatMessage").onclick = () => addActionToUI("ChatMessage", mode);
+    document.getElementById("CreateApiRequestGet").onclick = () => addActionToUI("ApiRequestGet", mode);
     document.getElementById("CreateAudio").onclick = () => addActionToUI("Audio", mode);
     document.getElementById("CreateImageGif").onclick = () => addActionToUI("ImageGif", mode);
     document.getElementById("CreateVideo").onclick = () => addActionToUI("Video", mode);
@@ -118,7 +119,10 @@ function loadModalEdit(command) {
  */
 async function addActionToUI(action, mode, data) {
     switch (action) {
-        case "ChatMessage": await ActionCreator.buildChatMessageUI(mode, data)
+        case "ChatMessage": await ActionCreator.buildChatMessageUI(mode, data);
+            break;
+
+        case "ApiRequestGet": await ActionCreator.buildApiRequestGetUI(mode, data);
             break;
 
         case "Audio": await ActionCreator.buildAudioUI(mode, data);
@@ -148,7 +152,6 @@ async function insertEditData(command) {
     document.getElementById("editCommandUses").value = command.uses
 
     // Sets the cooldown if any
-    console.log(command.cooldown)
     if (command.cooldown == undefined) {
         document.getElementById("editCommandCooldown").value = 0
     } else {
@@ -183,6 +186,8 @@ async function insertEditData(command) {
         for (let i = 0; i < command.actions.length; i++) {
             switch (command.actions[i].action) {
                 case "ChatMessage": await ActionCreator.buildChatMessageUI("edit", {message: command.actions[i].message})
+                break;
+                case "ApiRequestGet": await ActionCreator.buildApiRequestGetUI("edit", {url: command.actions[i].url, returns: command.actions[i].returns, headers: command.actions[i].headers});
                 break;
                 case "Audio": await ActionCreator.buildAudioUI("edit", {source: command.actions[i].source})
                 break;
