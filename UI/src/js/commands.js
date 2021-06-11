@@ -84,13 +84,13 @@ async function validateSettings(mode) {
         errorMessageCommandModal("You must enter a command name", document.getElementById(`${mode}CommandName`), mode);
         return;
     } // Check to see if they are adding a command that already exists.
-    await CommandHandle.findCommand(commandName).then((data) => {
-        if (data !== null && mode !== "edit") {
-            console.log("The command " + commandName + " already exists");
-            errorMessageCommandModal("The command name already exists", document.getElementById(`${mode}CommandName`), mode)
-            return;
-        }
-    });
+    let commandExists = await CommandHandle.findCommand(commandName);
+    if (commandExists !== null && mode !== "edit") {
+        console.log("The command " + commandName + " already exists");
+        errorMessageCommandModal("The command name already exists", document.getElementById(`${mode}CommandName`), mode)
+        return;
+    }
+
 
     resetMessageCommandModal(document.getElementById(`${mode}CommandName`), mode);
 
