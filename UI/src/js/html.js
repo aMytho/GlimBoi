@@ -199,13 +199,13 @@ function setModalEditButtons() {
    	editUserTable(
       	tempUser,
       	$("#userEditRankChoice").val(),
-      	document.getElementById('editUserPoints').innerHTML
+      	strip(document.getElementById('editUserPoints').innerHTML).trim()
     ),
     $('#modalUserEdit').modal('hide'),
     UserHandle.editUser(
       	tempUser.toLowerCase(),
         $("#userEditRankChoice").val(),
-      	document.getElementById('editUserPoints').innerHTML
+      	strip(document.getElementById('editUserPoints').innerHTML).trim()
     )`
 }
 

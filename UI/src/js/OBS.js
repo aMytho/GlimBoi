@@ -27,6 +27,11 @@ function loadOBSData() {
       		],
             iDisplayLength: 25
     	});
+        $('#obsResources tbody').on('click', 'tr', async function () {
+            var data = OBSTable.row( this ).data();
+            editMedia(data.name);
+            $('#editMediaModal').modal("show");
+        } );
   	});
 }
 

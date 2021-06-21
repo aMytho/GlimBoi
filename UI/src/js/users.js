@@ -394,8 +394,13 @@ function loadUserTable() {
             	return data;
          	}
   		}],
-        iDisplayLength: 25
+        iDisplayLength: 25,
   	});
+      $('#userTable tbody').on('click', 'tr', async function () {
+        var data = userTable.row( this ).data();
+        $('#modalUserEdit').modal("show");
+        userSearch(data.userName)
+    } );
 }
 
 //adds it to the table
