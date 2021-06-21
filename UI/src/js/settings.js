@@ -3,6 +3,8 @@ ApiHandle.updateID(); // Gives the api file auth information
 const fs = require("fs");
 const DumbCacheStore = require(appData[0] + "/chatbot/lib/cache.js");
 const CacheStore = new DumbCacheStore;
+const LogHandle = require(appData[0] + "/chatbot/lib/log.js");
+LogHandle.updatePath(appData[1]);
 
 let settings = {}
 let updatedSettings = {

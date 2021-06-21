@@ -2,14 +2,15 @@
 
 /**
  * Adds a user from Glimesh chat.
- * @param {string} user The user who will be added
+ * @param {string} user The user who is adding the new user
+ * @param {string} newUser The user who will be added
  */
 async function addUserChat(user, newUser) {
     let hasPermission = await RankHandle.rankController(user, "canAddUsers", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to do this action.")
     } else {
-        let userAdded = await UserHandle.addUser(newUser, false)
+        let userAdded = await UserHandle.addUser(newUser, false, user)
         if (userAdded == "USEREXISTS") {
             ChatMessages.glimboiMessage("That user is already added to GlimBoi.")
         } else if (userAdded == "INVALIDUSER") {
@@ -22,21 +23,22 @@ async function addUserChat(user, newUser) {
 
 /**
  * Removes a user from chat
- * @param {string} user User to be removed
+ * @param {string} user The user that is removing another user
+ * @param {string} delUser The user that is being removed
  */
 async function delUserChat(user, delUser) {
     let hasPermission = await RankHandle.rankController(user, "canRemoveUsers", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to delete users.");
     } else if (hasPermission == null) {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, user);
         if (newUser !== "INVALIDUSER") { delUserChat(newUser.userName, delUser) }
     } else {
         let exists = await UserHandle.findByUserName(delUser);
         if (exists == "ADDUSER") {
             ChatMessages.glimboiMessage("No user was found with that name in GlimBoi.")
         } else {
-            let deletedUser = await UserHandle.removeUser(delUser);
+            let deletedUser = await UserHandle.removeUser(delUser, user);
             ChatMessages.glimboiMessage("User removed!");
             removeUserFromTable(deletedUser);
         }
@@ -67,7 +69,7 @@ async function addQuoteChat(user, data, creator) {
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to add quotes.")
     } else if (hasPermission == null) {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, creator);
         if (newUser !== "INVALIDUSER") { addQuoteChat(newUser.userName, data, creator)}
     } else {
         console.log(creator, data.message);
@@ -92,7 +94,7 @@ async function delQuoteChat(user, creator, id) {
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to delete quotes.");
     } else if (hasPermission == null) {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, creator);
         if (newUser !== "INVALIDUSER") { delQuoteChat(newUser.userName, creator, id)}
     } else {
         console.log(creator, id);
@@ -124,7 +126,7 @@ async function removeCommand(user, command) {
         if (commandRemoved == false) {
             ChatMessages.filterMessage("You do not have the sufficient rank to delete commands.", 'glimboi');
         } else if (commandRemoved == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { removeCommand(newUser.userName, command)}
         } else {
             CommandHandle.removeCommand(command);
@@ -149,7 +151,7 @@ async function addCommand(user, command, commandData, type) {
     if (hasPermission == false) {
         ChatMessages.filterMessage("You do not have the sufficient rank to add commands.", 'glimboi');
     } else if (hasPermission == null) {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, user);
         if (newUser !== "INVALIDUSER") { addCommand(newUser.userName, command, commandData, type)}
     } else {
         CommandHandle.addCommandFilter(command, commandData, type)
@@ -183,7 +185,7 @@ function commandList() {
 async function getRank(user) {
     let rank = await UserHandle.findByUserName(user);
     if (rank == "ADDUSER") {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, user);
         if (newUser !== "INVALIDUSER") { getRank(newUser.userName) }
     } else {
     ChatMessages.filterMessage(`${user} has the rank of ${rank.role}`, "glimboi");
@@ -205,7 +207,7 @@ function checkAmount(amount) {
 
 /**
  * Adds points if the rank has permission
- * @param {string} user The user who activated the command
+ * @param {string} user The user who is adding points
  * @param {user} target The target user who will be affected
  * @param {number} count The amount of points to add
  */
@@ -216,7 +218,7 @@ async function addPointsChat(user, target, count) {
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot add points.", "glimboi");
         } else if (hasPerms == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { addPointsChat(newUser.userName, target, count) }
         } else {
             if (checkAmount(count) == true) {
@@ -225,7 +227,7 @@ async function addPointsChat(user, target, count) {
                     UserHandle.addPoints(target, Math.round(Number(count)));
                     ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
                 } else {
-                    let userAdded = await UserHandle.addUser(target, false);
+                    let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         ChatMessages.filterMessage(target + " has been added to glimboi.");
                         UserHandle.addPoints(target, Math.round(Number(count)));
@@ -256,7 +258,7 @@ async function removePointsChat(user, target, count) {
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot remove points.", "glimboi");
         } else if (hasPerms == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { removePointsChat(newUser.userName, target, count) }
         } else {
             if (checkAmount(count) == true) {
@@ -270,7 +272,7 @@ async function removePointsChat(user, target, count) {
                         ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
                     }
                 } else {
-                    let userAdded = await UserHandle.addUser(target, false);
+                    let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         if ((userAdded.points - Math.round(Number(count))) < 0) {
                             UserHandle.editUserPoints(target, 0);
@@ -305,7 +307,7 @@ async function editPointsChat(user, target, count) {
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot edit points.", "glimboi");
         } else if (hasPerms == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { editPointsChat(newUser.userName, target, count) }
         } else {
             if (checkAmount(count) == true) {
@@ -314,7 +316,7 @@ async function editPointsChat(user, target, count) {
                     UserHandle.editUserPoints(target, Math.round(Number(count)));
                     ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
                 } else {
-                    let userAdded = await UserHandle.addUser(target, false);
+                    let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         ChatMessages.filterMessage(target + " has been added to glimboi.");
                         UserHandle.editUserPoints(target, Math.round(Number(count)));
@@ -334,16 +336,17 @@ async function editPointsChat(user, target, count) {
 
 /**
  * Returns the amount of points a user has (other than self)
+ * @param {string} user The user who is requesting points
  * @param {string} target The user who you are getting the points for
  */
-async function getPointsChat(target) {
+async function getPointsChat(user, target) {
     if (target !== undefined) {
         target = target.toLowerCase();
         let targetExists = await UserHandle.findByUserName(target);
         if (targetExists !== "ADDUSER") {
             ChatMessages.filterMessage(target + " has " + targetExists.points + " " + settings.Points.name, "glimboi");
         } else {
-            let newUser = await UserHandle.addUser(target, false);
+            let newUser = await UserHandle.addUser(target, false, user);
             if (newUser !== "INVALIDUSER") { getPointsChat(newUser.userName) } else {
                 ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly and the user exists in glimboi.", "glimboi");
             }
@@ -364,7 +367,7 @@ async function getPointsChat(target) {
         if (userExists !== "ADDUSER") {
             ChatMessages.filterMessage(userExists.userName + " has " + userExists.points + " " + settings.Points.name, "Glimboi");
         } else {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") {
                 ChatMessages.filterMessage(newUser.userName + " has " + newUser.points + " " + settings.Points.name, "Glimboi");
             } else {
@@ -434,7 +437,7 @@ async function nextSong(user, action) {
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
         } else if (hasPerms == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { nextSong(newUser.userName, action) }
         } else {
             if (musicPlaylist[currentSongIndex]) {
@@ -467,7 +470,7 @@ async function previousSong(user, action) {
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
         } else if (hasPerms == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { previousSong(newUser.userName, action) }
         } else {
             if (musicPlaylist[currentSongIndex]) {
@@ -498,7 +501,7 @@ async function replaySong(user) {
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
         } else if (hasPerms == null) {
-            let newUser = await UserHandle.addUser(user, false);
+            let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") { replaySong(newUser.userName) }
         } else {
             if (musicPlaylist[currentSongIndex]) {
@@ -519,7 +522,7 @@ async function toggleShuffle(user) {
     if (hasPerms == false) {
         ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
     } else if (hasPerms == null) {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, user);
         if (newUser !== "INVALIDUSER") { toggleShuffle(newUser.userName) }
     } else {
         if (musicPlaylist[currentSongIndex]) {
@@ -540,7 +543,7 @@ async function toggleShuffle(user) {
     if (hasPerms == false) {
         ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
     } else if (hasPerms == null) {
-        let newUser = await UserHandle.addUser(user, false);
+        let newUser = await UserHandle.addUser(user, false, user);
         if (newUser !== "INVALIDUSER") { playPause(newUser.userName, action) }
     } else {
         if (musicPlaylist[currentSongIndex]) {

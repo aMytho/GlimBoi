@@ -26,41 +26,42 @@ class User {
 
 /**
  * Adds a user to GlimBoi
- * @param {string} user The name of the user
+ * @param {string} user The name of the user to be created
  * @param {boolean} inModal Is the user added from the GUI?
+ * @param {string} createdBy The user who created the new user
  * @returns If successful returns the user.
  * @returns If the user doesn't exist on GLimesh returns code INVALIDUSER
  * @returns If the exists returns USEREXISTS
  */
-async function addUser(user, inModal) {
-  	let newUser = await new Promise(done => {
-    	usersDB.find({ userName: user }, function (err, docs) {
-      		if (docs.length == 0) {
-        		console.log("No user was found with the name " + user);
-        		ApiHandle.getUserID(user).then(ID => {
-          			if (isNaN(ID) == true || ID == null || typeof ID == Object) {
-            			console.log(ID);
-            			done("INVALIDUSER")
-          			} else {
-            			let tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
-            			usersDB.insert(tempUser, function (err, doc) {
-              				console.log(doc);
-              				users.push(tempUser)
-              				console.log("User created!");
-              				if (inModal == false) {
-                				syncUsers(doc, "add")
-              				}
-              				done(doc)
-            			});
-          			}
-        		})
-      		} else {
-        		console.log(user + " already exists in the database.")
-        		done("USEREXISTS")
-      		}
-    	})
-  	})
-  	return newUser
+async function addUser(user, inModal, createdBy = "Glimboi") {
+    let newUser = await new Promise(done => {
+        usersDB.find({ userName: user }, async function (err, docs) {
+            if (docs.length == 0) {
+                console.log("No user was found with the name " + user);
+                let ID = await ApiHandle.getUserID(user)
+                if (isNaN(ID) == true || ID == null || typeof ID == Object) {
+                    console.log(ID);
+                    done("INVALIDUSER")
+                } else {
+                    let tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
+                    usersDB.insert(tempUser, function (err, doc) {
+                        console.log(doc);
+                        console.log("User created!");
+                        users.push(tempUser);
+                        LogHandle.logEvent({ event: "Add User", users: [createdBy, tempUser.userName] });
+                        if (inModal == false) {
+                            syncUsers(doc, "add")
+                        }
+                        done(doc)
+                    });
+                }
+            } else {
+                console.log(user + " already exists in the database.")
+                done("USEREXISTS")
+            }
+        })
+    })
+    return newUser
 };
 
 /**
@@ -113,9 +114,11 @@ function getCurrentUsers() {
 /**
  * Removes a user
  * @param {string} user The user you are removing.
+ * @param {boolean} inModal Was this done from the GUI?
+ * @param {string} userWhoRemoves The user who removed the abt to be deleted user.
  * @returns {array} The user that was removed
  */
-async function removeUser(user, inModal) {
+async function removeUser(user, inModal, userWhoRemoves = "Glimboi") {
  	user = user.toLowerCase()
  	return new Promise(resolve => {
   		usersDB.remove({ userName: user }, {}, function (err, numRemoved) {
@@ -123,6 +126,7 @@ async function removeUser(user, inModal) {
     		for (let index = 0; index < users.length; index++) {
       			if (user == users[index].userName) {
         			users.splice(index, 1);
+                    LogHandle.logEvent({ event: "Remove User", users: [userWhoRemoves, user] });
         			if (inModal == false) {
           				syncUsers(user, "remove")
         			}
@@ -208,12 +212,13 @@ async function getTopPoints() {
  * @param {number} points The points they will have
  * @returns {promise}
  */
-async function editUser(userName, role, points) {
+async function editUser(userName, role, points, editor = "Glimboi") {
   	return new Promise(resolve => {
     	console.log(userName, role, points)
     	usersDB.update({ userName: userName }, { $set: { role: role, points: Number(points) } }, {returnUpdatedDocs: true}, function (err, numReplaced, affectedDocuments) {
       		console.log("Edited " + userName);
       		console.log(affectedDocuments);
+            LogHandle.logEvent({ event: "Edit User", users: [editor, userName], data: [role, points] });
             for (let i = 0; i < users.length; i++) {
                 if (userName == users[i].userName) {
                     users[i].role = role

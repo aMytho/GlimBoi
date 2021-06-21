@@ -175,7 +175,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
                                     case "set":
                                     case "=": ChatActions.editPointsChat(userChat, message[2], message[3])
                                     break;
-                                    case "get": ChatActions.getPointsChat(message[2])
+                                    case "get": ChatActions.getPointsChat(userChat, message[2])
                                     break;
                                     case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
                                     break;
