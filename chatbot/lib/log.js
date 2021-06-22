@@ -51,14 +51,6 @@ class LoggingEvent {
                 return `${this.time}: ${caused} set ${data[0]} ${data[0]}s to ${affected[0]}`
             case "Remove Points":
                 return `${this.time}: ${caused} removed ${data[0]} ${data[0]}s to ${affected[0]}`
-            case "Remove User":
-                return `${this.time}: ${caused} removed ${affected[0]} from the user list.`
-            case "Remove User":
-                return `${this.time}: ${caused} removed ${affected[0]} from the user list.`
-            case "Remove User":
-                return `${this.time}: ${caused} removed ${affected[0]} from the user list.`
-            case "Remove User":
-                return `${this.time}: ${caused} removed ${affected[0]} from the user list.`
             default:
                 return "No event was sent to the Log Handler."
         }
