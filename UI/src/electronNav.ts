@@ -1,31 +1,29 @@
 //handles sending users to different to parts of the app
-let {
-  	shell, ipcRenderer
-} = require("electron");
-const Datastore = require('nedb')
+import {shell, ipcRenderer} from "electron";
+import Datastore from 'nedb'
 let appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 
 var globalChatMessages = [];
 
-function changeNavHighlight(highlight) { //Removes the old and highlights the new
+function changeNavHighlight(highlight:string) { //Removes the old and highlights the new
   	try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
-  	document.getElementById(highlight).classList.add("active");
+  	document.getElementById(highlight)!.classList.add("active");
 }
 
 window.onload = function() {
-  	document.getElementById("close").addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("close")!.addEventListener("click", function(e) { //Closes the App.
     	ipcRenderer.send("pleaseClose");
   	});
 
-  	document.getElementById("maximize").addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("maximize")!.addEventListener("click", function(e) { //Closes the App.
     	ipcRenderer.send("pleaseMaximize");
   	});
 
-  	document.getElementById("minimize").addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("minimize")!.addEventListener("click", function(e) { //Closes the App.
     	ipcRenderer.send("pleaseMinimize");
   	});
 
-  	document.getElementById("refresh").addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("refresh")!.addEventListener("click", function(e) { //Closes the App.
     	ipcRenderer.send("pleaseRefresh");
   	});
 
@@ -104,22 +102,22 @@ $(document).on('keypress','input, textarea', function (event) {
 $('[data-toggle=tooltip]').tooltip();
 
 //Opens a link in the users default browser.
-function loadLink(link) {
+function loadLink(link:string) {
   	shell.openExternal("https://" + link)
 }
 
 
 // Shows an error message to the user in the form of a modal.
-function errorMessage(errorType, errorMessage) {
-  	document.getElementById("errorMessageText").innerHTML = errorType;
-  	document.getElementById("errorMessageSolution").innerHTML = errorMessage;
+function errorMessage(errorType:string, errorMessage:string) {
+  	document.getElementById("errorMessageText")!.innerHTML = errorType;
+  	document.getElementById("errorMessageSolution")!.innerHTML = errorMessage;
   	$('#modalError').modal("show")
 }
 
 
 // Shows a success message to the user in the form of a modal.
-function successMessage(messageType, message) {
-  	document.getElementById("successMessageText").innerHTML = messageType;
-  	document.getElementById("successMessageSolution").innerHTML = message;
+function successMessage(messageType:string, message:string) {
+  	document.getElementById("successMessageText")!.innerHTML = messageType;
+  	document.getElementById("successMessageSolution")!.innerHTML = message;
   	$('#modalSuccess').modal("show");
 }

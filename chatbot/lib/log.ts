@@ -1,13 +1,18 @@
 // This file handles the glimboi logging system. This is separate from chat logging (message oonly)
 
-let loggingDB;
-let path = "./";
+let loggingDB:Nedb;
+let logPath = "./";
 
 /**
  * Logging Event. Any non message event
  */
-class LoggingEvent {
-    constructor({event, users, data = null}) {
+class LoggingEvent implements LogType {
+    event: string;
+    caused: string
+    affected: string[];
+    time: Date;
+    description: string
+    constructor({event, users, data = null}:LogConstructor) {
         this.event = event;
         this.caused = users[0];
         this.affected = this.handleUsers(users);
@@ -20,7 +25,7 @@ class LoggingEvent {
      * @param {array} users
      * @returns
      */
-    handleUsers(users) {
+    handleUsers(users:string[]) {
         let userData = [];
         users.splice(0, 1);
         for (let i = 0; i < users.length; i++) {
@@ -37,7 +42,7 @@ class LoggingEvent {
      * @param {array} data The data about the event. Null if none
      * @returns {string}
      */
-    determineDescription(event, caused, affected, data) {
+    determineDescription(event:string, caused:string, affected:string[], data:any) {
         switch (event) {
             case "Add User":
                 return `${this.time}: ${caused} added ${affected[0]} to the user list.`;
@@ -68,8 +73,8 @@ class LoggingEvent {
 /**
  * Updates the path to the DB. The path variable is updated
  */
- function updatePath(GUI) {
-    path = GUI;
+ function updatePath(path:string) {
+    logPath = path
     loggingDB = new Datastore({ filename: `${path}/data/logging.db`, autoload: true });
 }
 
@@ -88,19 +93,19 @@ function logEvent(data) {
 }
 
 function getRecentLogs() {
-    loggingDB.find({}, function (err, doc) {
+    loggingDB.find({}, function (err: Error | null, doc) {
         console.log("Event logged", + newEvent)
   });
 }
 
 function getLogByType(log) {
-    loggingDB.find({event: log}, function (err, doc) {
+    loggingDB.find({event: log}, function (err: Error | null, doc) {
         console.log("Event logged", + newEvent)
   });
 }
 
-function getLogByID(id) {
-    loggingDB.find({event: log}, function (err, doc) {
+function getLogByID(id:string) {
+    loggingDB.find({event: log}, function (err: Error | null, doc) {
         console.log("Event logged", + newEvent)
   });
 }

@@ -376,19 +376,19 @@ function checkEditCommand() {
  * Removes any HTML/CSS that is invisible to the user.
  * @param {string} html All the command data
  */
-function strip(html) {
+function strip(html:string) {
   	let doc = new DOMParser().parseFromString(html, 'text/html');
   	return doc.body.textContent || "";
 }
 
-function moveAction(element, direction) {
+function moveAction(element:HTMLElement, direction: "up" | "down") {
     if (direction == "up") {
         if (element.previousElementSibling) {
-            element.parentNode.insertBefore(element, element.previousElementSibling)
+            element.parentNode!.insertBefore(element, element.previousElementSibling)
         }
     } else {
         if (element.nextElementSibling) {
-            element.parentNode.insertBefore(element.nextElementSibling, element)
+            element.parentNode!.insertBefore(element.nextElementSibling, element)
         }
     }
 }
@@ -445,13 +445,13 @@ function removeCommandFromTable(command) {
 }
 
 // Highlights the part that has the error
-function errorMessageCommandModal(message, errLocation, mode) {
+function errorMessageCommandModal(message:string, errLocation:HTMLElement, mode:"add" | "edit") {
     try {
         var cmdErrorMessage = document.createElement("li");
         cmdErrorMessage.innerHTML = message;
-        document.getElementById(`${mode}CommandErrors`).appendChild(cmdErrorMessage);
+        document.getElementById(`${mode}CommandErrors`)!.appendChild(cmdErrorMessage);
         var partWithError = errLocation.parentElement;
-        partWithError.classList.add("errorClass");
+        partWithError!.classList.add("errorClass");
         console.log("Command is not valid.");
     } catch (e) {
         console.log("error displaying source of error, probably fine")
@@ -459,10 +459,10 @@ function errorMessageCommandModal(message, errLocation, mode) {
 }
 
 // Resets the error list
-function resetMessageCommandModal(toBeReset, mode) {
+function resetMessageCommandModal(toBeReset:HTMLElement, mode: "add" | "edit") {
     try {
-        toBeReset.parentElement.classList.remove("errorClass");
-        document.getElementById(`${mode}CommandErrors`).innerHTML = "";
+        toBeReset.parentElement!.classList.remove("errorClass");
+        document.getElementById(`${mode}CommandErrors`)!.innerHTML = "";
     } catch (error) {
         console.log(error);
     }

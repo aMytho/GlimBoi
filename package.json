@@ -3,7 +3,7 @@
   "productName": "GlimBoi",
   "version": "1.8.0",
   "description": "A chatbot for Glimesh.tv",
-  "main": "main.js",
+  "main": "build/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/aMytho/GlimBoi.git"
@@ -34,6 +34,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js",
+    "ts": "tsc",
     "build": "electron-builder build  --win --publish never",
     "deploy": "electron-builder build  --win --publish always",
     "linux": "electron-builder build --linux",
@@ -52,9 +53,12 @@
     "ws": "^7.4.1"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.5",
+    "@types/nedb": "^1.8.11",
     "electron": "^10.4.0",
     "electron-builder": "^22.9.1",
     "electron-packager": "^15.1.0",
-    "pkginfo": "^0.4.1"
+    "pkginfo": "^0.4.1",
+    "typescript": "^4.3.4"
   }
 }

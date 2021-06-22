@@ -1,8 +1,8 @@
-const { app, BrowserWindow, screen, ipcMain } = require('electron'); //electron modules
-const log = require('electron-log'); // helps with logging to file for main process
+import { app, BrowserWindow, screen, ipcMain } from 'electron'; //electron modules
+import log from 'electron-log' // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
-const { autoUpdater } = require('electron-updater'); //handles updates
-const isDev = require("electron-is-dev"); // detects if we are in dev mode
+import { autoUpdater } from 'electron-updater'; //handles updates
+import isDev from "electron-is-dev"; // detects if we are in dev mode
 
 ipcMain.on('app_version', (event) => {
   	console.log("The current version is recieved. " + app.getVersion());
@@ -33,7 +33,7 @@ ipcMain.on('restart_app', () => {
 });
 
 
-let win; // The main window
+let win: any; // The main window
 
 
 function createWindow () { //make Win a window
@@ -93,22 +93,21 @@ app.on('activate', () => {
   	}
 })
 
-let loggingFile;
+let loggingFile: any;
 
-ipcMain.on("startLogging", event => {
-  	let { dialog } = require("electron");
-  	let fs = require("fs") //handles Files (writing and reading)
-  	dialog.showSaveDialog(win, {title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation', 'promptToCreate ', ], filters: [{name: "Chat Logs", extensions: ["txt"]}]}).then(data => {
-    	console.log(data)
-    	if (data == undefined || data.canceled == true) {
-      		console.log("They did not select a file.");
-      		event.reply("noLogSelected", "No file was selected.")
-    	} else {
-      		loggingFile = fs.createWriteStream(data.filePath)
-      		event.reply("startedLogging", "Logging has begun");
-      		console.log("Started logging chat messages.")
-    	}
-  	})
+ipcMain.on("startLogging", async event => {
+    let { dialog } = require("electron");
+    let fs = require("fs") //handles Files (writing and reading)
+    let fileSelection = await dialog.showSaveDialog(win, { title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation', 'promptToCreate ',], filters: [{ name: "Chat Logs", extensions: ["txt"] }] })
+    console.log(fileSelection)
+    if (fileSelection == undefined || fileSelection.canceled == true) {
+        console.log("They did not select a file.");
+        event.reply("noLogSelected", "No file was selected.")
+    } else {
+        loggingFile = fs.createWriteStream(fileSelection.filePath)
+        event.reply("startedLogging", "Logging has begun");
+        console.log("Started logging chat messages.")
+    }
 })
 
 ipcMain.on("logMessage", (event, arg) => {

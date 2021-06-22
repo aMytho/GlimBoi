@@ -5,13 +5,13 @@ let clientID = "";
 let token = "";
 let channelID = "";
 let streamer = ""; // Streamer name
-let accountName = null;
+let accountName:any | null = null;
 
 /**
  * This function updates the access token so we can make glimesh API requests with full permissions.
  * @param {string} accessToken The access token for this session.
  */
-function updatePath(accessToken) {
+function updatePath(accessToken:string) {
   	token = accessToken;
 }
 
@@ -45,7 +45,7 @@ function getID() {
  * @param {string} channel The channel name
  * @returns The ID or null if unsuccessful.
  */
-async function getChannelID(channel) {
+async function getChannelID(channel: string) {
   	let ID = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {channel (username: "${channel}"){id, streamer {displayname}}}`, headers: { Authorization: `Bearer ${token}` }})
     	.then((res) => {
@@ -76,8 +76,8 @@ async function getChannelID(channel) {
  * @param {string} user The user we request the ID from
  * @returns {Promise<number>} The user ID. If failed returns null
  */
-async function getUserID(user) {
-  	let ID = await new Promise(resolve => {
+async function getUserID(user: string): Promise<number | null | AuthError> {
+  	let ID:Promise<number | null | AuthError > = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${user}") {id}}`, headers: { Authorization: `Client-ID ${clientID}` }})
     	.then((res) => {
       		res.json().then((data) => {
@@ -336,7 +336,7 @@ async function getDadJoke() {
   * @param {string} channel The channel to request the info from
   * @returns {Promise}
   */
-async function getSocials(social, channel) {
+async function getSocials(social: "twitter" | string, channel:string) {
   	let socialLink = await new Promise(resolve => {
     	fetch("https://glimesh.tv/api", { method: "POST", body: `query {user(username: "${channel}") {socialDiscord, socialGuilded, socialInstagram, socialYoutube, socials {username, platform}}}`, headers: { Authorization: `bearer ${token}` } })
       	.then((res) => {
@@ -363,7 +363,7 @@ async function getSocials(social, channel) {
   	return socialLink;
 }
 
-async function randomAnimalFact(animal) {
+async function randomAnimalFact(animal: "dog" | "cat") {
     try {
         let animalFactData = await fetch(`https://some-random-api.ml/facts/${animal}`, { method: "GET" })
         let animalFact = await animalFactData.json();

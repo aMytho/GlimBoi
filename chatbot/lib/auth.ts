@@ -1,7 +1,7 @@
 //This file handles connecting the users dev app to glimesh.tv
-let path = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
-let authDB; //Auth database containing all auth info
-let token = {access_token: "", scope: "", creation: ""}; //Can be used for auth purposes
+let authPath = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
+let authDB:Nedb; //Auth database containing all auth info
+let authToken:Auth = {access_token: "", scope: "", creation: ""}; //Can be used for auth purposes
 
 /**
  * Requests an access token
@@ -9,42 +9,39 @@ let token = {access_token: "", scope: "", creation: ""}; //Can be used for auth 
  * @param {string} secretKey The secret key of the user
  * @param {boolean} isManual Is this manually triggered?
  */
-function requestToken(clientID, secretKey, isManual) {
-    return new Promise(resolve => {
-        fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
-        .then((res) => {
-            res.json().then((data) => { // parse and store the response
-                try {
-                    console.log(data);
-                    token.access_token = data.access_token;
-                    token.creation = data.created_at;
-                    if (token.access_token == undefined) {
-                        errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
-                        return;
-                    }
-                    //Updates the DB with the info
-                    authDB.update({}, { $set: { access_token: data.access_token, created_at: data.created_at } }, { multi: true }, function (err, numReplaced) {
-                        console.log("Access token recieved and added to the database. Ready to join chat!");
-                        updateStatus(2); // Everything is ready, they can join chat!
-                        isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null;
-                        resolve("ALLGOOD");
-                    });
-                } catch (e) {
-                    console.log(e); // in case of errors...
-                    errorMessage(e, "Auth Error");
-                    resolve("NOTGOOD");
-                }
+async function requestToken(clientID: clientID, secretKey: secretKey, isManual: boolean) {
+    return new Promise(async resolve => {
+        let res = await fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
+        let data = await res.json()
+        try {
+            console.log(data);
+            authToken.access_token = data.access_token;
+            authToken.creation = data.created_at;
+            if (authToken.access_token == undefined) {
+                errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
+                return;
+            }
+            //Updates the DB with the info
+            authDB.update({}, { $set: { access_token: data.access_token, created_at: data.created_at } }, { multi: true }, function (err, numReplaced) {
+                console.log("Access token recieved and added to the database. Ready to join chat!");
+                updateStatus(2); // Everything is ready, they can join chat!
+                isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null;
+                resolve("ALLGOOD");
             });
-        });
+        } catch (e) {
+            console.log(e); // in case of errors...
+            errorMessage(e, "Auth Error");
+            resolve("NOTGOOD");
+        }
     });
 }
 
 /**
  * Updates the path to the DB. The path variable is updated
  */
-function updatePath(GUI) {
-  	console.log("Path is " + GUI);
-  	path = GUI;
+function updatePath(updatedPath:string) {
+  	console.log("Path is " + updatedPath);
+  	authPath = updatedPath;
   	authDB = new Datastore({ filename: `${path}/data/auth.db`, autoload: true });
 }
 
@@ -54,7 +51,7 @@ function updatePath(GUI) {
  */
 function readAuth() {
    	return new Promise(resolve => {
-    	authDB.find( {}, function (err, docs) {
+    	authDB.find( {}, function (err: Error | null, docs) {
       		console.log(docs);
       		resolve(docs);
     	});
@@ -67,7 +64,7 @@ function readAuth() {
  * @param {string} client Client ID
  * @param {string} secret Secret Key
  */
-function updateID(client, secret) {
+function updateID(client:clientID, secret:secretKey) {
  	return new Promise(resolve => {
   		authDB.update({}, { $set: { clientID: client, secret: secret } }, { multi: true }, function (err, numReplaced) {
     		console.log("Updated the auth IDs.");
@@ -81,7 +78,7 @@ function updateID(client, secret) {
  * @param {string} client Client ID
  * @param {string} secret Secret ID
  */
-function createID(client, secret) {
+function createID(client:clientID, secret:secretKey) {
   	console.log(client, secret);
   	return new Promise(resolve => {
     	if (client == "" && secret !== "") {
@@ -116,7 +113,7 @@ function createID(client, secret) {
  */
 function getToken() {
   	return new Promise(resolve => {
-    	authDB.find( {}, function (err, docs) {
+    	authDB.find( {}, function (err: Error | null, docs) {
       		console.log(docs);
       		if (docs == undefined || docs.length == 0) {
         		resolve(undefined);
@@ -132,7 +129,7 @@ function getToken() {
  */
 function getID() {
   	return new Promise(resolve => {
-    	authDB.find( {}, function (err, docs) {
+    	authDB.find( {}, function (err: Error | null, docs) {
       		console.log(docs);
       		if (docs[0] == undefined) {resolve(null);} else {
       			resolve(docs[0].clientID);

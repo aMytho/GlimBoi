@@ -1,11 +1,16 @@
 // This file handles chat function such as adding commands, adding users, etc
+import * as RankHandle from "RankHandle"
+import * as UserHandle from "UserHandle"
+import * as ChatMessages from "ChatMessages"
+import * as QuoteHandle from "QuoteHandle"
+
 
 /**
  * Adds a user from Glimesh chat.
  * @param {string} user The user who is adding the new user
  * @param {string} newUser The user who will be added
  */
-async function addUserChat(user, newUser) {
+async function addUserChat(user:userName, newUser:userName) {
     let hasPermission = await RankHandle.rankController(user, "canAddUsers", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to do this action.")
@@ -26,7 +31,7 @@ async function addUserChat(user, newUser) {
  * @param {string} user The user that is removing another user
  * @param {string} delUser The user that is being removed
  */
-async function delUserChat(user, delUser) {
+async function delUserChat(user:userName, delUser:userName) {
     let hasPermission = await RankHandle.rankController(user, "canRemoveUsers", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to delete users.");
@@ -38,7 +43,7 @@ async function delUserChat(user, delUser) {
         if (exists == "ADDUSER") {
             ChatMessages.glimboiMessage("No user was found with that name in GlimBoi.")
         } else {
-            let deletedUser = await UserHandle.removeUser(delUser, user);
+            let deletedUser = await UserHandle.removeUser(delUser, false);
             ChatMessages.glimboiMessage("User removed!");
             removeUserFromTable(deletedUser);
         }
@@ -64,7 +69,7 @@ function randomQuoteChat() {
  * @param {string} user Who recorded the quote
  * @param {string} creator Who said the quote
  */
-async function addQuoteChat(user, data, creator) {
+async function addQuoteChat(user:userName, data, creator:userName) {
     let hasPermission = await RankHandle.rankController(user, "canAddQuotes", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to add quotes.")
@@ -89,7 +94,7 @@ async function addQuoteChat(user, data, creator) {
  * @param {string} creator The creator of the quote
  * @param {Number} id The ID of the quote.
  */
-async function delQuoteChat(user, creator, id) {
+async function delQuoteChat(user:userName, creator:userName, id:quoteID) {
     let hasPermission = await RankHandle.rankController(user, "canRemoveQuotes", "string");
     if (hasPermission == false) {
         ChatMessages.glimboiMessage("You do not have the sufficient rank to delete quotes.");
@@ -116,7 +121,7 @@ async function delQuoteChat(user, creator, id) {
  * @param {string} user The user who is removing the command
  * @param {string} command The command that will be removed
  */
-async function removeCommand(user, command) {
+async function removeCommand(user:userName, command:commandName) {
     if (command.startsWith("!")) {
         command = command.substring(1)
     }
@@ -146,7 +151,7 @@ async function removeCommand(user, command) {
  * @param {string} commandData The command data
  * @param {string} type !command or !cmd
  */
-async function addCommand(user, command, commandData, type) {
+async function addCommand(user:userName, command:commandName, commandData:string, type: CommandType) {
     let hasPermission = await RankHandle.rankController(user, "canAddCommands", "string");
     if (hasPermission == false) {
         ChatMessages.filterMessage("You do not have the sufficient rank to add commands.", 'glimboi');
@@ -163,7 +168,7 @@ async function addCommand(user, command, commandData, type) {
  * Returns a list of all commands to chat.
  */
 function commandList() {
-  	let cmdList = [];
+  	let cmdList:string[] = [];
   	CommandHandle.getAll().then((data) => {
     	for (let index = 0; index < data.length; index++) {
       		cmdList.push(data[index].commandName);
@@ -182,7 +187,7 @@ function commandList() {
  * Returns a users rank
  * @param {string} user The user who we need the rank for
  */
-async function getRank(user) {
+async function getRank(user:userName) {
     let rank = await UserHandle.findByUserName(user);
     if (rank == "ADDUSER") {
         let newUser = await UserHandle.addUser(user, false, user);
@@ -197,7 +202,7 @@ async function getRank(user) {
  * @param {number} amount
  * @returns {boolean} True or false
  */
-function checkAmount(amount) {
+function checkAmount(amount:number | any): boolean {
     if (isNaN(amount)) {
         return false
     } else {
@@ -211,7 +216,7 @@ function checkAmount(amount) {
  * @param {user} target The target user who will be affected
  * @param {number} count The amount of points to add
  */
-async function addPointsChat(user, target, count) {
+async function addPointsChat(user:userName, target:userName, count) {
     if (target !== undefined) {
         target = target.toLowerCase();
         let hasPerms = await RankHandle.rankController(user, "canAddPoints", "string");
@@ -496,7 +501,7 @@ async function previousSong(user, action) {
  * Enables or Disbles repeat.
  * @param {string} user The user who is wanting to replay a song
  */
-async function replaySong(user) {
+async function replaySong(user:userName) {
     let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
         if (hasPerms == false) {
             ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
@@ -517,7 +522,7 @@ async function replaySong(user) {
  * Enables or Diables shuffle.
  * @param {string} user The user who is wanting to shuffle the playlist
  */
-async function toggleShuffle(user) {
+async function toggleShuffle(user:userName) {
     let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
     if (hasPerms == false) {
         ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");
@@ -538,7 +543,7 @@ async function toggleShuffle(user) {
  * Plays or pauses the music
  * @param {string} user The user who is wanting to play or pause.
  */
- async function playPause(user, action) {
+ async function playPause(user:userName, action) {
     let hasPerms = await RankHandle.rankController(user, "canControlMusic", "string");
     if (hasPerms == false) {
         ChatMessages.filterMessage(user + "'s rank cannot control the music player", "glimboi");

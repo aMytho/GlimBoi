@@ -1,4 +1,7 @@
 // This file contains games and events.
+
+import * as UserHandle from "UserHandle"
+
 var arrayOfEvents = [];
 
 /**
@@ -16,7 +19,7 @@ var raffle = require(appData[0] + "/chatbot/lib/events/raffle.js");
  * @param {string} user
  * @param {string} message
  */
-function handleEvent(event, user, message) {
+function handleEvent(event, user:userName, message) {
     switch (event) {
         case "raffle":
             if (message.startsWith('!enter')) {

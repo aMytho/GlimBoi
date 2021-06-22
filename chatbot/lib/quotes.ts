@@ -1,28 +1,40 @@
-let path = "./";
-let quotesDB;
+import * as UserHandle from "UserHandle"
+
+let quotePath = "./";
+let quotesDB:Nedb;
+
 
 /**
  * A quote.
  * @constructor quotename - User who said the quote
  * @constructor quotedata - The quote itself
  */
-class Quote {
-  	constructor(quoteName, quoteData) {
+class Quote implements QuoteType {
+    quoteName: string;
+    quoteData: string;
+    quoteID: number;
+    date: string;
+  	constructor(quoteName:quoteName, quoteData:quoteData) {
     	console.log(quoteName, quoteData)
     	this.quoteName = quoteName; //The person who said the auote
     	this.quoteData = quoteData; // No explanation here
-    	this.quoteID = generateID(quoteName) //ID of the users quotes. The DB ID is different.
-    	this.date = generateDate(); //Tik toc
+    	this.quoteID = this.generateID(quoteName); //ID of the users quotes. The DB ID is different.
+    	this.date = new Date().toTimeString(); //Tik toc
   	}
+    async generateID(quoteName:quoteName) {
+    console.log("Generating ID");
+  	let usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
+  	return usedID
+    }
 }
 
 /**
  * Updates the path to the DB. The path variable is updated
  */
-function updatePath(GUI) {
-  	path = GUI;
+function updatePath(updatedPath:string) {
+  	quotePath = updatedPath;
   	quotesDB = new Datastore({
-    	filename: `${path}/data/quotes.db`,
+    	filename: `${quotePath}/data/quotes.db`,
     	autoload: true,
   	});
 }
@@ -32,7 +44,7 @@ function updatePath(GUI) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-async function addquote(quoteName, quoteData) {
+async function addquote(quoteName:quoteName, quoteData:quoteData) {
   	return new Promise(resolve => {
     	let newquote = new Quote(quoteName, quoteData);
     	newquote.quoteID.then(data => {
@@ -40,16 +52,14 @@ async function addquote(quoteName, quoteData) {
       		console.log(data)
       		if (data == "ADDUSER") {
         		console.log("Creating user " + quoteName);
-        		let newUser = UserHandle.addUser(quoteName);
-        		newUser.then(user => {
-          			if (user == "INVALIDUSER") {
-            			console.log("User not found, failed to create quote");
-            		try {document.getElementById("errorMessageAddQuote").innerText = "The user does not exist on glimesh so the quote can't be created."} catch(e) {}
-            			resolve("USERNOTEXIST")
-          			} else {
-          				addquote(quoteName, quoteData);
-          			}
-        		})
+        		let newUser = await UserHandle.addUser(quoteName);
+          		if (newUser == "INVALIDUSER") {
+            		console.log("User not found, failed to create quote");
+        		    try {document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created."} catch(e) {}
+        			resolve("USERNOTEXIST")
+        		} else {
+          			addquote(quoteName, quoteData);
+          		}
          		return
       		} else {
         		if (data.quotes.length == 0) {
@@ -64,7 +74,7 @@ async function addquote(quoteName, quoteData) {
         			quotesDB.insert(newquote, function (err, doc) {
           				console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
           				UserHandle.addQuote(newquote, doc._id).then(data => {
-            				try { document.getElementById('errorMessageAddQuote').innerText = `Quote Created!`} catch(e) {}
+            				try { document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`} catch(e) {}
             				resolve("QUOTEFINISHED")
           				})
         			});
@@ -83,7 +93,7 @@ async function addquote(quoteName, quoteData) {
  * Removes a quote
  * @param {string} quoteName The quote data
  */
-function removeQuote(id, user) {
+function removeQuote(id:quoteID, user:userName) {
   	try {
     	quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
       		console.log("Quote " + id + " was removed from the db");
@@ -97,7 +107,7 @@ function removeQuote(id, user) {
  * Removes all of the users quotes
  * @param {string} user The user who owns the quotes that will be deleted
  */
-function removeAllQuotes(user) {
+function removeAllQuotes(user:userName) {
   	console.log(user)
   	try {
     	quotesDB.remove({ quoteName: user }, {multi: true}, function (err, numRemoved) {
@@ -113,7 +123,7 @@ function removeAllQuotes(user) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The quote itself
  */
-function editquote(quoteName, quoteData) {
+function editquote(quoteName:quoteName, quoteData:quoteData) {
   	console.log(quoteName, quoteData);
   	quotesDB.update(
     	{ quoteName: quoteName },
@@ -130,38 +140,20 @@ function editquote(quoteName, quoteData) {
  */
 async function getAll() {
   	return new Promise(resolve => {
-    	quotesDB.find({}, function (err, docs) {
+    	quotesDB.find({}, function (err: Error | null, docs:QuoteDB[]) {
       		console.log(docs)
       		resolve(docs)
     	})
   	})
 }
 
-/**
- * Generates the quote ID. Determined by the amount of quotes that the user has
- * @param {string} quotename the name of the quote
- */
-async function generateID(quoteName) {
-  	console.log("Generating ID");
-  	let usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
-  	return usedID
-}
-
-/**
- * Generates the Date.
- */
-function generateDate() {
-  	let theTime = new Date().toTimeString();
-  	console.log(theTime);
-  	return theTime;
-}
 
 /**
  * Returns a random quote from the DB. Null if none exist
  */
 async function randomQuote() {
   	return new Promise(resolve => {
-    	quotesDB.find({}, function (err, docs) {
+    	quotesDB.find({}, function (err: Error | null, docs:QuoteDB[]) {
       		if (docs.length == 0 || docs == undefined) {
         		resolve(null)
       		} else {
@@ -173,4 +165,4 @@ async function randomQuote() {
   	})
 }
 
-module.exports = { addquote, editquote, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath }; //Send to the main file.
+export { addquote, editquote, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath };

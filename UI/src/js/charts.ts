@@ -1,5 +1,9 @@
 // This file reads all data and displays it in a chart. Chart is shown on start page. This is only used for the start page.
-var userCount, pointCount, commandCount, quoteCount, introChart, pollChart
+
+import * as UserHandle from "UserHandle"
+import * as QuoteHandle from "QuoteHandle"
+
+var userCount:number, pointCount:number, commandCount:number, quoteCount:number, introChart, pollChart
 function getBasicData() {
     OBSHandle.getAll()
   	var users = UserHandle.getAll().then(a => {
@@ -31,7 +35,7 @@ function getBasicData() {
             			type: "gradient",
           			},
           			legend: {
-            			formatter: function (val, opts) {
+            			formatter: function (val:string, opts:any) {
               				return val + " - " + opts.w.globals.series[opts.seriesIndex];
             			},
           			},

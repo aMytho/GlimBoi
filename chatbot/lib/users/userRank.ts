@@ -1,6 +1,6 @@
 // This file manages the rank system
-var rankDB; //Controls the Rank DB
-var ranks = [];
+var rankDB:Nedb; //Controls the Rank DB
+var ranks:RankType[] = [];
 var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false};
 var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true};
 var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true, canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true};
@@ -8,8 +8,22 @@ var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: tru
 /**
  * A new Rank
  */
-class Rank {
-    constructor(rank) {
+class Rank implements RankType {
+    rank:rankName
+    canAddCommands: boolean;
+    canEditCommands: boolean;
+    canRemoveCommands: boolean;
+    canAddPoints: boolean;
+    canEditPoints: boolean;
+    canRemovePoints: boolean;
+    canAddUsers: boolean;
+    canEditUsers: boolean;
+    canRemoveUsers: boolean;
+    canAddQuotes: boolean;
+    canEditQuotes: boolean;
+    canRemoveQuotes: boolean;
+    canControlMusic: boolean;
+    constructor(rank:rankName) {
         this.rank = rank;
         this.canAddCommands = false;
         this.canEditCommands = false;
@@ -31,8 +45,8 @@ class Rank {
  * Sends the rank db to the right location.
  * @param {string} path The app data directory
  */
-function updatePath(path) {
-    rankDB = new Datastore({ filename: `${path}/data/ranks.db`, autoload: true });
+function updatePath(updatedPath:string) {
+    rankDB = new Datastore({ filename: `${updatedPath}/data/ranks.db`, autoload: true });
     getAll()
 }
 
@@ -40,7 +54,7 @@ function updatePath(path) {
  * Ran on startup, gets a local copy of all ranks. If none exist the default are created.
  */
 function getAll() {
-    rankDB.find({}, function (err, docs) {
+    rankDB.find({}, function (err: Error | null, docs:RankType[]) {
         if (docs.length !== 0) {
             ranks = docs
         } else {
@@ -55,7 +69,7 @@ function getAll() {
  * Checks if the rank exists and if not, creates it
  * @param {string} rank The rank to be created
  */
-function createRank(rank) {
+function createRank(rank:rankName) {
     return new Promise(resolve => {
         if (getRankPerms(rank) == null) {
             console.log("Creating " + rank);
@@ -74,7 +88,7 @@ function createRank(rank) {
  * Removes a user created rank
  * @param {string} rank The rank to be removed
  */
-function removeRank(rank) {
+function removeRank(rank:rankName) {
   // We don't delete the base ranks.
   return new Promise(resolve => {
     if (rank !== "user" && rank !== "Mod" && rank !== "Streamer") {
@@ -98,7 +112,7 @@ function removeRank(rank) {
  * Updates a rank with new data
  * @param {object} rank A rank with updated properties.
  */
-function editRank(rank) {
+function editRank(rank:RankType) {
     for (let i = 0; i < ranks.length; i++) {
         if (rank.rank == ranks[i].rank) {
             ranks[i] = rank
@@ -120,7 +134,7 @@ function editRank(rank) {
  * @param {string} rank The rank we are adding the property to
  * @param {string} property What property we are adding to the rank
  */
-function addRankProperty(rank, property) {
+function addRankProperty(rank:rankName, property:rankProperties) {
     for (let i = 0; i < ranks.length; i++) {
         if (rank == ranks[i].rank) {
             ranks[i][`${property}`] = false;
@@ -137,7 +151,7 @@ function addRankProperty(rank, property) {
  * @param {string} action What the user is attempting to access
  * @param {string} type The type of the action. We use this to determine if we look for boolean, number, string, etc
  */
-function rankController(user, action, type) {
+function rankController(user:userName, action:string, type:string) {
     return new Promise(resolve => {
         UserHandle.findByUserName(user).then(data => {
             if (data !== "ADDUSER") {
@@ -168,7 +182,7 @@ function rankController(user, action, type) {
  * @param {string} rank The rank you want info about
  * @returns {object} Object if found, null if not
  */
-function getRankPerms(rank) {
+function getRankPerms(rank:rankName) {
     for (let i = 0; i < ranks.length; i++) {
         if (rank == ranks[i].rank) {
             return ranks[i];
@@ -181,7 +195,7 @@ function getRankPerms(rank) {
  * Returns the array of rank data
  * @returns {array}
  */
-function getCurrentRanks() {
+function getCurrentRanks(): Array<any> {
     return ranks
 }
 

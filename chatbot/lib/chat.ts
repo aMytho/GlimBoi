@@ -1,6 +1,6 @@
 //This file handles connecting the bot to a chat.
-let connection; // the websocket connection
-let heartbeat; //heartbeat
+let connection:WebSocket; // the websocket connection
+let heartbeat:any; //heartbeat
 let botName = "GlimBoi"; //The username of the bot in normal caps
 let messageHistoryCount = 20;
 
@@ -9,7 +9,7 @@ let messageHistoryCount = 20;
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
-function join(access_token, channelID, isReconnect) {
+function join(access_token:accessToken, channelID, isReconnect:boolean) {
   	try {connectToGlimesh(access_token, channelID, isReconnect)} catch(e) {
      	console.log("we caught the error, poggers");
      	errorMessage(e, "Chat Error")
@@ -21,7 +21,7 @@ function join(access_token, channelID, isReconnect) {
  *
  * @returns {WebSocket} WebSocket Connection
  */
-function getConnection() {
+function getConnection(): WebSocket {
   	return connection;
 }
 
@@ -40,7 +40,7 @@ function isConnected() {
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
-function connectToGlimesh(access_token, channelID, isReconnect) {
+function connectToGlimesh(access_token:access_token, channelID, isReconnect:boolean) {
   	const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}` // The websocket URL
   	connection = new WebSocket(url); // Connection is now an offical connection!
   	chatID = channelID // The channel ID is now an accessible variable for this module
@@ -308,7 +308,7 @@ function connectToGlimesh(access_token, channelID, isReconnect) {
 /**
  * Disconnects from Glimesh chat.
  */
-function disconnect(displayMessage) {
+function disconnect(displayMessage:string) {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
     	if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
@@ -346,4 +346,4 @@ function getBotName() {
   	return botName
 }
 
-module.exports = { getConnection, isConnected, connectToGlimesh, disconnect, getBotName, join}
+export { getConnection, isConnected, connectToGlimesh, disconnect, getBotName, join}

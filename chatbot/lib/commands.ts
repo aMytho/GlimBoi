@@ -1,7 +1,12 @@
+// This file manages commands
+
+import * as ChatMessages from "ChatMessages"
+import * as ApiHandle from "ApiHandle"
+
 let path = "./"; //Call updatePath(path) to set to the right path for the db
-let commandsDB; //Database of commands.
-let commands = []; //Array that contains all the commands. The bot reads this
-let repeatableArray = []; //Array of repeatable commands
+let commandsDB:Nedb; //Database of commands.
+let commands:CommandType[] = []; //Array that contains all the commands. The bot reads this
+let repeatableArray:RepeatableCommand[] = []; //Array of repeatable commands
 const ChatAction = require(appData[0] + "/chatbot/lib/commands/commandActionHandler.js");
 const CommandRunner = require(appData[0] + "/chatbot/lib/commands/commandRunner.js");
 
@@ -18,8 +23,15 @@ const CommandRunner = require(appData[0] + "/chatbot/lib/commands/commandRunner.
  * @param {string} media Display an image or video
  * @param {array} actions What the command will do once activated
  */
-class Command {
-    constructor({commandName, uses, points, cooldown, rank, repeat, actions}) {
+class Command implements CommandType {
+    commandName: string;
+    uses: number
+    points: number;
+    cooldown: number;
+    rank: rankName;
+    repeat: boolean;
+    actions: any
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
         this.points = points; //Points required per command
@@ -33,10 +45,10 @@ class Command {
 
 /**
  * Sets the correct filepath for the database
- * @param {string} GUI The file path before /data/commands.db
+ * @param {string} updatedPath The file path before /data/commands.db
  */
-function updatePath(GUI) {
-  	path = GUI;
+function updatePath(updatedPath:string) {
+  	path = updatedPath;
   	commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
 }
 
@@ -45,7 +57,7 @@ function updatePath(GUI) {
  * Creates a new command. Reloads the current commands after completion.
  * @returns A command
  */
-function addCommand(commandData) {
+function addCommand(commandData:CommandContructor) {
     let newCommand = new Command(commandData);
     console.log(newCommand);
   	try {
@@ -70,7 +82,7 @@ function addCommand(commandData) {
  * @param {string} commandData The data for the chatmessage
  * @param {string} type !command or !cmd
  */
-function addCommandFilter(commandName, commandData, type) {
+function addCommandFilter(commandName:commandName, commandData:string, type: "!command" | "!cmd") {
   	commandName = commandName.toLowerCase()
   	if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
     	ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
@@ -112,7 +124,7 @@ function addCommandFilter(commandName, commandData, type) {
  * Removes a command from the database. Reloads the current commands upon completion
  * @param {string} commandName Lowercase version of the command name.
  */
-function removeCommand(commandName) {
+function removeCommand(commandName:commandName) {
   	commandsDB.remove({ commandName: commandName }, {}, function (err, numRemoved) {
     	console.log(commandName + " was removed from the db");
     	for (let index = 0; index < commands.length; index++) {
@@ -130,7 +142,7 @@ function removeCommand(commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  */
-function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat }) {
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat }:CommandContructor) {
     console.log(commandName, actions, cooldown, uses, points, rank, repeat)
     commandsDB.update({ commandName: commandName }, { $set: { actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
@@ -159,7 +171,7 @@ function editCommand({ commandName, actions, cooldown, uses, points, rank, repea
  * @returns A command
  * This technically does not need a promise, but all the functions that use it are meant to deal with promises. This will be fixed later
  */
-function findCommand(command) {
+function findCommand(command:commandName) {
   	return new Promise(resolve => {
     	console.log("Searching for " + command);
     	command = command.toLowerCase()
@@ -178,7 +190,7 @@ function findCommand(command) {
  * @param {string} commandName
  * @returns
  */
-function findRepeat(commandName) {
+function findRepeat(commandName:commandName) {
   	for (let i = 0; i < repeatableArray.length; i++) {
     	if (repeatableArray[i].commandName == commandName) {
       		return { command: repeatableArray[i], index: i };
@@ -191,7 +203,7 @@ function findRepeat(commandName) {
  * Removes the command from the repeat array.
  * @param {string} commandName
  */
-function removeRepeat(commandName) {
+function removeRepeat(commandName:commandName) {
   	for (let i = 0; i < repeatableArray.length; i++) {
     	if (repeatableArray[i].commandName == commandName) {
       		repeatableArray.splice(i, 1);
@@ -206,7 +218,7 @@ function removeRepeat(commandName) {
  */
 async function getAll() {
   	return new Promise(resolve => {
-    	commandsDB.find({}, function (err, docs) {
+    	commandsDB.find({}, function (err: Error | null, docs:CommandType[]) {
       		console.log(docs)
       		commands = docs //The bot knows all the commands now. This is the bot, not the UI
       		resolve(docs) //UI probably knows after this
@@ -229,7 +241,7 @@ function getRepeats() {
  * Loads all the repeat commands. Pushes them to the repeatableArray
  * @param {array} command Array of all commands
  */
-function loadRepeats(command) {
+function loadRepeats(command:CommandType[]) {
   	repeatableArray = [] // reset the array, we don't want duplicates
   	let repeatCount = 0; //Counter of repeatable commands
   	for (let i = 0; i < command.length; i++) {
@@ -260,7 +272,7 @@ function randomRepeatCommand() {
  * Increments the command uses by one. Updates the commands upon completion.
  * @param {string} command Name of the command
  */
-function addCommandCount(command) {
+function addCommandCount(command:commandName) {
   	commandsDB.update({ commandName: command }, { $inc: { uses: 1 } }, {}, function (err, numReplaced) {
     	err ? console.log(err) : null; // if error log it
     	for (let index = 0; index < commands.length; index++) {

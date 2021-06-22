@@ -2,12 +2,14 @@
  * For standard chat message functions
  */
 
+import * as ChatMessages from "ChatMessages"
+
 /**
  * Filters a message to prepare it for sending. If it cannot be sent we send a message to chat notifying the stream.
  * @param {string} message The chat message to be sent to chat
  * @param {string} source Where the emssage is coming from. Either user or glimboi
  */
-function filterMessage(message, source) {
+function filterMessage(message:string, source: "user" | "glimboi") {
   	if (source !== 'user' && message.startsWith('!')) {
     	console.log(`Tried to send the message ${message} but that might be an infinite loop, so we stopped`); // Typo - {$message}
     	sendMessage("Hi, we detected the potential for an infinite loop, and hopefully stopped it? Check your command response!");
@@ -40,7 +42,7 @@ function filterMessage(message, source) {
  * Sends a message to chat. This function is called when a user presses send.
  * @param {string} data A message to be sent to chat
  */
-function sendMessage(data) {
+function sendMessage(data:message) {
   	var msgArray = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
   	// adds the message to it.
   	msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\""+chatID+"\",message:{message:\""+data+"\"}) {message }}","variables":{}});
@@ -58,7 +60,7 @@ function sendMessage(data) {
  * Sends a message to chat as the bot. This is not from a user pressing send.
  * @param {string} data The message to be sent to chat
  */
-function glimboiMessage(data) {
+function glimboiMessage(data:message) {
   	var msgArray = ["6","7","__absinthe__:control","doc"];
   	msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\"" + chatID +"\", message:{message:\""+data+"\"}) {message }}","variables":{}});
   	var test = JSON.stringify(msgArray);
@@ -77,7 +79,7 @@ function glimboiMessage(data) {
  * @param {string} message The message
  * @param {string} avatar The avatar URL
  */
-function logMessage(user, message, avatar) {
+function logMessage(user:userName, message:message, avatar:avatar) {
   	var adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
 
   	$("#chatList").append(`
@@ -92,7 +94,7 @@ function logMessage(user, message, avatar) {
     	</li>`
   );
   	var scroll = document.getElementById("chatContainer")
-  	scroll.scrollTo(0,document.getElementById("chatList").scrollHeight);
+  	scroll!.scrollTo(0,document.getElementById("chatList").scrollHeight);
 
   	if (ChatSettings.isLoggingEnabled() == true) {
     	ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
