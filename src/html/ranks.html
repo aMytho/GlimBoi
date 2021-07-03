@@ -1,0 +1,321 @@
+<div class="row justify-content-md-center pt-3">
+    <div class="col-lg-2 col-12">
+        <div class="row ml-3">
+            <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 w-100" id="rankButtonContainer">
+                <div class="text-center btn-group-vertical d-inline justify-content-md-center m-0 p-0">
+                    <a class="col-lg-12 col-11 btn btn-primary mt-2 border-radius-5" href="#" data-toggle="modal"
+                        data-target="#modalRankAdd">Add Rank</a>
+                    <a class="col-lg-12 col-11 btn btn-success mt-2 disabled border-radius-5" href="#"
+                        id="saveRankSettings" onclick="saveRankSettings(document.getElementById('rankName').innerText)">Save Changes</a>
+                    <a class="col-lg-12 col-11 btn btn-danger mt-2 border-radius-5" href="#" data-toggle="modal"
+                        data-target="#modalRankremove">Remove Rank</a>
+                    <hr style="border-color: aliceblue;width: 50%;" class="my-2">
+                    <a class="col-lg-12 col-11 btn btn-info mt-2 border-radius-5" href="#" data-toggle="modal"
+                        data-target="#modalUserAdd" onclick="displayRank('Streamer')">Streamer</a>
+                    <a class="col-lg-12 col-11 btn btn-info mt-2 border-radius-5" href="#" data-toggle="modal"
+                        data-target="#modalUserEdit" onclick="displayRank('Mod')">Mod</a>
+                    <a class="col-lg-12 col-11 btn btn-info mt-2 border-radius-5" href="#" data-toggle="modal"
+                        data-target="#modalUserEdit" onclick="displayRank('user')">user (default)</a>
+                    <hr style="border-color: aliceblue;width: 50%;" class="my-2">
+                    <div id="customRankButtons"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-10 col-12" id="rankContainer">
+        <div class="card glimPanel mx-1 mx-lg-0 mr-lg-2 row h-100" id="rankDetails">
+            <div class="row px-3">
+                <div class="col-12 whiteText px-3">
+                    <h2 id="rankName">Rank: None Selected</h2>
+                    <p id="rankMessage">Select a rank to edit permissions!</p>
+                    <hr style="border-color: aliceblue;" class="mt-2">
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Add Commands</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="addCommandsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Edit Commands</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="editCommandsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Remove Commands</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="removeCommandsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Add Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="addUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Edit Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="editUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Remove Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="removeUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Add Quotes</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="addQuotesRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Edit Quotes</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="editQuotesRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Remove Quotes</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="removeQuotesRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Add Points</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="addPointsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Edit Points</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="editPointsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Remove Points</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="removePointsRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Control Music Player</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="controlMusicRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Delete Messages</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="deleteMessagesRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Timeout Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="timeoutUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row px-3">
+                <div class="col-3 whiteText px-3">
+                    <h3>Ban Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="banUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Unban Users</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <label class="switch">
+                        <input type="checkbox" id="unBanUsersRank">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  </div>
+
+
+  <style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    </style>
+
+    <!-- Modal: Add Rank -->
+<div class="modal fade" id="modalRankAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="myModalLabelEdit">Create Rank</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalRankAddBody">
+          <!--Body-->
+          <div class="modal-body">
+            <div class="icon-input-container">
+              <input class="icon-input" type="text" placeholder="Rank Name" id="rankAddInput">
+              <p id="addRank" class="errorMessage"></p>
+            </div>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-primary" onclick="addRank()" id="addingRankButton">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: modalCart -->
+
+      <!-- Modal: Remove Rank -->
+<div class="modal fade" id="modalRankremove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="myModalLabelEdit">Remove Rank</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body" id="modalRankRemoveBody">
+          <!--Body-->
+          <div class="modal-body">
+            <div class="icon-input-container">
+              <input class="icon-input" type="text" placeholder="Rank Name" id="rankRemoveInput">
+              <p id="removeRank" class="errorMessage"></p>
+            </div>
+          </div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button class="btn btn-outline-danger" onclick="removeRank()" id="rankRemoveButton">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: modalCart -->

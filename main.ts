@@ -3,6 +3,7 @@ import log from 'electron-log' // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 import { autoUpdater } from 'electron-updater'; //handles updates
 import isDev from "electron-is-dev"; // detects if we are in dev mode
+let appPath:string = app.getAppPath();
 
 ipcMain.on('app_version', (event) => {
   	console.log("The current version is recieved. " + app.getVersion());
@@ -33,7 +34,7 @@ ipcMain.on('restart_app', () => {
 });
 
 
-let win: any; // The main window
+let win: BrowserWindow; // The main window
 
 
 function createWindow () { //make Win a window
@@ -48,14 +49,14 @@ function createWindow () { //make Win a window
     	icon: "UI/Icons/icon.ico",
     	frame: false
   	})
-  	win.loadFile(app.getAppPath() + '/UI/index.html');
-  	win.setIcon('UI/Icons/icon.ico');
+  	win.loadFile('../src/index.html');
+  	win.setIcon('resources/Icons/icon.ico');
 }
 app.whenReady().then(createWindow)
 
 // send info to the renderer so it can use glimboi modules. This MUST come first and it needs to be very fast.
 ipcMain.on("appDataRequest", (event) => {
-  	event.returnValue = [app.getAppPath(), app.getPath("userData")]
+  	event.returnValue = [appPath, app.getPath("userData")]
 })
 
 ipcMain.on("pleaseClose", (event) => {
@@ -98,7 +99,7 @@ let loggingFile: any;
 ipcMain.on("startLogging", async event => {
     let { dialog } = require("electron");
     let fs = require("fs") //handles Files (writing and reading)
-    let fileSelection = await dialog.showSaveDialog(win, { title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation', 'promptToCreate ',], filters: [{ name: "Chat Logs", extensions: ["txt"] }] })
+    let fileSelection = await dialog.showSaveDialog(win, { title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation'], filters: [{ name: "Chat Logs", extensions: ["txt"] }] })
     console.log(fileSelection)
     if (fileSelection == undefined || fileSelection.canceled == true) {
         console.log("They did not select a file.");
