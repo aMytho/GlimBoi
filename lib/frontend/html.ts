@@ -251,6 +251,7 @@ function loadSpecificRank(rank: RankType) {
     (document.getElementById("timeoutUsersRank") as HTMLInputElement)!.checked = rank.canTimeoutUsers;
     (document.getElementById("banUsersRank") as HTMLInputElement)!.checked = rank.canBanUsers;
     (document.getElementById("unBanUsersRank") as HTMLInputElement)!.checked = rank.canUnBanUsers;
+    (document.getElementById("modImmunityRank") as HTMLInputElement)!.checked = rank.modImmunity;
 }
 
 function addMediaModal() {
@@ -480,6 +481,6 @@ function bannedWordRemoveReset() {
   <div class="modal-footer">
     <p id="errorMessageAdd"></p>
     <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-    <button class="btn btn-outline-danger" onclick="" id="addWordFinish">Remove</button>
+    <button class="btn btn-outline-danger" onclick="removeBannedWords(document.getElementById('wordRemoveInput').value)">Remove</button>
   </div>`
 }

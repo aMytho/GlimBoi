@@ -73,7 +73,7 @@ function saveRankSettings(rank:rankName) {
         canTimeoutUsers: (document.getElementById("timeoutUsersRank") as HTMLInputElement).checked,
         canBanUsers: (document.getElementById("banUsersRank") as HTMLInputElement).checked,
         canUnBanUsers: (document.getElementById("unBanUsersRank") as HTMLInputElement).checked,
-
+        modImmunity: (document.getElementById("modImmunityRank") as HTMLInputElement).checked,
     }
     console.log(updatedRank);
     RankHandle.editRank(updatedRank);

@@ -1,9 +1,19 @@
 // This file manages the rank system
 var rankDB:Nedb; //Controls the Rank DB
 var ranks:RankType[] = [];
-var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false, canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false, canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false};
-var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false, canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true, canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false};
-var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true, canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true, canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true, canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true};
+var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
+canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false,
+canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false,
+canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false};
+var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
+canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false,
+canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true,
+canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false};
+var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
+canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true,
+canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true,
+canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true, modImmunity: true};
+
 
 /**
  * A new Rank
@@ -27,6 +37,7 @@ class Rank implements RankType {
     canTimeoutUsers: boolean;
     canBanUsers: boolean
     canUnBanUsers: boolean
+    modImmunity: boolean
     constructor(rank:rankName) {
         this.rank = rank;
         this.canAddCommands = false;
@@ -46,6 +57,7 @@ class Rank implements RankType {
         this.canTimeoutUsers = false;
         this.canBanUsers = false;
         this.canUnBanUsers = false;
+        this.modImmunity = false;
     }
 }
 
@@ -133,7 +145,8 @@ function editRank(rank:RankType) {
         canRemovePoints: rank.canRemovePoints, canAddQuotes: rank.canAddQuotes, canEditQuotes: rank.canEditQuotes,
         canRemoveQuotes: rank.canRemoveQuotes, canAddUsers: rank.canAddUsers, canEditUsers: rank.canEditUsers,
         canRemoveUsers: rank.canRemoveUsers, canControlMusic: rank.canControlMusic, canDeleteMessages: rank.canDeleteMessages,
-        canTimeoutUsers: rank.canTimeoutUsers, canBanUsers: rank.canBanUsers, canUnBanUsers: rank.canUnBanUsers}
+        canTimeoutUsers: rank.canTimeoutUsers, canBanUsers: rank.canBanUsers, canUnBanUsers: rank.canUnBanUsers,
+        modImmunity: rank.modImmunity}
     }, {}, function (err, numReplaced) {
         console.log("Rank settings updated");
     });
