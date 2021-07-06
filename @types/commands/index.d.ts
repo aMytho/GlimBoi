@@ -229,6 +229,8 @@ declare module "ChatActions" {
     export var ActionResources: typeof import("../../lib/modules/commands/actionResources")
 }
 
+type actionMode = "add" | "edit"
+
 declare module "ActionResources" {
     /**
      * Adds a variable to the list for an action to use

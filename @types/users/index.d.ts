@@ -130,6 +130,7 @@ interface RankType {
     canTimeoutUsers: boolean;
     canBanUsers: boolean
     canUnBanUsers: boolean
+    modImmunity: boolean
 }
 
 type rankName = "user" | "Mod" | "Streamer" | string

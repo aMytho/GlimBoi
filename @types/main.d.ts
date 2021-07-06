@@ -14,6 +14,8 @@
 type ApiHandle = typeof import("../lib/modules/api")// @ts-ignore
 type AuthHandle = typeof import("../lib/modules/auth")// @ts-ignore
 type CommandHandle = typeof import("../lib/modules/commands")// @ts-ignore
+type ActionCreator = typeof import("../lib/frontend/commands/actionCreator")// @ts-ignore
+type ActionResources = typeof import("../lib/modules/commands/actionResources")// @ts-ignore
 type UserHandle = typeof import("../lib/modules/users")// @ts-ignore
 type RankHandle = typeof import("../lib/modules/users/userRank")// @ts-ignore
 type OBSHandle = typeof import("../lib/modules/OBS")// @ts-ignore
@@ -23,6 +25,7 @@ type ChatHandle = typeof import("../lib/modules/chat")// @ts-ignore
 type ChatMessages = typeof import("../lib/modules/chat/chatMessages")// @ts-ignore
 type ChatSettings = typeof import("../lib/modules/chat/chatSettings")// @ts-ignore
 type ChatChannels = typeof import("../lib/modules/chat/chatChannels")// @ts-ignore
+type ChatActions = typeof import("../lib/modules/chat/chatActions")// @ts-ignore
 type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
 type LogHandle = typeof import("../lib/modules/log")
 
