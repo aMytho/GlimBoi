@@ -165,7 +165,7 @@ function validateActions(mode) {
  * @param {string} mode Which mode we are in
  * @returns
  */
-function determineActionAndCheck(action, mode) {
+function determineActionAndCheck(action, mode:actionMode) {
     switch (action.firstElementChild.firstElementChild.innerText) {
         case "Chat Message":
             try {
@@ -269,6 +269,20 @@ function determineActionAndCheck(action, mode) {
                     throw "The media selected was not found. Ensure it is located in the overlay tab."
                 }
             } catch (e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
+        case "Timeout":
+            try {
+                console.log(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText)
+                let possibleTimeout = action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim()
+                if (possibleTimeout.length == 0) {
+                    throw "No target for timeout was provided. Enter a name or a variable (ie. $user, $target)"
+                }
+                let possibleDuration = action.children[1].children[1].firstElementChild.firstElementChild.value
+                return {type: "Timeout", target: possibleTimeout, duration: possibleDuration};
+            } catch(e) {
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false

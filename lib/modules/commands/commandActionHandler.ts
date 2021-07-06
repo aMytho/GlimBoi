@@ -1,6 +1,6 @@
 // File creates and runs actions for commands.
 
-const ActionResources = require(appData[0] + "/modules/commands/actionResources.js")
+const ActionResources:ActionResources = require(appData[0] + "/modules/commands/actionResources.js")
 
 /**
  * A ChatAction is a class with instructions on what to do based on the action.
@@ -126,13 +126,14 @@ class Timeout extends ChatAction {
     target: any
     duration: timeout
     constructor({target, duration}) {
-        super("ShortTimeout", "Times a user out for 5 minutes", ["target", "duration"], undefined)
+        super("Timeout", "Times a user out for 5 minutes", ["target", "duration"], undefined)
         this.target = target
         this.duration = duration;
     }
 
-    async run() {
-        await ModHandle.timeoutByUsername(this.target, "short");
+    async run({activation, user}) {
+        let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user})
+        await ModHandle.timeoutByUsername(target, this.duration);
         return
     }
 }

@@ -1,6 +1,6 @@
 // handles all the data from command modals
 
-const ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js")
+const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js")
 
 function prepareActions(mode) {
    // Activates all bootstrap tooltips
@@ -121,7 +121,7 @@ function loadModalEdit(command) {
  * @param {string} mode add or edit
  * @param {object} data The action data
  */
-async function addActionToUI(action: actionName, mode: string, data?: object) {
+async function addActionToUI(action: actionName, mode: actionMode, data?: object) {
     switch (action) {
         case "ChatMessage": await ActionCreator.buildChatMessageUI(mode, data);
             break;
@@ -199,6 +199,8 @@ async function insertEditData(command:CommandType) {
                 case "Audio": await ActionCreator.buildAudioUI("edit", {source: command.actions[i].source})
                 break;
                 case "ImageGif": await ActionCreator.buildImageGifUI("edit", {source: command.actions[i].source})
+                break;
+                case "Timeout": await ActionCreator.buildTimeoutUI("edit", {target: command.actions[i].target, duration: command.actions[i].duration})
                 break;
                 case "Video": await ActionCreator.buildVideoUI("edit", {source: command.actions[i].source})
                 break;

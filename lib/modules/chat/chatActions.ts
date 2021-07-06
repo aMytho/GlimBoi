@@ -384,7 +384,7 @@ async function getPointsChat(user, target) {
  * @param {string} requestedPosition The position you are searching for in the leaderboard
  * @param {boolean} leaderBoard Are they searching for a specific position?
  */
-async function getTopPoints(requestedPosition, leaderBoard) {
+async function getTopPoints(requestedPosition?: number, leaderBoard?: any) {
     let topPoints = await UserHandle.getTopPoints();
     if (leaderBoard) {
         if (!isNaN(requestedPosition)) {
@@ -554,4 +554,31 @@ async function toggleShuffle(user:userName) {
     }
 }
 
-module.exports = {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, nextSong, playPause, previousSong, randomQuoteChat, removeCommand, removePointsChat, replaySong, toggleShuffle}
+/**
+ * Not yet used, don't try it
+ * @param user
+ * @param target
+ * @param duration
+ * @param id
+ */
+async function timeoutUser(user:userName, target:userName, duration:timeout, id:number) {
+    let hasPerms = await RankHandle.rankController(user, "canTimeoutUsers", "string");
+    if (hasPerms == false) {
+        ChatMessages.filterMessage(user + " 's rank cannot timeout users.", "glimboi")
+    } else if (hasPerms == null) {
+        let newUser = await UserHandle.addUser(user, false, user);
+        if (newUser !== "INVALIDUSER") { timeoutUser((newUser as UserType).userName, target, duration, id) }
+    } else {
+        let canBeTimedOut = await RankHandle.rankController(target, "modImmunity", "string");
+        if (canBeTimedOut == true) {
+            ChatMessages.filterMessage(target + " cannot be timed out.", "glimboi")
+        } else if (canBeTimedOut == null) {
+            let newTargetUser = await UserHandle.addUser(target, false, user);
+            if (newTargetUser !== "INVALIDUSER") { timeoutUser(user, target, duration, id) }
+        } else {
+            ModHandle.timeoutByUserID(id, duration);
+        }
+    }
+}
+
+export {addCommand, addPointsChat, addQuoteChat, addUserChat, commandList, delQuoteChat, delUserChat, editPointsChat, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, nextSong, playPause, previousSong, randomQuoteChat, removeCommand, removePointsChat, replaySong, timeoutUser, toggleShuffle}

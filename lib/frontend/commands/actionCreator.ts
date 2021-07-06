@@ -1,7 +1,7 @@
 // Creates all of the actions that the bot uses (UI)
 const fsPromise = require("fs").promises
 
-async function buildChatMessageUI(mode, commandInfo) {
+async function buildChatMessageUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(`src//html/commands/actions/ChatMessage.html`)
     // Takes the data and converts it to text (html). Also sets the styles
@@ -153,25 +153,18 @@ async function buildImageGifUI(mode, commandInfo) {
 }
 
 async function buildTimeoutUI(mode, commandInfo) {
-    /*
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/Video.html`)
+    let file = await fsPromise.readFile(`src/html/commands/actions/Timeout.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
-    let videoSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
-    let options = OBSHandle.getVideos()
-    videoSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
-    for (let i = 0; i < options.length; i++) {
-        let opt = options[i].name
-        if (commandInfo && commandInfo.source == opt) {
-            videoSelect.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
-        } else {
-            videoSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
-        }
+    console.log(action)
+    if (commandInfo) {
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target;
+        (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.duration;
     }
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
-    */
+
 }
 
 async function buildVideoUI(mode, commandInfo) {
