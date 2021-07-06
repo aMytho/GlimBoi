@@ -1,7 +1,7 @@
 var isDev = false; // We assume they are on a production release.
 // @ts-ignore
 var ChatSettings:ChatSettings;
-var ChatActions;
+var ChatActions:ChatActions;
 var ChatStats;
 // @ts-ignore
 var ChatMessages:ChatMessages;
@@ -10,6 +10,7 @@ var reconnectDelay, currentChannelToRejoin;
 
 var contentTarget;
 var contentBody;
+var contentMessageID;
 var globalChatMessages: any[];
 var currentChatConnected = null;
 
@@ -185,7 +186,7 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
  */
 function loadChatWindow() {
   	globalChatMessages.forEach(msg => {// @ts-ignore
-    	ChatMessages.logMessage(msg[0], msg[1], msg[2]);
+    	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3]);
   	});
 
     LogHandle.getLogByType(["Delete Message", "Ban User", "Long Timeout User", "Short Timeout User", "UnBan User", "Add Points", "Add User",
@@ -342,8 +343,13 @@ function loadChatContextMenu(e: { path: any; pageY: number; pageX: number; }) {
 
     contentTarget = source.children[1].children[0].innerText.slice(0, -2);
     contentBody = source.children[1].childNodes[1].data.trim()
+    try {
+        contentMessageID = Number(source.children[1].attributes[1].value)
+    } catch(e) {
+        contentMessageID = null
+    }
 
-    var top = e.pageY - 110;
+    var top = e.pageY - 210;
     var left = e.pageX + 10;
     $("#context-menu").css({
         display: "block",
@@ -353,56 +359,26 @@ function loadChatContextMenu(e: { path: any; pageY: number; pageX: number; }) {
     document.body.addEventListener("click", function () { $("#context-menu").removeClass("show").hide() }, { once: true })
 }
 
-function contextMenu(action) {
-  	if (action == "ADDUSER") {
-    	UserHandle.addUser(contentTarget.toLowerCase(), false).then(data => {
+function contextMenu(action: logEvent, duration: timeout) {
+    if (action == "Add User") {
+        UserHandle.addUser(contentTarget.toLowerCase(), false).then(data => {
             if (data == "USEREXISTS") {
                 errorMessage("User Exists", "That user is already in the bot database.")
             } else if (data == "INVALIDUSER") {
                 errorMessage("User Error", "Ensure that you are authenticated and selected a real user.")
             }
-    	})
-  	} else if (action == "ADDQUOTE") {
+        })// @ts-ignore
+    } else if (action == "Add Quote") {
         QuoteHandle.addquote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
             if (data !== "QUOTEFINISHED") {
                 errorMessage("Quote Error", "An error occured when creating the quote.")
             }
         })
-  	}
-}
-
-/**
- * Edits the action modal to show the correct info.
- * @param {string} action The type of moderator action
- */
-function actionBuilder(action: string) {
-  	console.log(action)
-  	document.getElementById("actionType")!.innerText = action
-  	switch (action) {
-    	case "Short Timeout":
-      		document.getElementById("targetActionButton")!.onclick = function() {
-        		ModHandle.determineModAction("shortTimeout", {source: "manual", userName: (document.getElementById('whichUser') as HTMLInputElement).value.toLowerCase().trim()})
-      		}
-      	break;
-    	case "Long Timeout":
-      		document.getElementById("targetActionButton")!.onclick = function() {
-        		ModHandle.determineModAction("longTimeout", {source: "manual", userName: (document.getElementById('whichUser') as HTMLInputElement).value.trim().toLowerCase()})
-      		}
-      	break;
-    	case "Ban":
-      		document.getElementById("targetActionButton")!.onclick = function() {
-        		ModHandle.determineModAction("ban", {source: "manual", userName: (document.getElementById('whichUser') as HTMLInputElement).value.trim().toLowerCase()})
-      		}
-      	break;
-    	case "UnBan":
-      		document.getElementById("targetActionButton")!.onclick = function() {
-        		ModHandle.determineModAction("unBan", {source: "manual", userName: (document.getElementById('whichUser') as HTMLInputElement).value.trim().toLowerCase()})
-      		}
-      	break;
-
-    	default:
-      	break;
-  	}
+    } else if (action == "Short Timeout User" || action == "Long Timeout User") {
+        ModHandle.timeoutByUsername(contentTarget, duration)
+    } else if (action == "Delete Message") {
+        contentMessageID ? ModHandle.deleteMessage(contentMessageID) : errorMessage("Message Error", "You cannot delete that message.");
+    }
 }
 
 

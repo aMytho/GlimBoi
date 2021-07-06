@@ -30,14 +30,6 @@
           <h3 class="whiteText text-center" id="fasStar"><i class="fas fa-star"></i></span> 0</h3>
         </div>
       </div>
-      <div class="row mt-1">
-        <div class="col text-center">
-          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Short Timeout')">Short Timeout</button>
-          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Long Timeout')">Long Timeout</button>
-          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('Ban')">Ban</button>
-          <button class="btn btn-info mt-2" type="submit" onclick="$('#actionModal').modal('show');actionBuilder('UnBan')">Unban</button>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -111,8 +103,8 @@
         </div>
         <!--Footer-->
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Send</button>
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Add</button>
         </div>
       </div>
     </div>
@@ -120,31 +112,11 @@
   <!-- Modal: add new chat -->
 
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
-  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('ADDUSER')">Add User</a>
-  <a class="dropdown-item" disabled style="color: aquamarine;cursor: pointer;" onclick="contextMenu('ADDQUOTE')">Quote</a>
-  <a class="dropdown-item disabled" disabled style="color: aquamarine;" onclick="contextMenu('MODERATE')">Moderate (Coming soon)</a>
+  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Add User')">Add User</a>
+  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Add Quote')">Quote</a>
+  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Delete Message')">Delete Message</a>
+  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Short Timeout User', 'short')">Short Timeout</a>
+  <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Long Timeout User', 'long')">Long Timeout</a>
+  <a class="dropdown-item disabled" disabled style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Ban User')">Ban User</a>
+  <a class="dropdown-item disabled" disabled style="color: aquamarine;cursor: pointer;" onclick="contextMenu('UnBan User')">Unban User</a>
 </div>
-
-<!-- Modal: Moderate? -->
-<div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="chatModal">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="actionType">Action</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body" id="modalChatBody">
-        <input type="text" class="form-control" placeholder="User" id="whichUser">
-        <p id="chatMessageSolution" class="mt-2">Which user is the target for this action?</p>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <p id="moderateMessage"></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-outline-danger" id="targetActionButton">Send</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal: Moderate -->

@@ -81,8 +81,10 @@ function glimboiMessage(data:message) {
  * @param {string} user The user who said the message
  * @param {string} message The message
  * @param {string} avatar The avatar URL
+ * @param {boolean} isReload Is this reloading all the messages for the chat page, or a new message?
+ * @param {number} messageID The ID of the message from glimesh chat
  */
-function logMessage(user:userName, message:message, avatar:avatar) {
+function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number) {
   	var adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
 
   	$("#chatList").append(`
@@ -91,7 +93,7 @@ function logMessage(user:userName, message:message, avatar:avatar) {
       			<span class="chat-img1 pull-left" name='${user}'>
         			<img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
       			</span>
-      			<p name='${user}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
+      			<p name='${user}' messageID='${messageID}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
       			<!--<div class="whiteText pull-left">09:40PM</div> -->
       		</div>
     	</li>`
@@ -99,7 +101,7 @@ function logMessage(user:userName, message:message, avatar:avatar) {
   	var scroll = document.getElementById("chatContainer")
   	scroll!.scrollTo(0,document.getElementById("chatList").scrollHeight);
 
-  	if (ChatSettings.isLoggingEnabled() == true) {
+  	if (ChatSettings.isLoggingEnabled() == true && isReload == false) {
     	ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
   	}
 }

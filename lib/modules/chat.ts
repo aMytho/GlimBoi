@@ -242,7 +242,7 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
                                                 ChatActions.toggleShuffle(userChat)
                                             break;
                                             case "toggle":
-                                                ChatActions.toggleShuffle(userChat, 1)
+                                                ChatActions.toggleShuffle(userChat)
                                             break;
                                             //case "queue":
                                             //case "list":
@@ -261,9 +261,9 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
               				}
             			}
             			try { // We try to log the message to the chat box (glimboi) and may log to a file
-              				globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl]);
+              				globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, chatMessage[4].result.data.chatMessage.id]);
               				globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
-              				ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl);
+              				ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, false, chatMessage[4].result.data.chatMessage.id);
               				ModHandle.scanMessage(userChat.toLowerCase(), messageChat.toLowerCase(), chatMessage[4].result.data.chatMessage.id, userID) // filter the message if needed
             			} catch (e3) {
             			}
