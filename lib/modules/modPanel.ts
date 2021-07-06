@@ -104,6 +104,7 @@ async function checkModPerms(user: userName, targetUser:userName | number, modRe
 }
 
 async function determineModAction(action: modAction, modInfo:modInfoPack) {
+    console.log(action, modInfo)
     let result:any;
     switch (action) {
         case "deleteMessage": result = await deleteMessage(modInfo.messageID)
@@ -159,39 +160,54 @@ function loadFilter(updatedPath:string) {
 }
 
 function bannedWordsReset() {
-    fs.readFile("./resources/json/defaultBannedWords.json", 'utf-8', function (err:NodeJS.ErrnoException, data:string) {
-        if (err) {
-            console.log("We couldn't get the default banned word file. " + err);
-            errorMessage(err, "Failed to import the default list of banned words. Filter is not active.");
-            return
-        }
-        bannedWordsDB.insert({words: JSON.parse(data)}, function(err, data) {
-            console.log("Default banned word list imported and saved.");
-            bannedWords = data.words;
-        })
-    });
+    return new Promise(resolve => {
+        fs.readFile("./resources/json/defaultBannedWords.json", 'utf-8', function (err:NodeJS.ErrnoException, data:string) {
+            if (err) {
+                console.log("We couldn't get the default banned word file. " + err);
+                errorMessage(err, "Failed to import the default list of banned words. Filter is not active.");
+                resolve(null)
+                return
+            }
+            bannedWordsDB.insert({words: JSON.parse(data)}, function(err, data) {
+                console.log("Default banned word list imported and saved.");
+                bannedWords = data.words;
+                resolve(true)
+            })
+        });
+    })
 }
 
 function getFilter():string[] {
     return bannedWords
 }
 
-function checkBannedWordAndModify(word: string, wordAction: bannedWordAction) {
-    if (wordAction == "add" && !bannedWords.includes(word)) {
-        bannedWords.push(word);
-        bannedWordsDB.update({}, { $push: { words: word } }, {}, function () { })
-        return true
+/**
+ * Adds or removes a word from the filter list
+ * @param word The word to add/remove
+ * @param wordAction add or remove
+ * @returns Returns true if operation succeeded, and an error message if not
+ */
+function checkBannedWordAndModify(word: string, wordAction: bannedWordAction): true | string {
+    if (wordAction == "add") {
+        if (!bannedWords.includes(word)) {
+            bannedWords.push(word);
+            console.log(`Adding ${word} to the banned list`)
+            bannedWordsDB.update({}, { $push: { words: word } }, {}, function () { })
+            return true
+        } else {
+            return `${word} has already been added to the list.`
+        }
     } else if (wordAction == "remove") {
         for (let i = 0; i < bannedWords.length; i++) {
             if (word == bannedWords[i]) {
                 bannedWords.splice(i, 1);
+                console.log(`Removing ${word} from the banned list.`)
                 bannedWordsDB.update({}, { $pull: { words: word } }, {}, function () { })
                 return true
             }
         }
-        return false
+        return `${word} does not exist in the list.`
     }
-    return false
 }
 
 function sendModMessage(user:userName, amount:number) {
@@ -203,18 +219,20 @@ function sendModMessage(user:userName, amount:number) {
  * @param messageID The ID of the message that will be deleted
  */
  function deleteMessage(messageID: number) {
+     console.log(`Trying to delete message with id ${messageID}`)
     let bodyContent = `mutation {deleteMessage(channelId:${ApiHandle.getID()}, messageId:${messageID}) {updatedAt, user {username}}}`
     return ApiHandle.glimeshApiRequest(bodyContent, "deleteMessage");
 }
 
 async function timeoutByUsername(username: userName, duration: timeout) {
+    console.log(`Trying to timeout user with name ${username} ${duration}`)
     if (ChatHandle.isConnected()) {
-        let timeoutType = ""
+        let timeoutType:"longTimeoutUser" | "shortTimeoutUser"
         duration == "long"? timeoutType = "longTimeoutUser" : timeoutType = "shortTimeoutUser"
         let ID = await UserHandle.findByUserName(username);
         if (typeof ID !== "string") {
             let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${ID.id}) {updatedAt, user {username}}}`
-            return ApiHandle.glimeshApiRequest(bodyContent, "shortTimeoutUser");
+            return ApiHandle.glimeshApiRequest(bodyContent, timeoutType);
         } else {
             let newID = await ApiHandle.getUserID(username);
             if (newID !== null && typeof newID !== "object") {
@@ -232,6 +250,7 @@ async function timeoutByUsername(username: userName, duration: timeout) {
 }
 
 function timeoutByUserID(id: number, duration: timeout) {
+    console.log(`Trying to timeout user with id ${id} ${duration}`)
     let timeoutType:glimeshMutation
     duration == "long"? timeoutType = "longTimeoutUser" : timeoutType = "shortTimeoutUser"
     let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${id}) {updatedAt, user {username}}}`
@@ -239,6 +258,7 @@ function timeoutByUserID(id: number, duration: timeout) {
 }
 
 async function banByUsername(username: userName) {
+    console.log(`trying to ban a user with username ${username}`)
     let userID = await ApiHandle.getUserID(username);
     if (typeof userID !== "object") {
         let bodyContent = `mutation {banUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
@@ -250,7 +270,8 @@ async function banByUsername(username: userName) {
 }
 
 function banByUserID(userID: number) {
-    let bodyContent = `mutation {banUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt}}`
+    console.log(`Trying to bane a user with ID ${userID}`)
+    let bodyContent = `mutation {banUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
     return ApiHandle.glimeshApiRequest(bodyContent, "ban");
 }
 
@@ -266,8 +287,8 @@ async function unBanByUsername(username: userName) {
 }
 
 function unBanByUserID(userID: number) {
-    let bodyContent = `mutation {unbanUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt}}`
+    let bodyContent = `mutation {unbanUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
     return ApiHandle.glimeshApiRequest(bodyContent, "unBan");
 }
 
-export {bannedWordsReset, checkBannedWordAndModify, determineModAction, getFilter, getUserWarnings, loadFilter, scanMessage, timeoutByUsername}
+export {bannedWordsReset, checkBannedWordAndModify, deleteMessage, determineModAction, getFilter, getUserWarnings, loadFilter, scanMessage, timeoutByUserID ,timeoutByUsername}

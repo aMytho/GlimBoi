@@ -97,7 +97,6 @@ async function getUserID(user: string): Promise<number | null | AuthError> {
     	})
     	.catch((err) => console.error(err));
   	});
-  	console.log("Completed user id request");
   	return ID;
 }
 
@@ -112,7 +111,6 @@ async function getCurrentGame() {
     	.then((res) => {
       		res.json().then((data) => {
         		try { //if it is null and nested this will prevent a crash.
-          			//console.log("The ID of " + channel + " is " + data.data.channel.id);
           			resolve(data.data.channel.id);
           		} catch(e) {
             		try {
@@ -306,9 +304,9 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation) {
                         break;
                     case "longTimeoutUser":resolve(data.data.longTimeoutUser.user.username)
                         break;
-                    case "ban":resolve(data.data.ban.user.username)
+                    case "ban":resolve(data.data.banUser.user.username)
                         break;
-                    case "unBan":resolve(data.data.unBan.user.username)
+                    case "unBan":resolve(data.data.unBanUser.user.username)
                         break;
                     default:
                         break;
