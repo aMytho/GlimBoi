@@ -173,5 +173,5 @@ function prepMediaModals() {
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
   	})
-    document.getElementById("pathOfOverlay").innerText = appData[0] + "\\modules\\OBS\\index.html"
+    document.getElementById("pathOfOverlay").innerText = appData[0] + "\\../src\\Overlay\\index.html"
 }

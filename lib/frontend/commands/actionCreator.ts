@@ -3,7 +3,7 @@ const fsPromise = require("fs").promises
 
 async function buildChatMessageUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src//html/commands/actions/ChatMessage.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/ChatMessage.html`)
     // Takes the data and converts it to text (html). Also sets the styles
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
@@ -17,7 +17,7 @@ async function buildChatMessageUI(mode:actionMode, commandInfo) {
 
 async function buildApiRequestGetUI(mode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/ApiRequestGet.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/ApiRequestGet.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;";
@@ -75,7 +75,7 @@ async function buildApiRequestGetUI(mode, commandInfo) {
  */
 async function addJSONRow(table, mode, filePath, fill?) {
     let tr = document.createElement("tr");
-    let file = await fsPromise.readFile(`src/html/commands/actions/resources/${filePath}.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/resources/${filePath}.html`)
     tr.innerHTML = file.toString();
     tr.firstElementChild.firstElementChild.addEventListener("click", event => {
         addJSONRow(table, mode, filePath);
@@ -111,7 +111,7 @@ function switchAPIView(view, action) {
 
 async function buildAudioUI(mode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/Audio.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Audio.html`)
     // Takes the data and converts it to text (html). Also sets the styles
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
@@ -134,7 +134,7 @@ async function buildAudioUI(mode, commandInfo) {
 
 async function buildImageGifUI(mode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/ImageGIF.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/ImageGif.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
@@ -154,11 +154,10 @@ async function buildImageGifUI(mode, commandInfo) {
 
 async function buildTimeoutUI(mode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/Timeout.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Timeout.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
-    console.log(action)
     if (commandInfo) {
         (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target;
         (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.duration;
@@ -169,7 +168,7 @@ async function buildTimeoutUI(mode, commandInfo) {
 
 async function buildVideoUI(mode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/Video.html`)
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Video.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
@@ -189,7 +188,7 @@ async function buildVideoUI(mode, commandInfo) {
 
 async function buildWaitUI(mode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(`src/html/commands/actions/Wait.html`);
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Wait.html`);
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"

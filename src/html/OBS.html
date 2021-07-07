@@ -211,7 +211,7 @@
         </div>
         <!--Body-->
         <div class="modal-body whiteText text-center">
-            <p>You can have various actions in the bot trigger media. You can play audio and display images,GIFs, and videos. You must add the overlay as a browser source in OBS. The overlay is index.html in <span><a onclick="shell.openPath(__dirname + '/overlays')" href="#">this</a></span> directory. It will allow your viewers to hear and see the media.</p>
+            <p>You can have various actions in the bot trigger media. You can play audio and display images,GIFs, and videos. You must add the overlay as a browser source in OBS. The overlay is index.html in <span><a onclick="shell.openPath(dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays')" href="#">this</a></span> directory. It will allow your viewers to hear and see the media.</p>
             <p class="mt-2">The overlay will launch when you join a chat. To test it without joining a chat you can launch it from the overlay tab. Then open the file in the browser. Click anywhere on the page and it will become active.</p>
             <p class="mt-2">To add media on command acitvation edit a command and add a corresponding action. <b>You must add the media on this page first.</b> Then the rest of the bot can use it.</p>
             <p class="mt-2">If the overlay is not connecting try refreshing the cache in OBS and check that the overlay status is active in the nav bar.</p>

@@ -161,7 +161,8 @@ function loadFilter(updatedPath:string) {
 
 function bannedWordsReset() {
     return new Promise(resolve => {
-        fs.readFile("./resources/json/defaultBannedWords.json", 'utf-8', function (err:NodeJS.ErrnoException, data:string) {
+        console.log(dirName, __dirname);
+        fs.readFile(dirName + "\\../resources/json/defaultBannedWords.json", 'utf-8', function (err:NodeJS.ErrnoException, data:string) {
             if (err) {
                 console.log("We couldn't get the default banned word file. " + err);
                 errorMessage(err, "Failed to import the default list of banned words. Filter is not active.");

@@ -55,7 +55,7 @@ function loadMusicProgram() {
         document.getElementById("repeatButton")!.setAttribute("data-original-title", "Repeat Enabled")
     }
 
-    document.getElementById("pathOfMusicOverlay")!.innerText = appData[0] + "\\modules\\OBS\\musicOverlay.html"
+    document.getElementById("pathOfMusicOverlay")!.innerText = dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays/musicOverlay.html'
 }
 
 /**

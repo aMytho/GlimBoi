@@ -85,7 +85,8 @@ function prepareModals(mode) {
 }
 
 function loadModalAdd() {
-    fs.readFile(`src/html/commands/addCommand.html`, async (err, data) => {
+    console.log(__dirname, dirName)
+    fs.readFile(dirName + `/html/commands/addCommand.html`, async (err, data) => {
         if (err) {
             throw err
         }
@@ -104,7 +105,7 @@ function loadModalAdd() {
 }
 
 function loadModalEdit(command) {
-    fs.readFile(`src/html/commands/editCommand.html`, async (err, data) => {
+    fs.readFile(dirName + `/html/commands/editCommand.html`, async (err, data) => {
         if (err) {
             throw err
         }

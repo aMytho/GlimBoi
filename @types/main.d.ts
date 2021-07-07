@@ -35,7 +35,7 @@ declare var fs: typeof import("fs")
 declare var ipcRenderer: typeof import("electron").ipcRenderer
 type Type = typeof import("bootstrap")
 type pageState = "home" | "commands" | "points" | "events" | "users" | "ranks" | "media" | "music" | "mod" | "settings" | "chat"
-
+declare var dirName:string
 type appDataType = [string, string]
 /**
  * The first value has the app path, the second shows the path to the user data folder

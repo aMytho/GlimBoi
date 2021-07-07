@@ -61,7 +61,7 @@ function connect() {
     }
 
     connection.onerror = function (event) {
-        connection.log("error", event);
+        console.log("error", event);
     }
 }
 

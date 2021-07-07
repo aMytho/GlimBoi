@@ -49,14 +49,14 @@ function createWindow () { //make Win a window
     	icon: "UI/Icons/icon.ico",
     	frame: false
   	})
-  	win.loadFile('../src/index.html');
+  	win.loadFile(__dirname + '\\../src/index.html');
   	win.setIcon('resources/Icons/icon.ico');
 }
 app.whenReady().then(createWindow)
 
 // send info to the renderer so it can use glimboi modules. This MUST come first and it needs to be very fast.
 ipcMain.on("appDataRequest", (event) => {
-  	event.returnValue = [appPath, app.getPath("userData")]
+  	event.returnValue = [__dirname, app.getPath("userData")]
 })
 
 ipcMain.on("pleaseClose", (event) => {
