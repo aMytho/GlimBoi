@@ -1,7 +1,7 @@
 {
   "name": "glimboi",
   "productName": "GlimBoi",
-  "version": "1.8.0",
+  "version": "1.8.2",
   "description": "A chatbot for Glimesh.tv",
   "main": "build/main.js",
   "repository": {
@@ -10,14 +10,15 @@
   },
   "build": {
     "appId": "GlimBoi",
-    "asar": false,
+    "asar": true,
+    "asarUnpack": "src/overlays/**",
     "win": {
-      "icon": "UI/Icon/icon.png"
+      "icon": "resources/Icon/icon.png"
     },
     "nsis": {
       "oneClick": true,
-      "installerIcon": "UI/Icons/icon.ico",
-      "installerHeaderIcon": "UI/Icons/icon.ico"
+      "installerIcon": "resources/Icons/icon.ico",
+      "installerHeaderIcon": "resources/Icons/icon.ico"
     },
     "linux": {
       "target": "deb",
@@ -25,11 +26,14 @@
       "maintainer": "Mytho",
       "vendor": "Mytho",
       "executableName": "GlimBoi",
-      "icon": "UI/Icons/500x500.icns"
+      "icon": "resources/Icons/500x500.icns"
     },
     "directories": {
-      "buildResources": "UI/Icons"
-    }
+      "buildResources": "resources/Icons"
+    },
+    "files": [
+        "!docs/*", "!dist/*", "!@types/*", "!lib/*"
+    ]
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
