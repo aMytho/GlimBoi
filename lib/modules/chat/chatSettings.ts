@@ -23,6 +23,7 @@ function updateChatSettings(settings:Settings) {
     updateHealth(settings.chat.health);
     updateRepeatingCommands(settings.Commands.repeatDelay);
     repeatSpamProtection = settings.Commands.repeatSpamProtection;
+    loggingEnabled = settings.chat.logging;
 }
 /**
  * Called when the chat is disconnected. Turns off all intervals
@@ -72,6 +73,7 @@ function updateHealth(healthReminder:number) {
  */
 function startLogs(logEnabled:boolean) {
     if (logEnabled) {
+        loggingEnabled = true;
         setTimeout(() => { // Wait a few seconds and show a dialogue box. Asks for the location to log messages.
             ipcRenderer.send("startLogging", ""); // Tells the main process to start logging messages.
             ipcRenderer.once("startedLogging", (event, args) => { // When the main process recieves our request...
@@ -94,7 +96,7 @@ function startLogs(logEnabled:boolean) {
  * Returns logging status
  * @returns {boolean} is logging enabled?
  */
-function isLoggingEnabled() {
+function isLoggingEnabled(): boolean {
     return loggingEnabled
 }
 

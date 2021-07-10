@@ -100,7 +100,7 @@ ipcMain.on("startLogging", async event => {
     let { dialog } = require("electron");
     let fs = require("fs") //handles Files (writing and reading)
     let fileSelection = await dialog.showSaveDialog(win, { title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation'], filters: [{ name: "Chat Logs", extensions: ["txt"] }] })
-    console.log(fileSelection)
+    console.log(fileSelection);
     if (fileSelection == undefined || fileSelection.canceled == true) {
         console.log("They did not select a file.");
         event.reply("noLogSelected", "No file was selected.")

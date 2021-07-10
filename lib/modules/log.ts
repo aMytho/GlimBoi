@@ -65,7 +65,7 @@ class LoggingEvent implements LogType {
             case "Ban User":
                 return `${this.time}: ${caused} banned ${affected[0]}`
             case "UnBan User":
-                return `${this.time}: ${caused} banned ${affected[0]}`
+                return `${this.time}: ${caused} removed a ban on ${affected[0]}`
             case "Add Quote":
                 return `${this.time}: ${caused} added a new quote from ${affected}`
             default:
