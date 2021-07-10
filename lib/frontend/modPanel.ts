@@ -12,7 +12,7 @@ function addBannedWords(words:string) {
     let wordsToAdd = [...new Set(words.split(" "))]
     for (let i = 0; i < wordsToAdd.length; i++) {
         console.log(wordsToAdd);
-        let resultOfListModification = ModHandle.checkBannedWordAndModify(wordsToAdd[i], "add");
+        let resultOfListModification = ModHandle.checkBannedWordAndModify(wordsToAdd[i].trim(), "add");
         if (resultOfListModification !== true) {
             document.getElementById("addWordErrorMessage").innerText = resultOfListModification;
             return

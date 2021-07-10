@@ -52,7 +52,7 @@ function bannedWordsReset() {
  */
 function checkBannedWordAndModify(word: string, wordAction: bannedWordAction): true | string {
     if (wordAction == "add") {
-        if (!bannedWords.includes(word)) {
+        if (!bannedWords.includes(word) && word.length > 1) {
             bannedWords.push(word);
             console.log(`Adding ${word} to the banned list`)
             bannedWordsDB.update({}, { $push: { words: word } }, {}, function () { })
