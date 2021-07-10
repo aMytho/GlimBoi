@@ -10,10 +10,11 @@
                                 <label for="sel" class="whiteText">1 Warning:</label>
                                 <select class="form-control" id="warning1"
                                     style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="deleteMessage" selected="">Delete Message (Default)</option>
+                                    <option value="none" selected="">Do Nothing (Default)</option>
+                                    <option value="deleteMessage">Delete Message</option>
                                     <option value="shortTimeout">Short Timeout</option>
                                     <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban">Ban User</option>
+                                    <option value="ban" style="color:red">Ban User</option>
                                 </select>
                             </div>
                         </div>
@@ -24,10 +25,11 @@
                                 <label for="sel" class="whiteText">2 Warnings:</label>
                                 <select class="form-control" id="warning2"
                                     style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="deleteMessage" selected="">Delete Message (Default)</option>
+                                    <option value="none" selected="">Do Nothing (Default)</option>
+                                    <option value="deleteMessage">Delete Message</option>
                                     <option value="shortTimeout">Short Timeout</option>
                                     <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban">Ban User</option>
+                                    <option value="ban" style="color:red">Ban User</option>
                                 </select>
                             </div>
                         </div>
@@ -38,10 +40,11 @@
                                 <label for="sel" class="whiteText">3 Warnings:</label>
                                 <select class="form-control" id="warning3"
                                     style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="deleteMessage" selected="">Delete Message (Default)</option>
+                                    <option value="none" selected="">Do Nothing (Default)</option>
+                                    <option value="deleteMessage">Delete Message</option>
                                     <option value="shortTimeout">Short Timeout</option>
                                     <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban">Ban User</option>
+                                    <option value="ban" style="color:red">Ban User</option>
                                 </select>
                             </div>
                         </div>
@@ -52,15 +55,16 @@
                                 <label for="sel" class="whiteText">3+ Warnings:</label>
                                 <select class="form-control" id="warningMore"
                                     style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="deleteMessage" selected="">Delete Message (Default)</option>
+                                    <option value="none" selected="">Do Nothing (Default)</option>
+                                    <option value="deleteMessage">Delete Message</option>
                                     <option value="shortTimeout">Short Timeout</option>
                                     <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban">Ban User</option>
+                                    <option value="ban" style="color:red">Ban User</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <a class="btn btn-info mt-2 btn-inline" href="#" onclick="successMessage('Warnings Saved', 'Your new settings have been applied and saved.');saveWarnings()">Save</a>
+                    <a class="btn btn-block btn-info mt-2 btn-inline" href="#" onclick="successMessage('Warnings Saved', 'Your new settings have been applied and saved.');saveWarnings()">Save</a>
                 </div>
                 <div class="col-md-4 col-12">
                     <h4 class="text-center whiteText">Banned Words</h4>
@@ -71,7 +75,7 @@
                             </ul>
                         </div>
                         <div class="col-6">
-                            <a class="btn btn-info btn-group mt-2 btn-inline" href="#" onclick="shell.openExternal(dirName + '\\../resources/json')">View Default</a>
+                            <a class="btn btn-info btn-group mt-2 btn-inline" href="#" onclick="loadLink('github.com/MauriceButler/badwords/blob/master/array.js')">View Default</a>
                             <a class="btn btn-info mt-2 btn-inline" href="#" onclick="successMessage('Filters are never perfect. Eventually, something will get through. This is not a replacement for a mod.', 'This filter is very strict for most users. You will probably want adjust it for your stream. It is disabled by default')">Info</a>
                         </div>
                     </div>
@@ -93,7 +97,7 @@
                 </div>
             </div>
             <div class="row mt-auto">
-                <p class="whiteText ml-1">Note that the custom words override the default list.</p>
+                <p class="whiteText ml-1">Note that custom words override the default list.</p>
                 <p class="whiteText ml-1">By default the filter is disabled. This means the bot will not scan for banned words. </p>
             </div>
         </div>
@@ -500,5 +504,7 @@
         -webkit-filter: blur(10px);
         filter: blur(10px);
         cursor: pointer;
+        border-style: dotted;
+        border-width: 5px;
     }
 </style>

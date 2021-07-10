@@ -29,10 +29,11 @@ let updatedSettings = {
     },
     Moderation: {
         filterEnabled: false,
-        warning1: "deleteMessage",
-        warning2: "deleteMessage",
-        warning3: "deleteMessage",
-        warningAbove: "deleteMessage"
+        warning1: "none",
+        warning2: "none",
+        warning3: "none",
+        warningAbove: "none",
+        modMessage: false
     }
 }
 
@@ -89,10 +90,11 @@ function getSettings() {
             },
             Moderation: {
                 filterEnabled: false,
-                warning1: "deleteMessage",
-                warning2: "deleteMessage",
-                warning3: "deleteMessage",
-                warningAbove: "deleteMessage"
+                warning1: "none",
+                warning2: "none",
+                warning3: "none",
+                warningAbove: "none",
+                modMessage: false
             }
         })
         try {
@@ -127,10 +129,11 @@ function getSettings() {
             },
             Moderation: {
                 filterEnabled: false,
-                warning1: "deleteMessage",
-                warning2: "deleteMessage",
-                warning3: "deleteMessage",
-                warningAbove: "deleteMessage"
+                warning1: "none",
+                warning2: "none",
+                warning3: "none",
+                warningAbove: "none",
+                modMessage: false
             }
         }
     }
@@ -284,7 +287,8 @@ function saveSettings() {
             warning1: settings.Moderation.warning1,
             warning2: settings.Moderation.warning2,
             warning3: settings.Moderation.warning3,
-            warningAbove: settings.Moderation.warningAbove
+            warningAbove: settings.Moderation.warningAbove,
+            modMessage: settings.Moderation.modMessage
         }
     }
     console.log(settings);
@@ -320,10 +324,11 @@ function resetSettings() {
         },
         Moderation: {
             filterEnabled: false,
-            warning1: "deleteMessage",
-            warning2: "deleteMessage",
-            warning3: "deleteMessage",
-            warningAbove: "deleteMessage"
+            warning1: "none",
+            warning2: "none",
+            warning3: "none",
+            warningAbove: "none",
+            modMessage: false
         }
     }
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });

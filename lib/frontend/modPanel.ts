@@ -123,7 +123,7 @@ function displayBannedWords() {
     // Loads the list of words
     let wordList = document.getElementById("bannedWordListElement") as HTMLUListElement
     wordList.innerHTML = ""
-    let currentWords = ModHandle.getFilter();
+    let currentWords = ModHandle.getBannedWords();
     currentWords.forEach(function (word) {
         let listItem = document.createElement("li")
         listItem.innerText = word
