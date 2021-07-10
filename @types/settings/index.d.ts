@@ -27,6 +27,7 @@ interface Settings {
         warning2: warningAction;
         warning3: warningAction;
         warningAbove: warningAction;
+        modMessage: boolean;
     }
 }
 
@@ -57,7 +58,6 @@ declare class CacheStoreClass {
     setFile(path: string): object
 }
 
-
 interface LogType {
     event: logEvent;
     caused: string
@@ -81,14 +81,7 @@ interface LogConstructor {
     data?: any
 }
 
-type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" | "Remove Points" | friendlyWarningAction
-
-
-declare module "LogHandle" {
-    export function getLogByType(log:logEvent | logEvent[]): Promise<any[] | null>
-    export function logEvent({}: LogConstructor): void
-    export function updatePath(path:string): void
-}
+type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" | "Remove Points" | "Add Quote" | friendlyWarningAction
 
 /**
  * Duration of the timeout
@@ -103,9 +96,9 @@ type origin = "manual" | "ruleset"
  */
 type filterStrength = 0 | 1 | 2 | 3
 type warning = { user: userName, amount: number }
-type warningAction = "deleteMessage" | "shortTimeout" | "longTimeout" | "ban"
+type warningAction = "deleteMessage" | "shortTimeout" | "longTimeout" | "ban" | "none"
 type friendlyWarningAction = "Delete Message" | "Short Timeout User" | "Long Timeout User" | "Ban User" | "UnBan User"
-type modAction = "deleteMessage" | "shortTimeout" | "longTimeout" | "ban" | "unBan"
+type modAction = "deleteMessage" | "shortTimeout" | "longTimeout" | "ban" | "unBan" | "none"
 type bannedWordAction = "add" | "remove"
 type bannedWordsDB = { words: string[] }[]
 interface modInfoPack {
@@ -114,45 +107,4 @@ interface modInfoPack {
     userID?: number
     source?: "manual" | "ruleset"
     caused?: userName
-}
-
-declare module "ModHandle" {
-    /**
-     * Resets the banned word list to its default state.
-     */
-    export function bannedWordsReset(): void
-    /**
-     * Adds or removes a banned word
-     * @param word The word to add or remove
-     * @param wordAction add or remove
-     */
-    export function checkBannedWordAndModify(word: string, wordAction: bannedWordAction): boolean
-    /**
-     * Determines the mod action type and runs it
-     * @param action The action to run
-     * @param modInfo An object containing info related to the mod action
-     */
-    export function determineModAction(action: modAction, modInfo: modInfoPack): void
-    /**
-     * Returns the words that the user wants filtered
-     */
-    export function getFilter(): string[]
-    /**
-     * Returns how many warnings a user currently has
-     * @param user The user to search for
-     */
-    export function getUserWarnings(user: string): number
-    /**
-     * Loads the mod filter
-     */
-    export function loadFilter(updatedPath: string): void
-    /**
-     * Scans and removes a message if it contains a bad word
-     * @param user The user who said the message
-     * @param message THe message to scan
-     * @param userID The user ID
-     */
-    export function scanMessage(user: userName, message: string, messageID:string, userID: number): void
-
-
 }
