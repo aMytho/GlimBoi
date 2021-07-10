@@ -1,6 +1,6 @@
 // File creates and runs actions for commands.
 
-const ActionResources:ActionResources = require(appData[0] + "/modules/commands/actionResources.js")
+const ActionResources:typeof import("../commands/actionResources") = require(appData[0] + "/modules/commands/actionResources.js")
 
 /**
  * A ChatAction is a class with instructions on what to do based on the action.
@@ -37,7 +37,7 @@ class ChatAction implements ChatActionType {
 /** Chatmessage action. Sends a message to chat.
  * @param {string} message The message that will be sent to chat
  */
-class ChatMessage extends ChatAction implements ChatMessageType {
+class ChatMessage extends ChatAction {
     message:string
     constructor({message}:BuildChatMessage) {
         super("ChatMessage", "Sends a message to chat", "message", undefined)
@@ -57,7 +57,7 @@ class ChatMessage extends ChatAction implements ChatMessageType {
  * @param {array} headers The headers to include with the request
  * @param {array} returns What variables we set and what data we search for in the response
  */
-class ApiRequestGet extends ChatAction implements ApiRequestGetType {
+class ApiRequestGet extends ChatAction {
     url:string
     headers:any
     returns: any
@@ -85,7 +85,7 @@ class ApiRequestGet extends ChatAction implements ApiRequestGetType {
  * Plays a sound effect in the overlay
  * @param {string} source The audio file to be played
  */
-class Audio extends ChatAction implements AudioType {
+class Audio extends ChatAction {
     source: mediaName
     constructor({source}:BuildAudio) {
         super("Audio", "Plays audio in the overlay", "source", undefined);
@@ -102,10 +102,30 @@ class Audio extends ChatAction implements AudioType {
 }
 
 /**
+ * Bans a user from the channel. Use with caution
+ */
+class Ban extends ChatAction {
+    target: any
+    constructor({target}) {
+        super("Ban", "Times a user out for 5 minutes", "target", undefined)
+        this.target = target
+    }
+
+    async run({activation, user}) {
+        let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user})
+        let result = await ModHandle.ModPowers.banByUsername(target);
+        if (typeof result == "string") {
+            LogHandle.logEvent({event: "Ban User", users: [user.username, target]})
+        }
+        return
+    }
+}
+
+/**
  * Plays an image/gif in the overlay.
  * @param {string} source The image/gif to display
  */
-class ImageGif extends ChatAction implements ImageGifType {
+class ImageGif extends ChatAction {
     source: mediaName
     constructor({source}:BuildimageGif) {
         super("ImageGif", "Shows an image/GIF in the overlay", "source", undefined);
@@ -121,7 +141,9 @@ class ImageGif extends ChatAction implements ImageGifType {
     }
 }
 
-
+/**
+ * Times out a user, preventing them from speaking for 5 or 15 minutes
+ */
 class Timeout extends ChatAction {
     target: any
     duration: timeout
@@ -133,7 +155,12 @@ class Timeout extends ChatAction {
 
     async run({activation, user}) {
         let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user})
-        await ModHandle.timeoutByUsername(target, this.duration);
+        let result = await ModHandle.ModPowers.timeoutByUsername(target, this.duration);
+        if (this.duration == "short" && typeof result == "string") {
+            LogHandle.logEvent({event: "Short Timeout User", users: [user.username, target]})
+        } else if (this.duration == "long" && typeof result == "string") {
+            LogHandle.logEvent({event: "Long Timeout User", users: [user.username, target]})
+        }
         return
     }
 }
@@ -142,7 +169,7 @@ class Timeout extends ChatAction {
  * Plays a video in the overlay
  * @param {string} source The video file we are playing
  */
-class Video extends ChatAction implements VideoType {
+class Video extends ChatAction {
     source: mediaName
     constructor({source}:BuildVideo) {
         super("Video", "Plays a video in the overlay", "source", undefined);
@@ -163,7 +190,7 @@ class Video extends ChatAction implements VideoType {
  * Wait action. Waits a specified duration.
  * @param {number} time How long should we wait?
  */
-class Wait extends ChatAction implements WaitType {
+class Wait extends ChatAction {
      wait: number
     constructor({wait}:WaitType) {
         super("Wait", "Waits a specific amount of time", "wait", undefined)
@@ -179,4 +206,4 @@ class Wait extends ChatAction implements WaitType {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, ChatMessage, ImageGif, Timeout, Video, Wait}
+export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, Timeout, Video, Wait}

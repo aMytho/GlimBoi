@@ -60,6 +60,7 @@ function prepareActions(mode) {
     document.getElementById("CreateChatMessage")!.onclick = () => addActionToUI("ChatMessage", mode);
     document.getElementById("CreateApiRequestGet")!.onclick = () => addActionToUI("ApiRequestGet", mode);
     document.getElementById("CreateAudio")!.onclick = () => addActionToUI("Audio", mode);
+    document.getElementById("CreateBan")!.onclick = () => addActionToUI("Ban", mode);
     document.getElementById("CreateImageGif")!.onclick = () => addActionToUI("ImageGif", mode);
     document.getElementById("CreateVideo")!.onclick = () => addActionToUI("Video", mode);
     document.getElementById("CreateTimeout")!.onclick = () => addActionToUI("Timeout", mode);
@@ -133,6 +134,9 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         case "Audio": await ActionCreator.buildAudioUI(mode, data);
             break;
 
+        case "Ban": await ActionCreator.buildBanUI(mode, data);
+            break;
+
         case "ImageGif": await ActionCreator.buildImageGifUI(mode, data);
         break;
 
@@ -192,24 +196,7 @@ async function insertEditData(command:CommandType) {
     // Now we show the actions. If none exist (v1 command) we convert the message prperties to their action equivalents
     if (command.actions) {
         for (let i = 0; i < command.actions.length; i++) {
-            switch (command.actions[i].action) {
-                case "ChatMessage": await ActionCreator.buildChatMessageUI("edit", {message: command.actions[i].message})
-                break;
-                case "ApiRequestGet": await ActionCreator.buildApiRequestGetUI("edit", {url: command.actions[i].url, returns: command.actions[i].returns, headers: command.actions[i].headers});
-                break;
-                case "Audio": await ActionCreator.buildAudioUI("edit", {source: command.actions[i].source})
-                break;
-                case "ImageGif": await ActionCreator.buildImageGifUI("edit", {source: command.actions[i].source})
-                break;
-                case "Timeout": await ActionCreator.buildTimeoutUI("edit", {target: command.actions[i].target, duration: command.actions[i].duration})
-                break;
-                case "Video": await ActionCreator.buildVideoUI("edit", {source: command.actions[i].source})
-                break;
-                case "Wait": await ActionCreator.buildWaitUI("edit", {wait: command.actions[i].wait})
-                break;
-                default:
-                    break;
-            }
+            await addActionToUI(command.actions[i].action, "edit", command.actions[i])
         }
     } else {
         await ActionCreator.buildChatMessageUI("edit", {message: command.message});
@@ -229,6 +216,5 @@ async function insertEditData(command:CommandType) {
         }
     }
 }
-
 
 export {addActionToUI, loadModalAdd, loadModalEdit}

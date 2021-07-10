@@ -15,7 +15,7 @@ async function buildChatMessageUI(mode:actionMode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
 }
 
-async function buildApiRequestGetUI(mode, commandInfo) {
+async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/ApiRequestGet.html`)
     action.innerHTML = file.toString();
@@ -73,7 +73,7 @@ async function buildApiRequestGetUI(mode, commandInfo) {
  * @param {string} mode "Add or Edit"
  * @param {string} filePath Which file we are adding (file contains the new row info)
  */
-async function addJSONRow(table, mode, filePath, fill?) {
+async function addJSONRow(table, mode:actionMode, filePath, fill?) {
     let tr = document.createElement("tr");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/resources/${filePath}.html`)
     tr.innerHTML = file.toString();
@@ -109,7 +109,7 @@ function switchAPIView(view, action) {
     }
 }
 
-async function buildAudioUI(mode, commandInfo) {
+async function buildAudioUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/Audio.html`)
     // Takes the data and converts it to text (html). Also sets the styles
@@ -132,7 +132,19 @@ async function buildAudioUI(mode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
 }
 
-async function buildImageGifUI(mode, commandInfo) {
+async function buildBanUI(mode:actionMode, commandInfo) {
+    let action = document.createElement("div");
+    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Ban.html`);
+    action.innerHTML = file.toString();
+    action.className = "action";// @ts-ignore
+    action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
+    if (commandInfo) {
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action)
+}
+
+async function buildImageGifUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/ImageGif.html`)
     action.innerHTML = file.toString();
@@ -152,7 +164,7 @@ async function buildImageGifUI(mode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
 }
 
-async function buildTimeoutUI(mode, commandInfo) {
+async function buildTimeoutUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/Timeout.html`)
     action.innerHTML = file.toString();
@@ -166,7 +178,7 @@ async function buildTimeoutUI(mode, commandInfo) {
 
 }
 
-async function buildVideoUI(mode, commandInfo) {
+async function buildVideoUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/Video.html`)
     action.innerHTML = file.toString();
@@ -186,7 +198,7 @@ async function buildVideoUI(mode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
 }
 
-async function buildWaitUI(mode, commandInfo) {
+async function buildWaitUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
     let file = await fsPromise.readFile(dirName + `/html/commands/actions/Wait.html`);
     action.innerHTML = file.toString();
@@ -198,4 +210,4 @@ async function buildWaitUI(mode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
 }
 
-export  {buildApiRequestGetUI, buildAudioUI, buildChatMessageUI, buildImageGifUI, buildTimeoutUI, buildVideoUI, buildWaitUI}
+export  {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI, buildImageGifUI, buildTimeoutUI, buildVideoUI, buildWaitUI}

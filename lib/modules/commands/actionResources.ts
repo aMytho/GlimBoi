@@ -1,5 +1,4 @@
 // Holds functions for actions
-
 let listofvariables: string[] | {name:string}[] = [
     "$target", // The word after the command. ex !so Mytho (Mytho would be the target)
     "$user", //The user who activated the command.

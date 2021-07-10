@@ -255,6 +255,19 @@ function determineActionAndCheck(action, mode:actionMode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
             }
+        case "Ban":
+            try {
+                console.log(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText)
+                let possibleBan = action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim()
+                if (possibleBan.length == 0) {
+                    throw "No target for ban was provided. Enter a name or a variable (ie. $user, $target)"
+                }
+                return { type: "Ban", target: possibleBan };
+            } catch (e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
         case "ImageGif":
             try {
                 let possibleImageGif = action.children[1].firstElementChild.firstElementChild.firstElementChild.value
