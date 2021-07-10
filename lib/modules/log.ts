@@ -66,6 +66,8 @@ class LoggingEvent implements LogType {
                 return `${this.time}: ${caused} banned ${affected[0]}`
             case "UnBan User":
                 return `${this.time}: ${caused} banned ${affected[0]}`
+            case "Add Quote":
+                return `${this.time}: ${caused} added a new quote from ${affected}`
             default:
                 return "No event was sent to the Log Handler."
         }
@@ -114,7 +116,7 @@ function logEvent(data: LogConstructor): void {
 function getLogByType(log:logEvent | logEvent[]): Promise<null | LogType[]> {
     return new Promise(resolve => {
         if (typeof log == "string") {
-            loggingDB.find({event: log}).limit(5).exec(function (err: Error | null, docs: LogType[]) {
+            loggingDB.find({event: log}).sort({_id: -1}).limit(5).exec(function (err: Error | null, docs: LogType[]) {
                 if (docs.length == 0) {
                     resolve(null)
                 } else {
@@ -126,11 +128,12 @@ function getLogByType(log:logEvent | logEvent[]): Promise<null | LogType[]> {
             log.forEach(logEventName => {
                 search.push({event: logEventName})
             });
-            loggingDB.find({ $or: search}).limit(5).exec(function (err: Error | null, docs: any[]) {
+            loggingDB.find({ $or: search}).sort({time: -1}).limit(5).exec(function (err: Error | null, docs: any[]) {
+                console.log(docs)
                 if (docs.length == 0) {
                     resolve(null)
                 } else {
-                    resolve(docs.sort((a,b) => b.time - a.time))
+                    resolve(docs)
                 }
           });
         }

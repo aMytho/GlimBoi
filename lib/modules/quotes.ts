@@ -43,7 +43,7 @@ function updatePath(updatedPath:string) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-async function addquote(quoteName:quoteName, quoteData:quoteData) {
+async function addquote(quoteName:quoteName, quoteData:quoteData, onBehalfOf:userName = "Glimboi") {
   	return new Promise(resolve => {
     	let newquote = new Quote(quoteName, quoteData);
         // @ts-ignore
@@ -58,7 +58,7 @@ async function addquote(quoteName:quoteName, quoteData:quoteData) {
         		    try {document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created."} catch(e) {}
         			resolve("USERNOTEXIST")
         		} else {
-          			addquote(quoteName, quoteData);
+          			addquote(quoteName, quoteData, onBehalfOf);
           		}
          		return
       		} else {
@@ -75,7 +75,8 @@ async function addquote(quoteName:quoteName, quoteData:quoteData) {
           				console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
           				UserHandle.addQuote(newquote, doc._id).then(data => {
             				try { document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`} catch(e) {}
-            				resolve("QUOTEFINISHED")
+                            LogHandle.logEvent({event: "Add Quote", users: [onBehalfOf, quoteName]});
+            				resolve("QUOTEFINISHED");
           				})
         			});
       			} catch (e) {

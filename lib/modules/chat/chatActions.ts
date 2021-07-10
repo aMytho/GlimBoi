@@ -74,7 +74,7 @@ async function addQuoteChat(user:userName, data, creator:userName) {
     } else {
         console.log(creator, data.message);
         let trimMessage = 10 + creator.length + 2
-        let quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage))
+        let quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage), user.toLowerCase())
         if (quoteResult == "QUOTEFINISHED") {
             ChatMessages.glimboiMessage(`Quote added.`)
         } else {
@@ -576,7 +576,7 @@ async function timeoutUser(user:userName, target:userName, duration:timeout, id:
             let newTargetUser = await UserHandle.addUser(target, false, user);
             if (newTargetUser !== "INVALIDUSER") { timeoutUser(user, target, duration, id) }
         } else {
-            ModHandle.timeoutByUserID(id, duration);
+            ModHandle.ModPowers.timeoutByUserID(id, duration);
         }
     }
 }
