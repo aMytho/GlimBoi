@@ -323,7 +323,7 @@ function editUserTable(user:userName, role:rankName, points) {
     	row.data(data).draw();
     	// loadUserTable()
   	} catch (e) {
-    	console.log(e)
+    	//console.log(e)
   	}
 }
 

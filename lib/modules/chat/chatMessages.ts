@@ -85,7 +85,6 @@ function glimboiMessage(data:message) {
  * @param {number} messageID The ID of the message from glimesh chat
  */
 function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState) {
-    console.log(user, message, avatar, isReload, messageID, state)
   	var adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
 
   	$("#chatList").append(`

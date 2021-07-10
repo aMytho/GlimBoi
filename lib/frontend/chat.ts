@@ -389,7 +389,7 @@ function contextMenu(action: logEvent, duration: timeout) {
     } else if (action == "Delete Message") {
         ModHandle.ModPowers.deleteMessage(contentMessageID).then(data => {
             if (data !== null && typeof data !== "object") {
-                LogHandle.logEvent({event: "Delete Message" , users: ["Glimboi", data]})
+                LogHandle.logEvent({event: "Delete Message" , users: ["Glimboi", data], data: {messageID: contentMessageID}})
             }
         })
     } else if (action == "Ban User") {
