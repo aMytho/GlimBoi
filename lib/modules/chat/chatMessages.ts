@@ -84,11 +84,12 @@ function glimboiMessage(data:message) {
  * @param {boolean} isReload Is this reloading all the messages for the chat page, or a new message?
  * @param {number} messageID The ID of the message from glimesh chat
  */
-function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number) {
+function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState) {
+    console.log(user, message, avatar, isReload, messageID, state)
   	var adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
 
   	$("#chatList").append(`
-    	<li class="left clearfix ${adminClass} w-100" name='${user}'>
+    	<li class="left clearfix ${adminClass} ${state} w-100" name='${user}' title="${getMessageHoverTitle(state)}">
       		<div contentLocation="1" class="chat-body1 clearfix testing" name='${user}' oncontextmenu="loadChatContextMenu(event)">
       			<span class="chat-img1 pull-left" name='${user}'>
         			<img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
@@ -106,4 +107,15 @@ function logMessage(user:userName, message:message, avatar:avatar, isReload: boo
   	}
 }
 
-export { filterMessage, glimboiMessage, logMessage, sendMessage };
+function getMessageHoverTitle(state:messageState) {
+    switch (state) {
+        case "ban": return "Message removed due to ban."
+        case "deleted": return "Message deleted by manual deletion"
+        case "none": return ""
+        case "timeout": return "Message removed due to timeout."
+        default:
+            break;
+    }
+}
+
+export { filterMessage, glimboiMessage, logMessage, sendMessage }

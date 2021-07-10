@@ -51,12 +51,12 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
     	connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
 
     	// Load requirements for working chat
-    	ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js")
+    	ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js");
     	ChatSettings.loadChatSettings(settings);
-    	ChatActions = require(appData[0] + "/modules/chat/chatActions.js")
-    	ChatStats = require(appData[0] + "/modules/chat/chatStats.js")
+    	ChatActions = require(appData[0] + "/modules/chat/chatActions.js");
+    	ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
     	ChatStats.loadChatStats();
-    	ChatMessages = require(appData[0] + "/modules/chat/chatMessages.js")
+    	ChatMessages = require(appData[0] + "/modules/chat/chatMessages.js");
         // Load Overlay (OBS and Music)
         OBSHandle.startServer();
 
@@ -100,7 +100,7 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
         		try {
                     console.log(chatMessage[4], chatMessage)
           			if (chatMessage[4].result.data !== undefined) {
-            			let userChat = chatMessage[4].result.data.chatMessage.user.username;
+            			let userChat:userName = chatMessage[4].result.data.chatMessage.user.username;
             			let messageChat = chatMessage[4].result.data.chatMessage.message;
             			let userID = Number(chatMessage[4].result.data.chatMessage.user.id)
             			console.log(userChat + ": " + messageChat);
@@ -260,11 +260,11 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
                   				break;
               				}
             			}
-            			try { // We try to log the message to the chat box (glimboi) and may log to a file
-              				globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, chatMessage[4].result.data.chatMessage.id]);
-              				globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0))
-              				ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, false, chatMessage[4].result.data.chatMessage.id);
-              				ModHandle.scanMessage(userChat.toLowerCase(), messageChat.toLowerCase(), chatMessage[4].result.data.chatMessage.id, userID) // filter the message if needed
+            			try {
+                            ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, false, chatMessage[4].result.data.chatMessage.id, "none");
+              				globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, chatMessage[4].result.data.chatMessage.id, "none"]);
+              				globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0));
+              				ModHandle.ModPowers.scanMessage(userChat, messageChat.toLowerCase(), chatMessage[4].result.data.chatMessage.id, userID) // filter the message if needed
             			} catch (e3) {
             			}
             			// Add a user message counter if it isn't the bot

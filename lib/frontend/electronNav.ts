@@ -21,7 +21,7 @@ const LogHandle:LogHandle = require(appData[0] + "/modules/log.js")
 const mm = require("music-metadata")
 let currentPage:pageState = "home"
 
-var globalChatMessages = [];
+var globalChatMessages:storedChatMessage[] = [];
 
 function changeNavHighlight(highlight:string) { //Removes the old and highlights the new
   	try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
