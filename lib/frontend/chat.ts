@@ -1,17 +1,17 @@
 var isDev = false; // We assume they are on a production release.
 // @ts-ignore
-var ChatSettings:ChatSettings;
-var ChatActions:ChatActions;
-var ChatStats;
+var ChatSettings:typeof import("../modules/chat/chatSettings");
+var ChatActions:typeof import("../modules/chat/chatActions");
+var ChatStats: typeof import("../modules/chat/chatStats");
 // @ts-ignore
-var ChatMessages:ChatMessages;
+var ChatMessages:typeof import("../modules/chat/chatMessages");
 var chatID = "" // the channel ID
 var reconnectDelay, currentChannelToRejoin;
 
 var contentTarget;
 var contentBody;
 var contentMessageID;
-var globalChatMessages: any[];
+var globalChatMessages: storedChatMessage[];
 var currentChatConnected = null;
 
 ChatChannels.updatePath(appData[1]);
@@ -186,11 +186,12 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
  */
 function loadChatWindow() {
   	globalChatMessages.forEach(msg => {// @ts-ignore
-    	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3]);
+        console.log(msg);
+    	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4]);
   	});
 
     LogHandle.getLogByType(["Delete Message", "Ban User", "Long Timeout User", "Short Timeout User", "UnBan User", "Add Points", "Add User",
-    "Edit Points", "Edit User", "Remove Points", "Remove User"]).then(data => {
+    "Edit Points", "Edit User", "Remove Points", "Remove User", "Add Quote"]).then(data => {
         if (data !== null) {
             data.forEach(eventType => {
                 addAction(eventType)
@@ -360,6 +361,11 @@ function loadChatContextMenu(e: { path: any; pageY: number; pageX: number; }) {
 }
 
 function contextMenu(action: logEvent, duration: timeout) {
+    if (!contentMessageID) {
+        errorMessage("Message Error", "You cannot modify that message.");
+        return;
+    }
+
     if (action == "Add User") {
         UserHandle.addUser(contentTarget.toLowerCase(), false).then(data => {
             if (data == "USEREXISTS") {
@@ -367,7 +373,7 @@ function contextMenu(action: logEvent, duration: timeout) {
             } else if (data == "INVALIDUSER") {
                 errorMessage("User Error", "Ensure that you are authenticated and selected a real user.")
             }
-        })// @ts-ignore
+        })
     } else if (action == "Add Quote") {
         QuoteHandle.addquote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
             if (data !== "QUOTEFINISHED") {
@@ -375,9 +381,29 @@ function contextMenu(action: logEvent, duration: timeout) {
             }
         })
     } else if (action == "Short Timeout User" || action == "Long Timeout User") {
-        ModHandle.timeoutByUsername(contentTarget, duration)
+        ModHandle.ModPowers.timeoutByUsername(contentTarget, duration).then(data => {
+            if (data !== null && typeof data !== "object") {
+                LogHandle.logEvent({event: "Short Timeout User" , users: ["Glimboi", data]})
+            }
+        })
     } else if (action == "Delete Message") {
-        contentMessageID ? ModHandle.deleteMessage(contentMessageID) : errorMessage("Message Error", "You cannot delete that message.");
+        ModHandle.ModPowers.deleteMessage(contentMessageID).then(data => {
+            if (data !== null && typeof data !== "object") {
+                LogHandle.logEvent({event: "Delete Message" , users: ["Glimboi", data]})
+            }
+        })
+    } else if (action == "Ban User") {
+        ModHandle.ModPowers.banByUsername(contentTarget).then(data => {
+            if (data !== null && typeof data !== "object") {
+                LogHandle.logEvent({event: "Ban User" , users: ["Glimboi", data]})
+            }
+        })
+    } else if (action == "UnBan User") {
+        ModHandle.ModPowers.unBanByUsername(contentTarget).then(data => {
+            if (data !== null && typeof data !== "object") {
+                LogHandle.logEvent({event: "UnBan User" , users: ["Glimboi", data]})
+            }
+        })
     }
 }
 
@@ -390,7 +416,7 @@ function addAction(action: LogType) {
     let newText = document.createElement("p");
     newText.innerText = action.description
     newDiv.appendChild(newText);
-    document.getElementById("actions")!.appendChild(newDiv)
+    document.getElementById("actions")!.prepend(newDiv);
 }
 
 function reconnect() {
@@ -419,4 +445,39 @@ function reconnect() {
             }
         }, 5000);
     }, 3000);
+}
+
+function adjustMessageStateUI(id:number, state:messageState) {
+    if (currentPage == "chat") {
+        let messages = document.getElementById("chatList")! as HTMLUListElement;
+        for (let i = 0; i < messages.children.length; i++) {
+            if (Number(messages.children[i].firstElementChild.children[1].getAttribute("messageID")) == id) {
+                messages.children[i].classList.remove("none");
+                messages.children[i].classList.add(state);
+                break;
+            }
+        }
+    }
+}
+
+
+function adjustMessageState(id:number, state:messageState) {
+    for (let i = 0; i < globalChatMessages.length; i++) {
+        if (globalChatMessages[i][3] == id) {
+            console.log("We found a chat message");
+            globalChatMessages[i][4] = state;
+            adjustMessageStateUI(id, state);
+            break
+        }
+    }
+}
+
+function adjustMessageStateByUsername(username:userName, state:messageState) {
+    for (let i = 0; i < globalChatMessages.length; i++) {
+        if (globalChatMessages[i][0] == username) {
+            console.log("We found a matching user message");
+            globalChatMessages[i][4] = state;
+            adjustMessageStateUI(globalChatMessages[i][3], state);
+        }
+    }
 }

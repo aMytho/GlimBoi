@@ -5,8 +5,8 @@ let commandsDB:Nedb; //Database of commands.
 let commands:CommandType[] = []; //Array that contains all the commands. The bot reads this
 let repeatableArray:RepeatableCommand[] = []; //Array of repeatable commands
 
-const ChatAction = require(appData[0] + "/modules/commands/commandActionHandler.js")
-const CommandRunner = require(appData[0] + "/modules/commands/commandRunner.js")
+const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js")
+const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js")
 
 /**
  * @class Default command
@@ -264,7 +264,7 @@ function randomRepeatCommand() {
     console.log(repeatableArray[index]);
     if (repeatableArray[index] !== undefined) {
         CommandRunner.runCommand({message: "!repeat", command: repeatableArray[index], user: ApiHandle.getStreamerName()})
-        globalThis.ChatStats.resetUserMessageCounter()
+        ChatStats.resetUserMessageCounter()
     }
 }
 

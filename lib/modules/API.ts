@@ -281,7 +281,14 @@ async function unBanUser(channel:number, user:number) {
   	});
 }
 
-async function glimeshApiRequest(requestInfo: any, key:glimeshMutation) {
+/**
+ * Makes a request (mutation) to the Glimesh API
+ * @param requestInfo
+ * @param key "shortTimeoutUser" | "longTimeoutUser" | "deleteMessage" | "ban" | "unBan"
+ * @returns
+ */
+async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | userName> {
+    console.log("key is" + key);
     return new Promise(async resolve => {
         let requestResult = await fetch("https://glimesh.tv/api", { method: "POST", body: requestInfo, headers: { Authorization: `bearer ${token}` } })
         let data = await requestResult.json()
@@ -306,7 +313,7 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation) {
                         break;
                     case "ban":resolve(data.data.banUser.user.username)
                         break;
-                    case "unBan":resolve(data.data.unBanUser.user.username)
+                    case "unBan":resolve(data.data.unbanUser.user.username)
                         break;
                     default:
                         break;
@@ -315,8 +322,6 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation) {
         } catch (e) {
             resolve({ error: data, status: "UNKNOWN" })
         }
-    }).catch(function (e) {
-        return null
     })
 }
 

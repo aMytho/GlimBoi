@@ -172,6 +172,6 @@ function prepMediaModals() {
             let name = imageItems[i].name
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
-  	})
-    document.getElementById("pathOfOverlay").innerText = appData[0] + "\\../src\\Overlay\\index.html"
+  	})// Only works in production
+    document.getElementById("pathOfOverlay").innerText = appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/index.html")
 }

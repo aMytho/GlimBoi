@@ -11,7 +11,7 @@
   "build": {
     "appId": "GlimBoi",
     "asar": true,
-    "asarUnpack": "src/overlays/**",
+    "asarUnpack": ["src/overlays/**", "resources/json/**"],
     "win": {
       "icon": "resources/Icon/icon.png"
     },
