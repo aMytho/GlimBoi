@@ -50,38 +50,13 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
     	connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
     	connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
 
-    	// Load requirements for working chat
-    	ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js");
-    	ChatSettings.loadChatSettings(settings);
-    	ChatActions = require(appData[0] + "/modules/chat/chatActions.js");
-    	ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
-    	ChatStats.loadChatStats();
-    	ChatMessages = require(appData[0] + "/modules/chat/chatMessages.js");
-        // Load Overlay (OBS and Music)
-        OBSHandle.startServer();
-
     	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
     	}, 20000);
-      	// Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
-    	ApiHandle.getBotAccount().then(data => {
-      		try {// @ts-ignore
-        		console.log(`GlimBoi is acting as ${data} and the status is ${data.status}`)
-        		if (data == null) {
-          			console.log("Error getting bot username.");
-          			botName = "GlimBoi"
-                      // @ts-ignore
-        		} else if (data.status !== undefined) {
-          			console.log("Auth error");
-          			botName = "GlimBoi"
-        		} else {
-                    // @ts-ignore
-          			botName = data
-        		}
-      		} catch (e) {
-        		console.log(e)
-      		}
-    	});
+
+        // Run the post chat scripts
+        postChat();
+
         if (isReconnect) {
             ChatMessages.filterMessage("Glimboi was disconnected and has now returned.", "glimboi");
         } else {
@@ -347,5 +322,59 @@ function disconnectError() {
 function getBotName() {
   	return botName
 }
+
+/**
+ * Runs after the connection is made to chat.
+ */
+function postChat():void {
+    // Load requirements for working chat
+    ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js");
+    ChatActions = require(appData[0] + "/modules/chat/chatActions.js");
+    ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
+    ChatMessages = require(appData[0] + "/modules/chat/chatMessages.js");
+    // Load the chat settings/stats
+    ChatSettings.loadChatSettings(settings);
+    ChatStats.loadChatStats();
+    // Load Overlay (OBS and Music)
+    OBSHandle.startServer();
+    // Check for webhooks to send
+    if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentWebhooks == false) {
+        if (settings.Webhooks.discord.waitForConfirmation) {
+            askForWebhookConfirmation("discord");
+        } else {
+            ApiHandle.Webhooks.DiscordWebhook.sendDiscordMessage();
+            hasSentWebhooks = true;
+        }
+    }
+    if (ApiHandle.Webhooks.GuildedWebhook.checkIfEnabled() && hasSentWebhooks == false) {
+        if (settings.Webhooks.guilded.waitForConfirmation) {
+            askForWebhookConfirmation("guilded");
+        } else {
+            ApiHandle.Webhooks.GuildedWebhook.sendGuildedMessage();
+            hasSentWebhooks = true;
+        }
+    }
+
+    // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
+    ApiHandle.getBotAccount().then(data => {
+        try {// @ts-ignore
+            console.log(`GlimBoi is acting as ${data} and the status is ${data.status}`)
+            if (data == null) {
+                console.log("Error getting bot username.");
+                botName = "GlimBoi"
+                // @ts-ignore
+            } else if (data.status !== undefined) {
+                console.log("Auth error");
+                botName = "GlimBoi"
+            } else {
+                // @ts-ignore
+                botName = data
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    });
+}
+
 
 export { getConnection, isConnected, connectToGlimesh, disconnect, getBotName, join}
