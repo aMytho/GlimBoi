@@ -11,7 +11,6 @@ const duel = require(appData[0] + "/modules/events/duel.js")
 const glimRealm = require(appData[0] + "/modules/events/glimRealm.js")
 const raffle = require(appData[0] + "/modules/events/raffle.js")
 
-
 /**
  * Event Handler. Inputs the event and does the required action with the other paramaters. This allows multiple events to be run at the same time.
  * @param {string} event
