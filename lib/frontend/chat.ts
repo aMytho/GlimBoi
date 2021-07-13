@@ -13,6 +13,7 @@ var contentBody;
 var contentMessageID;
 var globalChatMessages: storedChatMessage[];
 var currentChatConnected = null;
+let hasSentWebhooks = false;
 
 ChatChannels.updatePath(appData[1]);
 
@@ -479,5 +480,15 @@ function adjustMessageStateByUsername(username:userName, state:messageState) {
             globalChatMessages[i][4] = state;
             adjustMessageStateUI(globalChatMessages[i][3], state);
         }
+    }
+}
+
+function askForWebhookConfirmation(webhook:webhookType) {
+    if (webhook == "discord") {
+        $("#discordWebhook").modal('show');
+        (document.getElementById("discordWebhookMessage") as HTMLInputElement).value = settings.Webhooks.discord.defaultMessage;
+    } else if (webhook == "guilded") {
+        $("#guildedWebhook").modal('show');
+        (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = settings.Webhooks.guilded.defaultMessage;
     }
 }

@@ -38,3 +38,8 @@ type accessToken = string
  * Number representing the state of authentication. 0none, 1, id, 2 authed
  */
 type authStatusNumber = 0 | 1 | 2
+
+/**
+ * String representing the type of webhook.
+ */
+type webhookType = "discord" | "guilded"

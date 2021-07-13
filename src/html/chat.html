@@ -30,6 +30,7 @@
           <h3 class="whiteText text-center" id="fasStar"><i class="fas fa-star"></i></span> 0</h3>
         </div>
       </div>
+      <p class="text-center">These stats update every 15 minutes.</p>
     </div>
   </div>
 </div>
@@ -99,7 +100,7 @@
         </div>
         <!--Body-->
         <div class="modal-body" id="modalChatBody">
-          <input type="text" class="form-control" placeholder="Channel" id="newChatName">
+          <input type="text" class="form-control" placeholder="Channel" id="newChatName" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
         </div>
         <!--Footer-->
         <div class="modal-footer">
@@ -110,6 +111,53 @@
     </div>
   </div>
   <!-- Modal: add new chat -->
+
+<!-- Modal: Discord Webhook -->
+<div class="modal fade" id="discordWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="discordWebhookModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Discord Live Notification</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="The message to post in Discord" id="discordWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+          <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.DiscordWebhook.sendDiscordMessage(document.getElementById('discordWebhookMessage').value);$('#discordWebhook').modal('hide')">Send</button>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- Modal: add new chat -->
+
+<!-- Modal: Guilded Webhook-->
+<div class="modal fade" id="guildedWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="guildedWebhookModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Guilded Live Notification</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="The message to post in Guilded" id="guildedWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+          <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.GuildedWebhook.sendGuildedMessage(document.getElementById('guildedWebhookMessage').value);$('#guildedWebhook').modal('hide')">Send</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+</div>
 
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
   <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Add User')">Add User</a>

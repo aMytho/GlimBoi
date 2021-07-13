@@ -1,6 +1,9 @@
 // Handles some of the API requests to Glimesh and other services.
 // Be aware that some non glimesh services may have rate limits in place.
 // If you fork this change the user agent from glimboi to your own project please :)
+
+const Webhooks: typeof import("../modules/API/webhook") = require(appData[0] + "/modules/API/webhook.js");
+
 let clientID = "";
 let token = "";
 let channelID = "";
@@ -187,99 +190,25 @@ async function getBotAccount() {
 }
 
 /**
- * Times out a user for a set duration.
- * @param {string} type Short or Long
- * @param {number} channel Channel ID
- * @param {number} user User ID
+ * Returns the stream title and thumbnail url if the streamer is live
  */
-async function timeoutUser(type:timeout, channel:number, user:number) {
-  	return new Promise(resolve => {
-    	let body;
-    	if (type == "short") {
-      		body = `mutation { shortTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`;
-    	} else {
-      		body = `mutation { longTimeoutUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`;
-    	}
-    	fetch("https://glimesh.tv/api", { method: "POST", body: body, headers: { Authorization: `bearer ${token}` }})
-    	.then((res) => {
-      		res.json().then((data) => {
-        		try {
-          			if (data.data.shortTimeoutUser !== null) {
-            			resolve(data);
-          			} else {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
-          			}
-        		} catch(e) {
-          			try {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
-          			} catch(e2) {
-            			resolve(null);
-          			}
-        		}
-      		});
-    	})
-    	.catch((err) => console.error(err));
-  	});
+function getStreamWebhook(streamer: string): Promise<null | any[]> {
+    return new Promise(async (resolve, reject) => {
+        let request = await fetch("https://glimesh.tv/api", {method: "POST", body: `query {channel(username: "${streamer}") {stream {title,thumbnail}}}`, headers: {Authorization: `bearer ${token}`}});
+        let result = await request.json();
+        try {
+            if (result.data.channel.stream) {
+                console.log(result.data.channel.stream);
+                resolve([result.data.channel.stream.title, result.data.channel.stream.thumbnail])
+            } else {
+                resolve(null);
+            }
+        } catch (e) {
+            resolve(null);
+        }
+    });
 }
 
-/**
- * Bans a user
- * @param {number} channel The channel ID
- * @param {number} user The user ID
- */
-async function banUser(channel, user) {
-  	return new Promise(resolve => {
-    	fetch("https://glimesh.tv/api", { method: "POST", body: `mutation { banUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`, headers: { Authorization: `bearer ${token}` }})
-    	.then((res) => {
-      		res.json().then((data) => {
-        		try {
-          			if (data.data.banUser !== null) {
-            			resolve(data);
-          			} else {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
-          			}
-        		} catch(e) {
-          			try {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
-          			} catch(e2) {
-            			resolve(null);
-          			}
-        		}
-      		});
-    	})
-    	.catch((err) => console.error(err));
-  	});
-}
-
-
-/**
- * Unbans a user
- * @param {number} channel The channel ID
- * @param {number} user The user ID
- */
-async function unBanUser(channel:number, user:number) {
-  	return new Promise(resolve => {
-    	fetch("https://glimesh.tv/api", { method: "POST", body: `mutation { unbanUser(channelId:${channel}, userId:${user}) {action, user {displayname}}}`, headers: { Authorization: `bearer ${token}` }})
-    	.then((res) => {
-      		res.json().then((data) => {
-        		try {
-          			if (data.data.unbanUser !== null) {
-            			resolve(data);
-          			} else {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
-          			}
-        		} catch(e) {
-          			try {
-            			resolve({error: data.errors[0].message, status: "AUTHNEEDED"});
-          			} catch(e2) {
-            			resolve(null);
-          			}
-        		}
-      		});
-    	})
-    	.catch((err) => console.error(err));
-  	});
-}
 
 /**
  * Makes a request (mutation) to the Glimesh API
@@ -421,4 +350,4 @@ function getStreamerName() {
     return streamer;
 }
 
-export { banUser, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getUserID, glimeshApiRequest, randomAnimalFact, timeoutUser, unBanUser, updateID, updatePath};
+export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats, getStreamerName, getStreamWebhook, getUserID, glimeshApiRequest, randomAnimalFact, updateID, updatePath, Webhooks};

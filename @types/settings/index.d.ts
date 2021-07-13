@@ -28,8 +28,22 @@ interface Settings {
         warning3: warningAction;
         warningAbove: warningAction;
         modMessage: boolean;
+    },
+    Webhooks: {
+        discord: {
+            enabled: boolean;
+            waitForConfirmation: boolean;
+            defaultMessage: string;
+            webhookUri: string;
+        }
+        guilded: {
+            enabled: boolean;
+            waitForConfirmation: boolean;
+            defaultMessage: string;
+            webhookUri: string;
+        }
     }
-}
+    }
 
 // @ts-ignore
 declare let settings: Settings

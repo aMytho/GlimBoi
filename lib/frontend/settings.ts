@@ -4,7 +4,7 @@ LogHandle.updatePath(appData[1]);
 ModHandle.loadFilter(appData[1]);
 // @ts-ignore
 let settings:Settings = {}
-let updatedSettings = {
+let updatedSettings:Settings = {
     Points: {
         enabled: true,
         name: "Points",
@@ -34,22 +34,36 @@ let updatedSettings = {
         warning3: "none",
         warningAbove: "none",
         modMessage: false
+    },
+    Webhooks: {
+        discord: {
+            enabled: false,
+            waitForConfirmation: true,
+            defaultMessage: "",
+            webhookUri: ""
+        },
+        guilded: {
+            enabled: false,
+            waitForConfirmation: true,
+            defaultMessage: "",
+            webhookUri: ""
+        }
     }
 }
 
 // removes the disable class on the navbar
 function unlockBot() {
     try {
-        document.getElementById("CommandLink")!.classList.remove("disabled")
-        document.getElementById("PointsLink")!.classList.remove("disabled")
-        document.getElementById("UsersLink")!.classList.remove("disabled")
-        document.getElementById("SettingsLink")!.classList.remove("disabled")
-        document.getElementById("ChatLink")!.classList.remove("disabled")
-        document.getElementById("EventsLink")!.classList.remove("disabled")
-        document.getElementById("RanksLink")!.classList.remove("disabled")
-        document.getElementById("OBSLink")!.classList.remove("disabled")
-        document.getElementById("MusicLink")!.classList.remove("disabled")
-        document.getElementById("ModPanelLink")!.classList.remove("disabled")
+        document.getElementById("CommandLink")!.classList.remove("disabled");
+        document.getElementById("PointsLink")!.classList.remove("disabled");
+        document.getElementById("UsersLink")!.classList.remove("disabled");
+        document.getElementById("SettingsLink")!.classList.remove("disabled");
+        document.getElementById("ChatLink")!.classList.remove("disabled");
+        document.getElementById("EventsLink")!.classList.remove("disabled");
+        document.getElementById("RanksLink")!.classList.remove("disabled");
+        document.getElementById("OBSLink")!.classList.remove("disabled");
+        document.getElementById("MusicLink")!.classList.remove("disabled");
+        document.getElementById("ModPanelLink")!.classList.remove("disabled");
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
@@ -95,6 +109,20 @@ function getSettings() {
                 warning3: "none",
                 warningAbove: "none",
                 modMessage: false
+            },
+            Webhooks: {
+                discord: {
+                    enabled: false,
+                    waitForConfirmation: true,
+                    defaultMessage: "",
+                    webhookUri: ""
+                },
+                guilded: {
+                    enabled: false,
+                    waitForConfirmation: true,
+                    defaultMessage: "",
+                    webhookUri: ""
+                }
             }
         })
         try {
@@ -134,6 +162,20 @@ function getSettings() {
                 warning3: "none",
                 warningAbove: "none",
                 modMessage: false
+            },
+            Webhooks: {
+                discord: {
+                    enabled: false,
+                    waitForConfirmation: true,
+                    defaultMessage: "",
+                    webhookUri: ""
+                },
+                guilded: {
+                    enabled: false,
+                    waitForConfirmation: true,
+                    defaultMessage: "",
+                    webhookUri: ""
+                }
             }
         }
     }
@@ -218,6 +260,38 @@ function showSettings() {
         document.getElementById("fileMusicEnabled")!.toggleAttribute("checked");
     }
     document.getElementById("chatNavSelector")!.click();
+    // Webhooks - - -
+    if (settings.Webhooks.discord.enabled) {
+        document.getElementById("discordWebhookEnabled")!.toggleAttribute("checked");
+    }
+    if (settings.Webhooks.guilded.enabled) {
+        document.getElementById("guildedWebhookEnabled")!.toggleAttribute("checked");
+    }
+    // webhook uri
+    if (settings.Webhooks.discord.webhookUri != "") {
+        (document.getElementById("discordWebhookURL") as HTMLInputElement)!.value = settings.Webhooks.discord.webhookUri;
+    };
+    if (settings.Webhooks.guilded.webhookUri != "") {
+        (document.getElementById("guildedWebhookURL") as HTMLInputElement)!.value = settings.Webhooks.guilded.webhookUri;
+    }
+    // webhook default message
+    if (settings.Webhooks.discord.defaultMessage != "") {
+        (document.getElementById("discordWebhookMessage") as HTMLInputElement)!.value = settings.Webhooks.discord.defaultMessage;
+    } else {
+        (document.getElementById("discordWebhookMessage") as HTMLInputElement)!.value = "$streamer just went live on https://glimesh.tv/$streamer"
+    }
+    if (settings.Webhooks.guilded.defaultMessage != "") {
+        (document.getElementById("guildedWebhookMessage") as HTMLInputElement)!.value = settings.Webhooks.guilded.defaultMessage;
+    } else {
+        (document.getElementById("guildedWebhookMessage") as HTMLInputElement)!.value = "$streamer just went live on https://glimesh.tv/$streamer"
+    }
+    // webhook confirmation
+    if (settings.Webhooks.discord.waitForConfirmation) {
+        document.getElementById("discordWebhookConfirmation")!.toggleAttribute("checked");
+    }
+    if (settings.Webhooks.guilded.waitForConfirmation) {
+        document.getElementById("guildedWebhookConfirmation")!.toggleAttribute("checked");
+    }
 }
 
 
@@ -289,6 +363,20 @@ function saveSettings() {
             warning3: settings.Moderation.warning3,
             warningAbove: settings.Moderation.warningAbove,
             modMessage: settings.Moderation.modMessage
+        },
+        Webhooks: {
+            discord: {
+                enabled: (document.getElementById("discordWebhookEnabled") as HTMLInputElement)!.checked,
+                waitForConfirmation: (document.getElementById("discordWebhookConfirmation") as HTMLInputElement)!.checked,
+                defaultMessage: (document.getElementById("discordWebhookMessage") as HTMLInputElement)!.value,
+                webhookUri: (document.getElementById("discordWebhookURL") as HTMLInputElement)!.value
+            },
+            guilded: {
+                enabled: (document.getElementById("guildedWebhookEnabled") as HTMLInputElement)!.checked,
+                waitForConfirmation: (document.getElementById("guildedWebhookConfirmation") as HTMLInputElement)!.checked,
+                defaultMessage: (document.getElementById("guildedWebhookMessage") as HTMLInputElement)!.value,
+                webhookUri: (document.getElementById("guildedWebhookURL") as HTMLInputElement)!.value
+            }
         }
     }
     console.log(settings);
@@ -329,11 +417,26 @@ function resetSettings() {
             warning3: "none",
             warningAbove: "none",
             modMessage: false
+        },
+        Webhooks: {
+            discord: {
+                enabled: false,
+                waitForConfirmation: true,
+                defaultMessage: "",
+                webhookUri: ""
+            },
+            guilded: {
+                enabled: false,
+                waitForConfirmation: true,
+                defaultMessage: "",
+                webhookUri: ""
+            }
         }
     }
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
+    document.getElementById("SettingsLink").click(); // Fully resets the UI
     showSettings() // shows the sliders as the normal values.
-    updateSettings()
+    updateSettings();
     successMessage("Settings Reset", "Your settings have been set to their original values.")
 }
 
