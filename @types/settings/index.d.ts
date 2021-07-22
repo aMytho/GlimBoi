@@ -43,34 +43,17 @@ interface Settings {
             webhookUri: string;
         }
     }
-    }
+}
+
+type settingsProperty = | "pointsName" | "pointsStartingAmount" | "pointsAccumalation" |
+"commandsRepeatDelay" | "commandsRepeatSpamProtection" | "chatLogging" | "chatHealth" | "musicChatAttribution" |
+"musicWriteToFile" | "moderationFilterEnabled" | "moderationWarning1" | "moderationWarning2" |
+"moderationWarning3" | "moderationWarningAbove" | "moderationModMessage" | "webhooksDiscordEnabled" | "webhooksDiscordWaitForConfirmation" |
+"webhooksDiscordDefaultMessage" | "webhooksDiscordWebhookUri" | "webhooksGuildedEnabled" | "webhooksGuildedWaitForConfirmation" |
+"webhooksGuildedDefaultMessage" | "webhooksGuildedWebhookUri";
 
 // @ts-ignore
 declare let settings: Settings
-// @ts-ignore
-declare class CacheStoreClass {
-    path: string
-    cache: any
-    constructor()
-    /**
-     * Sets a chache item
-     * @param key If the key doesn't exist we can create the key
-     * @param value The value of the key
-     */
-    set(key: string, value: any): void
-    /**
-     * Gets a key / value pair, sets the key if setDefault == true
-     * @param key The key to search for
-     * @param defaultValue The default value to set if none exist
-     * @param setDefault Should we set this as the default value
-     */
-    get(key: string, defaultValue: any, setDefault: boolean): any
-    /**
-     * Gets or creates the cache file if none exist.
-     * @param path The path to the cache file
-     */
-    setFile(path: string): object
-}
 
 interface LogType {
     event: logEvent;
