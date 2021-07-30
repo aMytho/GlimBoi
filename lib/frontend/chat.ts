@@ -4,7 +4,7 @@ var ChatSettings:typeof import("../modules/chat/chatSettings");
 var ChatActions:typeof import("../modules/chat/chatActions");
 var ChatStats: typeof import("../modules/chat/chatStats");
 // @ts-ignore
-var ChatMessages:typeof import("../modules/chat/chatMessages");
+var ChatMessages: typeof import("../modules/chat/chatMessages") = require(appData[0] + "/modules/chat/chatMessages.js");
 var chatID = "" // the channel ID
 var reconnectDelay, currentChannelToRejoin;
 
@@ -186,8 +186,7 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
  * Loads the chat window, autofills some data from the API and displays it
  */
 function loadChatWindow() {
-  	globalChatMessages.forEach(msg => {// @ts-ignore
-        console.log(msg);
+  	globalChatMessages.forEach(msg => {
     	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4]);
   	});
 
