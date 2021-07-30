@@ -112,7 +112,6 @@ function createID(client:clientID, secret:secretKey): Promise<"NOAUTH" | Auth > 
 function getToken(): Promise<undefined | accessToken> {
   	return new Promise(resolve => {
     	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		console.log(docs);
       		if (docs == undefined || docs.length == 0) {
         		resolve(undefined);
             } else {
