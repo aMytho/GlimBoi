@@ -309,7 +309,6 @@ function editUserTable(user:userName, role:rankName, points) {
       	.filter(function (value, index) {
 	    	return user === userTable.row(value).data().userName;
       	});
-    	console.log(indexes)
     	// Get the row for indexes
     	let row = userTable.row(indexes[0]);
 
@@ -401,7 +400,7 @@ function loadUserTable() {
 }
 
 //adds it to the table
-function addUserTable(data) {
+function addUserTable(data: UserType) {
   	userTable.row.add({
     	userName: data.userName,
     	points: data.points,

@@ -118,7 +118,7 @@ function syncQuotes(user:UserType | userName, quote, action) {
 function syncUsers(data:userName | UserType, action: "add" | string) {
   	try {
     	if (action == "add") {
-      		globalThis.addUserTable(data);
+      		addUserTable(data as UserType);
     	} else {
       		console.log("The user " + data + " will now be deleted from the table.");
       		let filteredData = userTable
