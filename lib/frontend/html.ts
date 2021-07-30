@@ -252,6 +252,7 @@ function loadSpecificRank(rank: RankType) {
     (document.getElementById("banUsersRank") as HTMLInputElement)!.checked = rank.canBanUsers;
     (document.getElementById("unBanUsersRank") as HTMLInputElement)!.checked = rank.canUnBanUsers;
     (document.getElementById("modImmunityRank") as HTMLInputElement)!.checked = rank.modImmunity;
+    (document.getElementById("startEventsRank") as HTMLInputElement)!.checked = rank.canStartEvents;
 }
 
 function addMediaModal() {

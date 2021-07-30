@@ -4,15 +4,18 @@ var ranks:RankType[] = [];
 var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
 canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false,
 canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false,
-canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false};
+canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
+canStartEvents: true};
 var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
 canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false,
 canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true,
-canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false};
+canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
+canStartEvents: true};
 var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
 canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true,
 canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true,
-canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true, modImmunity: true};
+canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true, modImmunity: true,
+canStartEvents: true};
 
 
 /**
@@ -35,9 +38,10 @@ class Rank implements RankType {
     canControlMusic: boolean;
     canDeleteMessages: boolean;
     canTimeoutUsers: boolean;
-    canBanUsers: boolean
-    canUnBanUsers: boolean
-    modImmunity: boolean
+    canBanUsers: boolean;
+    canUnBanUsers: boolean;
+    modImmunity: boolean;
+    canStartEvents: boolean;
     constructor(rank:rankName) {
         this.rank = rank;
         this.canAddCommands = false;
@@ -58,6 +62,7 @@ class Rank implements RankType {
         this.canBanUsers = false;
         this.canUnBanUsers = false;
         this.modImmunity = false;
+        this.canStartEvents = false;
     }
 }
 
@@ -77,8 +82,15 @@ function updatePath(updatedPath:string) {
 function getAll() {
     rankDB.find({}, function (err: Error | null, docs:RankType[]) {
         if (docs.length !== 0) {
-            ranks = docs
-        } else {
+            ranks = docs; // imports the ranks the user has created
+            ranks.forEach(rank => { // If new properties exist add them to the ranks. Temporary, not written to the db until user interaction.
+                for (const key in userRank) {
+                    if (rank[key] === undefined) {
+                        rank[key] = userRank[key];
+                    }
+                }
+            })
+        } else { // No ranks exist, insert the default ranks
             rankDB.insert([userRank, modRank, streamerRank], function (err, newDocs) {
                 ranks = newDocs
             });
@@ -146,7 +158,7 @@ function editRank(rank:RankType) {
         canRemoveQuotes: rank.canRemoveQuotes, canAddUsers: rank.canAddUsers, canEditUsers: rank.canEditUsers,
         canRemoveUsers: rank.canRemoveUsers, canControlMusic: rank.canControlMusic, canDeleteMessages: rank.canDeleteMessages,
         canTimeoutUsers: rank.canTimeoutUsers, canBanUsers: rank.canBanUsers, canUnBanUsers: rank.canUnBanUsers,
-        modImmunity: rank.modImmunity}
+        canStartEvents: rank.canStartEvents, modImmunity: rank.modImmunity}
     }, {}, function (err, numReplaced) {
         console.log("Rank settings updated");
     });
@@ -174,7 +186,7 @@ function addRankProperty(rank:rankName, property:rankProperties) {
  * @param {string} action What the user is attempting to access
  * @param {string} type The type of the action. We use this to determine if we look for boolean, number, string, etc
  */
-function rankController(user:userName, action:string, type:string):Promise<true | false | null> {
+function rankController(user:userName, action:rankProperties, type:string):Promise<true | false | null> {
     return new Promise(resolve => {
         UserHandle.findByUserName(user).then(data => {
             if (data !== "ADDUSER") {
