@@ -23,7 +23,8 @@ type QuoteHandle = typeof import("../lib/modules/quotes")// @ts-ignore
 type ChatHandle = typeof import("../lib/modules/chat")// @ts-ignore
 type ChatChannels = typeof import("../lib/modules/chat/chatChannels")// @ts-ignore
 type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
-type LogHandle = typeof import("../lib/modules/log")
+type LogHandle = typeof import("../lib/modules/log")// @ts-ignore
+type CacheStore = typeof import("../lib/modules/cache")
 
 // @ts-ignore
 declare var fs: typeof import("fs")

@@ -2,7 +2,7 @@
 // @ts-ignore
 const {shell, ipcRenderer} = require("electron"); // @ts-ignore
 let appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
-const Datastore = require("nedb")
+const Datastore = require("nedb");
 const AuthHandle:AuthHandle = require(appData[0] + "/modules/auth.js");
 const UserHandle:UserHandle = require(appData[0] + "/modules/users.js");
 const QuoteHandle:QuoteHandle = require(appData[0] + "/modules/quotes.js");
@@ -16,9 +16,9 @@ const EventHandle:EventHandle = require(appData[0] + "/modules/events.js");
 const ApiHandle:ApiHandle = require(appData[0] + "/modules/API.js"); // @ts-ignore
 const fs = require("fs");
 // @ts-ignore
-const DumbCacheStore = require(appData[0] + "/modules/cache.js");
+const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
 const LogHandle:LogHandle = require(appData[0] + "/modules/log.js")
-const mm = require("music-metadata")
+const mm = require("music-metadata");
 let currentPage:pageState = "home"
 
 var globalChatMessages:storedChatMessage[] = [];
@@ -143,3 +143,8 @@ function successMessage(messageType:string, message:string) {
   	document.getElementById("successMessageSolution")!.innerHTML = message;
   	$('#modalSuccess').modal("show");
 }
+
+// temp logging, trying to track down a bug
+let loggingInterval = setInterval(() => {
+    console.log(`LOGGER: Chat Connection Status: ${ChatHandle.isConnected()}, Time: ${new Date()}, Websocket: ${ChatHandle.getConnection()}`)
+}, 30000)

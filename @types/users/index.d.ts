@@ -68,10 +68,13 @@ interface RankType {
     canControlMusic: boolean;
     canDeleteMessages: boolean;
     canTimeoutUsers: boolean;
-    canBanUsers: boolean
-    canUnBanUsers: boolean
-    modImmunity: boolean
+    canBanUsers: boolean;
+    canUnBanUsers: boolean;
+    modImmunity: boolean;
+    canStartEvents: boolean;
 }
 
 type rankName = "user" | "Mod" | "Streamer" | string
-type rankProperties = "canAddCommands" | "canEditCommands"
+type rankProperties = "canAddCommands"| "canEditCommands" | "canRemoveCommands" | "canAddPoints" | "canEditPoints" | "canRemovePoints" | "canAddUsers" | "canEditUsers" |
+"canRemoveUsers" | "canAddQuotes" | "canEditQuotes" | "canRemoveQuotes" | "canControlMusic" | "canDeleteMessages" |
+"canTimeoutUsers" | "canBanUsers" | "canUnBanUsers" | "modImmunity" | "canStartEvents"

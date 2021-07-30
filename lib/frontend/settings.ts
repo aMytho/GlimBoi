@@ -1,9 +1,10 @@
 ApiHandle.updateID(); // Gives the api file auth information
-const CacheStore:CacheStoreClass = new DumbCacheStore;
+const CacheStore = new DumbCacheStore;
 LogHandle.updatePath(appData[1]);
 ModHandle.loadFilter(appData[1]);
 // @ts-ignore
 let settings:Settings = {}
+// Settings with the default property values and any new properties added.
 let updatedSettings:Settings = {
     Points: {
         enabled: true,
@@ -78,111 +79,22 @@ function getSettings() {
         // @ts-ignore
         settings = JSON.parse(raw);
     } catch (e) { // if not create the file
-        console.log("no settings file exists, creating it")
-        let dataTemplate = JSON.stringify({
-            Points: {
-                enabled: true,
-                name: "Points",
-                StartingAmount: 0,
-                accumalation: 15
-            },
-            Commands: {
-                enabled: true,
-                Prefix: "!",
-                Error: true,
-                repeatDelay: 10,
-                repeatSpamProtection: 15
-            },
-            chat: {
-                logging: false,
-                filter: false,
-                health: 0
-            },
-            music: {
-                chatAttribution: false,
-                writeToFile: false
-            },
-            Moderation: {
-                filterEnabled: false,
-                warning1: "none",
-                warning2: "none",
-                warning3: "none",
-                warningAbove: "none",
-                modMessage: false
-            },
-            Webhooks: {
-                discord: {
-                    enabled: false,
-                    waitForConfirmation: true,
-                    defaultMessage: "",
-                    webhookUri: ""
-                },
-                guilded: {
-                    enabled: false,
-                    waitForConfirmation: true,
-                    defaultMessage: "",
-                    webhookUri: ""
-                }
-            }
-        })
+        console.log("no settings file exists, creating it");
+        let dataTemplate = JSON.stringify(updatedSettings);
         try {
             fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time the bot runs.
         } catch (e) {
             fs.mkdirSync(appData[1] + '/data'); // Makes the folder
             fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes the file
         }
-        // for now we use the settings variable
-        settings = {
-            Points: {
-                enabled: true,
-                name: "Points",
-                StartingAmount: 0,
-                accumalation: 15
-            },
-            Commands: {
-                enabled: true,
-                Prefix: "!",
-                Error: true,
-                repeatDelay: 10,
-                repeatSpamProtection: 15
-            },
-            chat: {
-                logging: false,
-                filter: false,
-                health: 0
-            },
-            music: {
-                chatAttribution: false,
-                writeToFile: false
-            },
-            Moderation: {
-                filterEnabled: false,
-                warning1: "none",
-                warning2: "none",
-                warning3: "none",
-                warningAbove: "none",
-                modMessage: false
-            },
-            Webhooks: {
-                discord: {
-                    enabled: false,
-                    waitForConfirmation: true,
-                    defaultMessage: "",
-                    webhookUri: ""
-                },
-                guilded: {
-                    enabled: false,
-                    waitForConfirmation: true,
-                    defaultMessage: "",
-                    webhookUri: ""
-                }
-            }
-        }
+        // Set settings equal to the default settings
+        settings = jQuery.extend(true, {}, updatedSettings);
     }
-    settings = $.extend(true, updatedSettings, settings) // merges the settings together, adds new values if any
-    console.log(settings)
-    updateSettings()
-    unlockBot()
+    // merge the settings together, adds new values if any
+    let tempSettings = jQuery.extend(true, {}, updatedSettings);
+    settings = $.extend(true, tempSettings, settings);
+    updateSettings();
+    unlockBot();
 }
 
 
@@ -387,52 +299,7 @@ function saveSettings() {
 
 // resets the settings.
 function resetSettings() {
-    settings = {
-        Points: {
-            enabled: true,
-            name: "Points",
-            StartingAmount: 0,
-            accumalation: 15
-        },
-        Commands: {
-            enabled: true,
-            Prefix: "!",
-            Error: true,
-            repeatDelay: 10,
-            repeatSpamProtection: 15
-        },
-        chat: {
-            logging: false,
-            filter: false,
-            health: 0
-        },
-        music: {
-            chatAttribution: false,
-            writeToFile: false
-        },
-        Moderation: {
-            filterEnabled: false,
-            warning1: "none",
-            warning2: "none",
-            warning3: "none",
-            warningAbove: "none",
-            modMessage: false
-        },
-        Webhooks: {
-            discord: {
-                enabled: false,
-                waitForConfirmation: true,
-                defaultMessage: "",
-                webhookUri: ""
-            },
-            guilded: {
-                enabled: false,
-                waitForConfirmation: true,
-                defaultMessage: "",
-                webhookUri: ""
-            }
-        }
-    }
+    settings = jQuery.extend(true, {}, updatedSettings);
     fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
     document.getElementById("SettingsLink").click(); // Fully resets the UI
     showSettings() // shows the sliders as the normal values.

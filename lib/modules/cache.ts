@@ -29,13 +29,12 @@ class DumbCacheStore {
      * @param {string} key The value we are searching for
      * @param {any} defaultValue If the key doesn't exist we can create the key
      * @param {boolean} setDefault Should we create a new key if it doesn't exist?
-     *
      * @returns {any} returns null if undefined
      */
     get(key: string, defaultValue = null, setDefault = false) {
         let val = this.cache[key];
 
-        if (!val) {
+        if (val == undefined) {
             if (setDefault) this.set(key, defaultValue);
             return defaultValue;
         }

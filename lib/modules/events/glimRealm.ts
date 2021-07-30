@@ -1,7 +1,10 @@
 // This file runs the glimrealm event.
 
-var glimrealmUsers:userName[] = [];
-var glimrealmStatus: glimRealmStatus = "ready";
+let glimrealmUsers:userName[] = [];
+let glimrealmStatus: glimRealmStatus = "ready";
+let glimrealmTimer: NodeJS.Timeout = null
+let glimrealmTimer2: NodeJS.Timeout = null
+let glimrealmTimer3: NodeJS.Timeout = null
 
 /**
  * Starts a glimrealm instance. Activated by !glimrealm
@@ -9,37 +12,42 @@ var glimrealmStatus: glimRealmStatus = "ready";
  function startGlimrealm() {
     console.log("Opening the portal to the Glimrealm");
     glimrealmStatus = "active";
-    setTimeout(() => {
-        ChatMessages.filterMessage("The portal is beginning to destabilize...", "glimboi");
-        setTimeout(() => {
-            ChatMessages.filterMessage("The portal is nearly closed. 20 seconds left!", "glimboi");
-            setTimeout(() => {
-                ChatMessages.filterMessage("Everyone returned from the Glimrealm just as the portal closed. The portal will need some time to recharge.", "glimboi");
-                console.log("Glimrealm portal closed.");
-                glimrealmStatus = "charging";
-                var currentEvents = EventHandle.getCurrentEvents();
-                EventHandle.setCurrentEvents(currentEvents.filter(function(e) {return e !== "glimrealm"}));
-                glimrealmUsers = [];
-                setTimeout(() => {
-                    glimrealmStatus = "ready"
-                }, 600000);
-            }, 20000);
-        }, 20000);
-    }, 20000);
+    let portalDuration = CacheStore.get("glimrealmDuration", 60000, true);
+    glimrealmTimer = setTimeout(() => {
+        if (!CacheStore.get("glimrealmQuiet", true, true)) {
+            ChatMessages.filterMessage("The portal is beginning to destabilize...", "glimboi");
+        }
+        glimrealmTimer2 = setTimeout(() => {
+            if (!CacheStore.get("glimrealmQuiet", true, true)) {
+                ChatMessages.filterMessage("The portal is nearly closed. 20 seconds left!", "glimboi");
+            }
+            glimrealmTimer3 = setTimeout(() => {
+                ChatMessages.filterMessage("Everyone has returned from the Glimrealm. Type !points to view your updated currency amount.", "glimboi");
+                stopGlimrealm(false);
+            }, portalDuration / 3);
+        }, portalDuration / 3);
+    }, portalDuration / 3);
 }
 
-/// Retruns the status of the glimrealm portal
-function getGlimrealmStatus() {
+/**
+ * Gets the status of the portal.
+ * @returns {glimRealmStatus}
+ */
+function getGlimrealmStatus(): glimRealmStatus {
     return glimrealmStatus
 }
 /**
  * See returns
  * @returns {array} Array of users who have entered the portal.
  */
-function getGlimRealmUsers() {
+function getGlimRealmUsers(): Array<string> {
     return glimrealmUsers
 }
 
+/**
+ * Sets the users in glimrealm. This should be changed later
+ * @param data Array of users who have entered the portal.
+ */
 function setGlimRealmUsers(data:userName[]) {
     glimrealmUsers = data
 }
@@ -49,7 +57,6 @@ function setGlimRealmUsers(data:userName[]) {
  * @param {string} user
  */
 function glimDropRealm(user:userName, data:{points:number}) {
-    console.log(data.points);
     var result = glimChance()!; // get a random effect
     console.log(result);
     ChatMessages.filterMessage(result.message, "glimboi"); // send the message to chat
@@ -67,17 +74,32 @@ function glimDropRealm(user:userName, data:{points:number}) {
 /**
  * Opens a portal to glimrealm if no cooldown is active
  */
-function openGlimRealm() {
-    if (getGlimrealmStatus() == "active") {
+function openGlimRealm(fromUI?: boolean) {
+    let portalStatus = getGlimrealmStatus();
+    if (portalStatus == "active") {
         ChatMessages.filterMessage("The portal to the Glimrealm is already open! Type !portal to enter the world of the Glimdrops.");
-    } else if (getGlimrealmStatus() == "charging") {
-        ChatMessages.filterMessage("The portal to Glimrealm is charging. You must wait until it finishes to enter the world of the Glimdrops.", "glimboi")
-    } else if (getGlimrealmStatus() == "ready") {
+        if (fromUI) {
+            errorMessage("Glimrealm Error", "A session of Glimrealm is already active.");
+        }
+    } else if (portalStatus == "charging") {
+        ChatMessages.filterMessage("The portal to Glimrealm is charging. You must wait until it finishes to enter the world of the Glimdrops.", "glimboi");
+        if (fromUI) {
+            errorMessage("Glimrealm Error", "Glimrealm is still on cooldown.")
+        }
+    } else if (portalStatus == "ready") {
+        if (!EventHandle.isEventEnabled("glimrealm")) {
+            ChatMessages.filterMessage("The portal to the Glimrealm is not enabled :glimcry: ...", "glimboi");
+            if (fromUI) {
+                errorMessage("Glimrealm Error", "The portal to the Glimrealm is not enabled. ...");
+            }
+            return
+        }
         startGlimrealm();
-        var events = EventHandle.getCurrentEvents()
-        events.push("glimrealm");
-        EventHandle.setCurrentEvents(events);
+        EventHandle.addEvent("glimrealm");
         ChatMessages.filterMessage("The portal to the Glimrealm has been opened! Type !portal to enter the world of the Glimdrops!", "glimboi");
+        if (fromUI) {
+            successMessage("Glimrealm Started", "The portal to the realm of the Glimdrops is now open.")
+        }
     }
 }
 
@@ -85,7 +107,7 @@ function openGlimRealm() {
  * Returns a random glimdrop event.
  */
 function glimChance() {
-    var number = Math.floor(Math.random()*32)
+    var number = Math.floor(Math.random()*35);
     switch (number) {
         case 0: return {message: "The Glimdrops are hiding. No adjustment in points.", result: 0, type: "add"}
         case 1: return {message: ":glimwow: got his Glimesh T-shirt! You gained 100 points.", result: 100, type: "add"}
@@ -120,7 +142,30 @@ function glimChance() {
         case 30: return {message: ":glimcat: purrrrrrrrs softly next to you. You gain 200 points", result: 200, type: "add"}
         case 31: return {message: ":glimangry: enrages the other Glimdrops. They form a mob! Oh no, they don't like visitors... You lost 600 points", result: 600, type: "sub"}
         case 31: return {message: ":glimchicken: shows you chickencam! You spend the rest of the day watching together. You gained 300 points.", result: 300, type: "add"}
+        case 32: return {message: ":glimlul: You lost :glimlul: points", result: 0, type: "add"}
+        case 33: return {message: "You adopt :glimdog:! You gained 500 points", result: 500, type: "add"}
+        case 34: return {message: ":glimdog: ran away! You lost 100 points", result: 100, type: "sub"}
     }
 }
 
-export {glimDropRealm, getGlimrealmStatus, getGlimRealmUsers, openGlimRealm, setGlimRealmUsers, startGlimrealm}
+/**
+ * Ends the game.
+ * @param {boolean} manual Was this done manually?
+ */
+function stopGlimrealm(manual: boolean) {
+    EventHandle.removeEvent("glimrealm");
+    glimrealmUsers = [];
+    clearTimeout(glimrealmTimer);
+    clearTimeout(glimrealmTimer2);
+    clearTimeout(glimrealmTimer3);
+    glimrealmStatus = "ready"
+    console.log("Glimrealm portal closed.");
+
+    if (manual) {
+        successMessage("Glimrealm Stopped", "Glimrealm has been stopped.");
+        ChatMessages.filterMessage("Glimrealm has been stopped" ,"glimboi");
+    }
+}
+
+
+export {glimDropRealm, getGlimrealmStatus, getGlimRealmUsers, openGlimRealm, setGlimRealmUsers, startGlimrealm, stopGlimrealm}

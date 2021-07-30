@@ -14,7 +14,6 @@ async function requestToken(clientID: clientID, secretKey: secretKey, isManual: 
         let res = await fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
         let data = await res.json()
         try {
-            console.log(data);
             authToken.access_token = data.access_token;
             authToken.creation = data.created_at;
             if (authToken.access_token == undefined) {
@@ -53,7 +52,6 @@ function updatePath(updatedPath:string): void {
 function readAuth(): Promise<Auth[]> {
    	return new Promise(resolve => {
     	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		console.log(docs);
       		resolve(docs);
     	});
    	});
@@ -80,7 +78,6 @@ function updateID(client:clientID, secret:secretKey): Promise<"UPDATEDID"> {
  * @param {string} secret Secret ID
  */
 function createID(client:clientID, secret:secretKey): Promise<"NOAUTH" | Auth > {
-  	console.log(client, secret);
   	return new Promise(resolve => {
     	if (client == "" && secret !== "") {
       		authDB.update({}, {$set: {secret: secret}} , { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments: Auth) {
@@ -115,7 +112,6 @@ function createID(client:clientID, secret:secretKey): Promise<"NOAUTH" | Auth > 
 function getToken(): Promise<undefined | accessToken> {
   	return new Promise(resolve => {
     	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		console.log(docs);
       		if (docs == undefined || docs.length == 0) {
         		resolve(undefined);
             } else {
@@ -131,7 +127,6 @@ function getToken(): Promise<undefined | accessToken> {
 function getID(): Promise<null | clientID> {
   	return new Promise(resolve => {
     	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		console.log(docs);
       		if (docs[0] == undefined) {resolve(null);} else {
       			resolve(docs[0].clientID);
       		}
