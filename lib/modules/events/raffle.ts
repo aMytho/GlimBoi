@@ -1,116 +1,167 @@
 // This file handles raffles
 
-var raffleUsers:userName[] = []
-var raffleTimer = {timer: null}
-
-
-/**
- * Starts a raffle. Ends in one minute. Winner annoucned to chat and on GUI event page.
- * @param {number} time
- */
-function startRaffle(time:number) {
-    return new Promise(resolve => {
-        console.log("Starting Raffle");
-        ChatMessages.filterMessage("A raffle has begun! Type !enter to join the raffle. You have one minute remaining.", "glimboi")
-        raffleTimer.timer = setTimeout(() => {
-            var events = EventHandle.getCurrentEvents()
-        	events = events.filter(function(e) {return e !== "raffle"}) // removes from current events
-            EventHandle.setCurrentEvents(events)
-          	if (raffleUsers.length == 0) {
-            	ChatMessages.filterMessage("Nobody joined the raffle so nobody won.", "glimboi")
-            	resolve("Nobody joined the raffle so nobody won.")
-            	return;
-        	}
-        	raffleUsers = [...new Set(raffleUsers)]
-        	console.log(raffleUsers.length + " users joined the raffle.")
-        	console.log(raffleUsers)
-        	var index = Math.floor(Math.random()*raffleUsers.length)
-        	var winner = raffleUsers[index];
-        	raffleUsers = []
-        	ChatMessages.filterMessage("Congratulations @" + winner + ", you won the raffle!" , "glimboi")
-        	resolve(winner)
-    	}, time);
-        // @ts-ignore
-        raffleTimer.cancel = function() {
-            console.log("Raffle Cancelled")
-            resolve({status:"CANCELLED", reson:"MANUAL CANCELLATION"})
-        }
-    })
-}
+let usersInRaffle: userName[] = [];
+let raffleTimer: NodeJS.Timeout = null;
 
 /**
- * Checks if a raffle can be run, and if so starts a raffle
- * @param {boolean} GUI Checks the source of the raffle
+ * Adds a user to the raffle if they are not already in it
+ * @param {string} user The user to add
  */
-function checkRaffleStatus(GUI:boolean, chatActive?: boolean) {
-    var events = EventHandle.getCurrentEvents()
-    if (events.includes("raffle")) {
-        console.log("A raffle is already in progress.");
-        if (GUI) {
-            errorMessage("Raffle In progress", "A raffle is already in progres. Only one raffle can be run at a time. ")
+async function addUser(user: userName) {
+    if (usersInRaffle.indexOf(user) === -1) {
+        // check to make sure they have enough points to enter the raffle
+        let userExists = await UserHandle.findByUserName(user);
+        let costToEnter = CacheStore.get("raffleCost", 50, false);
+        if (userExists !== "ADDUSER") {
+            if (userExists.points < CacheStore.get("raffleCost", 50, false)) {
+                ChatMessages.filterMessage(`${user}, you do not have enough points to enter the raffle. ${userExists.points} | ${costToEnter}`, "glimboi");
+                return;
+            } else {
+                UserHandle.removePoints(userExists.userName, costToEnter);
+            }
+        } else {
+            UserHandle.addUser(user, false, user);
+            addUser(user);
+            return;
         }
-    } else if (chatActive) {
-        events.push("raffle");
-        EventHandle.setCurrentEvents(events)
-        try {
-            document.getElementById("raffleWinner")!.innerText = "Determining Winner...";
-        } catch (e) {}
-        startRaffle(60000).then(data => {
-            if (typeof data !== "object") {
-            	console.log("The winner is " + data);
-            	try {
-                	$("#RaffleUserList").empty();
-                	if (data == "Nobody joined the raffle so nobody won.") {
-                        // @ts-ignore
-                    	document.getElementById('raffleWinner')!.innerText = data
-                	} else {
-                    	document.getElementById('raffleWinner')!.innerText = data + " won!"
-                	}
-            	} catch (e) { }
-        	} else {
-            	try {
-                	$("#RaffleUserList li").remove()
-                	document.getElementById("raffleWinner")!.innerText = "Raffle Cancelled"
-            	} catch(e) {
-            	}
-        	}
-        })
+        usersInRaffle.push(user);
+        // if quiet mode is disabled, send a message to the user
+        if (!CacheStore.get("raffleQuiet", false, false)) {
+            ChatMessages.filterMessage(getEnteredMessage(user), "glimboi");
+        }
+        if (currentPage == "events" && viewingEvent == "raffle") {
+            fillUsersRaffle(user);
+        }
     } else {
-        errorMessage("Raffle Error", "You must be in a chat to start a raffle.")
+        ChatMessages.filterMessage(`${user} is already in the raffle`, "glimboi");
     }
 }
 
 /**
- * Returns a set of users in the array. Will not contain duplicates.
+ * Removes a user from the raffle. Not used yet
+ * @param {string} user The user to remove
  */
- function getRaffleUsers(): userName[] {
-    return [...new Set(raffleUsers)]
-}
-
-/**
- * Adds a user to the raffle.
- * @param {string} user
- */
-function addUserRaffle(user:userName) {
-    raffleUsers.push(user)
-    raffleUsersUpdate(user)
-}
-
-/**
- * Stops the raffle.
- */
-function stopRaffle() {
-    var currentEvents = EventHandle.getCurrentEvents()
-    if (!currentEvents.includes("raffle")) {
-        errorMessage("Raffle Error", "No raffle is in progress.")
-    } else {
-        // @ts-ignore
-        raffleTimer.cancel()
-        clearTimeout(raffleTimer.timer);
-        raffleUsers = [];
-        currentEvents = currentEvents.filter(function (e) { return e !== "raffle" }) // removes from current events
-        EventHandle.setCurrentEvents(currentEvents)
+function removeUser(user: userName) {
+    let index = usersInRaffle.indexOf(user);
+    if (index !== -1) {
+        usersInRaffle.splice(index, 1);
     }
 }
 
-export {addUserRaffle, checkRaffleStatus, getRaffleUsers, startRaffle, stopRaffle}
+/**
+ * Returns the users who are in the raffle
+ * @returns {string[]} The users who are in the raffle
+ */
+function getUsers(): string[] {
+    return usersInRaffle;
+}
+
+/**
+ * Starts the raffle
+ * @param {string} user The user who is starting the raffle. If started from UI should be Glimboi
+ * @returns {Promise<boolean>} True if the raffle was started, false if it was not
+ * @async
+ */
+async function startRaffle(user: userName, fromUI?: boolean): Promise<boolean> {
+    if (EventHandle.isEventEnabled("raffle")) {
+        // check that a raffle is not already running
+        if (EventHandle.isEventActive("raffle")) {
+            ChatMessages.filterMessage(`A raffle is already in progress. !enter to join the raffle`, "glimboi");
+            return false;
+        } else {
+            // check that we are in a chat
+            if (!ChatHandle.isConnected()) {
+                return false
+            }
+            // add the event to the array
+            EventHandle.addEvent("raffle");
+            ChatMessages.filterMessage(`A raffle has been started! Type !enter to enter the raffle`, "glimboi");
+            if (user && fromUI) {
+                addUser(user.toLowerCase());
+            }
+            // set the timer
+            raffleTimer = setTimeout(async () => {
+                // pick a winner
+                let winner = usersInRaffle[Math.floor(Math.random() * usersInRaffle.length)];
+                let pointsToAward: number = CacheStore.get(`rafflePoints`, 777, true);
+                // check to make sure there is a winner
+                if (!winner) {
+                    ChatMessages.filterMessage(`There was no winner for the raffle.`, "glimboi");
+                    updateWinnerText("Nobody entered so nobody won.");
+                } else {
+                    // send the winner
+                    ChatMessages.filterMessage(`${winner} has won the raffle! Awarding ${pointsToAward} ${settings.Points.name}'s to ${winner}.`, "glimboi");
+                    console.log(`${winner} has won the raffle! Awarding ${pointsToAward} ${settings.Points.name}'s to ${winner}.`);
+                    // give points to the winner
+                    winner = winner.toLowerCase();
+                    let userExists = await UserHandle.findByUserName(winner);
+                    if (userExists) {
+                        UserHandle.addPoints(winner, pointsToAward);
+                    } else {
+                        await UserHandle.addUser(winner, false, "glimboi");
+                        UserHandle.addPoints(winner, pointsToAward);
+                    }
+                    // update the ui to show the winner
+                    updateWinnerText(`${winner} has won the raffle!`);
+                }
+                // reset the timer and the users in the raffle
+                raffleTimer = null;
+                usersInRaffle = [];
+                // remove the event
+                EventHandle.removeEvent("raffle");
+            }, CacheStore.get("raffleDuration", 60000, true));
+            return true;
+        }
+    } else {
+        ChatMessages.filterMessage(`${user}, Raffles are not enabled.`, "glimboi");
+        return false;
+    }
+}
+
+/**
+ * Returns a message to show that the user entered the raffle successfully
+ * @param {string} user The user who entered the raffle
+ * @returns {string} The message to show
+ */
+function getEnteredMessage(user: userName): string {
+    // pick a random message
+    let messages = [
+        `${user} has joined the raffle.`,
+        `${user} wants to win ${settings.Points.name}.`,
+        `${user} wants to win the raffle!`,
+        `${user} has entered the raffle.`,
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+}
+
+/**
+ * Stops the raffle
+ * @returns {boolean} True if the raffle was stopped, false if it was not
+ */
+function stopRaffle(): boolean {
+    if (raffleTimer) {
+        clearTimeout(raffleTimer);
+        raffleTimer = null;
+        usersInRaffle = [];
+        EventHandle.removeEvent("raffle");
+        ChatMessages.filterMessage(`The raffle has been stopped.`, "glimboi");
+        updateWinnerText("Raffle Stopped.");
+        return true
+    } else {
+        ChatMessages.filterMessage(`There is no raffle in progress.`, "glimboi");
+        return false
+    }
+}
+
+/**
+ * Updates the winner text on the UI with a message
+ * @param {string} message The message to show
+ */
+function updateWinnerText(message:string): void {
+    if (currentPage == "events" && viewingEvent == "raffle") {
+        document.getElementById("raffleWinner").innerText = message;
+    }
+}
+
+// export the functions
+export = { addUser, getUsers, removeUser, startRaffle, stopRaffle };
