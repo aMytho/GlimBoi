@@ -8,19 +8,24 @@ let currencyGained = 0; // how much money the raiders recieve
  * Starts or joins a bankheist
  * @param {string} user The user who starts/joins a bankheist
  */
-function startBankHeist(user:userName) {
+function startBankHeist(user:userName, fromUI?: boolean) {
     if (bankHeistStatus == "ready") {
         ChatMessages.filterMessage(user + " had just started a bankheist. Type !bankheist to join! Starts in 30 seconds.", "glimboi");
-        users.push(user);
-        bankHeistStatus = "prep"
-        startPrep()
+        bankHeistStatus = "prep";
+        startPrep();
+        if (!fromUI) {
+            users.push(user);
+        }
     } else if (bankHeistStatus == "prep" && !users.includes(user)) {
         users.push(user);
-        ChatMessages.filterMessage(rallyMessage(user), "glimboi")
+        if (CacheStore.get("bankheistQuiet", true, true)) {
+            return
+        }
+        ChatMessages.filterMessage(rallyMessage(user), "glimboi");
     } else if (bankHeistStatus == "active") {
         ChatMessages.filterMessage("The bankheist had already begun. You can join in the next round.", "glimboi");
     } else {
-        ChatMessages.filterMessage("You have already joined the team!", "glimboi")
+        ChatMessages.filterMessage("You have already joined the team!", "glimboi");
     }
 }
 
@@ -51,48 +56,48 @@ function walkIn() {
         // 50% to go undetected
         if (probability(0.5)) {
             console.log("They managed to sneak in as normal customers.");
-            ChatMessages.filterMessage("The bank did not notice your group as you slipped in. Your team moved towards the back rooms undetected.", "glimboi");
+            bankHeistMessage("The bank did not notice your group as you slipped in. Your team moved towards the back rooms undetected.")
             setTimeout(() => {
                 if (probability(0.1)) {
                     var number = Math.floor(Math.random()*users.length);
-                    ChatMessages.filterMessage(`${users[number]} saw a jar of candy at one of the registers. They head back to grab some.`, "glimboi");
+                    bankHeistMessage(`${users[number]} saw a jar of candy at one of the registers. They head back to grab some.`)
                     if (probability(0.5)) {
-                        ChatMessages.filterMessage(`${users[number]} was discovered! The alarm is raised. ${users[number]} grabs the jar of candy and regroups with your team!`, "glimboi");
+                        bankHeistMessage(`${users[number]} was discovered! The alarm is raised. ${users[number]} grabs the jar of candy and regroups with your team!`);
                         bankDoor(true)
                     } else {
-                        ChatMessages.filterMessage(`${users[number]} retrieved the jar undetected! They get to enjoy a nice snack later :glimsmile: They regroup with your team.`, "glimboi");
+                        bankHeistMessage(`${users[number]} retrieved the jar undetected! They get to enjoy a nice snack later :glimsmile: They regroup with your team.`);
                         bankDoor(false)
                     }
                 } else {
                     bankDoor(false)
                 }
-            }, 2000);
+            }, 3000);
         } else {
             console.log("The bank discovered you!");
-            ChatMessages.filterMessage("The bank realized you were not normal customers! They trigger the alarm. Everyone freezes.", "glimboi");
+            bankHeistMessage("The bank realized you were not normal customers! They trigger the alarm. Everyone freezes.")
             setTimeout(() => {
-                ChatMessages.filterMessage("A group of guards appear! They ask your team to stand down. Your group readies for a fight.", "glimboi");
+                bankHeistMessage("A group of guards appear! They ask your team to stand down. Your group readies for a fight.")
                 setTimeout(() => {
                     // 70% chance to NOT lose someone.
                     if (probability(0.7)) {
-                        ChatMessages.filterMessage("The guards have been dealth with. Your team had no casualities! Moving to the next room.", "glimboi");
+                        bankHeistMessage("The guards have been dealt with. Your team had no casualities! Moving to the next room.")
                         bankDoor(true)
                     } else {
                         var number = Math.floor(Math.random()*users.length);
-                        ChatMessages.filterMessage(`${users[number]} was hit in the action :glimrip: The guards in the front room have been dealt with. Your team moves to the next room.`, "glimboi")
+                        bankHeistMessage(`${users[number]} was hit in the action :glimrip: The guards in the front room have been dealt with. Your team moves to the next room.`);
                         users.splice(number, 1);
                         if (users.length == 0) {
                             console.log("BankHeist failed!");
-                            ChatMessages.filterMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.", "glimboi");
+                            bankHeistMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.");
                             bankHeistFailed()
                         } else {
                             bankDoor(true)
                         }
                     }
-                }, 4000);
-            }, 3000);
+                }, 5000);
+            }, 4000);
         }
-    }, 3500);
+    }, 4500);
 }
 
 /**
@@ -102,11 +107,11 @@ function walkIn() {
 function bankDoor(alramActivated:boolean) {
     if (alramActivated) {
         //50% chance of losing someone
-        ChatMessages.filterMessage("Your team has reached the vault door. You begin to unlock it. Since the alarm is activated it will take more time. Guards begin to head for the vault entrance...", "glimboi");
+        bankHeistMessage("Your team has reached the vault door. You begin to unlock it. Since the alarm is activated it will take more time. Guards begin to head for the vault entrance...");
         setTimeout(() => {
             if (probability(50)) {
                 var number = Math.floor(Math.random() * users.length);
-                ChatMessages.filterMessage(`${users[number]} was hit in the action :glimrip: The guards surrounding the vault have been dealt with. Your team opens the vault and begins to loot.`, "glimboi");
+                bankHeistMessage(`${users[number]} was hit in the action :glimrip: The guards surrounding the vault have been dealt with. Your team opens the vault and begins to loot.`);
                 users.splice(number, 1);
                 if (users.length == 0) {
                     bankHeistFailed()
@@ -115,20 +120,20 @@ function bankDoor(alramActivated:boolean) {
                     escapeSequence(false, currencyGained)
                 }
             } else {
-                ChatMessages.filterMessage("Your team holds off the guards easily. You open the vault and begin to loot.", "glimboi");
+                bankHeistMessage("Your team holds off the guards easily. You open the vault and begin to loot.")
                 currencyInBank();
                 escapeSequence(false, currencyGained)
             }
-        }, 5000);
+        }, 6000);
     } else {
         setTimeout(() => {
-            ChatMessages.filterMessage(`Your team reached the vault door. You start working on the vault security system. After a few mintues the door unlocks and your team moves in.`, "glimboi");
-        }, 4000);
+            bankHeistMessage("Your team has reached the vault door. You start working on the vault security system. After a few minutes the door unlocks and your team moves in.");
+        }, 5000);
         setTimeout(() => {
-            ChatMessages.filterMessage(`Your team starts to loot the vault. The backup security system kicks in and the alarm is raised! Your teams scrables to leave the vault and begins to escape`, "glimboi")
+            bankHeistMessage(`Your team starts to loot the vault. The backup security system kicks in and the alarm is raised! Your teams scrables to leave the vault and begins to escape`);
             currencyInBank()
             escapeSequence(true, currencyGained)
-        }, 8000);
+        }, 9000);
     }
 }
 
@@ -139,16 +144,16 @@ function bankDoor(alramActivated:boolean) {
  */
 function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
     setTimeout(() => {
-        ChatMessages.filterMessage(`Your team has looted the vault and collected a total of ${currencyLooted} ${settings.Points.name}. Don't relax yet, you still have to escape!`, "glimboi");
+        bankHeistMessage(`Your team has looted the vault and collected a total of ${currencyLooted} ${settings.Points.name}. Don't relax yet, you still have to escape!`)
         if (justTriggeredAlarm) {
             if (probability(0.5)) {
                 var number = Math.floor(Math.random() * users.length);
-                ChatMessages.filterMessage(`${users[number]} was captured while trying to escape :glimsad: `, "glimboi")
+                bankHeistMessage(`${users[number]} was captured while trying to escape :glimsad: `);
                 users.splice(number, 1);
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${settings.Points.name}!`, "glimboi");
+                    ChatMessages.filterMessage(`The remaining team has ${currencyGained} ${settings.Points.name}!`, "glimboi");
                     distributePoints(currencyLooted);
                 }
             } else {
@@ -158,7 +163,7 @@ function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
         } else {
             if (probability(0.7)) {
                 var number = Math.floor(Math.random() * users.length);
-                ChatMessages.filterMessage(`${users[number]} was captured while trying to escape :glimsad: `, "glimboi")
+                bankHeistMessage(`${users[number]} was captured while trying to escape :glimsad: `);
                 users.splice(number, 1);
                 if (users.length == 0) {
                     bankHeistFailed()
@@ -171,7 +176,7 @@ function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
                 distributePoints(currencyLooted)
             }
         }
-    }, 3500);
+    }, 4500);
 }
 
 /**
@@ -182,11 +187,8 @@ function bankHeistFailed() {
     setTimeout(() => {
         ChatMessages.filterMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.", "glimboi");
         resetUsers()
-        bankHeistStatus = "cooldown";
-        setTimeout(() => {
-            bankHeistStatus = "ready"
-        }, 60000);
-    }, 5000);
+        bankHeistStatus = "ready"
+    }, 6000);
 }
 
 /**
@@ -211,10 +213,7 @@ function distributePoints(points: number) {
         })
         resetUsers()
         console.log("Bankheist complete!");
-        bankHeistStatus = "cooldown";
-        setTimeout(() => {
-            bankHeistStatus = "ready"
-        }, 600000);
+        bankHeistStatus = "ready"
     }, 5000);
 }
 
@@ -222,6 +221,9 @@ function distributePoints(points: number) {
  * Returns a randome rally message.
  */
 function rallyMessage(user:userName) {
+    if (CacheStore.get("bankheistQuiet", false, true)) {
+        return;
+    }
     var number = Math.floor(Math.random()*4);
     switch (number) {
         case 0: return `Yay :glimhype:, ${user} is here!`
@@ -236,6 +238,15 @@ function rallyMessage(user:userName) {
             break;
             default: return `${user} is ready!`
             break;
+    }
+}
+
+/**
+ * Sends a message to chat if queit mode is disabled
+ */
+function bankHeistMessage(message: string) {
+    if (!CacheStore.get("bankheistQuiet", true, true)) {
+        ChatMessages.filterMessage(message, "glimboi");
     }
 }
 
@@ -271,9 +282,22 @@ function currencyInBank() {
  * @param {number} n The probablity to test
  * @returns {number}
  */
-function probability(n:number){
+function probability(n:number):boolean {
     return Math.random() < n;
 }
 
+function tryToStartBankheist(): boolean {
+    if (!ChatHandle.isConnected()) {return false}
+    let isEventEnabled = EventHandle.isEventEnabled("bankheist");
+    if (isEventEnabled) {
+        if (bankHeistStatus == "ready" && !EventHandle.isEventActive("bankheist")) {
+            return true
+        } else {
+            return false
+        }
+    } else {
+        return false
+    }
+}
 
-export {startBankHeist}
+export {startBankHeist, tryToStartBankheist}

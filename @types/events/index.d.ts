@@ -19,3 +19,9 @@ type duelVictor = {winner: userName, pointsWon: number, loser: userName}
 
 type glimRoyaleStatus = "pending" | "active" | "cooldown"
 type glimRoyaleUser = {user: userName, HP: number}
+type glimRoyaleWeapon = {name: string, id: number, stats: glimRoyaleWeaponStats}
+type glimroyaleTurn = {user: userName, message: string}
+interface glimRoyaleWeaponStats {
+    damage: number,
+    bonusHP: number,
+}
