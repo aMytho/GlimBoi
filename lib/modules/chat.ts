@@ -18,7 +18,6 @@ function join(access_token:accessToken, channelID, isReconnect:boolean) {
 
 /**
  * Returns the connection for other modules
- *
  * @returns {WebSocket} WebSocket Connection
  */
 function getConnection(): WebSocket {
@@ -27,12 +26,11 @@ function getConnection(): WebSocket {
 
 /**
  * Determines if the websocket is connected or connecting
- *
  * @return {boolean}
  */
-function isConnected() {
-  	if (connection === undefined) {return false};
-  	return connection.readyState !== WebSocket.CLOSED && connection.readyState !== WebSocket.CLOSING;
+function isConnected(): boolean {
+    if (connection === undefined) {return false};
+    return connection.readyState !== WebSocket.CLOSED && connection.readyState !== WebSocket.CLOSING;
 }
 
 /**
@@ -50,7 +48,7 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
     	connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
     	connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
 
-    	heartbeat = setInterval(() => { //every 30 seconds send a heartbeat so the connection won't be dropped for inactivity.
+    	heartbeat = setInterval(() => { //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
       		connection.send('[null,"6","phoenix","heartbeat",{}]');
     	}, 20000);
 
@@ -163,23 +161,30 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
                   				break;
                 				case "!test": ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
                   				break;
-                				case "!raffle": EventHandle.raffle.checkRaffleStatus(false, ChatHandle.isConnected())
+                				case "!raffle": ChatActions.checkAndStartRaffle(userChat);
                   				break;
-                				case "!poll": EventHandle.poll.checkPollStatus(userChat, null, null, messageChat);
+                				case "!poll": ChatActions.checkPoll(userChat, messageChat);
                   				break;
-                				case "!glimrealm": EventHandle.glimRealm.openGlimRealm()
+                				case "!glimrealm": ChatActions.checkAndStartGlimrealm(userChat);
                   				break;
-                                case "!bankheist": EventHandle.bankHeist.startBankHeist(userChat.toLowerCase())
+                                case "!bankheist": ChatActions.checkAndStartBankheist(userChat.toLowerCase());
+                                break;
+                                case "!duel": ChatActions.checkAndStartDuel(userChat, message[1], Number(message[2]));
+                                break;
+                                case "!giveaway": ChatActions.checkAndStartGiveaway(userChat);
+                                break;
+                                case "!glimroyale": ChatActions.checkAndStartGlimroyale(userChat, message[1]);
+                                break;
                 				case "!user":
                   					switch (message[1]) {
                     					case "new":
                     					case "add": // adds a user
-                    						ChatActions.addUserChat(userChat.toLowerCase(), message[2])
+                    						ChatActions.modifyUserFromChat(userChat.toLowerCase(), message[2], "canAddUsers", "add users");
                       					break;
                     					case "remove":
                     					case "del":
                     					case "delete": // removes a user
-                    						ChatActions.delUserChat(userChat.toLowerCase(), message[2])
+                    						ChatActions.modifyUserFromChat(userChat.toLowerCase(), message[2], "canRemoveUsers", "remove users");
                       					break;
                     					default:
                       					break;
@@ -241,6 +246,7 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
               				globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0));
               				ModHandle.ModPowers.scanMessage(userChat, messageChat.toLowerCase(), chatMessage[4].result.data.chatMessage.id, userID) // filter the message if needed
             			} catch (e3) {
+                            console.log(e3);
             			}
             			// Add a user message counter if it isn't the bot
             			if (userChat !== botName) { ChatStats.increaseUserMessageCounter() }
@@ -331,7 +337,6 @@ function postChat():void {
     ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js");
     ChatActions = require(appData[0] + "/modules/chat/chatActions.js");
     ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
-    ChatMessages = require(appData[0] + "/modules/chat/chatMessages.js");
     // Load the chat settings/stats
     ChatSettings.loadChatSettings(settings);
     ChatStats.loadChatStats();

@@ -306,17 +306,21 @@ function addPoints(user:userName, points:number): void {
  * @param {string} user The user
  * @param {number} value How many points will be removed
  */
-function removePoints(user:userName, value:number): void {
-  	usersDB.update({ userName: user }, { $inc: { points: -value} }, {returnUpdatedDocs: true}, function (err:Error | null, numReplaced:number, affectedDocuments:userDoc) {
-    	console.log("Removing " + value + " points from " + user);
-    	for (let i = 0; i < users.length; i++) {
-        	if (user == users[i].userName) {
-          		users[i].points = affectedDocuments.points;
-          		globalThis.editUserTable(user, affectedDocuments.role, affectedDocuments.points)
-          		break
-        	}
-    	}
-  	});
+function removePoints(user: userName, value: number): void {
+    usersDB.update({ userName: user }, { $inc: { points: -value } }, { returnUpdatedDocs: true }, function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
+        console.log("Removing " + value + " points from " + user);
+        for (let i = 0; i < users.length; i++) {
+            if (user == users[i].userName) {
+                if (users[i].points - value < 0) {
+                    users[i].points = 0
+                } else {
+                    users[i].points = affectedDocuments.points;
+                    globalThis.editUserTable(user, affectedDocuments.role, affectedDocuments.points);
+                }
+                break
+            }
+        }
+    });
 }
 
 export {addPoints, addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
