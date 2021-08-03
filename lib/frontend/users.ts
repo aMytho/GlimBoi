@@ -254,17 +254,16 @@ function getPoints() {
       		let pointValue = [
         		`${data[`${property}`].userName}`,
         		`${data[`${property}`].points}`,
-        		`${data[`${property}`].team}`
       		];
       		arrayOfPoints.push(pointValue)
     	}
     	console.log(pointsTable.rows.length + " rows in the table");
-    	for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
+    	for (let i = 1; i < pointsTable.rows.length; i++) { //For every row
       		if (pointsTable.rows[i + 1] === undefined) {
         		continue;
       		}
 
-      		pointsTable.rows[i + 1].cells[0].innerHTML = i;
+      		pointsTable.rows[i + 0].cells[0].innerHTML = i;
       		if (arrayOfPoints[i] !== undefined) {
         		pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0];
         		pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1];
