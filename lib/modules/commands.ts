@@ -292,4 +292,6 @@ function info() {
   	ChatMessages.filterMessage("placeholder", "glimboi")
 }
 
-export { addCommand, addCommandCount, addCommandFilter, ChatAction, CommandRunner, editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info, randomRepeatCommand, removeCommand , updatePath}; //Send to the main file.
+export { addCommand, addCommandCount, addCommandFilter, ChatAction, CommandRunner,
+editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info,
+randomRepeatCommand, removeCommand , updatePath};

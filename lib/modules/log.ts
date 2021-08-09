@@ -79,7 +79,6 @@ class LoggingEvent implements LogType {
  */
  function updatePath(path:string): void {
     logPath = path
-    // @ts-ignore
     loggingDB = new Datastore({ filename: `${path}/data/logging.db`, autoload: true, timestampData: true });
 }
 

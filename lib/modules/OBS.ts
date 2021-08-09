@@ -11,7 +11,6 @@ let mediaWait:any = [];
  * @param {string} updatedPath The path to the db
  */
 function updatePath(updatedPath:string) {
-    // @ts-ignore
     OBSDB = new Datastore({ filename: `${updatedPath}/data/obs.db`, autoload: true });
 }
 
@@ -194,7 +193,6 @@ function playSong(song:any) {
     try {
         wss.send(JSON.stringify({action: "newSong", data: song}))
     } catch(e) {
-        //console.log(e)
     }
 }
 
@@ -251,4 +249,6 @@ function getMediaWait() {
     return mediaWait
 }
 
-export {getMediaWait, addMedia, displayImage, editMedia, getAll, getCurrentMedia, getImages, getMediaByName, getSounds, getVideos, playSong, playSound, playVideo, removeMedia, startServer, stopServer, updatePath}
+export {getMediaWait, addMedia, displayImage, editMedia, getAll, getCurrentMedia,
+getImages, getMediaByName, getSounds, getVideos, playSong, playSound, playVideo,
+removeMedia, startServer, stopServer, updatePath}

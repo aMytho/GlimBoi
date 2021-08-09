@@ -11,18 +11,18 @@ class Quote implements QuoteType {
     quoteData: string;
     quoteID: number;
     date: string;
-  	constructor(quoteName:quoteName, quoteData:quoteData) {
-    	console.log(quoteName, quoteData)
-    	this.quoteName = quoteName; //The person who said the auote
-    	this.quoteData = quoteData; // No explanation here
+    constructor(quoteName: quoteName, quoteData: quoteData) {
+        console.log(quoteName, quoteData)
+        this.quoteName = quoteName; //The person who said the auote
+        this.quoteData = quoteData; // No explanation here
         // @ts-ignore
-    	this.quoteID = this.generateID(quoteName); //ID of the users quotes. The DB ID is different.
-    	this.date = new Date().toTimeString(); //Tik toc
-  	}
-    async generateID(quoteName:quoteName) {
-    console.log("Generating ID");
-  	let usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
-  	return usedID
+        this.quoteID = this.generateID(quoteName); //ID of the users quotes. The DB ID is different.
+        this.date = new Date().toTimeString(); //Tik toc
+    }
+    async generateID(quoteName: quoteName) {
+        console.log("Generating ID");
+        let usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
+        return usedID
     }
 }
 
@@ -31,7 +31,6 @@ class Quote implements QuoteType {
  */
 function updatePath(updatedPath:string) {
   	quotePath = updatedPath;
-      // @ts-ignore
   	quotesDB = new Datastore({
     	filename: `${quotePath}/data/quotes.db`,
     	autoload: true,

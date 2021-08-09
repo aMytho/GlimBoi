@@ -6,7 +6,6 @@ let path = "./";
  * An array of users
  */
 let users:User[] = [];
-declare let b:lol
 
 /**
  * A GlimBoi user
@@ -78,10 +77,9 @@ async function addUser(user:string, inModal: boolean, createdBy: string = "Glimb
 /**
  * Updates the path to the DB. The path variable is updated
  */
-function updatePath(env:string) {
-  	path = env;
-      // @ts-ignore
-  	usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
+function updatePath(env: string) {
+    path = env;
+    usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
 }
 
   /**
@@ -191,7 +189,7 @@ async function removeQuoteByID(id:number, user:string): Promise<"NOQUOTEFOUND" |
           				usersDB.update({$and: [{userName: user}, {quotes: {$elemMatch: {quoteID: id}}}]}, {$set: {quotes: docs[0].quotes}}, {returnUpdatedDocs: true}, function(err: Error | null, numAffected:number, affectedDocuments:UserDocs) {
             				console.log(affectedDocuments);
             				QuoteHandle.removeQuote(id, user);
-            				globalThis.syncQuotes(user, docs[0].quotes, "remove")
+            				syncQuotes(user, docs[0].quotes, "remove")
             				resolve(affectedDocuments);
           				})
         			}
@@ -269,8 +267,8 @@ function earnPointsWT(Users:{userName: userName}[]): void {
   	usersDB.update({ $or: Users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err:Error | null, numReplaced:number, affectedDocuments:UserDocs) {
     	console.log("Adding " + settings.Points.accumalation + " points to " + numReplaced + " users.");
     	affectedDocuments.forEach(function(item:UserType, index:number) {
-      		globalThis.editUserTable(item.userName, item.role, item.points);
-      		globalThis.editUserWatchTime(item.userName, item.watchTime)
+      		editUserTable(item.userName, item.role, item.points);
+      		editUserWatchTime(item.userName, item.watchTime)
       		for (let i = 0; i < users.length; i++) {
           		if (item.userName == users[i].userName) {
               		users[i].points = affectedDocuments[index].points;
@@ -294,7 +292,7 @@ function addPoints(user:userName, points:number): void {
         for (let i = 0; i < users.length; i++) {
             if (user == users[i].userName) {
                 users[i].points = users[i].points + points
-                globalThis.editUserTable(user, affectedDocuments.role, Number(users[i].points))
+                editUserTable(user, affectedDocuments.role, Number(users[i].points))
                 break
             }
         }
@@ -315,7 +313,7 @@ function removePoints(user: userName, value: number): void {
                     users[i].points = 0
                 } else {
                     users[i].points = affectedDocuments.points;
-                    globalThis.editUserTable(user, affectedDocuments.role, affectedDocuments.points);
+                    editUserTable(user, affectedDocuments.role, affectedDocuments.points);
                 }
                 break
             }
@@ -323,4 +321,5 @@ function removePoints(user: userName, value: number): void {
     });
 }
 
-export {addPoints, addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
+export {addPoints, addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName,
+getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath}

@@ -133,7 +133,7 @@ function syncUsers(data:userName | UserType, action: "add" | string) {
     	console.log(e)
   	}
 }
-// @ts-ignore
+
 function updateStatus(stage:authStatusNumber) {
     let authStatusElement = document.getElementById("authStatus")!;
   	if (stage == 1) {
