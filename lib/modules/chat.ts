@@ -362,17 +362,12 @@ function postChat():void {
 
     // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
     ApiHandle.getBotAccount().then(data => {
-        try {// @ts-ignore
-            console.log(`GlimBoi is acting as ${data} and the status is ${data.status}`)
+        try {
+            console.log(`GlimBoi is acting as ${data}.`)
             if (data == null) {
                 console.log("Error getting bot username.");
                 botName = "GlimBoi"
-                // @ts-ignore
-            } else if (data.status !== undefined) {
-                console.log("Auth error");
-                botName = "GlimBoi"
             } else {
-                // @ts-ignore
                 botName = data
             }
         } catch (e) {

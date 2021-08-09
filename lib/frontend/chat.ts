@@ -135,9 +135,9 @@ function joinChat(chat, isReconnect?) {
       		ApiHandle.updatePath(data); //Sends the API module our access token.
       		ApiHandle.getChannelID(chatToJoin).then(response => {
         		if (response == null) {
-          			errorMessage(response, "Please make sure that the channel exists. Check your spelling.")// @ts-ignore
-        		} else if (response.status == "AUTHNEEDED") {// @ts-ignore
-          			errorMessage(response.data, "You need to request a token.")
+                    errorMessage("Auth Error.", "You need to complete authentication and request a token.");
+        		} else if (response == false) {// @ts-ignore
+                    errorMessage(response, "Please make sure that the channel exists. Check your spelling.");
         		} else {
           			//We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
           			currentChatConnected = chatToJoin;
@@ -169,9 +169,11 @@ $(document).on('click', '#triggerNewChatAdd', function (event) {
       		// Authenticate if we can and check the channel
       		ApiHandle.updatePath(data); //Sends the API module our access token.
       		ApiHandle.getChannelID((chatToJoin as string)).then(response => {// @ts-ignore
-        		if (response == null || response.data == 'Could not find resource') {// @ts-ignore
-          			errorMessage(response.data, "Please make sure that the channel exists. Check your spelling.")
-        		} else {
+        		if (response == null) {
+          			errorMessage(" Auth Error", "Please complete authentication and request a token.");
+        		} else if (response == false) {
+                    errorMessage("Channel Error", "Please make sure that the channel exists. Check your spelling. Enter the channel you want to JOIN, not your bot account.");
+                } else {
           			addChannelAndDisplay(chatToJoin).then(function () {
             			$('#newChatModal').modal('hide')
             			$('#newChatName').val('');

@@ -10,14 +10,12 @@
 async function modifyUserFromChat(user: userName, target: userName, attemptedAction: rankProperties, friendlyAction: string) {
     if (await permissionCheck(user, attemptedAction, friendlyAction)) {
         if (attemptedAction == "canAddUsers") {
-            let userAdded = await UserHandle.addUser(target, false, user)
-            if (userAdded == "USEREXISTS") {
-                ChatMessages.glimboiMessage("That user is already added to GlimBoi.");
-            } else if (userAdded == "INVALIDUSER") {
-                ChatMessages.glimboiMessage("That user does not exist on Glimesh.");
-            } else {
+            let targetUser = await checkTarget(target, true);
+            if (!targetUser.alreadyExists && targetUser.user) {
                 ChatMessages.glimboiMessage("User addded to GlimBoi!");
-                addUserTable(userAdded);
+                addUserTable(targetUser.user);
+            } else {
+                ChatMessages.glimboiMessage("User already exists!");
             }
         } else if (attemptedAction == "canRemoveUsers") {
             let userExists = await UserHandle.findByUserName(target);
@@ -126,19 +124,18 @@ async function addCommand(user: userName, command: commandName, commandData: str
  * Returns a list of all commands to chat.
  */
 function commandList() {
-  	let cmdList:string[] = [];
-  	CommandHandle.getAll().then((data) => {
-    	for (let index = 0; index < data.length; index++) {
-      		cmdList.push(data[index].commandName);
-    	}
-    	let cmdmsg = cmdList.toString();
-        if (cmdmsg.length == 0) {
-            cmdmsg = "This streamer does not yet have any custom commands."
-        } else if (cmdmsg.length > 255) {
-            cmdmsg = "This streamer has so many commands we can't post them all to chat!"
-        }
-    	ChatMessages.filterMessage(cmdmsg);
-  	});
+    let cmdList: string[] = [];
+    let cmds = CommandHandle.getCurrentCommands();
+    for (let index = 0; index < cmds.length; index++) {
+        cmdList.push(cmds[index].commandName);
+    }
+    let cmdmsg = cmdList.toString();
+    if (cmdmsg.length == 0) {
+        cmdmsg = "This streamer does not yet have any custom commands."
+    } else if (cmdmsg.length > 255) {
+        cmdmsg = "This streamer has so many commands we can't post them all to chat!"
+    }
+    ChatMessages.filterMessage(cmdmsg);
 }
 
 /**
@@ -284,7 +281,7 @@ async function editPointsChat(user, target, count) {
  * @param {string} user The user who is requesting points
  * @param {string} target The user who you are getting the points for
  */
-async function getPointsChat(user, target) {
+async function getPointsChat(user: string, target: string) {
     if (target !== undefined) {
         target = target.toLowerCase();
         let targetExists = await UserHandle.findByUserName(target);
@@ -403,7 +400,7 @@ async function nextSong(user:userName, action) {
  * @param {string} user The user who is requesting or setting the song
  * @param {string} action Are we setttng or getting the song?
  */
-async function previousSong(user: userName, action) {
+async function previousSong(user: userName, action: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (action == "set") {
             if (musicPlaylist[currentSongIndex]) {
@@ -631,6 +628,25 @@ async function permissionCheck(user:userName, action: rankProperties, friendlyAc
     }
 }
 
+async function checkTarget(user:string, addUser: boolean): Promise<{alreadyExists: boolean, user: UserType | null | false}> {
+    let userExists = await UserHandle.findByUserName(user);
+    if (userExists == "ADDUSER") {
+        if (addUser) {
+            let newUser = await UserHandle.addUser(user, false, user);
+            if (newUser !== "INVALIDUSER") {
+                return {alreadyExists: false, user: newUser as UserType}
+            } else {
+                ChatMessages.filterMessage(`${user} does not exist on Glimesh.`, "glimboi");
+                return {alreadyExists: false, user: null}
+            }
+        } else {
+            ChatMessages.filterMessage(`${user} has not been added to Glimboi.`, "glimboi");
+            return {alreadyExists: false, user: false}
+        }
+    } else {
+        return {alreadyExists: true, user: userExists}
+    }
+}
 
 export {
     addCommand, addPointsChat, addQuoteChat, commandList, checkAndStartBankheist, checkAndStartDuel, checkAndStartGiveaway,

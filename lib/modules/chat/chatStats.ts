@@ -8,28 +8,16 @@ var recentUserMessages = 0; //a count of user messages to compare against repeat
  * An interval that queries for channel stats (viewcount, followers, and new subs)
  */
 function startChannelStats() {
-    stats = setInterval(() => {
-        ApiHandle.getStats().then(data => {
-            if (data == null) { // They are not live or the channel doesn't exist.
-                console.log("The user is not live or there was an error getting stats.")
-            } else { // Sets the info from the request next to the icons on the chat page.
-                // @ts-ignore
-                if (data.channel.stream.countViewers !== undefined && data.channel.stream.countViewers !== null) {
-                    // @ts-ignore
-                    document.getElementById("fasUsers")!.innerHTML = `<span><i class="fas fa-users"></i></span> ${data.channel.stream.countViewers}`
-                }
-                // @ts-ignore
-                if (data.followers.length !== undefined && data.followers.length !== null) {
-                    // @ts-ignore
-                    document.getElementById("fasHeart")!.innerHTML = `<span><i class="fas fa-heart"></i></span> ${data.followers.length}`
-                }
-                // @ts-ignore
-                if (data.channel.stream.newSubscribers !== undefined && data.channel.stream.newSubscribers !== null) {
-                    // @ts-ignore
-                    document.getElementById("fasStar")!.innerHTML = `<span><i class="fas fa-star"></i></span> ${data.channel.stream.newSubscribers}`
-                }
-            }
-        })
+    stats = setInterval(async () => {
+        let currentStats = await ApiHandle.getStats();
+        // Sets the info from the request next to the icons on the chat page.
+        try {
+            document.getElementById("fasUsers")!.innerHTML = `<span><i class="fas fa-users"></i></span> ${currentStats.viewcount}`
+            document.getElementById("fasHeart")!.innerHTML = `<span><i class="fas fa-heart"></i></span> ${currentStats.followers}`
+            //document.getElementById("fasStar")!.innerHTML = `<span><i class="fas fa-star"></i></span> ${data.channel.stream.newSubscribers}`
+        } catch (e) {
+            console.log(e);
+        }
     }, 900000);
 }
 
