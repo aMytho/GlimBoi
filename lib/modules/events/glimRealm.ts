@@ -36,20 +36,20 @@ let glimrealmTimer3: NodeJS.Timeout = null
 function getGlimrealmStatus(): glimRealmStatus {
     return glimrealmStatus
 }
-/**
- * See returns
- * @returns {array} Array of users who have entered the portal.
- */
-function getGlimRealmUsers(): Array<string> {
-    return glimrealmUsers
-}
 
 /**
- * Sets the users in glimrealm. This should be changed later
- * @param data Array of users who have entered the portal.
+ * Adds a user to the glimrealm
+ * @param {string} user The user to add
+ * @param {number} points the points the user has
  */
-function setGlimRealmUsers(data:userName[]) {
-    glimrealmUsers = data
+function addGlimRealmUser(user:userName, points: number) {
+    if (glimrealmUsers.indexOf(user) == -1) {
+        glimrealmUsers.push(user);
+        glimDropRealm(user, {points: points});
+        return true
+    } else {
+        return false
+    }
 }
 
 /**
@@ -168,4 +168,4 @@ function stopGlimrealm(manual: boolean) {
 }
 
 
-export {glimDropRealm, getGlimrealmStatus, getGlimRealmUsers, openGlimRealm, setGlimRealmUsers, startGlimrealm, stopGlimrealm}
+export {addGlimRealmUser, glimDropRealm, getGlimrealmStatus, openGlimRealm, startGlimrealm, stopGlimrealm}

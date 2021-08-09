@@ -38,17 +38,6 @@ async function addUser(user: userName) {
 }
 
 /**
- * Removes a user from the raffle. Not used yet
- * @param {string} user The user to remove
- */
-function removeUser(user: userName) {
-    let index = usersInRaffle.indexOf(user);
-    if (index !== -1) {
-        usersInRaffle.splice(index, 1);
-    }
-}
-
-/**
  * Returns the users who are in the raffle
  * @returns {string[]} The users who are in the raffle
  */
@@ -164,4 +153,4 @@ function updateWinnerText(message:string): void {
 }
 
 // export the functions
-export = { addUser, getUsers, removeUser, startRaffle, stopRaffle };
+export = { addUser, getUsers, startRaffle, stopRaffle };

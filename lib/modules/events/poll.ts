@@ -1,17 +1,24 @@
 // handles the poll event
-
+// Poll controller holds the poll info
 let PollController: PollController = {
     question: "",
     options: [],
     responses: [],
     status: "ready"
-}
+}; // Duration of the poll
 let pollTimer: NodeJS.Timer = null;
 
-function getPollStatus() {
+/**
+ * Returns the poll status
+ * @returns {pollStatus}
+ */
+function getPollStatus(): pollStatus {
     return PollController.status
 }
 
+/**
+ * Resets the poll
+ */
 function resetPoll() {
     clearTimeout(pollTimer);
     PollController.question = ""
@@ -21,6 +28,12 @@ function resetPoll() {
     EventHandle.removeEvent("poll");
 }
 
+/**
+ * Starts the poll. Returns boolean if poll was started successfully
+ * @param {string} question
+ * @param {string[]} options
+ * @param {string} user
+ */
 function startPoll(question: string, options: string[], user: userName) {
     if (!EventHandle.isEventActive("poll")) {
         if (!CacheStore.get("pollEnabled", true, false) || !ChatHandle.isConnected()) {
@@ -35,7 +48,9 @@ function startPoll(question: string, options: string[], user: userName) {
             ChatMessages.filterMessage(`Respond with !v # to vote.`, "glimboi");
         }, 3000);
         pollTimer = setTimeout(() => {
-            getResponseAndEndPoll();
+            let result = getResults();
+            ChatMessages.filterMessage(result.message, "glimboi");
+            resetPoll();
         }, CacheStore.get("pollDuration", 60000, true));
         return true;
     } else {
@@ -44,7 +59,11 @@ function startPoll(question: string, options: string[], user: userName) {
     }
 }
 
-function listOptions() {
+/**
+ * Lists all the poll options
+ * @returns {string}
+ */
+function listOptions(): string {
     let options = ``
     for (let i = 0; i < PollController.options.length; i++) {
         options += `\n${i + 1}. ${PollController.options[i]} `
@@ -52,7 +71,11 @@ function listOptions() {
     return options
 }
 
-// takes the user's response and adds it to the list of responses
+/**
+ * Takes the response add it to the poll responses
+ * @param {number} response
+ * @param {string} user
+ */
 function addResponse(response: number, user: userName) {
     console.log(user, response);
     // Check if the user has already voted
@@ -70,12 +93,9 @@ function addResponse(response: number, user: userName) {
     }
 }
 
-function getResponseAndEndPoll() {
-    let result = getResults();
-    ChatMessages.filterMessage(result.message, "glimboi");
-    resetPoll();
-}
-
+/**
+ * Gets the results
+ */
 function getResults(): pollResult {
     let pollResult:pollResult = {
         message: "",
@@ -118,11 +138,12 @@ function getResults(): pollResult {
     }
 }
 
+/**
+ * Stops the poll
+ */
 function stopPoll() {
     resetPoll();
     ChatMessages.filterMessage("Poll stopped", "glimboi");
 }
 
-
-// export the functions
 export { addResponse, getPollStatus, resetPoll, startPoll, stopPoll };
