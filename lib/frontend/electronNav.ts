@@ -14,8 +14,7 @@ const ChatChannels:ChatChannels = require(appData[0] + "/modules/chat/chatChanne
 const ModHandle:ModHandle = require(appData[0] + "/modules/modPanel.js");
 const EventHandle:EventHandle = require(appData[0] + "/modules/events.js");
 const ApiHandle:ApiHandle = require(appData[0] + "/modules/API.js"); // @ts-ignore
-const fs = require("fs");
-// @ts-ignore
+const fs:typeof import("fs").promises = require("fs").promises;
 const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
 const LogHandle:LogHandle = require(appData[0] + "/modules/log.js")
 const mm = require("music-metadata");
@@ -24,7 +23,7 @@ let currentPage:pageState = "home"
 var globalChatMessages:storedChatMessage[] = [];
 
 function changeNavHighlight(highlight:string) { //Removes the old and highlights the new
-  	try {document.getElementsByClassName("active")[0].classList.remove("active")} catch(e) {}
+  	document.getElementsByClassName("active")[0].classList.remove("active");
   	document.getElementById(highlight)!.classList.add("active");
 }
 
@@ -33,15 +32,15 @@ window.onload = function() {
     	ipcRenderer.send("pleaseClose");
   	});
 
-  	document.getElementById("maximize")!.addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("maximize")!.addEventListener("click", function(e) { //Maximizes the App.
     	ipcRenderer.send("pleaseMaximize");
   	});
 
-  	document.getElementById("minimize")!.addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("minimize")!.addEventListener("click", function(e) { //Minimizes the App.
     	ipcRenderer.send("pleaseMinimize");
   	});
 
-  	document.getElementById("refresh")!.addEventListener("click", function(e) { //Closes the App.
+  	document.getElementById("refresh")!.addEventListener("click", function(e) { //Refreshes the App.
     	ipcRenderer.send("pleaseRefresh");
   	});
 
@@ -51,37 +50,34 @@ window.onload = function() {
 
 	naviLinks.forEach((linkEl) => {
     	// Listen click event for the navigation link
-    	linkEl.addEventListener("click", e => {
+    	linkEl.addEventListener("click", async  e => {
         	// Prevent default behavior for the click-event
         	e.preventDefault();
         	// Get the path to page content file
         	const href = linkEl.getAttribute("href");
         	let id = linkEl.id
         	if (href) {
-            	// @ts-ignore Use node.js fs-module to read the file
-            	fs.readFile(`${appData[0]}/${href}`, (err:string, data) => {
-                	if (err) {
-                    	throw err;
-                	}
+            	let data = await fs.readFile(`${appData[0]}/${href}`);
                 	// show the selected page
                 	contentEl.innerHTML = "";
                     // @ts-ignore
                 	contentEl.insertAdjacentHTML("beforeend", data);
                 	changeNavHighlight(id) //Changes the highlight
-                	if (linkEl.id == "CommandLink") {globalThis.loadCommandTable(); currentPage = "commands"} //Builds the data table
-                	if (linkEl.id == "GlimBoiHeader") {globalThis.getBasicData(); rememberID(false); currentPage = "home"} //Builds the homepage charts and check for auth ino for the buttons
-                	if (linkEl.id == "EventsLink") {globalThis.loadEvents(); currentPage = "events"}
-                	if (linkEl.id == "UsersLink") {globalThis.loadUsers(); currentPage = "users"}
-                	if (linkEl.id == "PointsLink") {globalThis.getPoints(); currentPage = "points"}
-                	if (linkEl.id == "SettingsLink") {globalThis.showSettings(); currentPage = "settings"}
-                    if (linkEl.id == "OBSLink") {globalThis.loadOBSData(); currentPage = "media"}
-                	if (linkEl.id == "ChatLink") {globalThis.loadChatWindow(); currentPage = "chat"} //Builds the data table
-                    if (linkEl.id == "RanksLink") {globalThis.rankPrep(); currentPage = "ranks"}
-                    if (linkEl.id == "MusicLink") {globalThis.loadMusicProgram(); currentPage = "music"}
-                    if (linkEl.id == "ModPanelLink") {globalThis.loadModPanel(); currentPage = "mod"}
+                    switch (id) {
+                        case "CommandLink": loadCommandTable(); currentPage = "commands"; break;
+                        case "PointsLink": getPoints(); currentPage = "points"; break;
+                        case "EventsLink": loadEvents(); currentPage = "events"; break;
+                        case "UsersLink": loadUsers(); currentPage = "users"; break;
+                        case "RanksLink": rankPrep(); currentPage = "ranks"; break;
+                        case "OBSLink": loadOBSData(); currentPage = "media"; break;
+                        case "MusicLink": loadMusicProgram(); currentPage = "music"; break;
+                        case "ModPanelLink": loadModPanel(); currentPage = "mod"; break;
+                        case "SettingsLink": showSettings(); currentPage = "settings"; break;
+                        case "ChatLink": loadChatWindow(); currentPage = "chat"; break;
+                        case "GlimBoiHeader": loadBotStats(); rememberID(false); currentPage = "home"; break;
+                    }
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
-            	})
         	}
     	})
 	})
@@ -121,27 +117,26 @@ $(document).on('keypress','input, textarea', function (event) {
 
 $('[data-toggle=tooltip]').tooltip();
 
-//Opens a link in the users default browser.
-function loadLink(link:string) {
-  	shell.openExternal("https://" + link)
+/**
+ * Opens a link in the users default browser
+ */
+function loadLink(link: string) {
+    shell.openExternal("https://" + link)
 }
 
-
 // Shows an error message to the user in the form of a modal.
-// @ts-ignore
-function errorMessage(errorType:string, errorMessage:string) {
-  	document.getElementById("errorMessageText")!.innerHTML = errorType;
-  	document.getElementById("errorMessageSolution")!.innerHTML = errorMessage;
-  	$('#modalError').modal("show")
+function errorMessage(errorType: string, errorMessage: string) {
+    document.getElementById("errorMessageText")!.innerHTML = errorType;
+    document.getElementById("errorMessageSolution")!.innerHTML = errorMessage;
+    $('#modalError').modal("show")
 }
 
 
 // Shows a success message to the user in the form of a modal.
-// @ts-ignore
-function successMessage(messageType:string, message:string) {
-  	document.getElementById("successMessageText")!.innerHTML = messageType;
-  	document.getElementById("successMessageSolution")!.innerHTML = message;
-  	$('#modalSuccess').modal("show");
+function successMessage(messageType: string, message: string) {
+    document.getElementById("successMessageText")!.innerHTML = messageType;
+    document.getElementById("successMessageSolution")!.innerHTML = message;
+    $('#modalSuccess').modal("show");
 }
 
 // temp logging, trying to track down a bug

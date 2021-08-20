@@ -99,7 +99,7 @@ function saveWarnings() {
     settings.Moderation.warning2 = warning2;
     settings.Moderation.warning3 = warning3;
     settings.Moderation.warningAbove = warningMore;
-    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
+    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings));
 }
 
 function logModAction(action:LogType) {
@@ -116,7 +116,7 @@ function logModAction(action:LogType) {
 
 function toggleFilter(toggle:boolean) {
     settings.Moderation.filterEnabled = toggle;
-    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
+    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings));
 }
 
 function displayBannedWords() {

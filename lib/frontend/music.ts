@@ -210,7 +210,7 @@ function updateInfo(info, notMusicTab) {
         ChatMessages.filterMessage(artistsMedia, "glimboi");
     }
     if (settings.music.writeToFile && notMusicTab) {
-        fs.writeFile(appData[1] + '/data/nowPlaying.txt', artistsMedia, function () {});
+        fs.writeFile(appData[1] + '/data/nowPlaying.txt', artistsMedia);
     }
 }
 
@@ -298,23 +298,22 @@ function toggleShuffleRepeat(type:HTMLElement, value:boolean, name: string) {
 /**
  * Loads the previous folder if we can pull it from the cache.
  */
-function loadPreviousFolder() {
+async function loadPreviousFolder() {
     let previouslyPlayed = CacheStore.get("lastPlayed", null, false)
     if (previouslyPlayed) {
         try {
-            fs.readdir(previouslyPlayed, (err:any, files) => {
-                let tempSongs = []
-                files.forEach(file => {
-                  tempSongs.push({path: previouslyPlayed + "/" + file, fileName: file})
-                });
-                console.log(tempSongs)
-                if (tempSongs.length > 0) {
-                    loadSongs(tempSongs)
-                } else {
-                    errorMessage("Glimboi was unable to find any songs in the folder.", "")
-                }
-              })
-        } catch(e) {
+            let files = await fs.readdir(previouslyPlayed);
+            let tempSongs = []
+            files.forEach(file => {
+                tempSongs.push({ path: previouslyPlayed + "/" + file, fileName: file })
+            });
+            console.log(tempSongs)
+            if (tempSongs.length > 0) {
+                loadSongs(tempSongs)
+            } else {
+                errorMessage("Glimboi was unable to find any songs in the folder.", "")
+            }
+        } catch (e) {
             errorMessage("Glimboi was unable to load the last folder.", "The last directory used was not found.")
             console.log(e)
         }
