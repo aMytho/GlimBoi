@@ -1,9 +1,6 @@
 // This file manages commands
 
-let path = "./"; //Call updatePath(path) to set to the right path for the db
 let commandsDB:Nedb; //Database of commands.
-let commands:CommandType[] = []; //Array that contains all the commands. The bot reads this
-let repeatableArray:RepeatableCommand[] = []; //Array of repeatable commands
 
 const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js")
 const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js")
@@ -40,17 +37,13 @@ class Command implements CommandType {
     }
 }
 
-
 /**
  * Sets the correct filepath for the database
  * @param {string} updatedPath The file path before /data/commands.db
  */
 function updatePath(updatedPath:string) {
-  	path = updatedPath;
-      // @ts-ignore
-  	commandsDB = new Datastore({ filename: `${path}/data/commands.db`, autoload: true });
+    commandsDB = new Datastore({ filename: `${updatedPath}/data/commands.db`, autoload: true });
 }
-
 
 /**
  * Creates a new command. Reloads the current commands after completion.
@@ -62,12 +55,7 @@ function addCommand(commandData:CommandContructor) {
   	try {
     	//inserts a document as a command. Uses the command made above.
     	commandsDB.insert(newCommand, function(err, doc) {
-    		console.log('Inserted command', doc.commandName, ' to the commands DB');
-    		commands.push(newCommand);
-    		if (newCommand.repeat == true) {
-                // @ts-ignore
-      			repeatableArray.push(newCommand)
-    		}
+    	    console.log('Inserted command', doc.commandName, ' to the commands DB');
   		});
   	} catch(e) {
     	console.log(e);
@@ -118,25 +106,14 @@ function addCommandFilter(commandName:commandName, commandData:string, type: "!c
   	})
 }
 
-
-
 /**
  * Removes a command from the database. Reloads the current commands upon completion
  * @param {string} commandName Lowercase version of the command name.
  */
-function removeCommand(commandName:commandName) {
-  	commandsDB.remove({ commandName: commandName }, {}, function (err, numRemoved) {
-    	console.log(commandName + " was removed from the db");
-    	for (let index = 0; index < commands.length; index++) {
-      		if (commandName == commands[index].commandName) {
-        		if (commands[index].repeat == true) {
-          			removeRepeat(commandName)
-        		}
-        		commands.splice(index, 1);
-        		break;
-      		}
-    	}
-  	});
+function removeCommand(commandName: commandName) {
+    commandsDB.remove({ commandName: commandName }, {}, function (err, numRemoved) {
+        console.log(commandName + " was removed from the db");
+    });
 }
 
 /**
@@ -146,23 +123,6 @@ function editCommand({ commandName, actions, cooldown, uses, points, rank, repea
     console.log(commandName, actions, cooldown, uses, points, rank, repeat)
     commandsDB.update({ commandName: commandName }, { $set: { actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
-        for (let index = 0; index < commands.length; index++) {
-            if (commandName == commands[index].commandName) {
-                commands.splice(index, 1, { commandName: commandName, actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat});
-                let repeatExists = findRepeat(commandName);
-                if (repeatExists == null && repeat == true) { // The command is gaining the repeat property. Add to array
-                    console.log("Adding to repeat array.")
-                    repeatableArray.push({ commandName: commandName, actions: actions, cooldown: 0, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
-                } else if (repeatExists !== null && repeatExists.command.repeat == true && repeat == false) { // The command is losing the repeat prop. Remove from array
-                    console.log("Removing from repeat array")
-                    removeRepeat(commandName)
-                } else if (repeatExists !== null && repeatExists.command.repeat == repeat) { // The repeat is the same, we just need to edit other values.
-                    console.log("Editing command in repeat array.")
-                    repeatableArray.splice(repeatExists.index, 1, { commandName: commandName, actions: actions, cooldown: 0, uses: Number(uses), points: Number(points), rank: rank, repeat: repeat})
-                }
-                break;
-            }
-        }
     });
 }
 
@@ -171,101 +131,46 @@ function editCommand({ commandName, actions, cooldown, uses, points, rank, repea
  * @returns A command
  * This technically does not need a promise, but all the functions that use it are meant to deal with promises. This will be fixed later
  */
-function findCommand(command:commandName): Promise<null | CommandType> {
-  	return new Promise(resolve => {
-    	console.log("Searching for " + command);
-    	command = command.toLowerCase()
-    	for (let index = 0; index < commands.length; index++) {
-      		if (command == commands[index].commandName) {
-        		resolve(commands[index]);
-        		break;
-      		}
-    	}
-    	resolve(null)
-  	})
+function findCommand(command: commandName): Promise<null | CommandType> {
+    return new Promise(resolve => {
+        console.log("Searching for " + command);
+        command = command.toLowerCase();
+        commandsDB.findOne({ commandName: command }, function (err, doc) {
+            if (doc !== null) {
+                resolve(doc);
+            } else {
+                resolve(null);
+            }
+        });
+    })
 }
 
 /**
- * Returns the repeatable command and null if none exists.
- * @param {string} commandName
- * @returns
- */
-function findRepeat(commandName:commandName) {
-  	for (let i = 0; i < repeatableArray.length; i++) {
-    	if (repeatableArray[i].commandName == commandName) {
-      		return { command: repeatableArray[i], index: i };
-    	}
-  	}
-  	return null
-}
-
-/**
- * Removes the command from the repeat array.
- * @param {string} commandName
- */
-function removeRepeat(commandName:commandName) {
-  	for (let i = 0; i < repeatableArray.length; i++) {
-    	if (repeatableArray[i].commandName == commandName) {
-      		repeatableArray.splice(i, 1);
-      		break
-    	}
-  	}
-}
-
-/**
- * @async
- * Returns every command in the database. Also loads the repeat commands.
+ * Returns every command in the database.
  */
 async function getAll(): Promise<CommandType[]> {
-  	return new Promise(resolve => {
-    	commandsDB.find({}, function (err: Error | null, docs:CommandType[]) {
-      		console.log(docs)
-      		commands = docs //The bot knows all the commands now. This is the bot, not the UI
-      		resolve(docs) //UI probably knows after this
-      		loadRepeats(docs) // load the repeat commands
-    	})
-  	})
-}
-
-// Self explanatory. This contains all the commands
-function getCurrentCommands() {
-  	return commands
-}
-
-// Returns all the repeatable data
-function getRepeats() {
-  	return repeatableArray
-}
-
-/**
- * Loads all the repeat commands. Pushes them to the repeatableArray
- * @param {array} command Array of all commands
- */
-function loadRepeats(command:CommandType[]) {
-  	repeatableArray = [] // reset the array, we don't want duplicates
-  	let repeatCount = 0; //Counter of repeatable commands
-  	for (let i = 0; i < command.length; i++) {
-    	if (command[i] !== undefined && command[i].repeat == true) {
-            command[i].cooldown = 0;
-            // @ts-ignore
-      		repeatableArray.push(command[i]) // adds it to the array
-      		repeatCount++ // adds 1 to the counter
-    	}
-  	}
-  	console.log("Added " + repeatCount + " repeatable commands");
-  	console.log(repeatableArray);
+    return new Promise(resolve => {
+        commandsDB.find({}, function (err: Error | null, docs: CommandType[]) {
+            console.log(docs);
+            resolve(docs);
+        })
+    })
 }
 
 /**
  * Loads a random repeatable command and activates it.
  */
 function randomRepeatCommand() {
-    let index = Math.floor(Math.random()*repeatableArray.length)
-    console.log(repeatableArray[index]);
-    if (repeatableArray[index] !== undefined) {
-        CommandRunner.runCommand({message: "!repeat", command: repeatableArray[index], user: ApiHandle.getStreamerName()})
-        ChatStats.resetUserMessageCounter()
-    }
+    commandsDB.find({ repeat: true }, function (err, docs:CommandType[]) {
+        if (docs.length > 0) {
+            let randomCommand = docs[Math.floor(Math.random() * docs.length)];
+            console.log(randomCommand);
+            CommandRunner.runCommand({ message: "!repeat", command: randomCommand, user: ApiHandle.getStreamerName() })
+            ChatStats.resetUserMessageCounter()
+        } else {
+            console.log("No repeatable commands found");
+        }
+    });
 }
 
 
@@ -273,25 +178,27 @@ function randomRepeatCommand() {
  * Increments the command uses by one. Updates the commands upon completion.
  * @param {string} command Name of the command
  */
-function addCommandCount(command:commandName) {
-  	commandsDB.update({ commandName: command }, { $inc: { uses: 1 } }, {}, function (err, numReplaced) {
-    	err ? console.log(err) : null; // if error log it
-    	for (let index = 0; index < commands.length; index++) {
-      		if (command == commands[index].commandName) {
-        		commands[index].uses++
-        		break;
-      		}
-    	}
-  	});
+function addCommandCount(command: commandName) {
+    commandsDB.update({ commandName: command }, { $inc: { uses: 1 } }, {}, function (err, numReplaced) {
+        err ? console.log(err) : null; // if error log it
+    });
 }
 
 /**
  * Explains how to use commands in chat.
  */
 function info() {
-  	ChatMessages.filterMessage("placeholder", "glimboi")
+    ChatMessages.filterMessage("placeholder", "glimboi")
+}
+
+async function countCommands() {
+    return new Promise(resolve => {
+        commandsDB.count({}, function (err, count) {
+            resolve(count);
+        });
+    })
 }
 
 export { addCommand, addCommandCount, addCommandFilter, ChatAction, CommandRunner,
-editCommand, findCommand, getAll, getCurrentCommands, getRepeats, info,
+countCommands, editCommand, findCommand, getAll, info,
 randomRepeatCommand, removeCommand , updatePath};
