@@ -1,13 +1,11 @@
 
-var recentChannelsDB:Nedb;
-var path = "./";
+let recentChannelsDB:Nedb;
 
 /**
- * Updates the path to the DB. The path variable is updated
+ * Updates the path to the DB.
  */
 function updatePath(updatedPath:string): void {
-    path = updatedPath;
-    recentChannelsDB = new Datastore({ filename: `${path}/data/recentChannels.db`, autoload: true });
+    recentChannelsDB = new Datastore({ filename: `${updatedPath}/data/recentChannels.db`, autoload: true });
 }
 
 /**
@@ -16,7 +14,7 @@ function updatePath(updatedPath:string): void {
  * @returns If successful returns the user.
  */
 async function addRecentChannel(channel:string, timestamp = null, autoJoin = false): Promise<channel> {
-    var timestamp = timestamp ?? (Date.now());
+    timestamp = timestamp ?? (Date.now());
 
     return await new Promise(done => {
       	recentChannelsDB.find({ channel: channel }, function (err:string, doc: string | any[]) {
@@ -38,7 +36,6 @@ async function addRecentChannel(channel:string, timestamp = null, autoJoin = fal
 
 /**
  * Disables autoJoin for all channels, then enables for a specified channel
- *
  * @param {string} id
  * @param {boolean} autoJoinEnabled
  */
@@ -61,7 +58,6 @@ async function setAutoJoinChannelByID(id:string, autoJoinEnabled:boolean): Promi
 
 /**
  * Removes a channel from recent chat DB, by the channel ID, the ID is what's in the DB
- *
  * @param {string} id Name of the id
  */
 async function removeRecentChannelByID(id:string):Promise<void> {
@@ -81,7 +77,7 @@ async function getAllRecentChannels(): Promise<channel[]> {
   	return new Promise(resolve => {
     	recentChannelsDB.find({}, function (err:string, docs) {
       		console.log('Returning all recent channels.');
-      		resolve(docs)
+      		resolve(docs);
     	})
   	})
 }

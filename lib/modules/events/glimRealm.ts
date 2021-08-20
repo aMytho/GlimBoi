@@ -57,7 +57,7 @@ function addGlimRealmUser(user:userName, points: number) {
  * @param {string} user
  */
 function glimDropRealm(user:userName, data:{points:number}) {
-    var result = glimChance()!; // get a random effect
+    let result = glimChance()!; // get a random effect
     console.log(result);
     ChatMessages.filterMessage(result.message, "glimboi"); // send the message to chat
     if (result.type == "add") {
@@ -107,8 +107,8 @@ function openGlimRealm(fromUI?: boolean) {
  * Returns a random glimdrop event.
  */
 function glimChance() {
-    var number = Math.floor(Math.random()*35);
-    switch (number) {
+    let glimrealmNumber = Math.floor(Math.random()*35);
+    switch (glimrealmNumber) {
         case 0: return {message: "The Glimdrops are hiding. No adjustment in points.", result: 0, type: "add"}
         case 1: return {message: ":glimwow: got his Glimesh T-shirt! You gained 100 points.", result: 100, type: "add"}
         case 2: return {message: "You and :glimgype: got even more hyped! You gained 100 points!", result: 100, type: "add"}

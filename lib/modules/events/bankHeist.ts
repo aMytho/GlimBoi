@@ -59,7 +59,7 @@ function walkIn() {
             bankHeistMessage("The bank did not notice your group as you slipped in. Your team moved towards the back rooms undetected.")
             setTimeout(() => {
                 if (probability(0.1)) {
-                    var number = Math.floor(Math.random()*users.length);
+                    let number = Math.floor(Math.random()*users.length);
                     bankHeistMessage(`${users[number]} saw a jar of candy at one of the registers. They head back to grab some.`)
                     if (probability(0.5)) {
                         bankHeistMessage(`${users[number]} was discovered! The alarm is raised. ${users[number]} grabs the jar of candy and regroups with your team!`);
@@ -83,7 +83,7 @@ function walkIn() {
                         bankHeistMessage("The guards have been dealt with. Your team had no casualities! Moving to the next room.")
                         bankDoor(true)
                     } else {
-                        var number = Math.floor(Math.random()*users.length);
+                        let number = Math.floor(Math.random()*users.length);
                         bankHeistMessage(`${users[number]} was hit in the action :glimrip: The guards in the front room have been dealt with. Your team moves to the next room.`);
                         users.splice(number, 1);
                         if (users.length == 0) {
@@ -110,7 +110,7 @@ function bankDoor(alramActivated:boolean) {
         bankHeistMessage("Your team has reached the vault door. You begin to unlock it. Since the alarm is activated it will take more time. Guards begin to head for the vault entrance...");
         setTimeout(() => {
             if (probability(50)) {
-                var number = Math.floor(Math.random() * users.length);
+                let number = Math.floor(Math.random() * users.length);
                 bankHeistMessage(`${users[number]} was hit in the action :glimrip: The guards surrounding the vault have been dealt with. Your team opens the vault and begins to loot.`);
                 users.splice(number, 1);
                 if (users.length == 0) {
@@ -144,35 +144,35 @@ function bankDoor(alramActivated:boolean) {
  */
 function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
     setTimeout(() => {
-        bankHeistMessage(`Your team has looted the vault and collected a total of ${currencyLooted} ${settings.Points.name}. Don't relax yet, you still have to escape!`)
+        bankHeistMessage(`Your team has looted the vault and collected a total of ${currencyLooted} ${CacheStore.get("pointsName", "Points")}. Don't relax yet, you still have to escape!`)
         if (justTriggeredAlarm) {
             if (probability(0.5)) {
-                var number = Math.floor(Math.random() * users.length);
+                let number = Math.floor(Math.random() * users.length);
                 bankHeistMessage(`${users[number]} was captured while trying to escape :glimsad: `);
                 users.splice(number, 1);
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`The remaining team has ${currencyGained} ${settings.Points.name}!`, "glimboi");
+                    ChatMessages.filterMessage(`The remaining team has ${currencyGained} ${CacheStore.get("pointsName", "Points")}!`, "glimboi");
                     distributePoints(currencyLooted);
                 }
             } else {
-                ChatMessages.filterMessage(`The team escaped without being captured! Your team gained a total of ${currencyLooted} ${settings.Points.name}. It will be divided among the successful raiders.`, "glimboi");
+                ChatMessages.filterMessage(`The team escaped without being captured! Your team gained a total of ${currencyLooted} ${CacheStore.get("pointsName", "Points")}. It will be divided among the successful raiders.`, "glimboi");
                 distributePoints(currencyLooted)
             }
         } else {
             if (probability(0.7)) {
-                var number = Math.floor(Math.random() * users.length);
+                let number = Math.floor(Math.random() * users.length);
                 bankHeistMessage(`${users[number]} was captured while trying to escape :glimsad: `);
                 users.splice(number, 1);
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${settings.Points.name}! It will be divided among the successful raiders`, "glimboi");
+                    ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${CacheStore.get("pointsName", "Points")}! It will be divided among the successful raiders`, "glimboi");
                     distributePoints(currencyLooted)
                 }
             } else {
-                ChatMessages.filterMessage(`:glimmoney: The team escaped with ${currencyGained} ${settings.Points.name} ! It will be divided among the successful raiders`, "glimboi");
+                ChatMessages.filterMessage(`:glimmoney: The team escaped with ${currencyGained} ${CacheStore.get("pointsName", "Points")} ! It will be divided among the successful raiders`, "glimboi");
                 distributePoints(currencyLooted)
             }
         }
@@ -199,13 +199,13 @@ function bankHeistFailed() {
  */
 function distributePoints(points: number) {
     setTimeout(() => {
-        var pointsPerUser = Math.round(points / users.length);
+        let pointsPerUser = Math.round(points / users.length);
         users.forEach(async function (element) {
-            var userExists = await UserHandle.findByUserName(element);
+            let userExists = await UserHandle.findByUserName(element);
             if (userExists !== "ADDUSER") {
                 UserHandle.addPoints(element, pointsPerUser);
             } else {
-                var userAdded = await UserHandle.addUser(element, false);
+                let userAdded = await UserHandle.addUser(element, false);
                 if (userAdded !== "INVALIDUSER") {
                     UserHandle.addPoints(element, points)
                 }
@@ -224,7 +224,7 @@ function rallyMessage(user:userName) {
     if (CacheStore.get("bankheistQuiet", false, true)) {
         return;
     }
-    var number = Math.floor(Math.random()*4);
+    let number = Math.floor(Math.random()*4);
     switch (number) {
         case 0: return `Yay :glimhype:, ${user} is here!`
         case 1:
@@ -261,7 +261,7 @@ function resetUsers() {
  * Generates a random number larger than 500.
  */
 function currencyInBank() {
-    var possibleCurrency = Math.round(Math.random()*1500);
+    let possibleCurrency = Math.round(Math.random()*1500);
     if (possibleCurrency < 100) {
         possibleCurrency = possibleCurrency + 500
     } else if (possibleCurrency < 200) {

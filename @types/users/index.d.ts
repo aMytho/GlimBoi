@@ -15,11 +15,6 @@ interface UserType {
  */
 type userDoc = UserType
 
- /**
- * Object containing the affected document
- */
-type UserDocs = UserType[]
-
 /**
  * The name of a user
  */

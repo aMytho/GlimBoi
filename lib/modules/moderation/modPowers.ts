@@ -13,11 +13,11 @@ async function scanMessage(user:userName, message:string, messageID:number, user
     if (settings.Moderation.filterEnabled) {
         // The user exists
         let parsedMessage = message.split(" ")
-        var badWordFound = 0;
+        let badWordFound = 0;
         // for every word...
         for (let index = 0; index < parsedMessage.length; index++) {
             // compare against every bad word.
-            var badWordFound = ModHandle.getBannedWords().indexOf(parsedMessage[index]);
+            badWordFound = ModHandle.getBannedWords().indexOf(parsedMessage[index]);
             if (badWordFound !== -1) {
                 let userExists = await UserHandle.findByUserName(user.toLowerCase());
                 if (userExists == "ADDUSER") {

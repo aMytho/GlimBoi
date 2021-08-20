@@ -295,7 +295,7 @@ function disconnect(displayMessage:boolean) {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
     	if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
-    	if (ChatSettings.isLoggingEnabled() == true) {
+    	if (settings.chat.logging == true) {
       		setTimeout(() => {
         		ipcRenderer.send("logEnd") // ends the logging
       		}, 3000);
@@ -312,7 +312,7 @@ function disconnectError() {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.")
     	errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
-    	if (ChatSettings.isLoggingEnabled() == true) {
+    	if (settings.chat.logging == true) {
       		setTimeout(() => {
         		ipcRenderer.send("logEnd")
       		}, 3000);

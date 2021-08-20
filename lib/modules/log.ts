@@ -1,7 +1,6 @@
 // This file handles the glimboi logging system. This is separate from chat logging (message only)
 
 let loggingDB:Nedb;
-let logPath = "./";
 
 /**
  * Logging Event. Any non message event
@@ -75,10 +74,9 @@ class LoggingEvent implements LogType {
 }
 
 /**
- * Updates the path to the DB. The path variable is updated
+ * Updates the path to the DB.
  */
  function updatePath(path:string): void {
-    logPath = path
     loggingDB = new Datastore({ filename: `${path}/data/logging.db`, autoload: true, timestampData: true });
 }
 
