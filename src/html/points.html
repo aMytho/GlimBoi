@@ -1,136 +1,182 @@
 <div class="card-deck m-3">
-  <div class="card col-12 col-lg-3 glimPanel">
-    <div class="card-body">
-      <h3 class="whiteText text-center" id="pointName">Points</h3>
-      <p class="whiteText text-center">_______________</p>
-      <div class="row">
-        <div class="col-4 whiteText text-nowrap">
-          <h3>Earning</h3>
+    <div class="card col-12 col-lg-3 glimPanel">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4 whiteText text-nowrap">
+                    <h3>Starting</h3>
+                </div>
+                <div class="col-8 whiteText">
+                    <h4 class="text-right" id="StartingPoints">100</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 whiteText text-nowrap">
+                    <h3>Rate</h3>
+                </div>
+                <div class="col-8 whiteText">
+                    <h4 class="text-right" id="EarningPoints">100</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 whiteText text-nowrap">
+                    <h3>Total</h3>
+                </div>
+                <div class="col-8 whiteText">
+                    <h4 class="text-right" id="TotalPoints">100</h4>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-12 whiteText">
+                    <h3 class="text-center">Initial Value</h3>
+                    <p>The amount of points a new user starts with.</p>
+                    <form>
+                        <div class="form-group">
+                            <label for="rateValueSlider">Starting Amount</label>
+                            <input type="range" class="form-control-range" id="pointValue" min="0" max="500"
+                                oninput="document.getElementById('pointValueOutput').innerText = this.value">
+                            <p id="pointValueOutput">100</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 whiteText">
+                    <h3 class="text-center">Rate</h3>
+                    <p>The amount of points earned per 15 minutes.</p>
+                    <form>
+                        <div class="form-group">
+                            <label for="rateValueSlider">Rate</label>
+                            <input type="range" class="form-control-range" id="pointRate" min="0" max="100"
+                                oninput="document.getElementById('rateValueOutput').innerText = this.value">
+                            <p id="rateValueOutput">100</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 whiteText">
+                    <h3 class="text-center">Name</h3>
+                    <p>The name of your currency.</p>
+                    <input class="icon-input aInput" type="text" placeholder="Name" id="pointsNewName"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: 0px;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <a class="btn btn-info btn-block" onclick="getPoints()">Refresh Leaderboard</a>
+                </div>
+                <div class="col-6 ">
+                    <a class="btn btn-info btn-block" onclick="saveUserPointSettings()">Save</a>
+                </div>
+            </div>
         </div>
-        <div class="col-8 whiteText">
-          <h4 class="text-right" id="EarningPoints">100</h4>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-4 whiteText text-nowrap">
-          <h3>Starting</h3>
-        </div>
-        <div class="col-8 whiteText">
-          <h4 class="text-right" id="StartingPoints">100</h4>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-6">
-          <a class="btn btn-primary btn-block" onclick="document.getElementById('SettingsLink').click()">Point Settings</a>
-        </div>
-        <div class="col-6 ">
-          <a class="btn btn-info btn-block" data-toggle="modal" data-target="#modalInfo">More Info</a>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <div class="card col-12 col-lg-9 glimPanel">
-    <div class="card-body">
-      <h3 class="whiteText text-center" id="pointName">Top Users</h3>
-      <table class="table whiteText table-hover" id="pointsTable">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">User</th>
-            <th scope="col">Points</th>
-            <th scope="col">Team</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td id="firstUser">Default</td>
-            <td id="firstTeam">User</td>
-            <td id="firstPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td id="secondUser">Default</td>
-            <td id="secondTeam">User</td>
-            <td id="secondPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td id="thirdUser">Default</td>
-            <td id="thirdTeam">User</td>
-            <td id="thirdPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td id="fourthUser">Default</td>
-            <td id="fourthTeam">User</td>
-            <td id="fourthPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td id="fifthUser">Default</td>
-            <td id="fifthTeam">User</td>
-            <td id="fifthPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">6</th>
-            <td id="sixthUser">Default</td>
-            <td id="sixthTeam">User</td>
-            <td id="sixthPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">7</th>
-            <td id="seventhUser">Default</td>
-            <td id="seventhTeam">User</td>
-            <td id="seventhPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">8</th>
-            <td id="eighthUser">Default</td>
-            <td id="eighthTeam">User</td>
-            <td id="eighthPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">9</th>
-            <td id="ninthUser">Default</td>
-            <td id="ninthTeam">User</td>
-            <td id="ninthPoints">Null</td>
-          </tr>
-          <tr>
-            <th scope="row">10</th>
-            <td id="tenthUser">Default</td>
-            <td id="tenthTeam">User</td>
-            <td id="tenthPoints">Null</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="card col-12 col-lg-9 glimPanel">
+        <div class="card-body">
+            <h3 class="whiteText text-center" id="pointName">Points Leaderboard</h3>
+            <table class="table whiteText table-hover" id="pointsTable">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Points</th>
+                        <th scope="col">Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td id="firstUser">Default</td>
+                        <td id="firstTeam">User</td>
+                        <td id="firstPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td id="secondUser">Default</td>
+                        <td id="secondTeam">User</td>
+                        <td id="secondPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td id="thirdUser">Default</td>
+                        <td id="thirdTeam">User</td>
+                        <td id="thirdPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td id="fourthUser">Default</td>
+                        <td id="fourthTeam">User</td>
+                        <td id="fourthPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5</th>
+                        <td id="fifthUser">Default</td>
+                        <td id="fifthTeam">User</td>
+                        <td id="fifthPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">6</th>
+                        <td id="sixthUser">Default</td>
+                        <td id="sixthTeam">User</td>
+                        <td id="sixthPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">7</th>
+                        <td id="seventhUser">Default</td>
+                        <td id="seventhTeam">User</td>
+                        <td id="seventhPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">8</th>
+                        <td id="eighthUser">Default</td>
+                        <td id="eighthTeam">User</td>
+                        <td id="eighthPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">9</th>
+                        <td id="ninthUser">Default</td>
+                        <td id="ninthTeam">User</td>
+                        <td id="ninthPoints">Null</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">10</th>
+                        <td id="tenthUser">Default</td>
+                        <td id="tenthTeam">User</td>
+                        <td id="tenthPoints">Null</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 </div>
 
 
-<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="adduserModal">
-      <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalLabel4">Info</h4>
-      </div>
-      <!--Body-->
-      <div class="modal-body">
-        <h4 class="text-center">Points</h4>
-        <p>Points are a currency your viewers can earn once they have been added to the DB. You can change "points" to anything you wish. Your viewers can use these points on games and other activities. </p>
-        <h4 class="text-center">Earning Points</h4>
-        <p>Users earn points every 15 minutes they are in your stream. This value can be adjusted on the points tab. You can also earn points by playing games.</p>
-        <p>Although there is not a point limit I would recomend keeping the points earned per minute low. It saves resources and can prevent visual bugs.</p>
-        <h4 class="text-center">Mods</h4>
-        <p>Mods can bestow and remove viewers points. They can also set the amount earned in chat.</p>
-      </div>
-      <!--Footer-->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-      </div>
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="adduserModal">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100" id="myModalLabel4">Info</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <h4 class="text-center">Points</h4>
+                <p>Points are a currency your viewers can earn once they have been added to the DB. You can change
+                    "points" to anything you wish. Your viewers can use these points on games and other activities. </p>
+                <h4 class="text-center">Earning Points</h4>
+                <p>Users earn points every 15 minutes they are in your stream. This value can be adjusted on the points
+                    tab. You can also earn points by playing games.</p>
+                <p>Although there is not a point limit I would recomend keeping the points earned per minute low. It
+                    saves resources and can prevent visual bugs.</p>
+                <h4 class="text-center">Mods</h4>
+                <p>Mods can bestow and remove viewers points. They can also set the amount earned in chat.</p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

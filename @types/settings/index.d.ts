@@ -1,9 +1,9 @@
 interface Settings {
-    Points: {
-        enabled: boolean;
-        name: string;
-        StartingAmount: number;
-        accumalation: number;
+    Points?: {
+        enabled?: boolean;
+        name?: string;
+        StartingAmount?: number;
+        accumalation?: number;
     },
     Commands: {
         enabled: boolean;

@@ -79,8 +79,8 @@ async function startRaffle(user: userName, fromUI?: boolean): Promise<boolean> {
                     updateWinnerText("Nobody entered so nobody won.");
                 } else {
                     // send the winner
-                    ChatMessages.filterMessage(`${winner} has won the raffle! Awarding ${pointsToAward} ${settings.Points.name}'s to ${winner}.`, "glimboi");
-                    console.log(`${winner} has won the raffle! Awarding ${pointsToAward} ${settings.Points.name}'s to ${winner}.`);
+                    ChatMessages.filterMessage(`${winner} has won the raffle! Awarding ${pointsToAward} ${CacheStore.get("pointsName", "Points")}'s to ${winner}.`, "glimboi");
+                    console.log(`${winner} has won the raffle! Awarding ${pointsToAward} ${CacheStore.get("pointsName", "Points")}'s to ${winner}.`);
                     // give points to the winner
                     winner = winner.toLowerCase();
                     let userExists = await UserHandle.findByUserName(winner);
@@ -116,7 +116,7 @@ function getEnteredMessage(user: userName): string {
     // pick a random message
     let messages = [
         `${user} has joined the raffle.`,
-        `${user} wants to win ${settings.Points.name}.`,
+        `${user} wants to win ${CacheStore.get("pointsName", "Points")}.`,
         `${user} wants to win the raffle!`,
         `${user} has entered the raffle.`,
     ];
