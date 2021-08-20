@@ -92,10 +92,10 @@ class Audio extends ChatAction {
         this.source = source;
     }
 
-    run() {
-        let toBePlayed = OBSHandle.getMediaByName(this.source);
+    async run() {
+        let toBePlayed = await OBSHandle.getMediaByName(this.source);
         if (toBePlayed !== null) {
-            OBSHandle.playSound(toBePlayed);
+            OBSHandle.activateMedia(toBePlayed, "soundEffect");
         }
         return
     }
@@ -132,10 +132,10 @@ class ImageGif extends ChatAction {
         this.source = source;
     }
 
-    run() {
-        let toBeShown = OBSHandle.getMediaByName(this.source);
+    async run() {
+        let toBeShown = await OBSHandle.getMediaByName(this.source);
         if (toBeShown !== null) {
-            OBSHandle.displayImage(toBeShown);
+            OBSHandle.activateMedia(toBeShown, "imageGif");
         }
         return
     }
@@ -176,10 +176,10 @@ class Video extends ChatAction {
         this.source = source;
     }
 
-    run() {
-        let toBePlayed = OBSHandle.getMediaByName(this.source);
+    async run() {
+        let toBePlayed = await OBSHandle.getMediaByName(this.source);
         if (toBePlayed !== null) {
-            OBSHandle.playVideo(toBePlayed);
+            OBSHandle.activateMedia(toBePlayed, "video");
         }
         return
     }

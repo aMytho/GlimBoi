@@ -15,3 +15,4 @@ type mediaName = string
 type mediaPath = string;
 type mediaType = string;
 type mediaPosition = string
+type mediaWSSName = "soundEffect" | "imageGif" | "video"
