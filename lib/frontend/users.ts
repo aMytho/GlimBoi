@@ -3,26 +3,11 @@ QuoteHandle.updatePath(appData[1]);
 RankHandle.updatePath(appData[1]);
 
 let userTable; //physical table showing user data
-let tempUser;
+let usersCanBeDeleted = false;
 
-function loadUsers() { //Runs at startup (on page load (on page click (only the first time )))
-  	$(document).ready(function () {
-    	loadUserTable();
-    	prepUserModals()
-    	//makes clicking the button in the quotes column show the quotes under the table
-    	$('#userTable tbody').on('click', 'button', function () {
-      		let data = userTable.row($(this).parents('tr')).data();
-      		UserHandle.findByUserName(data.userName).then(user => {
-                  //@ts-ignore
-        		console.log('Building quote list with ' + user.userName)
-        		makeList(data) //Builds the list of the users quotes.
-      		})
-    	});
-    	$('#userTable tbody').on('click', 'a', function () {
-      		let data = userTable.row($(this).parents('tr')).data();
-      		globalThis.loadLink("glimesh.tv/" + data.userName)
-    	});
-  	});
+function loadUsers() {
+    loadUserTable();
+    prepUserModals()
 }
 
 function loadAllQuotes() { //loads all quotes and displays them under the table.
@@ -147,52 +132,32 @@ function removeQuote(id, user:userName) {
   	})
 }
 
-function addUser() { //Adds a user
-  	let user = (document.getElementById("userAddInput") as HTMLInputElement)!.value.trim().toLowerCase();
-  	let newUser = UserHandle.addUser(user, true); //adds it to the DB.
-  	newUser.then(data => { //Displays it on our side.
-    	if (data == "USEREXISTS") { //Tells the user that user exists.
-      		document.getElementById("addUserMessage")!.innerHTML = "That user already exists."
-      		setTimeout(() => {
-        		try {
-        			document.getElementById("addUserMessage")!.innerHTML = ""
-        		} catch(e) {
-          			console.log(e)
-        		}
-      		}, 4000);
-    	} else if (data == "INVALIDUSER") {
-      		console.log("The user cannot be created because the user doesn't exist on glimesh.");
-      		document.getElementById("addUserMessage")!.innerHTML = "The user does not exist on Glimesh. Ensure the username is correct."
-    	} else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      		document.getElementById("addUserMessageSuccess")!.innerHTML = "Success! User has been created!";
-      		addUserTable(data)
-      		setTimeout(() => { //Resets the message
-        		document.getElementById("addUserMessageSuccess")!.innerHTML = "";
-      		}, 4000);
-    	}
-  	})
+function searchAndAddUser() {
+    let userToBeAdded = (document.getElementById("userAddInput") as HTMLInputElement)!.value.trim().toLowerCase();
+    let newUser = UserHandle.addUser(userToBeAdded, true); //adds it to the DB.
+    newUser.then(data => {
+        if (data == "USEREXISTS") {
+            document.getElementById("addUserMessage")!.innerHTML = "That user already exists."
+            setTimeout(() => {
+                resetAddUserBox();
+            }, 4000);
+        } else if (data == "INVALIDUSER") {
+            console.log("The user cannot be created because the user doesn't exist on glimesh.");
+            document.getElementById("addUserMessage")!.innerHTML = "The user does not exist on Glimesh. Ensure the username is correct."
+            setTimeout(() => {
+                resetAddUserBox();
+            }, 4000);
+        } else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            console.log("Showing the streamer the user");
+            $("#modalUserAdd").modal("hide");
+            successMessage("User added!", `${data.userName} has been added to Glimboi.`);
+            addUserTable(data);
+        }
+    })
 }
 
-function removeUser() { //removes the user
-  	let user = (document.getElementById("userremoveInput") as HTMLInputElement)!.value.trim().toLowerCase();
-  	//check if the user exists.
-  	let exists = UserHandle.findByUserName(user);
-  	exists.then(data => {
-    	if (data == "ADDUSER") {
-      		document.getElementById("removeUserMessage")!.innerHTML = "User not found. Pleae enter the correct name."
-      		setTimeout(() => {
-        		document.getElementById("removeUserMessage")!.innerHTML = ""
-      		}, 4000);
-    	} else {
-      		UserHandle.removeUser(user, true).then(deletedUser => { //removes the user from the db. Shows us afterwords
-        		document.getElementById("removeUserMessage")!.innerHTML = "User Removed.";
-        		removeUserFromTable(deletedUser)
-        		setTimeout(() => {
-          			document.getElementById("removeUserMessage")!.innerHTML = ""
-        		}, 4000);
-      		})
-    	}
-  	})
+function resetAddUserBox() {
+    document.getElementById("addUserMessage")!.innerHTML = ""
 }
 
 // Removes the user from a table. This only affects the table
@@ -242,175 +207,221 @@ function makeList(user:UserType) { //Similir to above function, makes a list and
 
 //This is the points section.
 let pointsTable;
-function getPoints() {
-  	let arrayOfPoints = []
-  	document.getElementById("StartingPoints").innerHTML = String(settings.Points.StartingAmount);
-  	document.getElementById("EarningPoints").innerHTML = String(settings.Points.accumalation);
-  	document.getElementById("pointName")!.innerHTML = settings.Points.name
-  	let points = UserHandle.getTopPoints().then(data => {
-    	console.log(data);
-    	pointsTable = document.getElementById("pointsTable")! as HTMLTableElement;
-    	for (const property in data) {
-      		let pointValue = [
-        		`${data[`${property}`].userName}`,
-        		`${data[`${property}`].points}`,
-        		`${data[`${property}`].team}`
-      		];
-      		arrayOfPoints.push(pointValue)
-    	}
-    	console.log(pointsTable.rows.length + " rows in the table");
-    	for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
-      		if (pointsTable.rows[i + 1] === undefined) {
-        		continue;
-      		}
+async function getPoints() {
+    let startingPoints = String(CacheStore.get("startingPoints", 0));
+    let earningPoints = String(CacheStore.get("earningPoints", 15));
+    let pointsName = CacheStore.get("pointsName", "Points");
+    document.getElementById("pointName")!.innerHTML = `${pointsName} Leaderboard`; // above the table
+  	document.getElementById("StartingPoints").innerHTML = startingPoints; // header
+  	document.getElementById("EarningPoints").innerHTML = earningPoints; // header
+    document.getElementById("TotalPoints").innerHTML = String(await UserHandle.getAllPoints()); // total points
+    (document.getElementById("pointsNewName") as HTMLInputElement).value = pointsName; // name input
+    (document.getElementById("pointValue") as HTMLInputElement).value = startingPoints; // points input
+    (document.getElementById("pointRate") as HTMLInputElement).value = earningPoints; // points input
+    document.getElementById("rateValueOutput").innerText = earningPoints; // slider value
+    document.getElementById("pointValueOutput").innerText = startingPoints; // slider value;
 
-      		pointsTable.rows[i + 1].cells[0].innerHTML = i;
-      		if (arrayOfPoints[i] !== undefined) {
-        		pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0];
-        		pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1];
-        		pointsTable.rows[i + 1].cells[3].innerHTML = arrayOfPoints[i][2];
-      		}
-    	}
-  	})
-}
+    let arrayOfPoints = [];
+    let topPoints = await UserHandle.getTopPoints();
+    pointsTable = document.getElementById("pointsTable")! as HTMLTableElement;
+    for (const property in topPoints) {
+        let pointValue = [
+            `${topPoints[`${property}`].userName}`,
+            `${topPoints[`${property}`].points}`,
+            `${topPoints[`${property}`].team}`
+        ];
+        arrayOfPoints.push(pointValue)
+    }
+    for (let i = 0; i < pointsTable.rows.length; i++) { //For every row
+        if (pointsTable.rows[i + 1] === undefined) {
+            continue;
+        }
 
-function userSearch(user:userName) {
-  	tempUser = user
-  	UserHandle.findByUserName(user.toLowerCase()).then(data => {
-    	if (data == "ADDUSER") {
-      		document.getElementById("editUserMessage")!.innerText = "No user was found with that name.";
-      		setTimeout(() => {
-        		document.getElementById("editUserMessage")!.innerText = "";
-      		}, 3500);
-    	} else {
-      		console.log("Editing user");
-      		document.getElementById("modalEditBody")!.innerHTML = setModalEditBody(data, RankHandle.getCurrentRanks());
-      		// Prevents non numbers from being entered.
-      		$("#editUserPoints").keypress(function (e) {
-                // @ts-ignore
-        		if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-      		});
-      		let q = setModalEditButtons();
-      		document.getElementById("userEditSearchButton")!.setAttribute('onclick', q);
-      		document.getElementById("userEditSearchButton")!.innerText = "Edit";
-    	}
-  	})
-}
-
-function editUserTable(user:userName, role:rankName, points) {
-  	try {
-    	points = Number(points);
-    	console.log(user, role, points);
-    	user = user.toLowerCase()
-    	// searches the table for the name of the user
-    	let indexes = userTable
-      	.rows()
-      	.indexes()
-      	.filter(function (value, index) {
-	    	return user === userTable.row(value).data().userName;
-      	});
-    	// Get the row for indexes
-    	let row = userTable.row(indexes[0]);
-
-    	// Get the data for the row
-    	let data = row.data();
-    	// Change the row data
-    	data.points = points;
-    	data.role = role;
-
-    	// Update the table data and redraw the table
-    	row.data(data).draw();
-    	// loadUserTable()
-  	} catch (e) {
-    	//console.log(e)
-  	}
-}
-
-function editUserWatchTime(user:userName, watchTime) {
-    try {
-      	watchTime = Number(watchTime);
-      	user = user.toLowerCase()
-      	let indexes = userTable
-        .rows()
-        .indexes()
-        .filter(function (value, index) {
-          	return user === userTable.row(value).data().userName;
-        });
-      	let row = userTable.row(indexes[0]);
-      	let data = row.data();
-      	data.watchTime = watchTime;
-      	row.data(data).draw();
-    } catch (e) {
-      	console.log(e)
+        pointsTable.rows[i + 1].cells[0].innerHTML = i;
+        if (arrayOfPoints[i] !== undefined) {
+            pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0];
+            pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1];
+            pointsTable.rows[i + 1].cells[3].innerHTML = arrayOfPoints[i][2];
+        }
     }
 }
 
-function loadUserTable() {
-  	userTable = $("#userTable").DataTable({
-    	data: UserHandle.getCurrentUsers(),
-    	columns: [
-      		{
-        		title: "User",
-        		data: "userName"
-    	  	},
-	      	{
-        		title: "Points",
-        		data: "points"
-    	  	},
-	      	{
-        		title: "Watch Time",
-        		data: "watchTime"
-    	  	},
-	      	{
-	        	title: "Team",
-    		    data: "team"
-    	  	},
-	      	{
-        		title: "Role",
-    	    	data: "role"
-	      	},
-      		{
-    	    	title: "Link",
-	      	},
-      		{
-        		title: "Quotes",
-      		},
-    	],
-    	"columnDefs": [ {
-      		"targets": -1,
-      		"data": null,
-      		"defaultContent": "<button>Open</button>"
-  		}, {
-    		"targets": -2,
-      		"data": null,
-      		"render": function(data, type, row, meta){
-            	if (type === 'display'){
-                	data = '<a href="javascript:void(0)" disabled>' + "View Profile" + '</a>';
-            	}
-            	return data;
-         	}
-  		}],
-          pageLength: 25
-  	});
-      $('#userTable tbody').on('click', 'tr', async function () {
-        var data = userTable.row( this ).data();
-        $('#modalUserEdit').modal("show");
-        userSearch(data.userName)
-    } );
+function saveUserPointSettings() {
+    CacheStore.set("startingPoints", Number((document.getElementById("pointValue") as HTMLInputElement).value));
+    CacheStore.set("earningPoints", Number((document.getElementById("pointRate") as HTMLInputElement).value));
+    let pointsName = (document.getElementById("pointsNewName") as HTMLInputElement).value;
+    if (pointsName.length > 0) {
+        CacheStore.set("pointsName", pointsName);
+    } else {
+        CacheStore.set("pointsName", "Points");
+    }
+    successMessage("Settings Saved", "Point settings have been saved.");
+    getPoints();
+}
+
+async function userSearch(user: userName, inModal: boolean) {
+    let userExists = await UserHandle.findByUserName(user.toLowerCase())
+    if (userExists == "ADDUSER") {
+        if (inModal) {
+            document.getElementById("editUserMessage")!.innerText = "No user was found with that name.";
+            setTimeout(() => {
+                document.getElementById("editUserMessage")!.innerText = "";
+            }, 3500);
+        } else {
+            errorMessage("User Not Found", "That user was not found. Make sure you entered their username correctly.");
+        }
+    } else {
+        console.log("Editing user");
+        const UserUI = require(`${appData[0]}/frontend/users/modalManager.js`);
+        await UserUI.loadUserModal(userExists)
+        // Prevents non numbers from being entered.
+        $("#editUserPoints").keypress(function (e) {
+            // @ts-ignore
+            if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+        });
+        $("#editUserWatchTime").keypress(function (e) {
+            // @ts-ignore
+            if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+        });
+        $("#modalUserEdit").modal("hide"); // close the modal
+        $("#modalUserEditing").modal("show"); // open the user modal
+    }
+}
+
+function validateUserInfo(user: string) {
+    let userPoints = Number(strip(document.getElementById("editUserPoints")!.innerHTML));
+    let userWatchTime = Number(strip(document.getElementById("editUserWatchTime")!.innerHTML));
+    if (userPoints < 0 || userWatchTime < 0) {
+        errorMessage("Invalid Points or Watch Time", "You cannot have a negative number of points or watch time.");
+        return
+    } else if (isNaN(userPoints) || isNaN(userWatchTime)) {
+        errorMessage("Invalid Points or Watch Time", "You must enter a number for points and watch time.");
+        return
+    } else {
+        UserHandle.editUserAll(user, userPoints, (document.getElementById("userEditRankChoice") as HTMLInputElement).value, userWatchTime);
+        $("#modalUserEditing").modal("hide");
+    }
+}
+
+function editUserTable(user: userName, role: rankName, points, watchTime) {
+    try {
+        points = Number(points);
+        console.log(user, role, points);
+        user = user.toLowerCase()
+        // searches the table for the name of the user
+        let indexes = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+                return user === userTable.row(value).data().userName;
+            });
+        // Get the row for indexes
+        let row = userTable.row(indexes[0]);
+
+        // Get the data for the row
+        let data = row.data();
+        // Change the row data
+        data.points = points;
+        data.role = role;
+        data.watchTime = watchTime;
+        // Update the table data and redraw the table
+        row.data(data).draw();
+    } catch (e) {
+        //console.log(e)
+    }
+}
+
+async function loadUserTable() {
+    userTable = $("#userTable").DataTable({
+        data: await UserHandle.getAll(),
+        columns: [
+            {
+                title: "User",
+                data: "userName"
+            },
+            {
+                title: "Points",
+                data: "points"
+            },
+            {
+                title: "Watch Time",
+                data: "watchTime"
+            },
+            {
+                title: "Role",
+                data: "role"
+            },
+            {
+                title: "Link",
+            },
+            {
+                title: "Quotes",
+            },
+            {
+                title: "Delete",
+            }
+        ],
+        columnDefs: [
+            {
+                targets: -1,
+                data: null,
+                defaultContent: "<button class='deletionIcon'><i class='fas fa-trash'></i></button>"
+            },
+            {
+                targets: -2,
+                data: null,
+                defaultContent: "<button class='quoteIcon'>Open</button>"
+            }, {
+                targets: -3,
+                data: null,
+                render: function (data, type, row, meta) {
+                    if (type === 'display') {
+                        data = '<a href="javascript:void(0)" disabled>' + "Glimesh Profile" + '</a>';
+                    }
+                    return data;
+                }
+            }],
+        pageLength: 25
+    });
+    $('#userTable tbody tr .deletionIcon').on('click', async function (e) {
+        e.stopPropagation();
+        let data = userTable.row($(this).parents('tr')).data();
+        removeUserFromTable(data.userName);
+        UserHandle.removeUser(data.userName, false, "Glimboi");
+    })
+    $('#userTable tbody tr').on('click', '.quoteIcon', async function (e) {
+        e.stopPropagation();
+        let data = userTable.row($(this).parents('tr')).data();
+        let user = await UserHandle.findByUserName(data.userName) as UserType;
+        console.log('Building quote list with ' + user.userName)
+        makeList(data);
+    })
+    $('#userTable tbody tr').on('click', 'a', function (e) {
+        e.stopPropagation();
+        let data = userTable.row($(this).parents('tr')).data();
+        console.log(data)
+        loadLink("glimesh.tv/" + data.userName)
+    });
+    $('#userTable tbody tr').on('click', async function (e) {
+        console.log("zzz");
+        let data = userTable.row($(this)).data();
+        console.log(data);
+        userSearch(data.userName, false);
+    })
 }
 
 //adds it to the table
 function addUserTable(data: UserType) {
-  	userTable.row.add({
-    	userName: data.userName,
-    	points: data.points,
-    	watchTime: data.watchTime,
-    	team: data.team,
-    	role: data.role,
-    	link: data.picture,
-    	quotes: data.quotes
-  	})
-  	userTable.draw() //redraws the table to see our changes
+    userTable.row.add({
+        userName: data.userName,
+        points: data.points,
+        watchTime: data.watchTime,
+        team: data.team,
+        role: data.role,
+        link: data.picture,
+        quotes: data.quotes
+    })
+    userTable.draw() //redraws the table to see our changes
 }
 
 /**
@@ -418,23 +429,21 @@ function addUserTable(data: UserType) {
  */
 function prepUserModals() {
   	$('#modalUserEdit').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting user edit modal.");
     	document.getElementById("editUserModal")!.innerHTML = editUserReset()
   	})
   	$('#modalUserAdd').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting user removal modal.");
     	document.getElementById("adduserModal")!.innerHTML = addUserReset()
   	})
   	$('#modalUserRemove').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting user removal modal.");
     	document.getElementById("removeuserModal")!.innerHTML = removeUserReset()
   	})
   	$('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting quote removal modal.");
     	document.getElementById("removeQuoteModal")!.innerHTML = removeQuoteReset()
   	});
   	$('#modalQuoteAdd').on('hidden.bs.modal', function (e) {
-    	console.log("Resetting add quote modal.");
     	document.getElementById("addQuoteModal")!.innerHTML = addQuoteReset()
+  	})
+  	$('#modalUserEditing').on('hidden.bs.modal', function (e) {
+    	document.getElementById("modalUserEditing")!.innerHTML = ``
   	})
 }

@@ -133,7 +133,7 @@ function editUserReset() {
     <div class="modal-footer">
         <p id="errorUserEdit"></p>
         <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-success" onclick="userSearch(document.getElementById('userEditSearch').value)" id="userEditSearchButton">Search</button>
+        <button class="btn btn-outline-success" onclick="userSearch(document.getElementById('userEditSearch').value, false)" id="userEditSearchButton">Search</button>
     </div>`
 }
 
@@ -156,57 +156,6 @@ function removeQuoteReset() {
      	<button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
      	<button class="btn btn-outline-danger" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
    	</div>`
-}
-
-function setModalEditBody(data, options) {
-    var select = document.createElement("select")
-    select.id = "userEditRankChoice"
-    for (var i = 0; i < options.length; i++) {
-        var opt = options[i].rank;
-        if (data.role == opt) {
-            select.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
-        } else {
-            select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
-        }
-    }
-    console.log(select)
-   	return `
-   	<table class="table table-hover">
-     	<thead>
-       		<tr>
-         		<th>User</th>
-         		<th>Information</th>
-       		</tr>
-     	</thead>
-     	<tbody>
-       		<tr>
-         		<td data-toggle="tooltip" data-placement="top" title="Rank">Rank</td>
-         		<td contenteditable="false" id="EditUserRank">
-                 ${select.outerHTML}
-                 </td>
-       		</tr>
-       		<tr>
-         		<td data-toggle="tooltip" data-placement="top" title="The amount of points the user has">Points</td>
-         		<td contenteditable="true" id="editUserPoints" onpaste="return false">${data.points}</td>
-       		</tr>
-       		<tr>
-     	</tbody>
-   	</table>`;
-}
-
-function setModalEditButtons() {
-   	return `
-   	editUserTable(
-      	tempUser,
-      	$("#userEditRankChoice").val(),
-      	strip(document.getElementById('editUserPoints').innerHTML).trim()
-    ),
-    $('#modalUserEdit').modal('hide'),
-    UserHandle.editUser(
-      	tempUser.toLowerCase(),
-        $("#userEditRankChoice").val(),
-      	strip(document.getElementById('editUserPoints').innerHTML).trim()
-    )`
 }
 
 function resetModalRankAdd() {
