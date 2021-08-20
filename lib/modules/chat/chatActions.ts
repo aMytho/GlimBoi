@@ -123,9 +123,9 @@ async function addCommand(user: userName, command: commandName, commandData: str
 /**
  * Returns a list of all commands to chat.
  */
-function commandList() {
+async function commandList() {
     let cmdList: string[] = [];
-    let cmds = CommandHandle.getCurrentCommands();
+    let cmds = await CommandHandle.getAll();
     for (let index = 0; index < cmds.length; index++) {
         cmdList.push(cmds[index].commandName);
     }
@@ -179,13 +179,13 @@ async function addPointsChat(user: userName, target: userName, count) {
                 let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     UserHandle.addPoints(target, Math.round(Number(count)));
-                    ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
+                    ChatMessages.filterMessage(`${Math.round(Number(count))} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
                 } else {
                     let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
-                        ChatMessages.filterMessage(target + " has been added to glimboi.");
+                        ChatMessages.filterMessage(`${target} has been added to glimboi.`, "glimboi");
                         UserHandle.addPoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
+                        ChatMessages.filterMessage(`${Math.round(Number(count))} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
                     } else {
                         ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
                     }
@@ -214,20 +214,20 @@ async function removePointsChat(user:userName, target, count) {
                 if (targetExists !== "ADDUSER") {
                     if ((targetExists.points - Math.round(Number(count))) < 0) {
                         UserHandle.editUserPoints(target, 0);
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                     } else {
                         UserHandle.removePoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                     }
                 } else {
                     let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         if (((userAdded as UserType).points - Math.round(Number(count))) < 0) {
                             UserHandle.editUserPoints(target, 0);
-                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                         } else {
                             UserHandle.removePoints(target, Math.round(Number(count)));
-                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                         }
                     } else {
                         ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
@@ -256,13 +256,13 @@ async function editPointsChat(user, target, count) {
                 let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     UserHandle.editUserPoints(target, Math.round(Number(count)));
-                    ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
+                    ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points"), "glimboi");
                 } else {
                     let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         ChatMessages.filterMessage(target + " has been added to glimboi.");
                         UserHandle.editUserPoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
+                        ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points"), "glimboi");
                     } else {
                         ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
                     }
@@ -286,7 +286,7 @@ async function getPointsChat(user: string, target: string) {
         target = target.toLowerCase();
         let targetExists = await UserHandle.findByUserName(target);
         if (targetExists !== "ADDUSER") {
-            ChatMessages.filterMessage(target + " has " + targetExists.points + " " + settings.Points.name, "glimboi");
+            ChatMessages.filterMessage(target + " has " + targetExists.points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
         } else {
             let newUser = await UserHandle.addUser(target, false, user);
             if (newUser !== "INVALIDUSER") { getPointsChat((newUser as UserType).userName, target) } else {
@@ -307,11 +307,11 @@ async function getPointsChat(user: string, target: string) {
         user = user.toLowerCase();
         let userExists = await UserHandle.findByUserName(user);
         if (userExists !== "ADDUSER") {
-            ChatMessages.filterMessage(userExists.userName + " has " + userExists.points + " " + settings.Points.name, "glimboi");
+            ChatMessages.filterMessage(userExists.userName + " has " + userExists.points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
         } else {
             let newUser = await UserHandle.addUser(user, false, user)
             if (newUser !== "INVALIDUSER") {
-                ChatMessages.filterMessage((newUser as UserType).userName + " has " + (newUser as UserType).points + " " + settings.Points.name, "glimboi");
+                ChatMessages.filterMessage((newUser as UserType).userName + " has " + (newUser as UserType).points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
             } else {
                 ChatMessages.filterMessage(user + " was not found.", "glimboi");
             }
@@ -572,7 +572,7 @@ async function checkPoll(user: string, message: string | undefined) {
                     let messageWithoutQuestion = message.substring(questionEnd + 1);
                     let hasOptions = messageWithoutQuestion.indexOf("|") !== -1;
                     if (hasOptions) {
-                        var possibleAnswers = messageWithoutQuestion.split('|');
+                        let possibleAnswers = messageWithoutQuestion.split('|');
                         console.log(possibleAnswers);
                         for (let index = 0; index < possibleAnswers.length; index++) {
                             possibleAnswers[index] = possibleAnswers[index].trim();
