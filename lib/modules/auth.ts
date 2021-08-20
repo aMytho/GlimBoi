@@ -1,7 +1,6 @@
 //This file handles connecting the users dev app to glimesh.tv
 let authPath = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
 let authDB:Nedb; //Auth database containing all auth info
-let authToken:Auth = {access_token: "", scope: "", creation: ""}; //Can be used for auth purposes
 
 /**
  * Requests an access token
@@ -14,9 +13,7 @@ async function requestToken(clientID: clientID, secretKey: secretKey, isManual: 
         let res = await fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
         let data = await res.json()
         try {
-            authToken.access_token = data.access_token;
-            authToken.creation = data.created_at;
-            if (authToken.access_token == undefined) {
+            if (data.access_token == undefined) {
                 errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
                 return;
             }
@@ -41,7 +38,6 @@ async function requestToken(clientID: clientID, secretKey: secretKey, isManual: 
 function updatePath(updatedPath:string): void {
   	console.log("Path is " + updatedPath);
   	authPath = updatedPath;
-      // @ts-ignore
   	authDB = new Datastore({ filename: `${authPath}/data/auth.db`, autoload: true });
 }
 
@@ -125,13 +121,26 @@ function getToken(): Promise<undefined | accessToken> {
  * Returns the client ID from the database. Returns undefined if none is found
  */
 function getID(): Promise<null | clientID> {
-  	return new Promise(resolve => {
-    	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		if (docs[0] == undefined) {resolve(null);} else {
-      			resolve(docs[0].clientID);
-      		}
-    	});
-  	});
+    return new Promise(resolve => {
+        authDB.find({}, function (err: Error | null, docs: Auth[]) {
+            if (docs[0] == undefined) {
+                resolve(null);
+            } else {
+                resolve(docs[0].clientID);
+            }
+        });
+    });
 }
 
-export  { createID, getID, getToken, readAuth, requestToken, updateID, updatePath}; //Send to the main file.
+/**
+ * Checks if the client ID and secret have been entered. If not alert the user
+ */
+async function checkForID() {
+    let clientID = await getID();
+    if (clientID == null) {
+        errorMessage("Auth Missing", `Please authenticate before doing anything in the bot.
+         GlimBoi cannot run without the proper authentication. Complete the auth tutorial on the home page!`);
+    }
+}
+
+export { checkForID, createID, getID, getToken, readAuth, requestToken, updateID, updatePath};

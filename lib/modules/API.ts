@@ -4,34 +4,9 @@
 
 const Webhooks: typeof import("../modules/API/webhook") = require(appData[0] + "/modules/API/webhook.js");
 
-let clientID = "";
-let token = "";
 let channelID = "";
 let streamer = ""; // Streamer name
 let accountName:any | null = null;
-
-/**
- * This function updates the access token so we can make glimesh API requests with full permissions.
- * @param {string} accessToken The access token for this session.
- */
-function updatePath(accessToken:string) {
-  	token = accessToken;
-}
-
-/**
- * Tries to update the client ID. This var is only used in the API file, this does not affect the ID in the database.
- * If no ID is found we alert the user.
- */
-async function updateID() {
-  	let newClientID = await AuthHandle.getID();
-    if (newClientID == null) {
-      	console.log("No ID exists yet.");
-      	successMessage("Auth Missing", "Please authenticate before doing anything in the bot. Some functions require the API to work properly. GlimBoi cannot run without the proper authentication. <br>Complete the auth tutorial on the start page!");
-    } else {
-      	clientID = newClientID;
-      	console.log("API.js is using the new client ID");
-    }
-}
 
 /**
  * Returns the current channel the bot is in.
@@ -57,6 +32,7 @@ function glimeshError(data:Glimesh.RootQueryType): Glimesh.RootQueryType["data"]
 }
 
 async function glimeshQuery(query): Promise<Glimesh.RootQueryType["data"] | false | null> {
+    let token = await AuthHandle.getToken();
     let result = await fetch("https://glimesh.tv/api/graph", {method: "POST", body: query, headers: {Authorization: `Bearer ${token}`}});
     let parsedResult:Glimesh.RootQueryType = await result.json();
     if (parsedResult.errors) {
@@ -170,6 +146,7 @@ async function getStreamWebhook(streamer: string): Promise<null | any[]> {
  */
 async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | userName> {
     console.log("key is" + key);
+    let token = await AuthHandle.getToken();
     return new Promise(async resolve => {
         let requestResult = await fetch("https://glimesh.tv/api", { method: "POST", body: requestInfo, headers: { Authorization: `bearer ${token}` } })
         let data = await requestResult.json();
@@ -261,7 +238,7 @@ async function getSocials(social: "twitter" | string, channel:string): Promise<s
 
 async function randomAnimalFact(animal: "dog" | "cat") {
     try {
-        let animalFactData = await fetch(`https://some-random-api.ml/facts/${animal}`, { method: "GET" })
+        let animalFactData = await fetch(`https://some-random-api.ml/animal/${animal}`, { method: "GET" })
         let animalFact = await animalFactData.json();
         return animalFact.fact
     } catch(e) {
@@ -274,5 +251,4 @@ function getStreamerName() {
 }
 
 export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getUserID, glimeshApiRequest, randomAnimalFact, updateID,
-updatePath, Webhooks};
+getStreamerName, getStreamWebhook, getUserID, glimeshApiRequest, randomAnimalFact, Webhooks};
