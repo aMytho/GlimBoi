@@ -22,25 +22,25 @@ function loadFilter(updatedPath:string) {
  * Resets the list of banned words to the default set. Removes all user words.
  */
 function bannedWordsReset() {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
         console.log(dirName, __dirname);
-        fs.readFile(dirName + "\\../resources/json/defaultBannedWords.json", 'utf-8', function (err:NodeJS.ErrnoException, data:string) {
-            if (err) {
-                console.log("We couldn't get the default banned word file. " + err);
-                errorMessage(err, "Failed to import the default list of banned words. Filter is not active.");
-                resolve(null)
-                return
-            }
+        try {
+            let data = await fs.readFile(dirName + "\\../resources/json/defaultBannedWords.json", 'utf-8');
             // Removes all the entries from the database
             bannedWordsDB.remove({}, { multi: true }, function (err, numRemoved) {
                 // Adds the new entries
-                bannedWordsDB.insert({words: JSON.parse(data)}, function(err, data) {
+                bannedWordsDB.insert({ words: JSON.parse(data) }, function (err, data) {
                     console.log("Default banned word list imported and saved.");
                     bannedWords = data.words;
                     resolve(true)
                 })
             });
-        });
+        } catch (err) {
+            console.log("We couldn't get the default banned word file. " + err);
+            errorMessage(err, "Failed to import the default list of banned words. Filter is not active.");
+            resolve(null)
+            return
+        }
     })
 }
 
