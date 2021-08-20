@@ -61,12 +61,10 @@ function saveAuth() { //sets the state to saved
       		// Both IDs updated
     	} else if (data.clientID !== undefined && data.clientID.length > 2 && data.secret !== undefined && data.secret.length > 2) {
       		successMessage("Auth Updated", "The client ID and secret ID have been updated. To complete the authentication process select request token on the homepage.");
-      		ApiHandle.updateID();
       		updateStatus(1);
       		// The client ID was updated but the secret was not.
     	} else if (data.clientID !== undefined && data.clientID.length > 2 && (data.secret == "" || data.secret == undefined)) {
       		successMessage("Auth Updated", "The client ID has been updated. If the secret ID has already been saved you can request a token. Otherwise you need to enter the secret ID.");
-      		ApiHandle.updateID();
       		// The secret was updated but the client Id was not
     	} else if (data.secret !== undefined && data.secret.length > 2 && (data.clientID == "" || data.clientID == undefined)) {
       		successMessage("Auth Updated", "The secret ID has been updated. If the client ID has already been saved you can request a token. Otherwise you need to enter the client ID.");
@@ -144,6 +142,17 @@ function updateStatus(stage:authStatusNumber) {
     	authStatusElement.className = "fas fa-user";
     	authStatusElement.style.color = "#115c21"
   	}
+}
+
+async function loadBotStats() {
+    let userCount = await UserHandle.countUsers();
+    let quoteCount = await QuoteHandle.countQuotes();
+    let commandCount = await CommandHandle.countCommands();
+    let pointCount = await UserHandle.getAllPoints();
+    document.getElementById("userCount")!.innerHTML = userCount.toString();
+    document.getElementById("quoteCount")!.innerHTML = quoteCount.toString();
+    document.getElementById("commandCount")!.innerHTML = commandCount.toString();
+    document.getElementById("pointCount")!.innerHTML = pointCount.toString();
 }
 
 /**
