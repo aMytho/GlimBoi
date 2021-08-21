@@ -211,7 +211,7 @@ function editUserAll(user: userName, points, role: rankName, watchTime: number) 
             function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
                 console.log("Edited " + user);
                 console.log(affectedDocuments);
-                LogHandle.logEvent({ event: "Edit User", users: [user], data: [role, points, watchTime] });
+                LogHandle.logEvent({ event: "Edit User", users: ["Glimboi", user], data: [role, points, watchTime] });
                 editUserTable(user, role, points,   watchTime)
                 resolve(affectedDocuments);
             });

@@ -19,7 +19,7 @@ let glimrealmTimer3: NodeJS.Timeout = null
         }
         glimrealmTimer2 = setTimeout(() => {
             if (!CacheStore.get("glimrealmQuiet", true, true)) {
-                ChatMessages.filterMessage("The portal is nearly closed. 20 seconds left!", "glimboi");
+                ChatMessages.filterMessage("The portal is nearly closed!", "glimboi");
             }
             glimrealmTimer3 = setTimeout(() => {
                 ChatMessages.filterMessage("Everyone has returned from the Glimrealm. Type !points to view your updated currency amount.", "glimboi");

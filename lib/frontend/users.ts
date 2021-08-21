@@ -3,7 +3,6 @@ QuoteHandle.updatePath(appData[1]);
 RankHandle.updatePath(appData[1]);
 
 let userTable; //physical table showing user data
-let usersCanBeDeleted = false;
 
 function loadUsers() {
     loadUserTable();

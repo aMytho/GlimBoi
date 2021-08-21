@@ -151,7 +151,6 @@ function findCommand(command: commandName): Promise<null | CommandType> {
 async function getAll(): Promise<CommandType[]> {
     return new Promise(resolve => {
         commandsDB.find({}, function (err: Error | null, docs: CommandType[]) {
-            console.log(docs);
             resolve(docs);
         })
     })
