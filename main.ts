@@ -44,6 +44,7 @@ function createWindow () { //make Win a window
     	backgroundColor: "#060818",
     	webPreferences: {
       		nodeIntegration: true,
+              contextIsolation: false
     	},
     	icon: "UI/Icons/icon.ico",
     	frame: false
