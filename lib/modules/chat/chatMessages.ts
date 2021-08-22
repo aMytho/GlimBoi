@@ -41,10 +41,10 @@ function filterMessage(message:string, source?: "user" | "glimboi") {
  * @param {string} data A message to be sent to chat
  */
 function sendMessage(data:message) {
-  	var msgArray:any = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
+  	let msgArray:any = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
   	// adds the message to it.
   	msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\""+chatID+"\",message:{message:\""+data+"\"}) {message }}","variables":{}});
-  	var test = JSON.stringify(msgArray); // make it sendable (json)
+  	let test = JSON.stringify(msgArray); // make it sendable (json)
   	try {
     	console.log(test)
     	let websocketConnetion = ChatHandle.getConnection();
@@ -64,9 +64,9 @@ function sendMessage(data:message) {
  * @param {string} data The message to be sent to chat
  */
 function glimboiMessage(data: message, logError: boolean = false) {
-    var msgArray: any = ["6", "7", "__absinthe__:control", "doc"];
+    let msgArray: any = ["6", "7", "__absinthe__:control", "doc"];
     msgArray.splice(4, 0, { "query": "mutation {createChatMessage(channelId:\"" + chatID + "\", message:{message:\"" + data + "\"}) {message }}", "variables": {} });
-    var test = JSON.stringify(msgArray);
+    let test = JSON.stringify(msgArray);
     try {
         //console.log(test)
         ChatHandle.getConnection().send(test)
@@ -88,7 +88,7 @@ function glimboiMessage(data: message, logError: boolean = false) {
  */
 function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState) {
     try {
-        var adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
+        let adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
 
         $("#chatList").append(`
           <li class="left clearfix ${adminClass} ${state} w-100" name='${user}' title="${getMessageHoverTitle(state)}">
@@ -101,10 +101,10 @@ function logMessage(user:userName, message:message, avatar:avatar, isReload: boo
                 </div>
           </li>`
     );
-        var scroll = document.getElementById("chatContainer")
+        let scroll = document.getElementById("chatContainer")
         scroll!.scrollTo(0,document.getElementById("chatList").scrollHeight);
 
-        if (ChatSettings.isLoggingEnabled() == true && isReload == false) {
+        if (settings.chat.logging == true && isReload == false) {
           ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
         }
     } catch (e) {

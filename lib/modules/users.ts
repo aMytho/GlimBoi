@@ -1,12 +1,6 @@
 //Controls the User DB
 
 let usersDB:Nedb;
-let path = "./";
-/**
- * An array of users
- */
-let users:User[] = [];
-declare let b:lol
 
 /**
  * A GlimBoi user
@@ -25,7 +19,7 @@ class User implements UserType {
     id: number;
     constructor(userName:string, ID:number) {
       	this.userName = userName;
-      	this.points = Number(settings.Points.StartingAmount)
+      	this.points = Number(CacheStore.get("startingPoints", 0));
       	this.watchTime = 0;
       	this.team = null;
       	this.role = "user";
@@ -59,7 +53,6 @@ async function addUser(user:string, inModal: boolean, createdBy: string = "Glimb
                     usersDB.insert(tempUser, function (err:Error | null, doc:UserType) {
                         console.log(doc);
                         console.log("User created!");
-                        users.push(tempUser);
                         LogHandle.logEvent({ event: "Add User", users: [createdBy, tempUser.userName] });
                         if (inModal == false) {
                             globalThis.syncUsers(doc, "add")
@@ -76,12 +69,10 @@ async function addUser(user:string, inModal: boolean, createdBy: string = "Glimb
 };
 
 /**
- * Updates the path to the DB. The path variable is updated
+ * Updates the path to the DB.
  */
-function updatePath(env:string) {
-  	path = env;
-      // @ts-ignore
-  	usersDB = new Datastore({ filename: `${path}/data/users.db`, autoload: true });
+function updatePath(env: string) {
+    usersDB = new Datastore({ filename: `${env}/data/users.db`, autoload: true });
 }
 
   /**
@@ -90,34 +81,24 @@ function updatePath(env:string) {
  * @returns If the user does not exist returns ADDUSER
  * @todo Find by ID instead.
  */
-async function findByUserName(name:string): Promise<UserType | "ADDUSER"> {
-  	name = name.toLowerCase()
-  	 return new Promise(resolve => {
-    	for (let index = 0; index < users.length; index++) {
-      		if (name == users[index].userName) {
-        		resolve(users[index]);
-        		break
-      		}
-    	}
-    	resolve("ADDUSER")
-  	})
+async function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
+    return new Promise(resolve => {
+        usersDB.find({ userName: name.toLowerCase() }, function (err: Error | null, docs: userDoc[]) {
+            // If the user exists return them, otherwise return ADDUSER
+            resolve(docs[0] ? docs[0] : "ADDUSER");
+        })
+    })
 }
 
 /**
  * @returns All the users in the DB. Sent as an array
  */
-async function getAll(): Promise<UserDocs> {
-  	return new Promise(resolve => {
-    	usersDB.find({}, function (err:string, docs:UserDocs) {
-      		users = docs;
-      		resolve(docs)
-    	})
-  	})
-}
-
-
-function getCurrentUsers():UserType[] {
-  	return users
+async function getAll(): Promise<userDoc[]> {
+    return new Promise(resolve => {
+        usersDB.find({}, function (err: string, docs: userDoc[]) {
+            resolve(docs)
+        })
+    })
 }
 
 /**
@@ -127,25 +108,19 @@ function getCurrentUsers():UserType[] {
  * @param {string} userWhoRemoves The user who removed the abt to be deleted user.
  * @returns {array} The user that was removed
  */
-async function removeUser(user:string, inModal:boolean, userWhoRemoves = "Glimboi"): Promise<userName> {
- 	user = user.toLowerCase()
- 	return new Promise(resolve => {
-  		usersDB.remove({ userName: user }, {}, function (err:Error | null, numRemoved:number) {
-    		console.log("Removed " + user);
-    		for (let index = 0; index < users.length; index++) {
-      			if (user == users[index].userName) {
-        			users.splice(index, 1);
-                    LogHandle.logEvent({ event: "Remove User", users: [userWhoRemoves, user] });
-        			if (inModal == false) {
-          				globalThis.syncUsers(user, "remove")
-        			}
-        			QuoteHandle.removeAllQuotes(user);
-        			resolve(user);
-        			break;
-      			}
-    		}
-  		});
- 	})
+async function removeUser(user: string, inModal: boolean, userWhoRemoves: string = "Glimboi"): Promise<userName> {
+    user = user.toLowerCase()
+    return new Promise(resolve => {
+        usersDB.remove({ userName: user }, {}, function (err: Error | null, numRemoved: number) {
+            console.log("Removed " + user);
+            LogHandle.logEvent({ event: "Remove User", users: [userWhoRemoves, user] });
+            if (inModal == false) {
+                syncUsers(user, "remove")
+            }
+            QuoteHandle.removeAllQuotes(user);
+            resolve(user);
+        });
+    })
 }
 
 /**
@@ -153,21 +128,16 @@ async function removeUser(user:string, inModal:boolean, userWhoRemoves = "Glimbo
  * @param {string} quote
  * @param {number} id
  */
-async function addQuote(quote:QuoteType, id:number): Promise<"USERQUOTEADDED"> {
-  	return new Promise(resolve => {
-    	quote.quoteName = quote.quoteName.toLowerCase()
-    	usersDB.update({userName:quote.quoteName}, {$push: {quotes: {quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id}}}, {multi: false, }, function(err:Error | null) {
-      		console.log("Quote linked to " + quote.quoteName + ". Quote Complete.");
-      		for (let i = 0; i < users.length; i++) {
-        		if (users[i].userName == quote.quoteName) {
-          			users[i].quotes.push({quoteID: quote.quoteID, quoteData:quote.quoteData, dbID: id});
-          			break;
-        		}
-      		}
-      		syncQuotes(quote.quoteName, quote, "add");
-      		resolve("USERQUOTEADDED")
-    	})
-  	})
+async function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED"> {
+    return new Promise(resolve => {
+        quote.quoteName = quote.quoteName.toLowerCase()
+        usersDB.update({ userName: quote.quoteName }, { $push: { quotes: { quoteID: quote.quoteID, quoteData: quote.quoteData, dbID: id } } },
+            { multi: false, }, function (err: Error | null) {
+                console.log("Quote linked to " + quote.quoteName + ". Quote Complete.");
+                syncQuotes(quote.quoteName, quote, "add");
+                resolve("USERQUOTEADDED")
+            })
+    })
 }
 
 /**
@@ -176,29 +146,30 @@ async function addQuote(quote:QuoteType, id:number): Promise<"USERQUOTEADDED"> {
  * @param {string} user The user who the quote belongs to. Lowercase please!
  * @async
  */
-async function removeQuoteByID(id:number, user:string): Promise<"NOQUOTEFOUND" | UserDocs> {
-  	return new Promise(resolve => {
-  		usersDB.find({$and: [{userName: user}, {quotes: {$elemMatch: {quoteID: id}}}]}, function (err:Error | null, docs:UserDocs) {
-    		console.log(docs);
-    		if (docs.length < 1) {
-      			resolve("NOQUOTEFOUND")
-      			return;
-    		} else {
-      			for (let index = 0; index < docs[0].quotes.length; index++) {
-        			if (docs[0].quotes[index].quoteID == id) {
-          				console.log("Found the quote in the user DB");
-          				docs[0].quotes.splice(index, 1)
-          				usersDB.update({$and: [{userName: user}, {quotes: {$elemMatch: {quoteID: id}}}]}, {$set: {quotes: docs[0].quotes}}, {returnUpdatedDocs: true}, function(err: Error | null, numAffected:number, affectedDocuments:UserDocs) {
-            				console.log(affectedDocuments);
-            				QuoteHandle.removeQuote(id, user);
-            				globalThis.syncQuotes(user, docs[0].quotes, "remove")
-            				resolve(affectedDocuments);
-          				})
-        			}
-      			}
-    		}
-  		})
-  	})
+async function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND" | userDoc> {
+    return new Promise(resolve => {
+        usersDB.find({ $and: [{ userName: user }, { quotes: { $elemMatch: { quoteID: id } } }] }, function (err: Error | null, docs: userDoc[]) {
+            console.log(docs);
+            if (docs.length < 1) {
+                resolve("NOQUOTEFOUND")
+                return;
+            } else {
+                for (let index = 0; index < docs[0].quotes.length; index++) {
+                    if (docs[0].quotes[index].quoteID == id) {
+                        console.log("Found the quote in the user DB");
+                        docs[0].quotes.splice(index, 1)
+                        usersDB.update({ $and: [{ userName: user }, { quotes: { $elemMatch: { quoteID: id } } }] },{ $set: { quotes: docs[0].quotes } },
+                            { returnUpdatedDocs: true }, function (err: Error | null, numAffected: number, affectedDocuments: userDoc) {
+                                console.log(affectedDocuments);
+                                QuoteHandle.removeQuote(id, user);
+                                syncQuotes(user, docs[0].quotes, "remove")
+                                resolve(affectedDocuments);
+                            })
+                    }
+                }
+            }
+        })
+    })
 }
 
 /**
@@ -206,12 +177,12 @@ async function removeQuoteByID(id:number, user:string): Promise<"NOQUOTEFOUND" |
  * @returns The array of user
  */
 async function getTopPoints(): Promise<userDoc[]> {
-  	return new Promise(resolve => {
-    	usersDB.find({}).sort({ points: -1 }).exec(function (err:Error | null, docs:UserDocs) {
-      		// docs is [doc1, doc3, doc2];
-      		resolve(docs)
-    	});
-  	})
+    return new Promise(resolve => {
+        usersDB.find({}).sort({ points: -1 }).exec(function (err: Error | null, docs: userDoc[]) {
+            // docs is [doc1, doc3, doc2];
+            resolve(docs)
+        });
+    })
 }
 
 /**
@@ -221,21 +192,30 @@ async function getTopPoints(): Promise<userDoc[]> {
  * @param {number} points The points they will have
  * @returns {promise}
  */
-async function editUser(userName:string, role:rankName, points:number, editor:string = "Glimboi"): Promise<UserDocs> {
-  	return new Promise(resolve => {
-    	console.log(userName, role, points)
-    	usersDB.update({ userName: userName }, { $set: { role: role, points: Number(points) } }, {returnUpdatedDocs: true}, function (err:Error | null, numReplaced:number, affectedDocuments:UserDocs) {
-      		console.log("Edited " + userName);
-      		console.log(affectedDocuments);
-            LogHandle.logEvent({ event: "Edit User", users: [editor, userName], data: [role, points] });
-            for (let i = 0; i < users.length; i++) {
-                if (userName == users[i].userName) {
-                    users[i].role = role
-                }
-            }
-      		resolve(affectedDocuments);
-    	});
-  	})
+async function editUser(userName: string, role: rankName, points: number, editor: string = "Glimboi"): Promise<userDoc> {
+    return new Promise(resolve => {
+        console.log(userName, role, points)
+        usersDB.update({ userName: userName }, { $set: { role: role, points: Number(points) } }, { returnUpdatedDocs: true },
+            function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
+                console.log("Edited " + userName);
+                console.log(affectedDocuments);
+                LogHandle.logEvent({ event: "Edit User", users: [editor, userName], data: [role, points] });
+                resolve(affectedDocuments);
+            });
+    })
+}
+
+function editUserAll(user: userName, points, role: rankName, watchTime: number) {
+    return new Promise(resolve => {
+        usersDB.update({ userName: user }, { $set: { role: role, points: points, watchTime: watchTime } }, { returnUpdatedDocs: true },
+            function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
+                console.log("Edited " + user);
+                console.log(affectedDocuments);
+                LogHandle.logEvent({ event: "Edit User", users: ["Glimboi", user], data: [role, points, watchTime] });
+                editUserTable(user, role, points,   watchTime)
+                resolve(affectedDocuments);
+            });
+    })
 }
 
 /**
@@ -244,42 +224,31 @@ async function editUser(userName:string, role:rankName, points:number, editor:st
  * @param {number} points How many points they will have
  * @returns {promise}
  */
-async function editUserPoints(userName:string, points:number): Promise<userDoc> {
-  	return new Promise(resolve => {
-    	console.log(userName, points)
-    	usersDB.update({ userName: userName }, { $set: {points: Number(points) } }, {returnUpdatedDocs: true}, function (err:Error | null, numReplaced:number, affectedDocuments:userDoc) {
-      		console.log("Edited " + userName);
-      		console.log(affectedDocuments);
-      		for (let i = 0; i < users.length; i++) {
-          		if (userName == users[i].userName) {
-            		users[i].points = Number(points);
-            		globalThis.editUserTable(userName, affectedDocuments.role, Number(points))
-          		}
-      		}
-      		resolve(affectedDocuments);
-    	});
-  	})
+async function editUserPoints(userName: string, points: number): Promise<userDoc> {
+    return new Promise(resolve => {
+        console.log(userName, points)
+        usersDB.update({ userName: userName }, { $set: { points: Number(points) } }, { returnUpdatedDocs: true },
+        function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
+            console.log("Edited " + userName);
+            console.log(affectedDocuments);
+            editUserTable(userName, affectedDocuments.role, Number(points), Number(affectedDocuments.watchTime));
+            resolve(affectedDocuments);
+        });
+    })
 }
 
 /**
  * Adds points and watch time to the users who are active
  * @param {Array} Users
  */
-function earnPointsWT(Users:{userName: userName}[]): void {
-  	usersDB.update({ $or: Users }, { $inc: { points: settings.Points.accumalation, watchTime: 15 } }, {returnUpdatedDocs: true, multi: true}, function (err:Error | null, numReplaced:number, affectedDocuments:UserDocs) {
-    	console.log("Adding " + settings.Points.accumalation + " points to " + numReplaced + " users.");
-    	affectedDocuments.forEach(function(item:UserType, index:number) {
-      		globalThis.editUserTable(item.userName, item.role, item.points);
-      		globalThis.editUserWatchTime(item.userName, item.watchTime)
-      		for (let i = 0; i < users.length; i++) {
-          		if (item.userName == users[i].userName) {
-              		users[i].points = affectedDocuments[index].points;
-              		users[i].watchTime = affectedDocuments[index].watchTime;
-              		break;
-          		}
-      		}
-    	});
-  	});
+function earnPointsWT(Users: { userName: userName }[]): void {
+    usersDB.update({ $or: Users }, { $inc: { points: CacheStore.get("earningPoints", 15), watchTime: 15 } },
+        { returnUpdatedDocs: true, multi: true }, function (err: Error | null, numReplaced: number, affectedDocuments: userDoc[]) {
+            console.log("Adding " + CacheStore.get("earningPoints", 15) + " points to " + numReplaced + " users.");
+            affectedDocuments.forEach(function (item: UserType, index: number) {
+                editUserTable(item.userName, item.role, item.points, item.watchTime);
+            });
+        });
 }
 
 /**
@@ -287,18 +256,14 @@ function earnPointsWT(Users:{userName: userName}[]): void {
  * @param {string} user The user who will be getting points
  * @param {number} points The amount of points to add
  */
-function addPoints(user:userName, points:number): void {
+function addPoints(user: userName, points: number): void {
     points = Number(points)
-    usersDB.update({userName: user}, {$inc: {points: points}}, {returnUpdatedDocs: true}, function(err:Error | null, numReplaced:number, affectedDocuments:userDoc) {
-        console.log(`Added ${points} points to ${user}.`);
-        for (let i = 0; i < users.length; i++) {
-            if (user == users[i].userName) {
-                users[i].points = users[i].points + points
-                globalThis.editUserTable(user, affectedDocuments.role, Number(users[i].points))
-                break
-            }
-        }
-    })
+    usersDB.update({ userName: user }, { $inc: { points: points } }, { returnUpdatedDocs: true },
+        function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
+            console.log(affectedDocuments);
+            console.log(`Added ${points} points to ${user}.`);
+            editUserTable(user, affectedDocuments.role, Number(affectedDocuments.points), Number(affectedDocuments.watchTime));
+        })
 }
 
 /**
@@ -307,20 +272,38 @@ function addPoints(user:userName, points:number): void {
  * @param {number} value How many points will be removed
  */
 function removePoints(user: userName, value: number): void {
-    usersDB.update({ userName: user }, { $inc: { points: -value } }, { returnUpdatedDocs: true }, function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
-        console.log("Removing " + value + " points from " + user);
-        for (let i = 0; i < users.length; i++) {
-            if (user == users[i].userName) {
-                if (users[i].points - value < 0) {
-                    users[i].points = 0
-                } else {
-                    users[i].points = affectedDocuments.points;
-                    globalThis.editUserTable(user, affectedDocuments.role, affectedDocuments.points);
-                }
-                break
-            }
-        }
-    });
+    usersDB.update({ userName: user }, { $inc: { points: -value } }, { returnUpdatedDocs: true },
+        function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
+            console.log("Removing " + value + " points from " + user);
+            editUserTable(user, affectedDocuments.role, affectedDocuments.points, affectedDocuments.watchTime);
+        })
 }
 
-export {addPoints, addQuote, addUser, earnPointsWT, editUser, editUserPoints, findByUserName, getAll, getCurrentUsers, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath, User}
+/**
+ * Counts the number of users
+ */
+async function countUsers(): Promise<number> {
+    return new Promise(resolve => {
+        usersDB.count({}, function (err: Error | null, count: number) {
+            resolve(count);
+        })
+    })
+}
+
+/**
+ * Get the total points in the ecosystem
+ */
+async function getAllPoints() {
+    return new Promise(resolve => {
+        usersDB.find({}, { points: 1, _id: 0}, function (err, docs) {
+            let points = 0;
+            docs.forEach(function (doc) {
+                points += doc.points;
+            });
+            resolve(points)
+        });
+    })
+}
+
+export {addPoints, addQuote, addUser, countUsers, earnPointsWT, editUser, editUserAll, editUserPoints, findByUserName,
+getAll, getAllPoints, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath}

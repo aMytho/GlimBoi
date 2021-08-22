@@ -9,7 +9,7 @@ class DumbCacheStore {
      */
     constructor() {
         this.path = appData[1] + "/data/cache.json";
-        this.cache = this.setFile(this.path);
+        this.cache = {};
     }
 
     /**
@@ -20,7 +20,21 @@ class DumbCacheStore {
      */
     set(key: string, value: any) {
         this.cache[key] = value;
-        fs.writeFileSync(this.path, JSON.stringify(this.cache));
+        fs.writeFile(this.path, JSON.stringify(this.cache));
+    }
+
+    /**
+     * Sets multiple cache items
+     * @param {}[] keys
+     */
+    setMultiple(keys:{}[]) {
+        let keysToSet = {};
+        keys.forEach(key => {
+            let keyToSet = Object.entries(key);
+            keysToSet[keyToSet[0][0]] = keyToSet[0][1];
+        });
+        Object.assign(this.cache, keysToSet);
+        fs.writeFile(this.path, JSON.stringify(this.cache));
     }
 
     /**
@@ -47,17 +61,17 @@ class DumbCacheStore {
      * @param {string} path The path to the cache file
      * @returns {object} The cache data
      */
-    setFile(path: string) {
+    async setFile() {
         try {// @ts-ignore
-            return JSON.parse(fs.readFileSync(path));
+            this.cache = JSON.parse(await fs.readFile(this.path));
         } catch (e) {
             try {
-                fs.writeFileSync(path, JSON.stringify({}));// @ts-ignore
-                return JSON.parse(fs.readFileSync(path));
+                await fs.writeFile(this.path, JSON.stringify({}));// @ts-ignore
+                this.cache = JSON.parse(await fs.readFile(this.path));
             } catch(e2) {
-                fs.mkdirSync(appData[1] + '/data'); // Makes the folder
-                fs.writeFileSync(path, JSON.stringify({})); // @ts-ignore
-                return JSON.parse(fs.readFileSync(path));
+                await fs.mkdir(appData[1] + '/data'); // Makes the folder
+                await fs.writeFile(this.path, JSON.stringify({}));// @ts-ignore
+                this.cache = JSON.parse(await fs.readFile(this.path));
             }
         }
     }

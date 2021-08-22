@@ -4,10 +4,10 @@ let table; //The physical table for the UI
 
 //Loads the command table.
 function loadCommandTable() {
-    $(document).ready(function () {
+    $(document).ready(async function () {
         commandModalPrep() // ensures the modals have the proper filter enabled
         table = $("#example").DataTable({
-            data: CommandHandle.getCurrentCommands(), // returns all the commands
+            data: await CommandHandle.getAll(), // returns all the commands
             columns: [
                 {
                     title: "Commands",
@@ -54,7 +54,7 @@ function loadCommandTable() {
             pageLength: 25
         });
         $('#example tbody').on('click', 'tr', async function () {
-            var data = table.row( this ).data();
+            let data = table.row( this ).data();
             const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
             let commandClicked = await CommandHandle.findCommand(data.commandName);
             $('#modalCart').modal("show");
@@ -139,12 +139,12 @@ async function validateSettings(mode):Promise<any> {
  * @param {string} mode "add" or "edit" Which mode we are using
  * @returns
  */
-function validateActions(mode) {
+async function validateActions(mode) {
     let actionsHTML = document.getElementById(`${mode}CommandList`).children;
     let actionsToBeCreated = []
     if (actionsHTML.length !== 0) {
         for (let i = 0; i < actionsHTML.length; i++) {
-            let actionValue = determineActionAndCheck(actionsHTML[i], mode)
+            let actionValue = await determineActionAndCheck(actionsHTML[i], mode)
             if (!actionValue) {
                 return false
             } else {
@@ -165,7 +165,7 @@ function validateActions(mode) {
  * @param {string} mode Which mode we are in
  * @returns
  */
-function determineActionAndCheck(action, mode:actionMode) {
+async function determineActionAndCheck(action, mode:actionMode) {
     switch (action.firstElementChild.firstElementChild.innerText) {
         case "Chat Message":
             try {
@@ -244,7 +244,7 @@ function determineActionAndCheck(action, mode:actionMode) {
                 if (possibleAudio == "None") {
                     throw "No audio selection was made."
                 }
-                if (OBSHandle.getMediaByName(possibleAudio) !== null) {
+                if (await OBSHandle.getMediaByName(possibleAudio) !== null) {
                     resetMessageCommandModal(action.firstElementChild, mode)
                     return { type: "Audio", source: possibleAudio };
                 } else {
@@ -275,7 +275,7 @@ function determineActionAndCheck(action, mode:actionMode) {
                 if (possibleImageGif == "None") {
                     throw "No Image or Gif selection was made."
                 }
-                if (OBSHandle.getMediaByName(possibleImageGif) !== null) {
+                if (await OBSHandle.getMediaByName(possibleImageGif) !== null) {
                     resetMessageCommandModal(action.firstElementChild, mode)
                     return { type: "ImageGif", source: possibleImageGif };
                 } else {
@@ -306,7 +306,7 @@ function determineActionAndCheck(action, mode:actionMode) {
                 if (possibleVideo == "None") {
                     throw "No Video selection was made."
                 }
-                if (OBSHandle.getMediaByName(possibleVideo) !== null) {
+                if (await OBSHandle.getMediaByName(possibleVideo) !== null) {
                     resetMessageCommandModal(action.firstElementChild, mode)
                     return { type: "Video", source: possibleVideo };
                 } else {
@@ -341,9 +341,9 @@ function determineActionAndCheck(action, mode:actionMode) {
 
 //removes commands
 function checkRemoveCommand() {
-  	var commandToBeRemoved = ($("#commandRemoveInput").val() as string).toLowerCase()
+  	let commandToBeRemoved = ($("#commandRemoveInput").val() as string).toLowerCase()
   	commandToBeRemoved = commandToBeRemoved.replace(new RegExp("^[\!]+"), "").trim();
-    var removeCommandMessageError = document.getElementById("removeCommandMessage")
+    let removeCommandMessageError = document.getElementById("removeCommandMessage")
 
   	try {
     	CommandHandle.findCommand(commandToBeRemoved).then(data => {
@@ -371,7 +371,7 @@ function checkRemoveCommand() {
 //edits commands
 function checkEditCommand() {
     let commandToBeEdited = ($("#commandEditInput").val() as string).toLowerCase();
-    var editErrorMessage = document.getElementById("editCommandMessage")
+    let editErrorMessage = document.getElementById("editCommandMessage")
     commandToBeEdited = commandToBeEdited.replace(new RegExp("^[\!]+"), "").trim();
 
     //Make sure the command exists.
@@ -447,7 +447,7 @@ function addCommandTable({commandName, uses, points, rank, actions}) {
 }
 
 function editCommandTable({commandName, actions, uses, points, rank}) {
-    var filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
+    let filteredData = table //A set of functions that removes the command, adds it back, and redraws the table.
         .rows()
         .indexes()
         .filter(function (value, index) {
@@ -461,7 +461,7 @@ function editCommandTable({commandName, actions, uses, points, rank}) {
 // Removes a command from the table
 function removeCommandFromTable(command) {
     try {
-        var filteredData = table
+        let filteredData = table
             .rows()
             .indexes()
             .filter(function (value, index) {
@@ -474,10 +474,10 @@ function removeCommandFromTable(command) {
 // Highlights the part that has the error
 function errorMessageCommandModal(message:string, errLocation:HTMLElement, mode:"add" | "edit") {
     try {
-        var cmdErrorMessage = document.createElement("li");
+        let cmdErrorMessage = document.createElement("li");
         cmdErrorMessage.innerHTML = message;
         document.getElementById(`${mode}CommandErrors`)!.appendChild(cmdErrorMessage);
-        var partWithError = errLocation.parentElement;
+        let partWithError = errLocation.parentElement;
         partWithError!.classList.add("errorClass");
         console.log("Command is not valid.");
     } catch (e) {

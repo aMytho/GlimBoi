@@ -10,14 +10,12 @@
 async function modifyUserFromChat(user: userName, target: userName, attemptedAction: rankProperties, friendlyAction: string) {
     if (await permissionCheck(user, attemptedAction, friendlyAction)) {
         if (attemptedAction == "canAddUsers") {
-            let userAdded = await UserHandle.addUser(target, false, user)
-            if (userAdded == "USEREXISTS") {
-                ChatMessages.glimboiMessage("That user is already added to GlimBoi.");
-            } else if (userAdded == "INVALIDUSER") {
-                ChatMessages.glimboiMessage("That user does not exist on Glimesh.");
-            } else {
+            let targetUser = await checkTarget(target, true);
+            if (!targetUser.alreadyExists && targetUser.user) {
                 ChatMessages.glimboiMessage("User addded to GlimBoi!");
-                addUserTable(userAdded);
+                addUserTable(targetUser.user);
+            } else {
+                ChatMessages.glimboiMessage("User already exists!");
             }
         } else if (attemptedAction == "canRemoveUsers") {
             let userExists = await UserHandle.findByUserName(target);
@@ -125,20 +123,19 @@ async function addCommand(user: userName, command: commandName, commandData: str
 /**
  * Returns a list of all commands to chat.
  */
-function commandList() {
-  	let cmdList:string[] = [];
-  	CommandHandle.getAll().then((data) => {
-    	for (let index = 0; index < data.length; index++) {
-      		cmdList.push(data[index].commandName);
-    	}
-    	let cmdmsg = cmdList.toString();
-        if (cmdmsg.length == 0) {
-            cmdmsg = "This streamer does not yet have any custom commands."
-        } else if (cmdmsg.length > 255) {
-            cmdmsg = "This streamer has so many commands we can't post them all to chat!"
-        }
-    	ChatMessages.filterMessage(cmdmsg);
-  	});
+async function commandList() {
+    let cmdList: string[] = [];
+    let cmds = await CommandHandle.getAll();
+    for (let index = 0; index < cmds.length; index++) {
+        cmdList.push(cmds[index].commandName);
+    }
+    let cmdmsg = cmdList.toString();
+    if (cmdmsg.length == 0) {
+        cmdmsg = "This streamer does not yet have any custom commands."
+    } else if (cmdmsg.length > 255) {
+        cmdmsg = "This streamer has so many commands we can't post them all to chat!"
+    }
+    ChatMessages.filterMessage(cmdmsg);
 }
 
 /**
@@ -182,13 +179,13 @@ async function addPointsChat(user: userName, target: userName, count) {
                 let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     UserHandle.addPoints(target, Math.round(Number(count)));
-                    ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
+                    ChatMessages.filterMessage(`${Math.round(Number(count))} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
                 } else {
                     let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
-                        ChatMessages.filterMessage(target + " has been added to glimboi.");
+                        ChatMessages.filterMessage(`${target} has been added to glimboi.`, "glimboi");
                         UserHandle.addPoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were added to " + target, "glimboi");
+                        ChatMessages.filterMessage(`${Math.round(Number(count))} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
                     } else {
                         ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
                     }
@@ -217,20 +214,20 @@ async function removePointsChat(user:userName, target, count) {
                 if (targetExists !== "ADDUSER") {
                     if ((targetExists.points - Math.round(Number(count))) < 0) {
                         UserHandle.editUserPoints(target, 0);
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                     } else {
                         UserHandle.removePoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                     }
                 } else {
                     let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         if (((userAdded as UserType).points - Math.round(Number(count))) < 0) {
                             UserHandle.editUserPoints(target, 0);
-                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                         } else {
                             UserHandle.removePoints(target, Math.round(Number(count)));
-                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + settings.Points.name + " were removed from " + target, "glimboi");
+                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
                         }
                     } else {
                         ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
@@ -259,13 +256,13 @@ async function editPointsChat(user, target, count) {
                 let targetExists = await UserHandle.findByUserName(target);
                 if (targetExists !== "ADDUSER") {
                     UserHandle.editUserPoints(target, Math.round(Number(count)));
-                    ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
+                    ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points"), "glimboi");
                 } else {
                     let userAdded = await UserHandle.addUser(target, false, user);
                     if (userAdded !== "INVALIDUSER") {
                         ChatMessages.filterMessage(target + " has been added to glimboi.");
                         UserHandle.editUserPoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + settings.Points.name, "glimboi");
+                        ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points"), "glimboi");
                     } else {
                         ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
                     }
@@ -284,12 +281,12 @@ async function editPointsChat(user, target, count) {
  * @param {string} user The user who is requesting points
  * @param {string} target The user who you are getting the points for
  */
-async function getPointsChat(user, target) {
+async function getPointsChat(user: string, target: string) {
     if (target !== undefined) {
         target = target.toLowerCase();
         let targetExists = await UserHandle.findByUserName(target);
         if (targetExists !== "ADDUSER") {
-            ChatMessages.filterMessage(target + " has " + targetExists.points + " " + settings.Points.name, "glimboi");
+            ChatMessages.filterMessage(target + " has " + targetExists.points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
         } else {
             let newUser = await UserHandle.addUser(target, false, user);
             if (newUser !== "INVALIDUSER") { getPointsChat((newUser as UserType).userName, target) } else {
@@ -310,11 +307,11 @@ async function getPointsChat(user, target) {
         user = user.toLowerCase();
         let userExists = await UserHandle.findByUserName(user);
         if (userExists !== "ADDUSER") {
-            ChatMessages.filterMessage(userExists.userName + " has " + userExists.points + " " + settings.Points.name, "glimboi");
+            ChatMessages.filterMessage(userExists.userName + " has " + userExists.points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
         } else {
             let newUser = await UserHandle.addUser(user, false, user)
             if (newUser !== "INVALIDUSER") {
-                ChatMessages.filterMessage((newUser as UserType).userName + " has " + (newUser as UserType).points + " " + settings.Points.name, "glimboi");
+                ChatMessages.filterMessage((newUser as UserType).userName + " has " + (newUser as UserType).points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
             } else {
                 ChatMessages.filterMessage(user + " was not found.", "glimboi");
             }
@@ -403,7 +400,7 @@ async function nextSong(user:userName, action) {
  * @param {string} user The user who is requesting or setting the song
  * @param {string} action Are we setttng or getting the song?
  */
-async function previousSong(user: userName, action) {
+async function previousSong(user: userName, action: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (action == "set") {
             if (musicPlaylist[currentSongIndex]) {
@@ -575,7 +572,7 @@ async function checkPoll(user: string, message: string | undefined) {
                     let messageWithoutQuestion = message.substring(questionEnd + 1);
                     let hasOptions = messageWithoutQuestion.indexOf("|") !== -1;
                     if (hasOptions) {
-                        var possibleAnswers = messageWithoutQuestion.split('|');
+                        let possibleAnswers = messageWithoutQuestion.split('|');
                         console.log(possibleAnswers);
                         for (let index = 0; index < possibleAnswers.length; index++) {
                             possibleAnswers[index] = possibleAnswers[index].trim();
@@ -631,6 +628,25 @@ async function permissionCheck(user:userName, action: rankProperties, friendlyAc
     }
 }
 
+async function checkTarget(user:string, addUser: boolean): Promise<{alreadyExists: boolean, user: UserType | null | false}> {
+    let userExists = await UserHandle.findByUserName(user);
+    if (userExists == "ADDUSER") {
+        if (addUser) {
+            let newUser = await UserHandle.addUser(user, false, user);
+            if (newUser !== "INVALIDUSER") {
+                return {alreadyExists: false, user: newUser as UserType}
+            } else {
+                ChatMessages.filterMessage(`${user} does not exist on Glimesh.`, "glimboi");
+                return {alreadyExists: false, user: null}
+            }
+        } else {
+            ChatMessages.filterMessage(`${user} has not been added to Glimboi.`, "glimboi");
+            return {alreadyExists: false, user: false}
+        }
+    } else {
+        return {alreadyExists: true, user: userExists}
+    }
+}
 
 export {
     addCommand, addPointsChat, addQuoteChat, commandList, checkAndStartBankheist, checkAndStartDuel, checkAndStartGiveaway,

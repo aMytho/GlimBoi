@@ -17,7 +17,7 @@ function prepareActions(mode) {
             return
         }
         // Now we check each action
-        let tempCommandActions = validateActions(mode);
+        let tempCommandActions = await validateActions(mode);
         if (!tempCommandActions) {
             console.log("Command actions were not valid.");
             return
@@ -45,7 +45,7 @@ function prepareActions(mode) {
 
     // NEEDS WORK, FAILS
     document.getElementById(`${mode}CommandRun`)!.onclick = async function() {
-        let tempCommandActions = validateActions(mode);
+        let tempCommandActions = await validateActions(mode);
         if (!tempCommandActions) {
             console.log("Command actions were not valid.");
             return
@@ -85,36 +85,27 @@ function prepareModals(mode) {
     }, 700);
 }
 
-function loadModalAdd() {
-    console.log(__dirname, dirName)
-    fs.readFile(dirName + `/html/commands/addCommand.html`, async (err, data) => {
-        if (err) {
-            throw err
-        }
-        document.getElementById(`commandContent`)!.innerHTML = data.toString();
-        prepareModals("add")
-        let selectRank = document.getElementById("addCommandRank");
-        let options = RankHandle.getCurrentRanks()
-        selectRank.innerHTML += "<option value=\"" + "Everyone" + "\">" + "Everyone (Default)" + "</option>";
-        for (let i = 0; i < options.length; i++) {
-            let opt = options[i].rank;
-            selectRank.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
-        }
-        prepareActions("add");
-        addActionToUI("ChatMessage", "add");
-    })
+async function loadModalAdd() {
+    let data = await fs.readFile(dirName + `/html/commands/addCommand.html`);
+    document.getElementById(`commandContent`)!.innerHTML = data.toString();
+    prepareModals("add")
+    let selectRank = document.getElementById("addCommandRank");
+    let options = await RankHandle.getAll();
+    selectRank.innerHTML += "<option value=\"" + "Everyone" + "\">" + "Everyone (Default)" + "</option>";
+    for (let i = 0; i < options.length; i++) {
+        let opt = options[i].rank;
+        selectRank.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+    }
+    prepareActions("add");
+    addActionToUI("ChatMessage", "add");
 }
 
-function loadModalEdit(command) {
-    fs.readFile(dirName + `/html/commands/editCommand.html`, async (err, data) => {
-        if (err) {
-            throw err
-        }
-        document.getElementById(`commandContent`)!.innerHTML = data.toString()
-        await insertEditData(command);
-        prepareModals("edit");
-        prepareActions("edit");
-    })
+async function loadModalEdit(command) {
+    let data = await fs.readFile(dirName + `/html/commands/editCommand.html`);
+    document.getElementById(`commandContent`)!.innerHTML = data.toString()
+    await insertEditData(command);
+    prepareModals("edit");
+    prepareActions("edit");
 }
 
 /**
@@ -172,7 +163,7 @@ async function insertEditData(command:CommandType) {
 
     // Selects the rank of the command if any
     let selectRank = document.getElementById("editCommandRank");
-    let options = RankHandle.getCurrentRanks()
+    let options = await RankHandle.getAll();
     selectRank.innerHTML += "<option value=\"" + "Everyone" + "\">" + "Everyone (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].rank;
@@ -204,7 +195,7 @@ async function insertEditData(command:CommandType) {
             await ActionCreator.buildAudioUI("edit", {source: command.sound})
         }
         if (command.media && command.media !== "null") {
-            let media = OBSHandle.getMediaByName(command.media);
+            let media = await OBSHandle.getMediaByName(command.media);
             console.log(media)// @ts-ignore legacy check
             if (media !== null && media !== "null") {
                 if (media.type.startsWith("image")) {

@@ -1,9 +1,7 @@
 // This file handles all of the chat settings
 // Health, repeats, message checks (user to bot ratio), etc
-var loggingEnabled = false; // Should we log chat messages to a text file?
-var healthInterval:NodeJS.Timeout; // An interval that reminds the user to take breaks
-var repeatCommand:NodeJS.Timeout; // An interval that sends repeating commands
-var repeatSpamProtection = 15; // The minimum amount of non bot messages required to send a repeating message
+let healthInterval:NodeJS.Timeout; // An interval that reminds the user to take breaks
+let repeatCommand:NodeJS.Timeout; // An interval that sends repeating commands
 
 /**
  * Loads and activates all the chat settings.
@@ -22,8 +20,6 @@ function loadChatSettings(settings:Settings) {
 function updateChatSettings(settings:Settings) {
     updateHealth(settings.chat.health);
     updateRepeatingCommands(settings.Commands.repeatDelay);
-    repeatSpamProtection = settings.Commands.repeatSpamProtection;
-    loggingEnabled = settings.chat.logging;
 }
 /**
  * Called when the chat is disconnected. Turns off all intervals
@@ -33,7 +29,6 @@ function stopChatSettings() {
     clearInterval(repeatCommand);
     console.log("All chat settings have been turned off.")
 }
-
 
 /**
  * Creates a health reminder if enabled.
@@ -73,7 +68,6 @@ function updateHealth(healthReminder:number) {
  */
 function startLogs(logEnabled:boolean) {
     if (logEnabled) {
-        loggingEnabled = true;
         setTimeout(() => { // Wait a few seconds and show a dialogue box. Asks for the location to log messages.
             ipcRenderer.send("startLogging", ""); // Tells the main process to start logging messages.
             ipcRenderer.once("startedLogging", (event, args) => { // When the main process recieves our request...
@@ -93,21 +87,13 @@ function startLogs(logEnabled:boolean) {
 }
 
 /**
- * Returns logging status
- * @returns {boolean} is logging enabled?
- */
-function isLoggingEnabled(): boolean {
-    return loggingEnabled
-}
-
-/**
  * Starts an interval to send repeating commands to chat. Dependent on repeat spam protection and delay.
  * @param {number} repeatDelay
  */
 function startRepeatingCommands(repeatDelay:number) {
     //Sends a random repeatable message to chat based on the user setting.
     repeatCommand = setInterval(() => {
-      	if (ChatStats.getUserMessageCount() <= repeatSpamProtection) {
+      	if (ChatStats.getUserMessageCount() <= settings.Commands.repeatSpamProtection) {
         	console.log("There is not enough non bot messages to send a repeat message. Waitng till next time.");
       	} else {
           	console.log("Sending a repeating command.")
@@ -116,10 +102,9 @@ function startRepeatingCommands(repeatDelay:number) {
     }, repeatDelay*60000);
 }
 
-
 function updateRepeatingCommands(delay:number) {
     clearInterval(repeatCommand);
     startRepeatingCommands(delay)
 }
 
-export {isLoggingEnabled, loadChatSettings, stopChatSettings, updateChatSettings}
+export {loadChatSettings, stopChatSettings, updateChatSettings}

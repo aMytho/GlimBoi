@@ -1,23 +1,22 @@
 // Creates all of the actions that the bot uses (UI)
-const fsPromise = require("fs").promises
 
 async function buildChatMessageUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/ChatMessage.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/ChatMessage.html`)
     // Takes the data and converts it to text (html). Also sets the styles
     action.innerHTML = file.toString();
-    action.className = "action";// @ts-ignore
-    action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
+    action.className = "action";// @ts-ignore;
+    action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;";
     // If a message exists we add it to the action
     if (commandInfo) {
-        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.message
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.message;
     }
-    document.getElementById(`${mode}CommandList`)!.appendChild(action)
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
 async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/ApiRequestGet.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/ApiRequestGet.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;";
@@ -39,14 +38,14 @@ async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
         (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLInputElement).innerText = commandInfo.url;
         // If the prop is null it is a text command, if not then its JSON.
         if (commandInfo.returns[0].data == null) {
-            (action.children[1].children[1].firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.returns[0].variable
+            (action.children[1].children[1].firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.returns[0].variable;
         } else {
             (action.children[1].firstElementChild.children[1].firstElementChild as HTMLInputElement).value = "json"
             switchAPIView("json", action);
             for (let i = 0; i < commandInfo.returns.length; i++) {
                 if (i == 0) {
-                    (action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].children[1].firstElementChild as HTMLParagraphElement).innerText = commandInfo.returns[i].data
-                    (action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].children[2].firstElementChild as HTMLParagraphElement).innerText = commandInfo.returns[i].variable
+                    (action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].children[1].firstElementChild as HTMLParagraphElement).innerText = commandInfo.returns[i].data;
+                    (action.children[1].children[1].children[2].firstElementChild.firstElementChild.children[1].children[2].firstElementChild as HTMLParagraphElement).innerText = commandInfo.returns[i].variable;
                     continue;
                 }
                 addJSONRow(action.children[1].children[1].children[2].firstElementChild.firstElementChild, mode, "ApiRow", commandInfo.returns[i])
@@ -56,15 +55,15 @@ async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
             console.log(commandInfo.headers)
             for (let i = 0; i < commandInfo.headers.length; i++) {
                 if (i == 0) {
-                    (action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].children[1].firstElementChild as HTMLParagraphElement).innerText = commandInfo.headers[i][0]
-                    (action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].children[2].firstElementChild as HTMLParagraphElement).innerText = commandInfo.headers[i][1]
+                    (action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].children[1].firstElementChild as HTMLParagraphElement).innerText = commandInfo.headers[i][0];
+                    (action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild.children[1].children[2].firstElementChild as HTMLParagraphElement).innerText = commandInfo.headers[i][1];
                     continue;
                 }
-                addJSONRow(action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild, mode, "HeaderRow", {variable: commandInfo.headers[i][1], data: commandInfo.headers[i][0]})
+                addJSONRow(action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild, mode, "HeaderRow", {variable: commandInfo.headers[i][1], data: commandInfo.headers[i][0]});
             }
         }
     }
-    document.getElementById(`${mode}CommandList`).appendChild(action)
+    document.getElementById(`${mode}CommandList`).appendChild(action);
 }
 
 /**
@@ -75,7 +74,7 @@ async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
  */
 async function addJSONRow(table, mode:actionMode, filePath, fill?) {
     let tr = document.createElement("tr");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/resources/${filePath}.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/resources/${filePath}.html`)
     tr.innerHTML = file.toString();
     tr.firstElementChild.firstElementChild.addEventListener("click", event => {
         addJSONRow(table, mode, filePath);
@@ -83,14 +82,14 @@ async function addJSONRow(table, mode:actionMode, filePath, fill?) {
     })
     tr.firstElementChild.children[1].addEventListener("click", event => {
         if ((event.target as HTMLElement).parentElement.parentElement.nodeName == "TR") {
-            (event.target as HTMLElement).parentElement.parentElement.remove()
+            (event.target as HTMLElement).parentElement.parentElement.remove();
         } else {
-            (event.target as HTMLElement).parentElement.parentElement.parentElement.remove()
+            (event.target as HTMLElement).parentElement.parentElement.parentElement.remove();
         }
     }, true);
     if (fill) {
-        (tr.children[1].firstElementChild as HTMLParagraphElement).innerText = fill.data
-        (tr.children[2].firstElementChild as HTMLParagraphElement).innerText = fill.variable
+        (tr.children[1].firstElementChild as HTMLParagraphElement).innerText = fill.data;
+        (tr.children[2].firstElementChild as HTMLParagraphElement).innerText = fill.variable;
     }
     table.appendChild(tr)
 }
@@ -111,14 +110,14 @@ function switchAPIView(view, action) {
 
 async function buildAudioUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Audio.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/Audio.html`)
     // Takes the data and converts it to text (html). Also sets the styles
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     // Now we fill the dropdown with our sound effects. This is pulled from the media tab.
-    let audioSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
-    let options = OBSHandle.getSounds()
+    let audioSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild;
+    let options = await OBSHandle.getMediaByType("audio");
     audioSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name
@@ -134,24 +133,24 @@ async function buildAudioUI(mode:actionMode, commandInfo) {
 
 async function buildBanUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Ban.html`);
+    let file = await fs.readFile(dirName + `/html/commands/actions/Ban.html`);
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     if (commandInfo) {
-        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target;
     }
-    document.getElementById(`${mode}CommandList`)!.appendChild(action)
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
 async function buildImageGifUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/ImageGif.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/ImageGif.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     let imageGifSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
-    let options = OBSHandle.getImages()
+    let options = await OBSHandle.getMediaByType("image");
     imageGifSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name
@@ -166,7 +165,7 @@ async function buildImageGifUI(mode:actionMode, commandInfo) {
 
 async function buildTimeoutUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Timeout.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/Timeout.html`);
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
@@ -180,12 +179,12 @@ async function buildTimeoutUI(mode:actionMode, commandInfo) {
 
 async function buildVideoUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Video.html`)
+    let file = await fs.readFile(dirName + `/html/commands/actions/Video.html`)
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
-    let videoSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
-    let options = OBSHandle.getVideos()
+    let videoSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild;
+    let options = await OBSHandle.getMediaByType("video");
     videoSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name
@@ -195,19 +194,19 @@ async function buildVideoUI(mode:actionMode, commandInfo) {
             videoSelect.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
         }
     }
-    document.getElementById(`${mode}CommandList`)!.appendChild(action)
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
 async function buildWaitUI(mode:actionMode, commandInfo) {
     let action = document.createElement("div");
-    let file = await fsPromise.readFile(dirName + `/html/commands/actions/Wait.html`);
+    let file = await fs.readFile(dirName + `/html/commands/actions/Wait.html`);
     action.innerHTML = file.toString();
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     if (commandInfo) {
-        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.wait
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.wait;
     }
-    document.getElementById(`${mode}CommandList`)!.appendChild(action)
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
 export  {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI, buildImageGifUI, buildTimeoutUI, buildVideoUI, buildWaitUI}

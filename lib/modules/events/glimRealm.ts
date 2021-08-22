@@ -19,7 +19,7 @@ let glimrealmTimer3: NodeJS.Timeout = null
         }
         glimrealmTimer2 = setTimeout(() => {
             if (!CacheStore.get("glimrealmQuiet", true, true)) {
-                ChatMessages.filterMessage("The portal is nearly closed. 20 seconds left!", "glimboi");
+                ChatMessages.filterMessage("The portal is nearly closed!", "glimboi");
             }
             glimrealmTimer3 = setTimeout(() => {
                 ChatMessages.filterMessage("Everyone has returned from the Glimrealm. Type !points to view your updated currency amount.", "glimboi");
@@ -36,20 +36,20 @@ let glimrealmTimer3: NodeJS.Timeout = null
 function getGlimrealmStatus(): glimRealmStatus {
     return glimrealmStatus
 }
-/**
- * See returns
- * @returns {array} Array of users who have entered the portal.
- */
-function getGlimRealmUsers(): Array<string> {
-    return glimrealmUsers
-}
 
 /**
- * Sets the users in glimrealm. This should be changed later
- * @param data Array of users who have entered the portal.
+ * Adds a user to the glimrealm
+ * @param {string} user The user to add
+ * @param {number} points the points the user has
  */
-function setGlimRealmUsers(data:userName[]) {
-    glimrealmUsers = data
+function addGlimRealmUser(user:userName, points: number) {
+    if (glimrealmUsers.indexOf(user) == -1) {
+        glimrealmUsers.push(user);
+        glimDropRealm(user, {points: points});
+        return true
+    } else {
+        return false
+    }
 }
 
 /**
@@ -57,7 +57,7 @@ function setGlimRealmUsers(data:userName[]) {
  * @param {string} user
  */
 function glimDropRealm(user:userName, data:{points:number}) {
-    var result = glimChance()!; // get a random effect
+    let result = glimChance()!; // get a random effect
     console.log(result);
     ChatMessages.filterMessage(result.message, "glimboi"); // send the message to chat
     if (result.type == "add") {
@@ -107,8 +107,8 @@ function openGlimRealm(fromUI?: boolean) {
  * Returns a random glimdrop event.
  */
 function glimChance() {
-    var number = Math.floor(Math.random()*35);
-    switch (number) {
+    let glimrealmNumber = Math.floor(Math.random()*35);
+    switch (glimrealmNumber) {
         case 0: return {message: "The Glimdrops are hiding. No adjustment in points.", result: 0, type: "add"}
         case 1: return {message: ":glimwow: got his Glimesh T-shirt! You gained 100 points.", result: 100, type: "add"}
         case 2: return {message: "You and :glimgype: got even more hyped! You gained 100 points!", result: 100, type: "add"}
@@ -168,4 +168,4 @@ function stopGlimrealm(manual: boolean) {
 }
 
 
-export {glimDropRealm, getGlimrealmStatus, getGlimRealmUsers, openGlimRealm, setGlimRealmUsers, startGlimrealm, stopGlimrealm}
+export {addGlimRealmUser, glimDropRealm, getGlimrealmStatus, openGlimRealm, startGlimrealm, stopGlimrealm}

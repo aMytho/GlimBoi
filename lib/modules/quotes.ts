@@ -1,4 +1,3 @@
-let quotePath = "./";
 let quotesDB:Nedb;
 
 /**
@@ -11,31 +10,32 @@ class Quote implements QuoteType {
     quoteData: string;
     quoteID: number;
     date: string;
-  	constructor(quoteName:quoteName, quoteData:quoteData) {
-    	console.log(quoteName, quoteData)
-    	this.quoteName = quoteName; //The person who said the auote
-    	this.quoteData = quoteData; // No explanation here
-        // @ts-ignore
-    	this.quoteID = this.generateID(quoteName); //ID of the users quotes. The DB ID is different.
-    	this.date = new Date().toTimeString(); //Tik toc
-  	}
-    async generateID(quoteName:quoteName) {
-    console.log("Generating ID");
-  	let usedID = await UserHandle.findByUserName(quoteName); //Gets the number of quotes of this user. Is the user is not existent return ADDUSER
-  	return usedID
+    constructor(quoteName: quoteName, quoteData: quoteData) {
+        console.log(quoteName, quoteData)
+        this.quoteName = quoteName; //The person who said the auote
+        this.quoteData = quoteData; // The quote itself
+        this.quoteID = 1 //ID of the users quotes. We change this after the creation of the quote
+        this.date = new Date().toTimeString(); //Tik toc
+    }
+    async generateID(quoteCreator: UserType, onBehalfOf: userName) {
+        console.log("Generating ID");
+        let totalQuotes = quoteCreator.quotes.length; // The total amount of quotes the user has
+        if (totalQuotes > 0) {
+            return Number(quoteCreator.quotes[totalQuotes - 1].quoteID) + 1; //Add 1 to the last quote ID
+        } else {
+            return 1; // If the user has no quotes, the ID is 1
+        }
     }
 }
 
 /**
- * Updates the path to the DB. The path variable is updated
+ * Updates the path to the DB.
  */
-function updatePath(updatedPath:string) {
-  	quotePath = updatedPath;
-      // @ts-ignore
-  	quotesDB = new Datastore({
-    	filename: `${quotePath}/data/quotes.db`,
-    	autoload: true,
-  	});
+function updatePath(updatedPath: string) {
+    quotesDB = new Datastore({
+        filename: `${updatedPath}/data/quotes.db`,
+        autoload: true,
+    });
 }
 
 /**
@@ -43,127 +43,102 @@ function updatePath(updatedPath:string) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-async function addquote(quoteName:quoteName, quoteData:quoteData, onBehalfOf:userName = "Glimboi") {
-  	return new Promise(resolve => {
-    	let newquote = new Quote(quoteName, quoteData);
-        // @ts-ignore
-    	newquote.quoteID.then(async data => {
-      		console.log('Quote ID created.')
-      		console.log(data)
-      		if (data == "ADDUSER") {
-        		console.log("Creating user " + quoteName);
-        		let newUser = await UserHandle.addUser(quoteName, false);
-          		if (newUser == "INVALIDUSER") {
-            		console.log("User not found, failed to create quote");
-        		    try {document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created."} catch(e) {}
-        			resolve("USERNOTEXIST")
-        		} else {
-          			addquote(quoteName, quoteData, onBehalfOf);
-          		}
-         		return
-      		} else {
-        		if (data.quotes.length == 0) {
-          			newquote.quoteID = 1
-        		} else {
-          			let count = data.quotes.length - 1;
-          			console.log(data.quotes[count])
-          			newquote.quoteID = Number(data.quotes[count].quoteID) + 1
-        		}
-      			console.log(newquote)
-      			try {
-        			quotesDB.insert(newquote, function (err: Error| null, doc: any) {
-          				console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
-          				UserHandle.addQuote(newquote, doc._id).then(data => {
-            				try { document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`} catch(e) {}
-                            LogHandle.logEvent({event: "Add Quote", users: [onBehalfOf, quoteName]});
-            				resolve("QUOTEFINISHED");
-          				})
-        			});
-      			} catch (e) {
-        			console.log(e);
-        			console.log(
-          				"Failure to add quote. Ensure only one instance of the bot is running and check your quotes.db file (in the data folder) for curruption."
-        			);
-      			}
-    		}
-    	})
-  	})
+async function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userName = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
+    return new Promise(async resolve => {
+        let userExists = await UserHandle.findByUserName(quoteName);
+        if (userExists == "ADDUSER") {
+            let newUser = await UserHandle.addUser(quoteName, false, onBehalfOf);
+            if (newUser !== "INVALIDUSER") {
+                return await addquote(quoteName, quoteData, onBehalfOf);
+            } else {
+                document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created.";
+                resolve("USERNOTEXIST")
+            }
+        } else {
+            let newQuote = new Quote(quoteName, quoteData); //Create a new quote
+            newQuote.quoteID = await newQuote.generateID(userExists, onBehalfOf); //Generate the ID of the quote
+            console.log('Quote ID created.');
+            quotesDB.insert(newQuote, function (err: Error | null, doc: any) { //Insert the quote into the DB
+                console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
+                UserHandle.addQuote(newQuote, doc._id).then(data => { //Add the quote ID to the users who owns it
+                    try {
+                        document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`
+                    } catch (e) {}
+                    LogHandle.logEvent({ event: "Add Quote", users: [onBehalfOf, quoteName] }); //Log the event
+                    resolve("QUOTEFINISHED");
+                })
+            });
+        }
+    })
 }
 
 /**
  * Removes a quote
  * @param {string} quoteName The quote data
  */
-function removeQuote(id:quoteID, user:userName) {
-  	try {
-    	quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
-      		console.log("Quote " + id + " was removed from the db");
-    	});
-  	} catch (e) {
-    	console.log(e);
-  	}
+function removeQuote(id: quoteID, user: userName) {
+    try {
+        quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
+            console.log(`Quote ${id} was removed from ${user}`);
+        });
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /**
  * Removes all of the users quotes
  * @param {string} user The user who owns the quotes that will be deleted
  */
-function removeAllQuotes(user:userName) {
-  	console.log(user)
-  	try {
-    	quotesDB.remove({ quoteName: user }, {multi: true}, function (err, numRemoved) {
-      		console.log(numRemoved + " quotes were removed from " + user)
-    	});
-  	} catch (e) {
-    	console.log(e);
-  	}
-}
-
-/**
- * Edits an existing quote
- * @param {string} quoteName The user who said the quote
- * @param {string} quoteData The quote itself
- */
-function editquote(quoteName:quoteName, quoteData:quoteData) {
-  	console.log(quoteName, quoteData);
-  	quotesDB.update(
-    	{ quoteName: quoteName },
-    	{ $set: { quoteName } },
-    	{},
-    	function (err, numReplaced) {
-      		console.log("Replacing " + quoteName);
-    	}
-  	);
+function removeAllQuotes(user: userName) {
+    console.log(`Removeing all queotes by ${user}`)
+    try {
+        quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
+            console.log(numRemoved + " quotes were removed from " + user)
+        });
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /**
  * Returns all quotes as an array
  */
 async function getAll(): Promise<QuoteDB[]> {
-  	return new Promise(resolve => {
-    	quotesDB.find({}, function (err: Error | null, docs:QuoteDB[]) {
-      		console.log(docs)
-      		resolve(docs)
-    	})
-  	})
+    return new Promise(resolve => {
+        quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
+            console.log(docs);
+            resolve(docs);
+        })
+    })
 }
-
 
 /**
  * Returns a random quote from the DB. Null if none exist
  */
-async function randomQuote(): Promise<null | {user:quoteName, data: quoteData}> {
-  	return new Promise(resolve => {
-    	quotesDB.find({}, function (err: Error | null, docs:QuoteDB[]) {
-      		if (docs.length == 0 || docs == undefined) {
-        		resolve(null)
-      		} else {
-      			let randomQuote = Math.floor(Math.random() * docs.length);
-      			console.log(docs[randomQuote].quoteName, docs[randomQuote].quoteData);
-      			resolve({user:docs[randomQuote].quoteName, data: docs[randomQuote].quoteData})
-      		}
-    	})
-  	})
+async function randomQuote(): Promise<null | { user: quoteName, data: quoteData }> {
+    return new Promise(resolve => {
+        quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
+            if (docs.length == 0) {
+                resolve(null)
+            } else {
+                let randomQuoteIndex = Math.floor(Math.random() * docs.length);
+                console.log(docs[randomQuoteIndex].quoteName, docs[randomQuoteIndex].quoteData);
+                resolve({ user: docs[randomQuoteIndex].quoteName, data: docs[randomQuoteIndex].quoteData })
+            }
+        })
+    })
 }
 
-export { addquote, editquote, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath };
+/**
+ * Counts the amount of quotes in the DB
+ */
+async function countQuotes(): Promise<number> {
+    return new Promise(resolve => {
+        quotesDB.count({}, function (err: Error | null, count: number) {
+            resolve(count)
+        })
+    })
+}
+
+export { addquote, countQuotes, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath };

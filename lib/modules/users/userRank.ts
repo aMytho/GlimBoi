@@ -1,17 +1,16 @@
 // This file manages the rank system
-var rankDB:Nedb; //Controls the Rank DB
-var ranks:RankType[] = [];
-var userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
+let rankDB:Nedb; //Controls the Rank DB
+let userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
 canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false,
 canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false,
 canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
 canStartEvents: true};
-var modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
+let modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
 canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false,
 canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true,
 canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
 canStartEvents: true};
-var streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
+let streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
 canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true,
 canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true,
 canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true, modImmunity: true,
@@ -71,31 +70,50 @@ class Rank implements RankType {
  * @param {string} path The app data directory
  */
 function updatePath(updatedPath:string) {
-    // @ts-ignore
     rankDB = new Datastore({ filename: `${updatedPath}/data/ranks.db`, autoload: true });
-    getAll()
+    getAll(true);
 }
 
 /**
  * Ran on startup, gets a local copy of all ranks. If none exist the default are created.
  */
-function getAll() {
-    rankDB.find({}, function (err: Error | null, docs:RankType[]) {
-        if (docs.length !== 0) {
-            ranks = docs; // imports the ranks the user has created
-            ranks.forEach(rank => { // If new properties exist add them to the ranks. Temporary, not written to the db until user interaction.
-                for (const key in userRank) {
-                    if (rank[key] === undefined) {
-                        rank[key] = userRank[key];
-                    }
+function getAll(checkNew?: boolean): Promise<RankType[]> {
+    return new Promise(resolve => {
+        rankDB.find({}, async function (err: Error | null, docs: RankType[]) {
+            if (docs.length !== 0) {
+                if (checkNew && await checkRankProperties(docs)) {
+                    resolve(await getAll(false));
+                } else {
+                    resolve(docs);
                 }
-            })
-        } else { // No ranks exist, insert the default ranks
-            rankDB.insert([userRank, modRank, streamerRank], function (err, newDocs) {
-                ranks = newDocs
-            });
-        }
-    });
+            } else { // No ranks exist, insert the default ranks
+                rankDB.insert([userRank, modRank, streamerRank], function (err, newDocs) {
+                    console.log("Created default ranks")
+                    resolve(newDocs);
+                });
+            }
+        });
+    })
+}
+
+function checkRankProperties(docs: RankType[]) {
+    return new Promise(resolve => {
+        docs.forEach(rank => { // If new properties exist add them to the ranks.
+            let isChanged = false;
+            for (const key in userRank) {
+                if (rank[key] === undefined) {
+                    rank[key] = userRank[key];
+                    isChanged = true;
+                }
+            }
+            if (isChanged) {
+                editRank(rank);
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        })
+    })
 }
 
 /**
@@ -103,12 +121,11 @@ function getAll() {
  * @param {string} rank The rank to be created
  */
 function createRank(rank:rankName) {
-    return new Promise(resolve => {
-        if (getRankPerms(rank) == null) {
+    return new Promise(async resolve => {
+        if (await getRankPerms(rank) == null) {
             console.log("Creating " + rank);
-            var rankData = new Rank(rank);
+            let rankData = new Rank(rank);
             rankDB.insert([rankData], function (err, newDocs) {
-                ranks.push(rankData);
                 resolve("RANKADDED");
             });
         } else {
@@ -121,24 +138,21 @@ function createRank(rank:rankName) {
  * Removes a user created rank
  * @param {string} rank The rank to be removed
  */
-function removeRank(rank:rankName) {
-  // We don't delete the base ranks.
-  return new Promise(resolve => {
-    if (rank !== "user" && rank !== "Mod" && rank !== "Streamer") {
-        for (let i = 0; i < ranks.length; i++) {
-          if (ranks[i].rank == rank) {
-            ranks.splice(i, 1);
-            resolve("RANKREMOVED")
+function removeRank(rank: rankName): Promise<"NORANKFOUND" | "RANKREMOVED" | "INVALIDRANK"> {
+    return new Promise(resolve => {
+        if (rank !== "user" && rank !== "Mod" && rank !== "Streamer") {
             rankDB.remove({ rank: rank }, {}, function (err, numRemoved) {
-              console.log("Removed " + numRemoved + " ranks");
+                console.log("Removed " + numRemoved + " ranks");
+                if (numRemoved == 0) {
+                    resolve("NORANKFOUND");
+                } else {
+                    resolve("RANKREMOVED");
+                }
             });
-          }
+        } else {
+            resolve("INVALIDRANK"); // We don't delete the base ranks.
         }
-        resolve("NORANKFOUND")
-      } else {
-        resolve("INVALIDRANK")
-      }
-  })
+    })
 }
 
 /**
@@ -146,20 +160,7 @@ function removeRank(rank:rankName) {
  * @param {object} rank A rank with updated properties.
  */
 function editRank(rank:RankType) {
-    for (let i = 0; i < ranks.length; i++) {
-        if (rank.rank == ranks[i].rank) {
-            ranks[i] = rank
-        }
-    }
-    rankDB.update({ rank: rank.rank }, { $set: {
-        canAddCommands: rank.canAddCommands, canEditCommands: rank.canEditCommands,
-        canRemoveCommands: rank.canRemoveCommands, canAddPoints: rank.canAddPoints, canEditPoints: rank.canEditPoints,
-        canRemovePoints: rank.canRemovePoints, canAddQuotes: rank.canAddQuotes, canEditQuotes: rank.canEditQuotes,
-        canRemoveQuotes: rank.canRemoveQuotes, canAddUsers: rank.canAddUsers, canEditUsers: rank.canEditUsers,
-        canRemoveUsers: rank.canRemoveUsers, canControlMusic: rank.canControlMusic, canDeleteMessages: rank.canDeleteMessages,
-        canTimeoutUsers: rank.canTimeoutUsers, canBanUsers: rank.canBanUsers, canUnBanUsers: rank.canUnBanUsers,
-        canStartEvents: rank.canStartEvents, modImmunity: rank.modImmunity}
-    }, {}, function (err, numReplaced) {
+    rankDB.update({ rank: rank.rank }, { $set: rank}, {}, function (err, numReplaced) {
         console.log("Rank settings updated");
     });
 }
@@ -170,11 +171,6 @@ function editRank(rank:RankType) {
  * @param {string} property What property we are adding to the rank
  */
 function addRankProperty(rank:rankName, property:rankProperties) {
-    for (let i = 0; i < ranks.length; i++) {
-        if (rank == ranks[i].rank) {
-            ranks[i][`${property}`] = false;
-        }
-    }
     rankDB.update({rank: rank}, { $set: { [`${property}`]: false}}, {}, function (err, numReplaced) {
         console.log(property + " was added to" + rank)
     })
@@ -186,30 +182,28 @@ function addRankProperty(rank:rankName, property:rankProperties) {
  * @param {string} action What the user is attempting to access
  * @param {string} type The type of the action. We use this to determine if we look for boolean, number, string, etc
  */
-function rankController(user:userName, action:rankProperties, type:string):Promise<true | false | null> {
-    return new Promise(resolve => {
-        UserHandle.findByUserName(user).then(data => {
-            if (data !== "ADDUSER") {
-                var rankInfo = getRankPerms(data.role);
-                if (type == "string") {
-                    if (rankInfo == null) { // the rank doesn't exist anymore
-                        resolve(false);
-                    } else if (rankInfo[`${action}`] == true) { // they have permission
-                        resolve(true);
-                    } else if (rankInfo[`${action}`] == false) {// they don't have permission
-                        resolve(false)
-                    } else if (rankInfo[`${action}`] == undefined) { // this is a new permission, we deny it and add it to the db.
-                        // @ts-ignore
-                        addRankProperty(data.role, action);
-                        resolve(false);
-                    }
-                } else {
+function rankController(user: userName, action: rankProperties, type: string): Promise<true | false | null> {
+    return new Promise(async resolve => {
+        let userExists = await UserHandle.findByUserName(user);
+        if (userExists !== "ADDUSER") {
+            let rankInfo = await getRankPerms(userExists.role);
+            if (type == "string") {
+                if (rankInfo == null) { // the rank doesn't exist anymore
+                    resolve(false);
+                } else if (rankInfo[`${action}`] == true) { // they have permission
+                    resolve(true);
+                } else if (rankInfo[`${action}`] == false) {// they don't have permission
                     resolve(false)
+                } else if (rankInfo[`${action}`] == undefined) { // this is a new permission, we deny it and add it to the db.
+                    addRankProperty(userExists.role, action);
+                    resolve(false);
                 }
             } else {
-                resolve(null)
+                resolve(false)
             }
-        })
+        } else {
+            resolve(null)
+        }
     })
 }
 
@@ -218,21 +212,12 @@ function rankController(user:userName, action:rankProperties, type:string):Promi
  * @param {string} rank The rank you want info about
  * @returns {object} Object if found, null if not
  */
-function getRankPerms(rank:rankName) {
-    for (let i = 0; i < ranks.length; i++) {
-        if (rank == ranks[i].rank) {
-            return ranks[i];
-        }
-    }
-    return null
+function getRankPerms(rank: rankName): Promise<RankType | null> {
+    return new Promise(resolve => {
+        rankDB.findOne({ rank: rank }, {}, function (err, doc: RankType | null) {
+            resolve(doc); // Returns the rank, null if not found
+        })
+    })
 }
 
-/**
- * Returns the array of rank data
- * @returns {array}
- */
-function getCurrentRanks(): Array<RankType> {
-    return ranks
-}
-
-export {createRank, editRank, getAll, getCurrentRanks, getRankPerms, rankController, removeRank, updatePath}
+export {createRank, editRank, getAll, getRankPerms, rankController, removeRank, updatePath}

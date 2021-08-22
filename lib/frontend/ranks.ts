@@ -1,12 +1,11 @@
 // Handles the UI for ranks
 
-function rankPrep() {
-    var currentRanks = RankHandle.getCurrentRanks();
+async function rankPrep() {
+    let currentRanks = await RankHandle.getAll();
     currentRanks.forEach(element => {
         if (element.rank !== "Mod" && element.rank !== "Streamer" && element.rank !== "user") {
-            var rankButton = document.createElement("a");
-            // @ts-ignore
-            rankButton.classList = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`
+            let rankButton = document.createElement("a");
+            rankButton.className = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`
             rankButton.innerHTML = element.rank;
             rankButton.setAttribute("onclick", `displayRank("${element.rank}")`)
             document.getElementById("customRankButtons")!.append(rankButton)
@@ -16,45 +15,41 @@ function rankPrep() {
 }
 
 
-function addRank() {
-    var rankName = (document.getElementById("rankAddInput") as HTMLInputElement)!.value.trim();
-    RankHandle.createRank(rankName).then(data => {
-        if (data == "RANKADDED") {
-            var rankButton = document.createElement("a");
-            // @ts-ignore
-            rankButton.classList = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`;
-            rankButton.innerHTML = rankName;
-            rankButton.setAttribute("onclick", `displayRank('${rankName}')`)
-            document.getElementById("customRankButtons")!.append(rankButton);
-            $('#modalRankAdd').modal('hide');
-        } else {
-            document.getElementById("addRank")!.innerText = "That rank already exists."
-        }
-    })
+async function addRank() {
+    let rankName = (document.getElementById("rankAddInput") as HTMLInputElement)!.value.trim();
+    let rankCreated = await RankHandle.createRank(rankName);
+    if (rankCreated == "RANKADDED") {
+        let rankButton = document.createElement("a");
+        rankButton.className = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`;
+        rankButton.innerHTML = rankName;
+        rankButton.setAttribute("onclick", `displayRank('${rankName}')`)
+        document.getElementById("customRankButtons")!.append(rankButton);
+        $('#modalRankAdd').modal('hide');
+    } else {
+        document.getElementById("addRank")!.innerText = "That rank already exists."
+    }
 }
 
-function removeRank() {
-    var rankName = (document.getElementById("rankRemoveInput")! as HTMLInputElement).value.trim();
-    RankHandle.removeRank(rankName).then(data => {
-        if (data == "RANKREMOVED") {
-            $('#modalRankremove').modal('hide');
-            var possibleRanks = document.getElementsByClassName("CUSTOM_RANK") as HTMLCollectionOf<HTMLParagraphElement> // adjust later
-            console.log(possibleRanks)
-            for (let item of possibleRanks) {
-                if (item.innerText == rankName) {
-                    item.remove()
-                }
+async function removeRank() {
+    let rankName = (document.getElementById("rankRemoveInput")! as HTMLInputElement).value.trim();
+    let rankRemoved = await RankHandle.removeRank(rankName)
+    if (rankRemoved == "RANKREMOVED") {
+        $('#modalRankremove').modal('hide');
+        var possibleRanks = document.getElementsByClassName("CUSTOM_RANK") as HTMLCollectionOf<HTMLParagraphElement> // adjust later
+        for (let item of possibleRanks) {
+            if (item.innerText == rankName) {
+                item.remove()
             }
-        } else if (data == "INVALIDRANK") {
-            document.getElementById("removeRank")!.innerText = "You cannot remove that rank."
-        } else {
-            document.getElementById("removeRank")!.innerText = "That rank does not exist."
         }
-    })
+    } else if (rankRemoved == "INVALIDRANK") {
+        document.getElementById("removeRank")!.innerText = "You cannot remove that rank."
+    } else {
+        document.getElementById("removeRank")!.innerText = "That rank does not exist."
+    }
 }
 
 function saveRankSettings(rank:rankName) {
-    var updatedRank = {
+    let updatedRank = {
         rank: rank,
         canAddCommands: (document.getElementById("addCommandsRank") as HTMLInputElement).checked,
         canEditCommands: (document.getElementById("editCommandsRank") as HTMLInputElement).checked,
@@ -82,8 +77,8 @@ function saveRankSettings(rank:rankName) {
 }
 
 
-function displayRank(rank:rankName) {
-    var rankExists = RankHandle.getRankPerms(rank)
+async function displayRank(rank:rankName) {
+    let rankExists = await RankHandle.getRankPerms(rank)
     if (rankExists !== null) {
         loadSpecificRank(rankExists);
         document.getElementById("saveRankSettings")!.classList.remove("disabled")

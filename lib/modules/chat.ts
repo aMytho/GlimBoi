@@ -295,7 +295,7 @@ function disconnect(displayMessage:boolean) {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
     	if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
-    	if (ChatSettings.isLoggingEnabled() == true) {
+    	if (settings.chat.logging == true) {
       		setTimeout(() => {
         		ipcRenderer.send("logEnd") // ends the logging
       		}, 3000);
@@ -312,7 +312,7 @@ function disconnectError() {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.")
     	errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
-    	if (ChatSettings.isLoggingEnabled() == true) {
+    	if (settings.chat.logging == true) {
       		setTimeout(() => {
         		ipcRenderer.send("logEnd")
       		}, 3000);
@@ -362,17 +362,12 @@ function postChat():void {
 
     // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
     ApiHandle.getBotAccount().then(data => {
-        try {// @ts-ignore
-            console.log(`GlimBoi is acting as ${data} and the status is ${data.status}`)
+        try {
+            console.log(`GlimBoi is acting as ${data}.`)
             if (data == null) {
                 console.log("Error getting bot username.");
                 botName = "GlimBoi"
-                // @ts-ignore
-            } else if (data.status !== undefined) {
-                console.log("Auth error");
-                botName = "GlimBoi"
             } else {
-                // @ts-ignore
                 botName = data
             }
         } catch (e) {

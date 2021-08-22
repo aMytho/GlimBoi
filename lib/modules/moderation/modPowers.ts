@@ -13,11 +13,11 @@ async function scanMessage(user:userName, message:string, messageID:number, user
     if (settings.Moderation.filterEnabled) {
         // The user exists
         let parsedMessage = message.split(" ")
-        var badWordFound = 0;
+        let badWordFound = 0;
         // for every word...
         for (let index = 0; index < parsedMessage.length; index++) {
             // compare against every bad word.
-            var badWordFound = ModHandle.getBannedWords().indexOf(parsedMessage[index]);
+            badWordFound = ModHandle.getBannedWords().indexOf(parsedMessage[index]);
             if (badWordFound !== -1) {
                 let userExists = await UserHandle.findByUserName(user.toLowerCase());
                 if (userExists == "ADDUSER") {
@@ -201,7 +201,7 @@ async function timeoutByUsername(username: userName, duration: timeout) {
             return result
         } else {
             let newID = await ApiHandle.getUserID(username);
-            if (newID !== null && typeof newID !== "object") {
+            if (typeof newID == "number") {
                 let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${newID}) {updatedAt, user {username}}}`
                 let result = await ApiHandle.glimeshApiRequest(bodyContent, timeoutType);
                 if (typeof result == "string") {// It succeeded
@@ -254,7 +254,7 @@ async function banByUsername(username: userName) {
     }
     console.log(`trying to ban a user with username ${username}`)
     let userID = await ApiHandle.getUserID(username);
-    if (typeof userID !== "object") {
+    if (typeof userID == "number") {
         let bodyContent = `mutation {banUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
         let result = await ApiHandle.glimeshApiRequest(bodyContent, "ban");
         if (typeof result == "string") {// It succeeded
@@ -301,7 +301,7 @@ async function unBanByUsername(username: userName) {
         return null
     }
     let userID = await ApiHandle.getUserID(username);
-    if (typeof userID !== "object") {
+    if (typeof userID == "number") {
         let bodyContent = `mutation {unbanUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
         return ApiHandle.glimeshApiRequest(bodyContent, "unBan");
     } else {

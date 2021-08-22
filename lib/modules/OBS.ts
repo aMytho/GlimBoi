@@ -1,9 +1,8 @@
 // This file handles all obs actions
-let websocketServer
-let wss:any
-let OBSDB:Nedb
-let wsController = {}
-let OBSData:MediaType[] = [];
+let websocketServer;
+let wss:any;
+let OBSDB:Nedb;
+let wsController = {};
 let mediaWait:any = [];
 
 /**
@@ -11,17 +10,18 @@ let mediaWait:any = [];
  * @param {string} updatedPath The path to the db
  */
 function updatePath(updatedPath:string) {
-    // @ts-ignore
     OBSDB = new Datastore({ filename: `${updatedPath}/data/obs.db`, autoload: true });
 }
 
 /**
  * Gets all of the OBS data from the db and sets it to OBSDATA
  */
-function getAll() {
-  OBSDB.find({}, function (err: Error | null, docs:MediaType[]) {
-    OBSData = docs;
-  });
+function getAll(): Promise<MediaType[]> {
+    return new Promise(resolve => {
+        OBSDB.find({}, function (err: Error | null, docs: MediaType[]) {
+            resolve(docs);
+        });
+    })
 }
 
 /**
@@ -32,9 +32,7 @@ function getAll() {
  * @param {string} position The position to show it in the overlay (display elements only)
  */
 function addMedia(name:mediaName, path:mediaPath, type:mediaType, position:mediaPosition) {
-    OBSDB.insert([{name: name.toLowerCase(), path: path, type: type, position: position}], function (err, newDocs) {
-        OBSData.push({name: name.toLowerCase(), path: path, type: type, position: position});
-    });
+    OBSDB.insert([{name: name.toLowerCase(), path: path, type: type, position: position}], function (err, newDocs) {});
 }
 
 /**
@@ -47,16 +45,6 @@ function addMedia(name:mediaName, path:mediaPath, type:mediaType, position:media
 function editMedia(name:mediaName, path:mediaPath, type:mediaType, position:mediaPosition) {
     console.log(name, path, position);
     name = name.toLowerCase();
-    for (let i = 0; i < OBSData.length; i++) {
-        if (name == OBSData[i].name) {
-            OBSData[i].position = position;
-            if (path !== null) {
-                OBSData[i].path = path
-                OBSData[i].type = type
-            }
-            break;
-        }
-    }
     if (path !== null) {
         OBSDB.update({ name: name }, { $set: { path: path, position: position, type: type } }, {}, function (err, numReplaced) {
             console.log("Media updated");
@@ -72,25 +60,11 @@ function editMedia(name:mediaName, path:mediaPath, type:mediaType, position:medi
  * Removes media from the database
  * @param {string} media The name of the media
  */
-function removeMedia(media:mediaName) {
+function removeMedia(media: mediaName) {
     media = media.toLowerCase()
-    for (let i = 0; i < OBSData.length; i++) {
-        if (media == OBSData[i].name) {
-            OBSData.splice(i, 1);
-            OBSDB.remove({ name: media }, {}, function (err, numRemoved) {
-                console.log("Media removed");
-            })
-            break;
-        }
-    }
-}
-
-/**
- * Retruns the current media
- * @returns {array} An array of the current media dataset
- */
-function getCurrentMedia(): Array<MediaType> {
-    return OBSData
+    OBSDB.remove({ name: media }, {}, function (err, numRemoved) {
+        console.log("Media removed");
+    })
 }
 
 /**
@@ -98,104 +72,57 @@ function getCurrentMedia(): Array<MediaType> {
  * @param {string} name The name to search for
  * @returns {object} Returns an object if found, else null
  */
-function getMediaByName(name:mediaName) {
+function getMediaByName(name: mediaName): Promise<MediaType> {
     name = name.toLowerCase();
-    for (let index = 0; index < OBSData.length; index++) {
-        if (OBSData[index].name == name) {
-            return OBSData[index]
-        }
-    }
-    return null
+    return new Promise(resolve => {
+        OBSDB.find({ name: name }, function (err, docs: MediaType[]) {
+            for (let i = 0; i < docs.length; i++) {
+                if (docs[i].name === name) {
+                    resolve(docs[i]);
+                }
+            }
+            resolve(null)
+        });
+    })
 }
 
 /**
- * Retruns an array of sound media
- * @returns {array} Audio Media
+ * Returns all the media that match the search term
+ * @param type The type of media to search for
  */
-function getSounds() {
-    let arrayOfSounds = []
-    for (let i = 0; i < OBSData.length; i++) {
-        if (OBSData[i].type.startsWith("audio")) {
-            arrayOfSounds.push(OBSData[i])
-        }
-    }
-    return arrayOfSounds
+function getMediaByType(type: mediaType): Promise<MediaType[]> {
+    return new Promise(resolve => {
+        let mediaArray = [];
+        OBSDB.find({}, function (err, docs: MediaType[]) {
+            for (let i = 0; i < docs.length; i++) {
+                if (docs[i].type.startsWith(type)) {
+                    mediaArray.push(docs[i])
+                }
+            }
+            resolve(mediaArray);
+        });
+    })
 }
 
 /**
- * Returns an array of images
- * @returns {array} Image Media
+ * Sends media to the overlay
+ * @param {MediaType} media The media to send
+ * @param {mediaWSSName} action The action we are sending
  */
-function getImages() {
-    let arrayOfImages = []
-    for (let i = 0; i < OBSData.length; i++) {
-        if (OBSData[i].type.startsWith("image")) {
-            arrayOfImages.push(OBSData[i])
-        }
-    }
-    return arrayOfImages
-}
-
-/**
- * Returns an array of videos
- * @returns {array} Video Media
- */
-function getVideos() {
-    let arrayOfVideos = []
-    for (let i = 0; i < OBSData.length; i++) {
-        if (OBSData[i].type.startsWith("video")) {
-            arrayOfVideos.push(OBSData[i])
-        }
-    }
-    return arrayOfVideos
-}
-
-/**
- * Sends a soundeffect event to the overlay
- * @param {object} sound The media to be played
- */
-function playSound(sound:MediaType) {
-    console.log("attemtping to send audio and stuff", sound)
+function activateMedia(media: MediaType, action: mediaWSSName) {
     try {
-        wss.send(JSON.stringify({action: "soundEffect", data: sound}));
-        mediaWait.push(sound)
-    } catch(e) {
-        console.log(e)
-    }
+        wss.send(JSON.stringify({action: action, data: media}));
+        mediaWait.push(media);
+    } catch(e) {}
 }
 
 /**
- * Sends an imageGif event to the overlay
- * @param {object} image The media to be shown
+ * Sends details to the overlay so it can play a song
  */
-function displayImage(image:MediaType) {
-    try {
-        wss.send(JSON.stringify({action: "imageGif", data: image}));
-        mediaWait.push(image);
-    } catch(e) {
-        console.log(e)
-    }
-}
-
-/**
- * Sends a video event to the overlay
- * @param {object} video The media to be shown
- */
-function playVideo(video:MediaType) {
-    try {
-        wss.send(JSON.stringify({action: "video", data: video}));
-        mediaWait.push(video)
-    } catch(e) {
-        console.log(e)
-    }
-}
-
 function playSong(song:any) {
     try {
         wss.send(JSON.stringify({action: "newSong", data: song}))
-    } catch(e) {
-        //console.log(e)
-    }
+    } catch(e) {}
 }
 
 /**
@@ -244,11 +171,7 @@ function startServer() {
  */
 function stopServer() {
     wss.close()
-    wss.removeAllListeners("connection")
+    wss.removeAllListeners("connection");
 }
 
-function getMediaWait() {
-    return mediaWait
-}
-
-export {getMediaWait, addMedia, displayImage, editMedia, getAll, getCurrentMedia, getImages, getMediaByName, getSounds, getVideos, playSong, playSound, playVideo, removeMedia, startServer, stopServer, updatePath}
+export {activateMedia, addMedia, editMedia, getAll, getMediaByName, getMediaByType, playSong, removeMedia, startServer, stopServer, updatePath}

@@ -65,7 +65,7 @@ function deterMineVictorAndDistributePoints(duel: duel): void {
     console.log(winner, loser, wager);
     UserHandle.addPoints(winner.winner, wager);
     UserHandle.removePoints(loser, wager);
-    ChatMessages.filterMessage(`@${winner.winner} has won the duel with a wager of ${wager} ${settings.Points.name} against ${loser}!`, "glimboi");
+    ChatMessages.filterMessage(`@${winner.winner} has won the duel with a wager of ${wager} ${CacheStore.get("pointsName", "Points")} against ${loser}!`, "glimboi");
     removeDuel(winner.winner, loser);
 }
 // Checks to ensure that a user, opponent, and wager are valid. Also makes sure that the user doesn't have a pending duel
@@ -108,7 +108,7 @@ async function challengeUser(user: string, opponent: string, wager: number) {
         return ChatMessages.filterMessage("Your opponent doesn't have enough points to wager!", "glimboi");
     } else {
         addDuel(user, opponent, wager);
-        ChatMessages.filterMessage(`@${opponent}, ${user} has challenged you to a duel with a wager of ${wager} ${settings.Points.name}! !accept or !decline.`, "glimboi");
+        ChatMessages.filterMessage(`@${opponent}, ${user} has challenged you to a duel with a wager of ${wager} ${CacheStore.get("pointsName", "Points")}! !accept or !decline.`, "glimboi");
         duelTimers[`${user}`] = setTimeout(() => {
             removeDuel(user, opponent);
         }, 30000);

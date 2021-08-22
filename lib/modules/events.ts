@@ -1,6 +1,8 @@
 // This file contains games and events.
 
-var arrayOfEvents:eventName[] = [];
+let arrayOfEvents:eventName[] = [];
+
+const helper: typeof import("../modules/events/helpers/helper") = require(appData[0] + "/modules/events/helpers/helper.js")
 
 /**
  * Bankheist Controller
@@ -38,7 +40,7 @@ const glimroyale: typeof import("../modules/events/glimRoyale") = require(appDat
  * @param {string} user
  * @param {string} message
  */
-function handleEvent(event:eventName, user:userName, message: string) {
+async function handleEvent(event:eventName, user:userName, message: string) {
     switch (event) {
         case "raffle":
             if (message.startsWith('!enter')) {
@@ -58,27 +60,18 @@ function handleEvent(event:eventName, user:userName, message: string) {
         break;
         case "glimrealm":
             if (message.startsWith('!portal')) {
-                user = user.toLowerCase()
-                var glimrealmUsers = glimRealm.getGlimRealmUsers();
-                if (!glimrealmUsers.includes(user)) {
-                    UserHandle.findByUserName(user).then(data => {
-                        if (data !== "ADDUSER") {
-                            glimrealmUsers.push(user);
-                            glimRealm.setGlimRealmUsers(glimrealmUsers);
-                            glimRealm.glimDropRealm(user, data);
-                        } else {
-                            UserHandle.addUser(user, false).then(userInfo => {
-                                if (userInfo !== "INVALIDUSER" && userInfo !== "USEREXISTS") {
-                                    glimrealmUsers.push(userInfo.userName);
-                                    userInfo.userName
-                                    glimRealm.setGlimRealmUsers(glimrealmUsers);
-                                    glimRealm.glimDropRealm(userInfo.userName, userInfo);
-                                }
-                            })
-                        }
-                    })
+                user = user.toLowerCase();
+                let userExists = await UserHandle.findByUserName(user);
+                if (userExists !== "ADDUSER") {
+                    let enteredGlimrealm = glimRealm.addGlimRealmUser(user, userExists.points);
+                    if (!enteredGlimrealm) {
+                        ChatMessages.filterMessage(`${user} has already entered the glimrealm.`, "glimboi");
+                    }
                 } else {
-                    ChatMessages.filterMessage("@" + user + ", You have already entered the Glimrealm.", "glimboi")
+                    let userAdded = await UserHandle.addUser(user, false, user);
+                    if (userAdded !== "INVALIDUSER" && userAdded !== "USEREXISTS") {
+                        handleEvent("glimrealm", user, "!portal");
+                    }
                 }
             }
         break;
@@ -97,37 +90,22 @@ function handleEvent(event:eventName, user:userName, message: string) {
         break;
         case "glimroyale":
             if (message.startsWith('!join')) {
-                let potentialUser = UserHandle.findByUserName(user);
-                potentialUser.then(data => {
-                    if (data == "ADDUSER") {
-                        let newUser = UserHandle.addUser(user, false, user);
-                        newUser.then(userInfo => {
-                            if (userInfo == "INVALIDUSER") {
-                                return;
-                            } else if (userInfo == "USEREXISTS") {
-                                return;
-                            } else {
-                                if (userInfo.points >= glimroyale.getWager()) {
-                                    let joined = glimroyale.joinBattle(userInfo.userName);
-                                    if (!joined) {
-                                        ChatMessages.filterMessage(`@${user}, You have already joined the Glimroyale`, "glimboi");
-                                    }
-                                } else {
-                                    ChatMessages.filterMessage("@" + user + ", You do not have enough points to join the Glimroyale.", "glimboi")
-                                }
-                            }
-                        })
-                    } else {
-                        if (data.points >= glimroyale.getWager()) {
-                            let joined = glimroyale.joinBattle(data.userName);
-                            if (!joined) {
-                                ChatMessages.filterMessage(`@${user}, You have already joined the Glimroyale`, "glimboi");
-                            }
-                        } else {
-                            ChatMessages.filterMessage("@" + user + ", You do not have enough points to join the Glimroyale.", "glimboi")
-                        }
+                let potentialUser = await UserHandle.findByUserName(user);
+                if (potentialUser == "ADDUSER") {
+                    let newUser = await UserHandle.addUser(user, false, user);
+                    if (typeof newUser == "object") {
+                        handleEvent(event, newUser.userName, message);
                     }
-                })
+                } else {
+                    if (helper.compareUserPoints(potentialUser, glimroyale.getWager(), true)) {
+                        let joined = glimroyale.joinBattle(potentialUser.userName);
+                        if (!joined) {
+                            ChatMessages.filterMessage(`@${user}, You have already joined the Glimroyale`, "glimboi");
+                        }
+                    } else {
+                        ChatMessages.filterMessage("@" + user + ", You do not have enough points to join the Glimroyale.", "glimboi");
+                    }
+                }
             }
         default:
         break;
@@ -149,15 +127,6 @@ function addEvent(event:eventName) {
  */
 function getCurrentEvents(): Array<any> {
     return arrayOfEvents
-}
-
-/**
- * Sets the current events
- * @param {array} data An array of updated events
- */
-function setCurrentEvents(data:eventName[]) {
-    arrayOfEvents = data
-    console.log(arrayOfEvents)
 }
 
 /**
@@ -184,6 +153,5 @@ function isEventActive(event:eventName) {
     return arrayOfEvents.includes(event);
 }
 
-
 export {addEvent, bankHeist, duel, getCurrentEvents, giveaway, glimRealm, glimroyale,
-handleEvent, isEventActive, isEventEnabled, poll, raffle, removeEvent, setCurrentEvents}
+handleEvent, helper,isEventActive, isEventEnabled, poll, raffle, removeEvent}

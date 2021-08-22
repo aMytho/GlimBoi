@@ -1,17 +1,12 @@
-ApiHandle.updateID(); // Gives the api file auth information
+AuthHandle.checkForID(); // Gives the api file auth information
 const CacheStore = new DumbCacheStore;
+CacheStore.setFile();
 LogHandle.updatePath(appData[1]);
 ModHandle.loadFilter(appData[1]);
 // @ts-ignore
 let settings:Settings = {}
 // Settings with the default property values and any new properties added.
 let updatedSettings:Settings = {
-    Points: {
-        enabled: true,
-        name: "Points",
-        StartingAmount: 0,
-        accumalation: 15
-    },
     Commands: {
         enabled: true,
         Prefix: "!",
@@ -73,22 +68,38 @@ function unlockBot() {
 
 
 // Ran at startup and to get data for settings page
-function getSettings() {
+async function getSettings() {
     try { // Check if the file exists.
-        let raw = fs.readFileSync(appData[1] + '/data/settings.json');
+        let raw = await fs.readFile(appData[1] + '/data/settings.json');
         // @ts-ignore
         settings = JSON.parse(raw);
     } catch (e) { // if not create the file
         console.log("no settings file exists, creating it");
         let dataTemplate = JSON.stringify(updatedSettings);
         try {
-            fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time the bot runs.
+            await fs.writeFile(appData[1] + '/data/settings.json', dataTemplate); // writes to the file. We use this the next time the bot runs.
         } catch (e) {
-            fs.mkdirSync(appData[1] + '/data'); // Makes the folder
-            fs.writeFileSync(appData[1] + '/data/settings.json', dataTemplate); // writes the file
+            await fs.mkdir(appData[1] + '/data'); // Makes the folder
+            await fs.writeFile(appData[1] + '/data/settings.json', dataTemplate); // writes the file
         }
         // Set settings equal to the default settings
         settings = jQuery.extend(true, {}, updatedSettings);
+    } finally {
+        if (typeof CacheStore.get("startingPoints") == "object") {
+            // Write to the cache. We will migrate to this over time
+            let startingAmount = settings.Points?.StartingAmount || 100;
+            let earningAmount = settings.Points?.accumalation || 15;
+            let pointsName = settings.Points?.name || "Points";
+            let stringifiedSettings = JSON.stringify(CacheStore.cache);
+            console.log(stringifiedSettings);
+            let migratedSettings = [
+                { startingPoints: startingAmount },
+                { earningPoints: earningAmount },
+                { pointsName: pointsName }
+            ]
+            CacheStore.setMultiple(migratedSettings);
+        }
+        console.log(JSON.stringify(CacheStore.cache));
     }
     // merge the settings together, adds new values if any
     let tempSettings = jQuery.extend(true, {}, updatedSettings);
@@ -100,23 +111,6 @@ function getSettings() {
 
 // Shows the settings on the settings page. Ran when that page is opened.
 function showSettings() {
-    // Points - - -
-    let slider = document.getElementById("initialValueSlider")! as HTMLInputElement;
-    slider.value = String(settings.Points.StartingAmount);
-    let output = document.getElementById("initialValueOutput");
-    output.innerHTML = slider.value;
-    slider.oninput = function (ev) {
-        output.innerHTML = (ev.target as HTMLInputElement).value
-    }
-    let newPointsName = document.getElementById("pointsNewName")! as HTMLInputElement;
-    newPointsName.value = settings.Points.name
-    let rateSlider = (document.getElementById("rateValueSlider") as HTMLInputElement);
-    rateSlider.value = String(settings.Points.accumalation);
-    let rateOutput = document.getElementById("rateValueOutput")!;
-    rateOutput.innerHTML = rateSlider.value;
-    rateSlider.oninput = function (ev) {
-        rateOutput.innerHTML = (ev.target as HTMLInputElement).value
-    }
     // Chat - - -
     let loggingswitch = document.getElementById("loggingEnabled")!;
     if (settings.chat.logging == true) {
@@ -246,12 +240,6 @@ function saveSettings() {
         }
     }
     settings = {
-        Points: {
-            enabled: true,
-            name: (document.getElementById("pointsNewName") as HTMLInputElement)!.value,
-            StartingAmount: Number(document.getElementById("initialValueOutput")!.innerText),
-            accumalation: Number(document.getElementById("rateValueOutput")!.innerText)
-        },
         Commands: {
             enabled: true,
             Prefix: "!",
@@ -292,7 +280,7 @@ function saveSettings() {
         }
     }
     console.log(settings);
-    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { })
+    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings));
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")
 }
@@ -300,7 +288,7 @@ function saveSettings() {
 // resets the settings.
 function resetSettings() {
     settings = jQuery.extend(true, {}, updatedSettings);
-    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings), function () { });
+    fs.writeFile(appData[1] + '/data/settings.json', JSON.stringify(settings));
     document.getElementById("SettingsLink").click(); // Fully resets the UI
     showSettings() // shows the sliders as the normal values.
     updateSettings();
