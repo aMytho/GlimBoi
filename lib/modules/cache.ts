@@ -24,6 +24,20 @@ class DumbCacheStore {
     }
 
     /**
+     * Sets multiple cache items
+     * @param {}[] keys
+     */
+    setMultiple(keys:{}[]) {
+        let keysToSet = {};
+        keys.forEach(key => {
+            let keyToSet = Object.entries(key);
+            keysToSet[keyToSet[0][0]] = keyToSet[0][1];
+        });
+        Object.assign(this.cache, keysToSet);
+        fs.writeFile(this.path, JSON.stringify(this.cache));
+    }
+
+    /**
      * Gets a key / value pair, sets the key if setDefault == true
      *
      * @param {string} key The value we are searching for

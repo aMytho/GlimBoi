@@ -41,11 +41,14 @@ function resetRaffleSettings() {
     (document.getElementById("raffleQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("raffleEnabled") as HTMLInputElement).value = String(true);
     // reset the settings
-    CacheStore.set(`rafflePoints`, 777);
-    CacheStore.set(`raffleCost`, 50);
-    CacheStore.set(`raffleDuration`, 60000);
-    CacheStore.set(`raffleQuiet`, false);
-    CacheStore.set(`raffleEnabled`, true);
+    let migratedSettings = [
+        {rafflePoints: 777},
+        {raffleCost: 50},
+        {raffleDuration: 60000},
+        {raffleQuiet: false},
+        {raffleEnabled: true}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Raffle settings have been reset.");
 }
 
@@ -56,11 +59,14 @@ function saveRaffleSettings() {
     let raffleQuiet = ((document.getElementById("raffleQuiet") as HTMLInputElement).value.trim() === "true");
     let raffleEnabled = ((document.getElementById("raffleEnabled") as HTMLInputElement).value.trim() === "true");
 
-    CacheStore.set(`rafflePoints`, Number(raffleReward));
-    CacheStore.set(`raffleCost`, Number(raffleCost));
-    CacheStore.set(`raffleDuration`, Number(raffleDuration) * 60000);
-    CacheStore.set(`raffleQuiet`, raffleQuiet);
-    CacheStore.set(`raffleEnabled`, raffleEnabled);
+    let migratedSettings = [
+        {rafflePoints: Number(raffleReward)},
+        {raffleCost: Number(raffleCost)},
+        {raffleDuration: Number(raffleDuration) * 60000},
+        {raffleQuiet: raffleQuiet},
+        {raffleEnabled: raffleEnabled}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Raffle settings have been saved.");
 }
 
@@ -124,9 +130,12 @@ function resetPollSettings() {
     (document.getElementById("pollQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("pollEnabled") as HTMLInputElement).value = String(true);
     // reset the settings
-    CacheStore.set(`pollDuration`, 60000);
-    CacheStore.set(`pollQuiet`, false);
-    CacheStore.set(`pollEnabled`, true);
+    let migratedSettings = [
+        {pollDuration: 60000},
+        {pollQuiet: false},
+        {pollEnabled: true}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Poll settings have been reset.");
 }
 
@@ -135,9 +144,12 @@ function savePollSettings() {
     let pollQuiet = ((document.getElementById("pollQuiet") as HTMLInputElement).value.trim() === "true");
     let pollEnabled = ((document.getElementById("pollEnabled") as HTMLInputElement).value.trim() === "true");
     console.log(pollDuration, pollQuiet, pollEnabled);
-    CacheStore.set(`pollDuration`, Number(pollDuration) * 60000);
-    CacheStore.set(`pollQuiet`, pollQuiet);
-    CacheStore.set(`pollEnabled`, pollEnabled);
+    let migratedSettings = [
+        {pollDuration: Number(pollDuration) * 60000},
+        {pollQuiet: pollQuiet},
+        {pollEnabled: pollEnabled}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Poll settings have been saved.");
 }
 
@@ -158,9 +170,12 @@ function resetGlimrealmSettings() {
     (document.getElementById("glimmrealmEnabled") as HTMLInputElement).value = String(true);
     (document.getElementById("glimmrealmQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("glimmrealmDuration") as HTMLInputElement).value = String(1);
-    CacheStore.set(`glimrealmEnabled`, true);
-    CacheStore.set(`glimrealmQuiet`, false);
-    CacheStore.set(`glimrealmDuration`, 60000);
+    let migratedSettings = [
+        {glimrealmEnabled: true},
+        {glimrealmQuiet: false},
+        {glimrealmDuration: 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Glimrealm settings have been reset.");
 }
 
@@ -169,9 +184,12 @@ function saveGlimrealmSettings() {
     let glimrealmQuiet = ((document.getElementById("glimrealmQuiet") as HTMLInputElement).value.trim() === "true");
     let glimrealmDuration = ((document.getElementById("glimrealmDuration") as HTMLInputElement).value.trim());
     console.log(glimrealmEnabled, glimrealmQuiet, glimrealmDuration);
-    CacheStore.set(`glimrealmEnabled`, glimrealmEnabled);
-    CacheStore.set(`glimrealmQuiet`, glimrealmQuiet);
-    CacheStore.set(`glimrealmDuration`, Number(glimrealmDuration) * 60000);
+    let migratedSettings = [
+        {glimrealmEnabled: glimrealmEnabled},
+        {glimrealmQuiet: glimrealmQuiet},
+        {glimrealmDuration: Number(glimrealmDuration) * 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Glimrealm settings have been saved.");
 }
 
@@ -192,9 +210,12 @@ function resetBankheistSettings() {
     (document.getElementById("bankheistEnabled") as HTMLInputElement).value = String(true);
     (document.getElementById("bankheistQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("bankheistDuration") as HTMLInputElement).value = String(1);
-    CacheStore.set(`bankheistEnabled`, true);
-    CacheStore.set(`bankheistQuiet`, false);
-    CacheStore.set(`bankheistDuration`, 60000);
+    let migratedSettings = [
+        {bankheistEnabled: true},
+        {bankheistQuiet: false},
+        {bankheistDuration: 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Bankheist settings have been reset.");
 }
 
@@ -203,9 +224,12 @@ function saveBankheistSettings() {
     let bankheistQuiet = ((document.getElementById("bankheistQuiet") as HTMLInputElement).value.trim() === "true");
     let bankheistDuration = ((document.getElementById("bankheistDuration") as HTMLInputElement).value.trim());
     console.log(bankheistEnabled, bankheistQuiet, bankheistDuration);
-    CacheStore.set(`bankheistEnabled`, bankheistEnabled);
-    CacheStore.set(`bankheistQuiet`, bankheistQuiet);
-    CacheStore.set(`bankheistDuration`, Number(bankheistDuration) * 60000);
+    let migratedSettings = [
+        {bankheistEnabled: bankheistEnabled},
+        {bankheistQuiet: bankheistQuiet},
+        {bankheistDuration: Number(bankheistDuration) * 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Bankheist settings have been saved.");
 }
 
@@ -236,9 +260,12 @@ function resetGlimroyaleSettings() {
     (document.getElementById("glimroyaleEnabled") as HTMLInputElement).value = String(true);
     (document.getElementById("glimroyaleQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("glimroyaleDuration") as HTMLInputElement).value = String(1);
-    CacheStore.set(`glimroyaleEnabled`, true);
-    CacheStore.set(`glimroyaleQuiet`, false);
-    CacheStore.set(`glimroyaleDuration`, 60000);
+    let migratedSettings = [
+        {glimroyaleEnabled: true},
+        {glimroyaleQuiet: false},
+        {glimroyaleDuration: 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Glimroyale settings have been reset.");
 }
 
@@ -247,9 +274,12 @@ function saveGlimroyaleSettings() {
     let glimroyaleQuiet = ((document.getElementById("glimroyaleQuiet") as HTMLInputElement).value.trim() === "true");
     let glimroyaleDuration = ((document.getElementById("glimroyaleDuration") as HTMLInputElement).value.trim());
     console.log(glimroyaleEnabled, glimroyaleQuiet, glimroyaleDuration);
-    CacheStore.set(`glimroyaleEnabled`, glimroyaleEnabled);
-    CacheStore.set(`glimroyaleQuiet`, glimroyaleQuiet);
-    CacheStore.set(`glimroyaleDuration`, Number(glimroyaleDuration) * 60000);
+    let migratedSettings = [
+        {glimroyaleEnabled: glimroyaleEnabled},
+        {glimroyaleQuiet: glimroyaleQuiet},
+        {glimroyaleDuration: Number(glimroyaleDuration) * 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Glimroyale settings have been saved.");
 }
 
@@ -279,9 +309,12 @@ function resetDuelSettings() {
     (document.getElementById("duelEnabled") as HTMLInputElement).value = String(true);
     (document.getElementById("duelQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("duelDuration") as HTMLInputElement).value = String(1);
-    CacheStore.set(`duelEnabled`, true);
-    CacheStore.set(`duelQuiet`, false);
-    CacheStore.set(`duelDuration`, 60000);
+    let migratedSettings = [
+        {duelEnabled: true},
+        {duelQuiet: false},
+        {duelDuration: 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Duel settings have been reset.");
 }
 
@@ -290,9 +323,12 @@ function saveDuelSettings() {
     let duelQuiet = ((document.getElementById("duelQuiet") as HTMLInputElement).value.trim() === "true");
     let duelDuration = ((document.getElementById("duelDuration") as HTMLInputElement).value.trim());
     console.log(duelEnabled, duelQuiet, duelDuration);
-    CacheStore.set(`duelEnabled`, duelEnabled);
-    CacheStore.set(`duelQuiet`, duelQuiet);
-    CacheStore.set(`duelDuration`, Number(duelDuration) * 60000);
+    let migratedSettings = [
+        {duelEnabled: duelEnabled},
+        {duelQuiet: duelQuiet},
+        {duelDuration: Number(duelDuration) * 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Duel settings have been saved.");
 }
 
@@ -313,9 +349,12 @@ function resetGiveawaySettings() {
     (document.getElementById("giveawayEnabled") as HTMLInputElement).value = String(true);
     (document.getElementById("giveawayQuiet") as HTMLInputElement).value = String(false);
     (document.getElementById("giveawayDuration") as HTMLInputElement).value = String(1);
-    CacheStore.set(`giveawayEnabled`, true);
-    CacheStore.set(`giveawayQuiet`, false);
-    CacheStore.set(`giveawayDuration`, 60000);
+    let migratedSettings = [
+        {giveawayEnabled: true},
+        {giveawayQuiet: false},
+        {giveawayDuration: 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", "Giveaway settings have been reset.");
 }
 
@@ -324,12 +363,14 @@ function saveGiveawaySettings() {
     let giveawayQuiet = ((document.getElementById("giveawayQuiet") as HTMLInputElement).value.trim() === "true");
     let giveawayDuration = ((document.getElementById("giveawayDuration") as HTMLInputElement).value.trim());
     console.log(giveawayEnabled, giveawayQuiet, giveawayDuration);
-    CacheStore.set(`giveawayEnabled`, giveawayEnabled);
-    CacheStore.set(`giveawayQuiet`, giveawayQuiet);
-    CacheStore.set(`giveawayDuration`, Number(giveawayDuration) * 60000);
+    let migratedSettings = [
+        {giveawayEnabled: giveawayEnabled},
+        {giveawayQuiet: giveawayQuiet},
+        {giveawayDuration: Number(giveawayDuration) * 60000}
+    ];
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Giveaway settings have been saved.");
 }
-
 
 /*
 function addOptionToPoll() {
@@ -349,6 +390,5 @@ function tryToStartPoll() {
     let pollQuestion = pollData.children[1].firstElementChild.children[1].innerHTML;
     console.log(pollQuestion, pollData);
 }
-
 
 */

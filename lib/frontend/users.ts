@@ -227,7 +227,6 @@ async function getPoints() {
         let pointValue = [
             `${topPoints[`${property}`].userName}`,
             `${topPoints[`${property}`].points}`,
-            `${topPoints[`${property}`].team}`
         ];
         arrayOfPoints.push(pointValue)
     }
@@ -240,20 +239,21 @@ async function getPoints() {
         if (arrayOfPoints[i] !== undefined) {
             pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0];
             pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1];
-            pointsTable.rows[i + 1].cells[3].innerHTML = arrayOfPoints[i][2];
         }
     }
 }
 
 function saveUserPointSettings() {
-    CacheStore.set("startingPoints", Number((document.getElementById("pointValue") as HTMLInputElement).value));
-    CacheStore.set("earningPoints", Number((document.getElementById("pointRate") as HTMLInputElement).value));
     let pointsName = (document.getElementById("pointsNewName") as HTMLInputElement).value;
-    if (pointsName.length > 0) {
-        CacheStore.set("pointsName", pointsName);
-    } else {
-        CacheStore.set("pointsName", "Points");
+    if (pointsName.length <= 0) {
+        pointsName = "Points"
     }
+    let migratedSettings = [
+        {startingPoints: Number((document.getElementById("pointValue") as HTMLInputElement).value)},
+        {earningPoints: Number((document.getElementById("pointRate") as HTMLInputElement).value)},
+        {pointsName: pointsName},
+    ]
+    CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Saved", "Point settings have been saved.");
     getPoints();
 }

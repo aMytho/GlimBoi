@@ -85,16 +85,21 @@ async function getSettings() {
         // Set settings equal to the default settings
         settings = jQuery.extend(true, {}, updatedSettings);
     } finally {
-        // Write to the cache. We will migrate to this over time
-        let startingAmount = settings.Points?.StartingAmount || 0;
-        let earningAmount = settings.Points?.accumalation || 0;
-        let pointsName = settings.Points?.name || "Points";
+        if (typeof CacheStore.get("startingPoints") == "object") {
+            // Write to the cache. We will migrate to this over time
+            let startingAmount = settings.Points?.StartingAmount || 100;
+            let earningAmount = settings.Points?.accumalation || 15;
+            let pointsName = settings.Points?.name || "Points";
+            let stringifiedSettings = JSON.stringify(CacheStore.cache);
+            console.log(stringifiedSettings);
+            let migratedSettings = [
+                { startingPoints: startingAmount },
+                { earningPoints: earningAmount },
+                { pointsName: pointsName }
+            ]
+            CacheStore.setMultiple(migratedSettings);
+        }
         console.log(JSON.stringify(CacheStore.cache));
-        CacheStore.get("startingPoints", startingAmount, true);
-        CacheStore.get("earningPoints", earningAmount, true);
-        CacheStore.get("pointsName", pointsName, true);
-        console.log(JSON.stringify(CacheStore.cache));
-
     }
     // merge the settings together, adds new values if any
     let tempSettings = jQuery.extend(true, {}, updatedSettings);
