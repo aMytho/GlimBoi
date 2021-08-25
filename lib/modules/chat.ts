@@ -63,8 +63,10 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
   	};
 
   	connection.onmessage = function (event) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
+        console.log(event);
     	try {
       		//First check for heartbeat message.
+
       		let chatMessage = JSON.parse(event.data);
       		if (chatMessage[4].status !== undefined) {
         		console.log("Status: " + chatMessage[4].status);
@@ -262,6 +264,7 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
   	};
 
     connection.onclose = function (event) { //The connection closed, if error the error will be triggered too
+        console.log(event);
       	try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
       		clearInterval(heartbeat) // stops the hearbteat
       		ChatSettings.stopChatSettings(); // stops everything else
@@ -283,7 +286,9 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
       		clearInterval(heartbeat) // stops the hearbteat
       		ChatSettings.stopChatSettings(); // stops everything else
       		ChatStats.stopChatStats();
-      	} catch(e) {console.log(e)}
+      	} catch(e) {
+              console.log(e)
+            }
       		throw "error, it crashed. p l e a s e f i x n o w"
     };
 }
@@ -294,7 +299,9 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
 function disconnect(displayMessage:boolean) {
   	try {
     	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
-    	if (displayMessage) successMessage("Chat has been successfully disconnected!", "You can close this now.");
+    	if (displayMessage){
+            successMessage("Chat has been successfully disconnected!", "You can close this now.");
+        }
     	if (settings.chat.logging == true) {
       		setTimeout(() => {
         		ipcRenderer.send("logEnd") // ends the logging

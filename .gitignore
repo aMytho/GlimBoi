@@ -1,14 +1,7 @@
-chatbot/data/
 node_modules/
-release-builds/
 test.js
-auth.txt
 nodeAPI1.js
-nodeglimeshAPI.MD
-electron-builder.yml
 dist/
 .vscode/
-.env
-a.js
 build/
 changelog.txt

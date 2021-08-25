@@ -18,7 +18,7 @@ function getID() {
 function glimeshError(data:Glimesh.RootQueryType): Glimesh.RootQueryType["data"] | false | null {
     try {
         if (data.errors) {
-            if (data.errors[0].message = "You must be logged in to access the api") {
+            if (data.errors[0].message == "You must be logged in to access the api") {
                 return null
             } else {
                 return false
