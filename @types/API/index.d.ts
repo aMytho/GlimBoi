@@ -46,6 +46,21 @@ type webhookType = "discord" | "guilded"
 
 type glimeshRequest = "userID" | "channelID"
 
+/**
+ * The event we want to listen for
+ */
+type glimeshEvent = "chat" | "followers" | "subscribers"
+
+interface incomingGlimeshMessage {
+    id: string; // We convert this to a number as soon as possible.
+    message: string; // The message that was recieved
+    user: {
+        avatarUrl: string;
+        id: string;
+        username: string;
+    }
+}
+
 declare namespace Glimesh {
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };

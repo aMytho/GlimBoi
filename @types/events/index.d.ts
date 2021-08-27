@@ -1,4 +1,5 @@
-type eventName = "raffle" | "poll" | "glimrealm" | "bankheist" | "duel" | "glimroyale" | "giveaway"
+type eventName = "raffle" | "poll" | "glimrealm" | "bankheist" | "duel" | "glimroyale" | "giveaway" |
+"gamble"
 
 type BHStatus = "ready" | "prep" | "active" | "cooldown"
 interface PollController {
