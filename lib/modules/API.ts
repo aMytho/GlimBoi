@@ -184,6 +184,23 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise
 }
 
 /**
+ * Checks if an access token is still valid
+ * @returns {Promise}
+ */
+async function getTokenStatus(token: accessToken): Promise<boolean> {
+    let authInfo = await AuthHandle.readAuth();
+    console.log(authInfo);
+    let response = await fetch("https://glimesh.tv/api/oauth/introspect", { method: "POST", body: new URLSearchParams({
+        token: token,
+        client_id: authInfo[0].clientID,
+        client_secret: authInfo[0].secret
+    }) })
+    let data = await response.json();
+    console.log(data);
+    return data.active || false
+}
+
+/**
  * @async
  * Requests random advice
  * @returns {Promise} Returns random advice. If fails returns- "Advice Failed :glimsad:"
@@ -251,4 +268,4 @@ function getStreamerName() {
 }
 
 export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getUserID, glimeshApiRequest, randomAnimalFact, Webhooks};
+getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact, Webhooks};

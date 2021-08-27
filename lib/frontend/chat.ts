@@ -1,12 +1,11 @@
-var isDev = false; // We assume they are on a production release.
-// @ts-ignore
-var ChatSettings:typeof import("../modules/chat/chatSettings");
-var ChatActions:typeof import("../modules/chat/chatActions");
-var ChatStats: typeof import("../modules/chat/chatStats");
-// @ts-ignore
-var ChatMessages: typeof import("../modules/chat/chatMessages") = require(appData[0] + "/modules/chat/chatMessages.js");
-var chatID = "" // the channel ID
-var reconnectDelay, currentChannelToRejoin;
+let isDev = false; // We assume they are on a production release.
+let ChatSettings:typeof import("../modules/chat/chatSettings");
+let ChatActions:typeof import("../modules/chat/chatActions");
+let ChatStats: typeof import("../modules/chat/chatStats");
+let ChatMessages: typeof import("../modules/chat/chatMessages") = require(appData[0] + "/modules/chat/chatMessages.js");
+let chatID; // the channel ID
+let reconnectDelay, currentChannelToRejoin;
+let needsReconnect = false;
 
 var contentTarget;
 var contentBody;
@@ -90,7 +89,8 @@ $(document).on('click', '#chatConnections button', function (event) {
     	$(this).prop('disabled', true); // Disable delete btn
     	if (currentChatConnected === channel) {
       		currentChatConnected = null;
-      		ChatHandle.disconnect(false);
+      		ChatHandle.disconnect();
+            needsReconnect = false;
     	}
 
     	$(listing).remove();
@@ -98,7 +98,8 @@ $(document).on('click', '#chatConnections button', function (event) {
   	} else if (ChatHandle.isConnected()) {
     	// Always disconnect unless we're deleting
     	currentChatConnected = null;
-    	ChatHandle.disconnect(false);
+    	ChatHandle.disconnect();
+        needsReconnect = false;
   	}
 
   	// Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
@@ -106,6 +107,7 @@ $(document).on('click', '#chatConnections button', function (event) {
   	if (action === 'join') {
     	setTimeout(function () {
       		joinChat(channel);
+              needsReconnect = true;
     	}, 500);
   	} if (ChatHandle.isConnected() === false) {
     	// Clear the right-side text of what channel we're connect to & reload channels after deletion
@@ -134,7 +136,7 @@ async function joinChat(chat: string, isReconnect?: boolean) {
         } else {
             //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
             currentChatConnected = chatToJoin;
-            ChatHandle.join(token, response, isReconnect); // Joins the channel
+            ChatHandle.checkAndJoinChat(token, response, isReconnect); // Joins the channel
             successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
             currentChannelToRejoin = chat
             await addChannelAndDisplay(chatToJoin);
@@ -415,12 +417,12 @@ function reconnect() {
             try {
                 let authInfo = await AuthHandle.readAuth();
                 let token = await AuthHandle.requestToken(authInfo[0].clientID, authInfo[0].secret, false);
-                if (token == "ALLGOOD") {
+                if (token !== false) {
                     joinChat(currentChannelToRejoin, true);
                     console.log("Rejoined chat. Hopefully..........")
                     $('#reconnectModal').modal('hide');
                 } else {
-                    console.log("We failed to rejoin chat because there was an ERROR with REQUESTING A TOKEN. VIP, SHOW THIS TO MYTHO");
+                    console.log("We failed to rejoin chat because there was an error with requesting a new token.");
                     errorMessage("Failed to rejoin chat. Error occured because Glimboi could not request a token.",
                     "Wait a few mintues and then request a new token. Then rejoin chat.")
                 }

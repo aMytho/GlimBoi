@@ -15,22 +15,22 @@ function filterMessage(message:string, source?: "user" | "glimboi") {
   	}
   	if (message.length == 0 ) {
     	console.log("Message was not long enough or no message was sent.");
-    	ChatMessages.sendMessage("The message was not long enough or no message was sent.")
+    	sendMessage("The message was not long enough or no message was sent.")
     	return
   	}
   	if (source == "user") {
     	if (message.length > 255) {
-      		ChatMessages.sendMessage("The command/message was too long to send.");
+      		sendMessage("The command/message was too long to send.");
     	} else {
       		message = message.replace(/[\t\r\n""]+/g, "");
-      		ChatMessages.sendMessage(message);
+      		sendMessage(message);
     	}
   	} else {
     	if (message.length > 255) {
-      		ChatMessages.glimboiMessage("The command/message was too long to send.");
+      		glimboiMessage("The command/message was too long to send.");
     	} else {
       		message = message.replace(/[\t\r\n""]+/g, "");
-      		ChatMessages.glimboiMessage(message, false);
+      		glimboiMessage(message, false);
     	}
   	}
 }
@@ -41,12 +41,11 @@ function filterMessage(message:string, source?: "user" | "glimboi") {
  * @param {string} data A message to be sent to chat
  */
 function sendMessage(data:message) {
-  	let msgArray:any = ["6","7","__absinthe__:control","doc"]; // array of data to send to glimesh
+  	let msgArray:any = ["1","7","__absinthe__:control","doc"]; // array of data to send to glimesh
   	// adds the message to it.
   	msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\""+chatID+"\",message:{message:\""+data+"\"}) {message }}","variables":{}});
   	let test = JSON.stringify(msgArray); // make it sendable (json)
   	try {
-    	console.log(test)
     	let websocketConnetion = ChatHandle.getConnection();
         if (websocketConnetion.readyState !== 2 && websocketConnetion.readyState !== 3) {
             websocketConnetion.send(test);
@@ -64,7 +63,7 @@ function sendMessage(data:message) {
  * @param {string} data The message to be sent to chat
  */
 function glimboiMessage(data: message, logError: boolean = false) {
-    let msgArray: any = ["6", "7", "__absinthe__:control", "doc"];
+    let msgArray: any = ["1", "7", "__absinthe__:control", "doc"];
     msgArray.splice(4, 0, { "query": "mutation {createChatMessage(channelId:\"" + chatID + "\", message:{message:\"" + data + "\"}) {message }}", "variables": {} });
     let test = JSON.stringify(msgArray);
     try {
