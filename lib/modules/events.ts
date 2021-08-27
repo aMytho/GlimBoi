@@ -32,6 +32,10 @@ const giveaway: typeof import("../modules/events/giveaway") = require(appData[0]
  * Glimroyale controller
  */
 const glimroyale: typeof import("../modules/events/glimRoyale") = require(appData[0] + "/modules/events/glimRoyale.js");
+/**
+ * Gamble Controller
+ */
+//const gamble:typeof import("../modules/events/gamble") = require(appData[0] + "/modules/events/gamble.js");
 
 
 /**
@@ -107,6 +111,18 @@ async function handleEvent(event:eventName, user:userName, message: string) {
                     }
                 }
             }
+            break;
+        case "gamble":
+            /*if (message.startsWith('!gamble')) {
+                let splitMessage:string[] = message.split(" ");
+                let amount:number = parseInt(splitMessage[1]);
+                if (isNaN(amount)) {
+                    ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`, "glimboi");
+                } else {
+                    gamble.gamble(user, amount);
+                }
+            }
+            */
         default:
         break;
     }

@@ -1,27 +1,48 @@
 //This file handles connecting the bot to a chat.
+
+const ChatParser:typeof import("../modules/chat/chatParser") = require(appData[0] + "/modules/chat/chatParser.js");
+
 let connection:WebSocket; // the websocket connection
 let heartbeat:any; //heartbeat
 let botName = "GlimBoi"; //The username of the bot in normal caps
-let messageHistoryCount = 20;
 
 /**
- * Tries to join a glimesh chat. Returns an error if the attempt failed.
+ * Checks to make sure the token is valid and if it is joins a chat
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
+ * @param {boolean} isReconnect Whether or not this is a reconnect
  */
-function join(access_token:accessToken, channelID, isReconnect:boolean) {
-  	try {connectToGlimesh(access_token, channelID, isReconnect)} catch(e) {
-     	console.log("we caught the error, poggers");
-     	errorMessage(e, "Chat Error")
-  	}
+async function checkAndJoinChat(accessToken: accessToken, channelID: number, isReconnect: boolean) {
+    // First we check the auth token and make sure its valid.
+    if (accessToken) {
+        let validToken = await ApiHandle.getTokenStatus(accessToken);
+        console.log(validToken);
+        if (validToken) {
+            connectToGlimesh(accessToken, channelID, isReconnect);
+        } else {
+            // Invalid token.
+            try {
+                let authInfo = await AuthHandle.readAuth();
+                let newToken = await AuthHandle.requestToken(authInfo[0].clientID, authInfo[0].secret, false);
+                if (newToken) {
+                    connectToGlimesh(newToken, channelID, isReconnect);
+                }
+            } catch(e) {
+                errorMessage("Auth Error", "Error getting new token. Ensure your auth credentials are correct.")
+            }
+        }
+    } else {
+        errorMessage("Auth Error", "Complete the auth process to join a chat. Try requesting a token.")
+    }
 }
+
 
 /**
  * Returns the connection for other modules
  * @returns {WebSocket} WebSocket Connection
  */
 function getConnection(): WebSocket {
-  	return connection;
+    return connection;
 }
 
 /**
@@ -38,19 +59,19 @@ function isConnected(): boolean {
  * @param {string} access_token Access token used for authentication
  * @param {number} channelID The channel ID for the channel we are joining
  */
-function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
-  	const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}` // The websocket URL
-  	connection = new WebSocket(url); // Connection is now an offical connection!
-  	chatID = channelID // The channel ID is now an accessible variable for this module
+function connectToGlimesh(access_token:string, channelID:number, isReconnect:boolean) {
+    const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}` // The websocket URL
+    connection = new WebSocket(url); // Connection is now an offical connection!
+    chatID = channelID // The channel ID is now an accessible variable for this module
 
-  	connection.onopen = function () { // When the connection opens...
-    	console.log("Connected to the Glimesh API");
-    	connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
-    	connection.send(`["1","6","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id,user { username avatarUrl id } message } }","variables":{} }]`); //Requests a specific channel. I can do multiple at the same time but idk about doing that...
-
-    	heartbeat = setInterval(() => { //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
-      		connection.send('[null,"6","phoenix","heartbeat",{}]');
-    	}, 20000);
+    connection.onopen = function () { // When the connection opens...
+        console.log("Connected to Glimesh Chat");
+        connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
+        subscribeToGlimeshEvent("chat", { channelID: channelID });
+        //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
+        heartbeat = setInterval(() => {
+            connection.send('[1,"4","phoenix","heartbeat",{}]');
+        }, 20000);
 
         // Run the post chat scripts
         postChat();
@@ -60,280 +81,93 @@ function connectToGlimesh(access_token:string, channelID, isReconnect:boolean) {
         } else {
             ChatMessages.filterMessage("Glimboi has joined the chat :glimsmile:", "glimboi");
         }
-  	};
+    };
 
-  	connection.onmessage = function (event) { //We recieve a message from glimesh chat! (includes heartbeats and other info)
+    //We recieve a message from glimesh chat! (includes heartbeats and other info)
+    connection.onmessage = function (event) {
         console.log(event);
-    	try {
-      		//First check for heartbeat message.
+        //First check for heartbeat message.
+        let chatMessage = JSON.parse(event.data);
+        if (chatMessage[1] == null) {
+            ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
+        } else if (chatMessage[1] == 4) {
+            //Heartbeat
+            console.log(`Status: ${chatMessage[3]}`);
+        } else if (chatMessage[1] == 7) {
+            // This is a message the bot has sent
+        }
+    };
 
-      		let chatMessage = JSON.parse(event.data);
-      		if (chatMessage[4].status !== undefined) {
-        		console.log("Status: " + chatMessage[4].status);
-      		} else {
-        		//Its probably a chat message
-        		try {
-                    console.log(chatMessage[4], chatMessage)
-          			if (chatMessage[4].result.data !== undefined) {
-            			let userChat:userName = chatMessage[4].result.data.chatMessage.user.username;
-            			let messageChat = chatMessage[4].result.data.chatMessage.message;
-            			let userID = Number(chatMessage[4].result.data.chatMessage.user.id)
-            			console.log(userChat + ": " + messageChat);
-            			EventHandle.getCurrentEvents().forEach(element => {
-              				EventHandle.handleEvent(element, userChat, messageChat)
-            			});
-            			ChatStats.addCurrentUser(userChat)
-            			if (messageChat.startsWith("!")) { //If it is a command of some sort...
-              				let message = messageChat.split(" ")
-              				switch (message[0]) {
-                				case "!commands": // Returns a list of all commands
-                					ChatActions.commandList();
-                  				break;
-                				case "!command":
-                				case "!cmd":
-                  				switch (message[1]) {
-                    				case "add":
-                    				case "new":
-                                        ChatActions.addCommand(userChat.toLowerCase(), message[2], messageChat, message[0])
-                      				break;
-                                    case "del":
-                                    case "remove":
-                                    case "delete":
-                                        ChatActions.removeCommand(userChat.toLowerCase(), message[2].toLowerCase())
-                                        break;
-                                    case "":
-                    				case "help":
-                    				case "info":
-                      					CommandHandle.info()
-                    				default:
-                      				break;
-                  				}
-                  				break;
-                				case "!quote":
-                  				switch (message[1]) {
-                    				case "":
-                    				case " ":
-                    				case null:
-                    				case undefined: // Returns a random quote
-                    					ChatActions.randomQuoteChat()
-                      				break;
-                    				case "add":
-                    				case "new": // adds a new quote
-                    					ChatActions.addQuoteChat(userChat.toLowerCase(), chatMessage[4].result.data.chatMessage, message[2])
-                      				break;
-                    				case "remove": // removes a quote
-                    				case "delete": // removes a quote
-                    				case "del": // removes a quote
-                    					ChatActions.delQuoteChat(userChat.toLowerCase(), message[2], message[3]);
-                      				break;
-                    				default:
-                      				break;
-                  				}
-                  				break;
-                				case "!points":
-                  				switch (message[1]) {
-                    				case "":
-                    				case " ":
-                    				case null:
-                    				case undefined:
-                      					ChatActions.getOwnPointsChat(userChat);
-                      				break;
-                    				case "top":
-                      					ChatActions.getTopPoints()
-                      				break;
-                                    case "add":
-                                    case "+":
-                                    case "inc": ChatActions.addPointsChat(userChat, message[2], message[3])
-                                    break;
-                                    case "sub":
-                                    case "-":
-                                    case "del": ChatActions.removePointsChat(userChat, message[2], message[3])
-                                    break;
-                                    case "set":
-                                    case "=": ChatActions.editPointsChat(userChat, message[2], message[3])
-                                    break;
-                                    case "get": ChatActions.getPointsChat(userChat, message[2])
-                                    break;
-                                    case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
-                                    break;
-                    				default:
-                      					ChatActions.getTopPoints(message[1], true);
-                      				break;
-                  				}
-                  				break;
-                				case "!test": ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
-                  				break;
-                				case "!raffle": ChatActions.checkAndStartRaffle(userChat);
-                  				break;
-                				case "!poll": ChatActions.checkPoll(userChat, messageChat);
-                  				break;
-                				case "!glimrealm": ChatActions.checkAndStartGlimrealm(userChat);
-                  				break;
-                                case "!bankheist": ChatActions.checkAndStartBankheist(userChat.toLowerCase());
-                                break;
-                                case "!duel": ChatActions.checkAndStartDuel(userChat, message[1], Number(message[2]));
-                                break;
-                                case "!giveaway": ChatActions.checkAndStartGiveaway(userChat);
-                                break;
-                                case "!glimroyale": ChatActions.checkAndStartGlimroyale(userChat, message[1]);
-                                break;
-                				case "!user":
-                  					switch (message[1]) {
-                    					case "new":
-                    					case "add": // adds a user
-                    						ChatActions.modifyUserFromChat(userChat.toLowerCase(), message[2], "canAddUsers", "add users");
-                      					break;
-                    					case "remove":
-                    					case "del":
-                    					case "delete": // removes a user
-                    						ChatActions.modifyUserFromChat(userChat.toLowerCase(), message[2], "canRemoveUsers", "remove users");
-                      					break;
-                    					default:
-                      					break;
-                  					}
-                  				break;
-                                case "!rank": ChatActions.getRank(userChat.toLowerCase());
-                                break;
-                                case "!song" : ChatActions.getSong();
-                                break;
-                                case "!sr":
-                  					if (message[1] !== undefined) {
-                                        switch (message[1].toLowerCase()) {
-                                            case "current":
-                                            case "now":
-                                                ChatActions.getSong();
-                                              break;
-                                            case "next":
-                                            case "n":
-                                                ChatActions.nextSong(userChat, "get")
-                                              break;
-                                            case "last":
-                                            case "l":
-                                                ChatActions.previousSong(userChat, "get")
-                                              break;
-                                            case "skip": ChatActions.nextSong(userChat, "set")
-                                            break;
-                                            case "previous": ChatActions.previousSong(userChat, "set");
-                                            break;
-                                            case "repeat":
-                                            case "loop":
-                                                ChatActions.replaySong(userChat)
-                                            break;
-                                            case "shuffle":
-                                            case "random":
-                                                ChatActions.toggleShuffle(userChat)
-                                            break;
-                                            case "toggle":
-                                                ChatActions.toggleShuffle(userChat)
-                                            break;
-                                            //case "queue":
-                                            //case "list":
-                                                //ChatMessages.glimboiMessage("Feature coming soon");
-                                            //break;
-                                            default: ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
-                                              break;
-                                          }
-                                      } else {
-                                        ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
-                                      }
-                  				break;
-                				default: //its not a glimboi command, may be a streamer command. We need to check and send the output to chat.
-                  					CommandHandle.CommandRunner.checkCommand(chatMessage[4].result.data.chatMessage)
-                  				break;
-              				}
-            			}
-            			try {
-                            ChatMessages.logMessage(userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, false, chatMessage[4].result.data.chatMessage.id, "none");
-              				globalChatMessages.push([userChat, messageChat, chatMessage[4].result.data.chatMessage.user.avatarUrl, chatMessage[4].result.data.chatMessage.id, "none"]);
-              				globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - messageHistoryCount, 0));
-              				ModHandle.ModPowers.scanMessage(userChat, messageChat.toLowerCase(), chatMessage[4].result.data.chatMessage.id, userID) // filter the message if needed
-            			} catch (e3) {
-                            console.log(e3);
-            			}
-            			// Add a user message counter if it isn't the bot
-            			if (userChat !== botName) { ChatStats.increaseUserMessageCounter() }
-          			}
-        		} catch (e2) {
-          			console.log(e2);
-          			disconnectError()
-        		}
-      		}
-    	} catch (e1) {
-      		console.log(e1);
-    	}
-  	};
-
-    connection.onclose = function (event) { //The connection closed, if error the error will be triggered too
+    //The connection closed, if error the error will be triggered too
+    connection.onclose = function (event) {
         console.log(event);
-      	try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
-      		clearInterval(heartbeat) // stops the hearbteat
-      		ChatSettings.stopChatSettings(); // stops everything else
-      		ChatStats.stopChatStats()
-      	} catch(e) {console.log(e)}
-      		if (event.wasClean) {
-        		console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-      		} else {
-        		console.log("[close] Connection died");
-        		errorMessage(String([event.code, event.reason]), "Chat Error. Attempting to reconnect...");
-                reconnect()
-      		}
-    	};
-
-    connection.onerror = function (error) { // oh noes, an error!
-      	console.log(`[error] ${error}`);
-      	console.log("Probably an auth issue. Please reauthenicate");
-      	try { // in rare cases the polling and hearrtbeat never start, this prevents a crash from stopping something that doesn't exist
-      		clearInterval(heartbeat) // stops the hearbteat
-      		ChatSettings.stopChatSettings(); // stops everything else
-      		ChatStats.stopChatStats();
-      	} catch(e) {
-              console.log(e)
+        try {
+            clearInterval(heartbeat) // stops the hearbteat
+            ChatSettings.stopChatSettings(); // stops everything else
+            ChatStats.stopChatStats();
+        } catch (e) {
+            console.log(e);
+        }
+        if (settings.chat.logging == true) {
+            setTimeout(() => {
+                ipcRenderer.send("logEnd") // ends the logging
+            }, 3000);
+        }
+        if (event.wasClean) {
+            console.log(`Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            if (needsReconnect) {
+                reconnect();
+            } else {
+                successMessage("Chat Disconnected!", "Chat has been successfully disconnected.");
             }
-      		throw "error, it crashed. p l e a s e f i x n o w"
+        } else {
+            console.log("Connection died and it was not a clean event.");
+            errorMessage(String([event.code, event.reason]), "Chat Error. Attempting to reconnect...");
+            reconnect();
+        }
+    };
+
+    // oh noes, an error!
+    connection.onerror = function (error) {
+        console.log(`Chat Connection Error: ${error}`);
+        // Chat error or parse error?, the disconnect is triggered so we don't need any extra code
     };
 }
 
 /**
- * Disconnects from Glimesh chat.
+ * Listens for a specific event in the Glimesh API
  */
-function disconnect(displayMessage:boolean) {
-  	try {
-    	connection.close(1000, "So long and thanks for all the fish.") // closes the websocket
-    	if (displayMessage){
-            successMessage("Chat has been successfully disconnected!", "You can close this now.");
-        }
-    	if (settings.chat.logging == true) {
-      		setTimeout(() => {
-        		ipcRenderer.send("logEnd") // ends the logging
-      		}, 3000);
-    	}
-  	} catch(e) {
-    	errorMessage(e, "Error disconnecting from the chat")
-  	}
+function subscribeToGlimeshEvent(event: glimeshEvent, {channelID}) {
+    switch (event) {
+        case "chat":
+            connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id } message } }","variables":{} }]`);
+            break;
+        case "followers":
+            break;
+
+        default:
+            break;
+    }
 }
 
+
 /**
- * Disconnecting because of an error parsing the message
+ * Disconnects from Glimesh chat.
  */
-function disconnectError() {
-  	try {
-    	connection.close(1000, "So long and thanks for all the fish.")
-    	errorMessage("Chat has been disconnected due to an error.", "Press shift+ctrl+i and navigate to the console for more info. Rejoin when ready.");
-    	if (settings.chat.logging == true) {
-      		setTimeout(() => {
-        		ipcRenderer.send("logEnd")
-      		}, 3000);
-    	}
-  	} catch(e) {
-    	errorMessage(e, "Error disconnecting from the chat")
-  	}
+function disconnect() {
+    console.log("DISCONNECTING AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    try {
+        connection.close(1000, "So long and thanks for all the fish."); // closes the websocket
+    } catch (e) {
+        errorMessage("Chat Error", "You are not connected to a chat.");
+    }
 }
 
 /**
  * Returns the name of the Bot
  */
 function getBotName() {
-  	return botName
+    return botName
 }
 
 /**
@@ -384,4 +218,4 @@ function postChat():void {
 }
 
 
-export { getConnection, isConnected, connectToGlimesh, disconnect, getBotName, join}
+export {checkAndJoinChat, getConnection, isConnected, connectToGlimesh, disconnect, getBotName}

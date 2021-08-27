@@ -8,7 +8,7 @@ let authDB:Nedb; //Auth database containing all auth info
  * @param {string} secretKey The secret key of the user
  * @param {boolean} isManual Is this manually triggered?
  */
-async function requestToken(clientID: clientID, secretKey: secretKey, isManual: boolean): Promise<"ALLGOOD" | "NOTGOOD"> {
+async function requestToken(clientID: clientID, secretKey: secretKey, isManual: boolean): Promise<accessToken | false> {
     return new Promise(async resolve => {
         let res = await fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
         let data = await res.json()
@@ -22,12 +22,12 @@ async function requestToken(clientID: clientID, secretKey: secretKey, isManual: 
                 console.log("Access token recieved and added to the database. Ready to join chat!");
                 updateStatus(2); // Everything is ready, they can join chat!
                 isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null;
-                resolve("ALLGOOD");
+                resolve(data.access_token);
             });
         } catch (e) {
             console.log(e); // in case of errors...
             errorMessage(e, "Auth Error");
-            resolve("NOTGOOD");
+            resolve(false);
         }
     });
 }
@@ -46,11 +46,11 @@ function updatePath(updatedPath:string): void {
  * @returns Returns auth info
  */
 function readAuth(): Promise<Auth[]> {
-   	return new Promise(resolve => {
-    	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		resolve(docs);
-    	});
-   	});
+    return new Promise(resolve => {
+        authDB.find({}, function (err: Error | null, docs: Auth[]) {
+            resolve(docs);
+        });
+    });
 }
 
 
