@@ -1,4 +1,3 @@
-
 let recentChannelsDB:Nedb;
 
 /**
