@@ -43,20 +43,6 @@ function prepareActions(mode) {
         }
     }
 
-    // NEEDS WORK, FAILS
-    document.getElementById(`${mode}CommandRun`)!.onclick = async function() {
-        let tempCommandActions = await validateActions(mode);
-        if (!tempCommandActions) {
-            console.log("Command actions were not valid.");
-            return
-        }
-        console.log(tempCommandActions)
-        // Finally we build the actions and add them as a
-        for (let i = 0; i < tempCommandActions.length; i++) {
-            let tempAction = new CommandHandle.ChatAction[`${tempCommandActions[i].type}`](tempCommandActions[i])
-            await tempAction.run()
-        }
-    }
     document.getElementById("CreateChatMessage")!.onclick = () => addActionToUI("ChatMessage", mode);
     document.getElementById("CreateApiRequestGet")!.onclick = () => addActionToUI("ApiRequestGet", mode);
     document.getElementById("CreateAudio")!.onclick = () => addActionToUI("Audio", mode);
