@@ -45,11 +45,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc --watch",
     "start": "electron build/main.js",
-    "ts": "tsc",
-    "build": "electron-builder build  --win --publish never",
+    "build" : "tsc --project tsconfig.production.json",
+    "build:exe": "electron-builder build  --win --publish never",
+    "build:linux": "electron-builder build --linux --publish never",
     "deploy": "electron-builder build  --win --publish always",
-    "linux": "electron-builder build --linux",
-    "devPublish": "electron-builder build  --win --config.publish.provider=s3 --config.publish.endpoint=http://127.0.0.1:9000 --config.publish.bucket=test-update"
+    "testDeploy": "electron-builder build  --win --config.publish.provider=s3 --config.publish.endpoint=http://127.0.0.1:9000 --config.publish.bucket=test-update"
   },
   "author": "Mytho",
   "license": "MIT",
