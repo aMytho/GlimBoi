@@ -102,10 +102,11 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
     connection.onclose = function (event) {
         console.log(event);
         try {
-            clearInterval(heartbeat) // stops the hearbteat
+            clearInterval(heartbeat); // stops the hearbteat
             ChatSettings.stopChatSettings(); // stops everything else
             ChatStats.stopChatStats();
             ChatLogger.endMessageLogging();
+            leaveChatButton();//sets the UI so it shows that we are not in a chat
         } catch (e) {
             console.log(e);
         }
