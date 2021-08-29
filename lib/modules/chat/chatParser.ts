@@ -102,6 +102,9 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                 break;
             case "!glimroyale": ChatActions.checkAndStartGlimroyale(userChat, Number(message[1]));
                 break;
+            case "!8ball":
+                ChatActions.eightBall(userChat, messageChat);
+                break;
             case "!user":
                 switch (message[1]) {
                     case "new":

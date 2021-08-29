@@ -372,6 +372,25 @@ function saveGiveawaySettings() {
     successMessage("Settings Saved", "Giveaway settings have been saved.");
 }
 
+function loadEightBallUI() {
+    viewingEvent = "eightball"
+    console.log("Loading 8ball UI");
+    let eightBallEnabled = CacheStore.get("eightBallEnabled", true, false);
+    (document.getElementById("eightBallEnabled") as HTMLSelectElement).value = String(eightBallEnabled);
+}
+
+function resetEightBallSettings() {
+    (document.getElementById("eightBallEnabled") as HTMLSelectElement).value = String(true);
+    CacheStore.set("eightBallEnabled", true);
+    successMessage("Settings Reset", "8Ball settings have been reset.");
+}
+
+function saveEightBallSettings() {
+    let eightBallEnabled = ((document.getElementById("eightBallEnabled") as HTMLSelectElement).value.trim() === "true");
+    console.log(eightBallEnabled);
+    CacheStore.set("eightBallEnabled", eightBallEnabled);
+}
+
 /*
 function addOptionToPoll() {
     $('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption' style="background-color:#00ffff0f"></td></tr>`)

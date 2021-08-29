@@ -26,6 +26,9 @@
                 <li class="nav-item mx-2" role="presentation">
                   <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsDuelTab" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="loadDuelUI()">Duel</a>
                 </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsEightBallTab" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="loadEightBallUI()">8Ball</a>
+                  </li>
               </ul>
           <div class="card-body whiteText">
             <div class="tab-content" id="eventsTab">
@@ -569,7 +572,59 @@
                     </div>
 
                     </div>
+                    <div class="tab-pane fade show" id="eventsEightBallTab" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <!-- raffle buttons to start, view people in raffle, and end the raffle-->
+                        <div class="row">
+                            <div class="col-lg-12 col-12 text-center" >
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4 col-12">
+                                <h3 class="text-center">8Ball Settings</h3>
+                                <!-- table with 3 rows for settings-->
+                                <table class="table table-striped whiteText">
+                                    <tr>
+                                        <td>Setting</td>
+                                        <td>Value</td>
+                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td>Enabled</td>
+                                            <td>
+                                            <select class="settingSelect" id="eightBallEnabled">
+                                                <option value="false">No</option>
+                                                <option value="true">Yes</option>
+                                            </select>
 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center">
+                                    <a class="btn btn-danger" onclick="resetEightBallSettings()">Reset</a>
+                                    <a class="btn btn-info" onclick="saveEightBallSettings()">Save</a>
+                                </div>
+    
+                            </div>
+                            <div class="col-sm-4 col-12">
+                                <div class="text-center" style="min-height: 300px">
+                                    <h3>8Ball</h3>
+                                    <p class="whiteText">It is decidedly so.</p>
+                                    <p class="whiteText">My sources say no.</p>
+                                </div>
+    
+                            </div>
+                            <div class="col-sm-4 col-12">
+                                <div class="text-center" style="min-height: 300px">
+                                    <h3>8Ball</h3>
+                                    <p>Get an 8ball response with a given question.</p>
+                                    <p>Start by typing !8ball Question?</p>
+                                    <p>The answer will be returned to chat. The 8ball is very eager, and responds to anything even if it isn't a question.</p>
+                                </div>
+                            </div>
+                        </div>
+    
+                    </div>
                 </div>
                 <h4 class="text-center">Events are still in beta, please report any issues you may have.</h4>
             </div>
