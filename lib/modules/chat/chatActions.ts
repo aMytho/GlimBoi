@@ -634,6 +634,17 @@ async function eightBall(user:string, message: string) {
     }
 }
 
+
+function gamble(user: userName, message) {
+    let splitMessage: string[] = message.split(" ");
+    let amount: number = parseInt(splitMessage[1]);
+    if (isNaN(amount) || amount <= 0) {
+        ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`, "glimboi");
+    } else {
+        EventHandle.gamble.gamble(user, amount);
+    }
+}
+
 /**
  * Sends a message to the user that they do not have permission to perform the action.
  * @param {string} user The user who wanted to perform the action.
@@ -691,6 +702,6 @@ async function checkTarget(user:string, addUser: boolean): Promise<{alreadyExist
 export {
     addCommand, addPointsChat, addQuoteChat, commandList, checkAndStartBankheist, checkAndStartDuel, checkAndStartGiveaway,
     checkAndStartGlimrealm, checkAndStartGlimroyale, checkAndStartRaffle, checkPoll, delQuoteChat,
-    editPointsChat, eightBall, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, modifyUserFromChat, nextSong, playPause,
+    editPointsChat, eightBall, gamble, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, modifyUserFromChat, nextSong, playPause,
     previousSong, randomQuoteChat, removeCommand, removePointsChat, replaySong, toggleShuffle
 }
