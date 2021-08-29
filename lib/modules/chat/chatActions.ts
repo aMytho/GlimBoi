@@ -636,12 +636,16 @@ async function eightBall(user:string, message: string) {
 
 
 function gamble(user: userName, message) {
-    let splitMessage: string[] = message.split(" ");
-    let amount: number = parseInt(splitMessage[1]);
-    if (isNaN(amount) || amount <= 0) {
-        ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`, "glimboi");
+    if (CacheStore.get("gambleEnabled", true, true)) {
+        let splitMessage: string[] = message.split(" ");
+        let amount: number = parseInt(splitMessage[1]);
+        if (isNaN(amount) || amount <= 0) {
+            ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`, "glimboi");
+        } else {
+            EventHandle.gamble.gamble(user, amount);
+        }
     } else {
-        EventHandle.gamble.gamble(user, amount);
+        ChatMessages.filterMessage(`${user}, Gamble is not enabled`, "glimboi");
     }
 }
 

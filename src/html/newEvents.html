@@ -28,7 +28,10 @@
                 </li>
                 <li class="nav-item mx-2" role="presentation">
                     <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsEightBallTab" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="loadEightBallUI()">8Ball</a>
-                  </li>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsGambleTab" role="tab" aria-controls="pills-contact" aria-selected="false" onclick="loadGambleUI()">Gamble</a>
+                </li>
               </ul>
           <div class="card-body whiteText">
             <div class="tab-content" id="eventsTab">
@@ -572,7 +575,7 @@
                     </div>
 
                     </div>
-                    <div class="tab-pane fade show" id="eventsEightBallTab" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="tab-pane fade show" id="eventsEightBallTab" role="tabpanel" aria-labelledby="pills-home-tab">
                         <!-- raffle buttons to start, view people in raffle, and end the raffle-->
                         <div class="row">
                             <div class="col-lg-12 col-12 text-center" >
@@ -625,7 +628,63 @@
                         </div>
     
                     </div>
+                <div class="tab-pane fade show" id="eventsGambleTab" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-12">
+                            <h3 class="text-center">Gamble Settings</h3>
+                            <table class="table table-striped whiteText">
+                                <tr>
+                                    <td>Setting</td>
+                                    <td>Value</td>
+                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td>Win Multiplier</td>
+                                        <td>
+                                            <input type="text" class="settingInput input-number" id="gambleMultiplier"
+                                                placeholder="The win multiplier." value="1.5">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chance to Win</td>
+                                        <td>
+                                            <input type="text" class="settingInput input-number" id="gambleWinRate"
+                                                placeholder="The chance to win." value="20">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Enabled</td>
+                                        <td>
+                                            <select class="settingSelect" id="gambleEnabled">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center">
+                                <a class="btn btn-danger" onclick="resetGambleSettings()">Reset</a>
+                                <a class="btn btn-info" onclick="saveGambleSettings()">Save</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="text-center" style="min-height: 300px">
+                                <h3>Gamble</h3>
+                                <p>Gamble is a way for users to win/lose points.</p>
+                                <p>Start by typing !gamble wager. If they lose they lose all the wagered points. If they win they win
+                                    the points based on the multiplier.</p>
+                                <p>Multiplier Examples</p>
+                                <p>1.0 => Gained the wager.</p>
+                                <p>1.5 => Gained the wager and and extra half of it.</p>
+                                <p>2.0 => Gained twice the wagered points.</p>
+                            </div>
+                        </div>
+                    </div>
+                
                 </div>
+                </div>
+                
                 <h4 class="text-center">Events are still in beta, please report any issues you may have.</h4>
             </div>
         </div>

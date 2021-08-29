@@ -6,12 +6,15 @@ async function gamble(user:userName, wager:number) {
         ChatMessages.filterMessage(`${user}, you do not have enough points to wager.`, "glimboi");
         return
     }
-    let chanceOfWinning = CacheStore.get("gambleChance", 20, true);
-    let baseEarnings = CacheStore.get("gambleEarnings", 1.5, true);
+
+    let chanceOfWinning = CacheStore.get("gambleWinRate", 20, true);
+    let baseEarnings = CacheStore.get("gambleMultiplier", 1.5, true);
     let actualEarnings = Math.round(baseEarnings * wager);
 
+    let hasWon = chanceOfWinning >= Math.round(Math.random() * 100);
+
     // take the chance of winning and see if the user won
-    if (chanceOfWinning < Math.round(Math.random() * 100)) {
+    if (hasWon) {
         UserHandle.addPoints(user, actualEarnings);
         ChatMessages.filterMessage(getGambleMessage("win", user, actualEarnings));
     } else {
