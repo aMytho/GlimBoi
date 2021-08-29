@@ -63,7 +63,7 @@ function addUserReset() {
     <div class="modal-footer">
         <p id="errorMessageAdd"></p>
         <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-primary" onclick="addUser()" id="addUserFinish">Add</button>
+        <button class="btn btn-outline-primary" onclick="searchAndAddUser()" id="addUserFinish">Add</button>
     </div>`
 }
 
