@@ -102,9 +102,9 @@ function logMessage(user:userName, message:message, avatar:avatar, isReload: boo
     );
         let scroll = document.getElementById("chatContainer")
         scroll!.scrollTo(0,document.getElementById("chatList").scrollHeight);
-
-        if (settings.chat.logging == true && isReload == false) {
-          ipcRenderer.send("logMessage", {message: message, user: user}) // tell the main process to log this to a file.
+        // log to file
+        if (!isReload) {
+            ChatLogger.logMessageToFile(user, message);
         }
     } catch (e) {
 

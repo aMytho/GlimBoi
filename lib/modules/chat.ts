@@ -105,6 +105,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
             clearInterval(heartbeat) // stops the hearbteat
             ChatSettings.stopChatSettings(); // stops everything else
             ChatStats.stopChatStats();
+            ChatLogger.endMessageLogging();
         } catch (e) {
             console.log(e);
         }
@@ -178,6 +179,7 @@ function postChat():void {
     ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js");
     ChatActions = require(appData[0] + "/modules/chat/chatActions.js");
     ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
+    ChatLogger = require(appData[0] + "/modules/chat/chatLogging.js");
     // Load the chat settings/stats
     ChatSettings.loadChatSettings(settings);
     ChatStats.loadChatStats();
