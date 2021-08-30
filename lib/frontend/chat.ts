@@ -41,6 +41,7 @@ function autoJoinChatButtons(e) {
     $('button[data-action=auto-join]').prop('disabled', true);
 
     let enabled = ($(e).attr('data-enabled') == "false"); // Invert current setting
+    console.log(e);
     console.log(`Setting autoJoin for ${channel} to ${enabled}`);
 
     // Set the selected channel to be auto-join

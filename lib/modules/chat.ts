@@ -118,7 +118,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         if (event.wasClean) {
             console.log(`Connection closed cleanly, code=${event.code} reason=${event.reason}`);
             if (needsReconnect) {
-                reconnect();
+                //reconnect();
             } else {
                 successMessage("Chat Disconnected!", "Chat has been successfully disconnected.");
             }

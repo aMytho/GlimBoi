@@ -2,9 +2,20 @@
 
 async function gamble(user:userName, wager:number) {
     // check to make sure that the user exists and has enough points to wager
-    if (!EventHandle.helper.compareUserPoints(user, wager, true)) {
-        ChatMessages.filterMessage(`${user}, you do not have enough points to wager.`, "glimboi");
-        return
+    let userData = await UserHandle.findByUserName(user.toLowerCase());
+    if (typeof userData == "string") {
+        let newUser = await UserHandle.addUser(user.toLowerCase(), false, user);
+        if (newUser !== "INVALIDUSER") {
+            await gamble(user, wager);
+            return
+        } else {
+            return
+        }
+    } else {
+        if (userData.points < wager) {
+            ChatMessages.filterMessage(`${userData.userName} does not have enough points to wager.`, "glimboi");
+            return
+        }
     }
 
     let chanceOfWinning = CacheStore.get("gambleWinRate", 20, true);
