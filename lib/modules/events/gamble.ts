@@ -1,22 +1,30 @@
 // This file manages gambling.. fun !
 
 async function gamble(user:userName, wager:number) {
-    let chanceOfWinning = CacheStore.get("gambleChance", 20, true);
-    let baseEarnings = CacheStore.get("gambleEarnings", 1.5, true);
-    let actualEarnings = baseEarnings * wager;
+    // check to make sure that the user exists and has enough points to wager
+    if (!EventHandle.helper.compareUserPoints(user, wager, true)) {
+        ChatMessages.filterMessage(`${user}, you do not have enough points to wager.`, "glimboi");
+        return
+    }
+
+    let chanceOfWinning = CacheStore.get("gambleWinRate", 20, true);
+    let baseEarnings = CacheStore.get("gambleMultiplier", 1.5, true);
+    let actualEarnings = Math.round(baseEarnings * wager);
+
+    let hasWon = chanceOfWinning >= Math.round(Math.random() * 100);
 
     // take the chance of winning and see if the user won
-    if (chanceOfWinning < Math.round(Math.random() * 100)) {
+    if (hasWon) {
         UserHandle.addPoints(user, actualEarnings);
         ChatMessages.filterMessage(getGambleMessage("win", user, actualEarnings));
     } else {
-        UserHandle.removePoints(user, wager);
-        ChatMessages.filterMessage(getGambleMessage("lose", user, wager), "glimboi");
+        UserHandle.removePoints(user, Math.round(wager));
+        ChatMessages.filterMessage(getGambleMessage("lose", user, Math.round(wager)), "glimboi");
     }
 }
 
 
-function getGambleMessage(purpose: "win" | "lose", user: userName, amount?: number) {
+function getGambleMessage(purpose: "win" | "lose", user: userName, amount: number) {
     if (purpose == "win") {
         let possibleMessages = [
             `Congratulations ${user}! You just won ${amount} ${CacheStore.get("pointsName", "Points", false)}`,
@@ -32,6 +40,10 @@ function getGambleMessage(purpose: "win" | "lose", user: userName, amount?: numb
         ];
         return possibleMessages[Math.floor(Math.random() * possibleMessages.length)];
     }
+}
+
+function chanceForAlternateEnding() {
+    return 1 == Math.round(Math.random() * 10)
 }
 
 export {gamble}

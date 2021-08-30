@@ -9,7 +9,7 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
     });
     ChatStats.addCurrentUser(userChat);
     if (messageChat.startsWith("!")) { //If it is a command of some sort...
-        let message = messageChat.split(" ")
+        let message = messageChat.split(" ");
         switch (message[0]) {
             case "!commands": // Returns a list of all commands
                 ChatActions.commandList();
@@ -56,6 +56,8 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                 }
                 break;
             case "!points":
+            case `!${CacheStore.get("pointsName", "Points", false)}`:
+            case `!${CacheStore.get("pointsName", "Points", false).toLowerCase()}`:
                 switch (message[1]) {
                     case "":
                     case " ":
@@ -102,6 +104,12 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                 break;
             case "!glimroyale": ChatActions.checkAndStartGlimroyale(userChat, Number(message[1]));
                 break;
+            case "!8ball":
+                ChatActions.eightBall(userChat, messageChat);
+                break;
+            case "!gamble":
+                ChatActions.gamble(userChat, messageChat)
+            break;
             case "!user":
                 switch (message[1]) {
                     case "new":

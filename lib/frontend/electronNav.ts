@@ -29,19 +29,19 @@ function changeNavHighlight(highlight:string) { //Removes the old and highlights
 
 window.onload = function() {
   	document.getElementById("close")!.addEventListener("click", function(e) { //Closes the App.
-    	ipcRenderer.send("pleaseClose");
+    	ipcRenderer.send("windowSize", "close");
   	});
 
   	document.getElementById("maximize")!.addEventListener("click", function(e) { //Maximizes the App.
-    	ipcRenderer.send("pleaseMaximize");
+    	ipcRenderer.send("windowSize", "maximize");
   	});
 
   	document.getElementById("minimize")!.addEventListener("click", function(e) { //Minimizes the App.
-    	ipcRenderer.send("pleaseMinimize");
+    	ipcRenderer.send("windowSize", "minimize");
   	});
 
   	document.getElementById("refresh")!.addEventListener("click", function(e) { //Refreshes the App.
-    	ipcRenderer.send("pleaseRefresh");
+    	ipcRenderer.send("windowSize", "refresh");
   	});
 
   	// Get all the navigation links to an array

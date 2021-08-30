@@ -372,6 +372,59 @@ function saveGiveawaySettings() {
     successMessage("Settings Saved", "Giveaway settings have been saved.");
 }
 
+function loadEightBallUI() {
+    viewingEvent = "eightball"
+    console.log("Loading 8ball UI");
+    let eightBallEnabled = CacheStore.get("eightBallEnabled", true, false);
+    (document.getElementById("eightBallEnabled") as HTMLSelectElement).value = String(eightBallEnabled);
+}
+
+function resetEightBallSettings() {
+    (document.getElementById("eightBallEnabled") as HTMLSelectElement).value = String(true);
+    CacheStore.set("eightBallEnabled", true);
+    successMessage("Settings Reset", "8Ball settings have been reset.");
+}
+
+function saveEightBallSettings() {
+    let eightBallEnabled = ((document.getElementById("eightBallEnabled") as HTMLSelectElement).value.trim() === "true");
+    console.log(eightBallEnabled);
+    CacheStore.set("eightBallEnabled", eightBallEnabled);
+    successMessage("Settings Saved", "8Ball settings have been saved.");
+}
+
+function loadGambleUI() {
+    viewingEvent = "gamble";
+    console.log("Loading gamble UI");
+    let gambleEnabled = CacheStore.get("gambleEnabled", true, false);
+    let gambleMultiplier = CacheStore.get("gambleMultiplier", 1.5, false);
+    let gambleWinRate = CacheStore.get("gambleWinRate", 20, false);
+    (document.getElementById("gambleEnabled") as HTMLSelectElement).value = String(gambleEnabled);
+    (document.getElementById("gambleMultiplier") as HTMLSelectElement).value = String(gambleMultiplier);
+    (document.getElementById("gambleWinRate") as HTMLSelectElement).value = String(gambleWinRate);
+}
+
+function resetGambleSettings() {
+    (document.getElementById("gambleEnabled") as HTMLSelectElement).value = String(true);
+    (document.getElementById("gambleMultiplier") as HTMLSelectElement).value = String(1.5);
+    (document.getElementById("gambleWinRate") as HTMLSelectElement).value = String(20);
+    errorMessage("Setting Reset", "Gamble settings have been reset.");
+}
+
+function saveGambleSettings() {
+    console.log("Saving settings");
+    let gambleEnabled = ((document.getElementById("gambleEnabled") as HTMLInputElement).value.trim() === "true");
+    let gambleWinRate = (document.getElementById("gambleWinRate") as HTMLInputElement).value.trim();
+    let gambleMultiplier = (document.getElementById("gambleMultiplier") as HTMLInputElement).value.trim();
+    console.log(gambleEnabled, gambleWinRate, gambleMultiplier);
+    let migratedSettings = [
+        {gambleEnabled: gambleEnabled},
+        {gambleMultiplier: Number(gambleMultiplier)},
+        {gambleWinRate: Number(gambleWinRate)}
+    ];
+    CacheStore.setMultiple(migratedSettings);
+    successMessage("Settings Saved", "Gamble settings have been saved");
+}
+
 /*
 function addOptionToPoll() {
     $('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption' style="background-color:#00ffff0f"></td></tr>`)

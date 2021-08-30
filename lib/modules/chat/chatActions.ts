@@ -595,6 +595,61 @@ async function checkPoll(user: string, message: string | undefined) {
 }
 
 /**
+ * Asks the 8ball for an answer.
+ * @param user The username of the user
+ * @param message The message which should contain the command and question
+ * @returns 
+ */
+async function eightBall(user:string, message: string) {
+    if (CacheStore.get("eightBallEnabled", true, true)) {
+        if (message.trim().length <= 6) {
+            return ChatMessages.filterMessage("You must specify a question to get a response. !8ball question?", "glimboi");
+        }
+        let possibleResponses = [
+            `@${user}, It is Certain.`,
+            `@${user}, It is decidedly so.`,
+            `@${user}, Without a doubt.`,
+            `@${user}, Yes, definitely.`,
+            `@${user}, You may rely on it.`,
+            `@${user}, As I see it, yes.`,
+            `@${user}, Most likely.`,
+            `@${user}, Outlook good.`,
+            `@${user}, Yes.`,
+            `@${user}, Signs point to yes.`,
+            `@${user}, Reply hazy, try again.`,
+            `@${user}, Ask again later.`,
+            `@${user}, Better not tell you now.`,
+            `@${user}, Cannot predict now.`,
+            `@${user}, Concentrate and ask again.`,
+            `@${user}, Don't count on it.`,
+            `@${user}, My reply is no.`,
+            `@${user}, My sources say no.`,
+            `@${user}, Outlook not so good.`,
+            `@${user}, Very doubtful.`,
+        ];
+        let responseNumber = Math.round(Math.random() * possibleResponses.length);
+        ChatMessages.filterMessage(possibleResponses[responseNumber], "glimboi");
+    } else {
+        ChatMessages.filterMessage(`@${user}, 8ball is not enabled.`, "glimboi");
+    }
+}
+
+
+function gamble(user: userName, message) {
+    if (CacheStore.get("gambleEnabled", true, true)) {
+        let splitMessage: string[] = message.split(" ");
+        let amount: number = parseInt(splitMessage[1]);
+        if (isNaN(amount) || amount <= 0) {
+            ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`, "glimboi");
+        } else {
+            EventHandle.gamble.gamble(user, amount);
+        }
+    } else {
+        ChatMessages.filterMessage(`${user}, Gamble is not enabled`, "glimboi");
+    }
+}
+
+/**
  * Sends a message to the user that they do not have permission to perform the action.
  * @param {string} user The user who wanted to perform the action.
  * @param {string} attemptedAction The action they attempted to perform.
@@ -651,6 +706,6 @@ async function checkTarget(user:string, addUser: boolean): Promise<{alreadyExist
 export {
     addCommand, addPointsChat, addQuoteChat, commandList, checkAndStartBankheist, checkAndStartDuel, checkAndStartGiveaway,
     checkAndStartGlimrealm, checkAndStartGlimroyale, checkAndStartRaffle, checkPoll, delQuoteChat,
-    editPointsChat, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, modifyUserFromChat, nextSong, playPause,
+    editPointsChat, eightBall, gamble, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, modifyUserFromChat, nextSong, playPause,
     previousSong, randomQuoteChat, removeCommand, removePointsChat, replaySong, toggleShuffle
 }

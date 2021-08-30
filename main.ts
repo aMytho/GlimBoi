@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron'; //electron modules
+import { app, BrowserWindow, screen, ipcMain, dialog } from 'electron'; //electron modules
 import log from 'electron-log' // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 import { autoUpdater } from 'electron-updater'; //handles updates
@@ -59,24 +59,34 @@ ipcMain.on("appDataRequest", (event) => {
   	event.returnValue = [__dirname, app.getPath("userData")]
 })
 
-ipcMain.on("pleaseClose", (event) => {
-  	win.close();
-  	console.log("Recieved close request, closing.")
+ipcMain.on("windowSize", (event, arg: "close" | "maximize" | "minimize" | "refresh") => {
+	switch(arg) {
+		case "close":
+			win.close();
+			console.log("Recieved close request, closing.");
+		break;
+		case "maximize": 
+			win.maximize();
+  			console.log("Maximizing window");
+		break;
+		case "minimize": 
+			win.minimize();
+			console.log("Minimizing Window");
+		break;
+		case "refresh":
+			win.reload();
+  			console.log("Reloading Window");
+		break;
+	}
 })
 
-ipcMain.on("pleaseMaximize", (event) => {
-  	win.maximize();
-  	console.log("Maximizing window")
-})
 
-ipcMain.on("pleaseMinimize", (event) => {
-  	win.minimize();
-  	console.log("Minimizing Window")
-})
-
-ipcMain.on("pleaseRefresh", (event) => {
-  	win.reload();
-  	console.log("Reloading Window")
+ipcMain.handle("getLogLocation", async (event) => {
+	let fileSelection = await dialog.showSaveDialog(win, { 
+	title: "Create Chat Log:", defaultPath: app.getPath("logs"), buttonLabel: "Create/Write", 
+	properties: ['showOverwriteConfirmation'], filters: [{ name: "Chat Logs", extensions: ["txt"]}]
+	})
+	return fileSelection;
 })
 
 
@@ -92,35 +102,4 @@ app.on('activate', () => {
   	if (BrowserWindow.getAllWindows().length === 0) {
     	createWindow()
   	}
-})
-
-let loggingFile: any;
-
-ipcMain.on("startLogging", async event => {
-    let { dialog } = require("electron");
-    let fs = require("fs") //handles Files (writing and reading)
-    let fileSelection = await dialog.showSaveDialog(win, { title: "Save chat:", defaultPath: app.getPath("logs"), buttonLabel: "Create", properties: ['showOverwriteConfirmation'], filters: [{ name: "Chat Logs", extensions: ["txt"] }] })
-    console.log(fileSelection);
-    if (fileSelection == undefined || fileSelection.canceled == true) {
-        console.log("They did not select a file.");
-        event.reply("noLogSelected", "No file was selected.")
-    } else {
-        loggingFile = fs.createWriteStream(fileSelection.filePath)
-        event.reply("startedLogging", "Logging has begun");
-        console.log("Started logging chat messages.")
-    }
-})
-
-ipcMain.on("logMessage", (event, arg) => {
-  	try {
-  		loggingFile.write(`
-  		${arg.user}: ${arg.message}`, "utf-8")
-  	} catch(e) {
-    	console.log(e);
-  	}
-})
-
-ipcMain.on("logEnd", event => {
-  	try {loggingFile.end(); console.log("Finishes chat logs.");} catch(e) {console.log(e); event.reply("endedLog", e)}
-  	event.reply("endedLog", "The log has been ended.")
 })

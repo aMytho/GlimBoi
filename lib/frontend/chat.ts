@@ -3,6 +3,7 @@ let ChatSettings:typeof import("../modules/chat/chatSettings");
 let ChatActions:typeof import("../modules/chat/chatActions");
 let ChatStats: typeof import("../modules/chat/chatStats");
 let ChatMessages: typeof import("../modules/chat/chatMessages") = require(appData[0] + "/modules/chat/chatMessages.js");
+let ChatLogger:typeof import("../modules/chat/chatLogging");
 let chatID; // the channel ID
 let reconnectDelay, currentChannelToRejoin;
 let needsReconnect = false;
@@ -33,89 +34,74 @@ async function getBot(): Promise<null | string> {
     }
 }
 
-/**
- * The main starting logic for joining and leaving and deleting recent chats / channels
- *
- * 3 actions trigger this. Delete, Join, Leave
- *
- * Delete:
- *  - Deletes the element from the page and the database
- *  - If the user is connected to the deleted channel, they get disconnected
- *
- * Join:
- *  - Joins the selected channel, once ensuring data / auth is correct
- *  - Leaves any channel if the socket is open (was before everything was disabled, now it's still there for bug prevention)
- *
- * Leave:
- *  - Leaves the current connected chat
- *
- * Auto Join:
- *  - Updates the DB and tells it to auto-join when there are no connections on load
- */
-$(document).on('click', '#chatConnections button', function (event) {
-  	let action = $(this).attr('data-action');
-  	let listing = $(this).closest('.channel-listing');
+function autoJoinChatButtons(e) {
+    let listing = $(e).closest('.channel-listing');
   	let channel = listing.attr('data-channel');
   	let channelid = listing.attr('data-channelid');
+    $('button[data-action=auto-join]').prop('disabled', true);
 
-  	if (action === 'auto-join') {
-    	$('button[data-action=auto-join]').prop('disabled', true);
+    let enabled = ($(e).attr('data-enabled') == "false"); // Invert current setting
+    console.log(`Setting autoJoin for ${channel} to ${enabled}`);
 
-    	let enabled = ($(this).attr('data-enabled') == "false"); // Invert current setting
-    	console.log(`Setting autoJoin for ${channel} to ${enabled}`);
+    // Set the selected channel to be auto-join
+    ChatChannels.setAutoJoinChannelByID(channelid, enabled).then(channel => {
+        $('button[data-action=auto-join]').prop('disabled', false);
 
-    	// Set the selected channel to be auto-join
-    	ChatChannels.setAutoJoinChannelByID(channelid, enabled).then(channel => {
-      		$('button[data-action=auto-join]').prop('disabled', false);
+        // Done, so reset the classes
+        $('[data-action=auto-join]').removeClass('btn-success').addClass('btn-outline-warning');
+        $('[data-action=auto-join]').attr('data-enabled', "false");
 
-      		// Done, so reset the classes
-      		$('[data-action=auto-join]').removeClass('btn-success').addClass('btn-outline-warning');
-      		$('[data-action=auto-join]').attr('data-enabled', "false");
+        if (channel === null) {
+            return;
+        }
+        if (channel.autoJoin) {
+            $(e).removeClass('btn-outline-warning').addClass('btn-success');
+            $(e).attr('data-enabled', String(channel.autoJoin));
+        }
+    });
+}
 
-      		if (channel === null) return;
-      		if (channel.autoJoin) {
-        		$(this).removeClass('btn-outline-warning').addClass('btn-success');
-        		$(this).attr('data-enabled', String(channel.autoJoin));
-      		}
-    	});
-
-    	return;
-  	}
-
-  	$('button[data-action=leave]').prop('disabled', true);
-  	$('button[data-action=join]').prop('disabled', true);
-
-  	if (action === 'delete') {
-    	$(this).prop('disabled', true); // Disable delete btn
-    	if (currentChatConnected === channel) {
-      		currentChatConnected = null;
-      		ChatHandle.disconnect();
-            needsReconnect = false;
-    	}
-
-    	$(listing).remove();
-    	ChatChannels.removeRecentChannelByID(channelid); // Remove from DB
-  	} else if (ChatHandle.isConnected()) {
-    	// Always disconnect unless we're deleting
-    	currentChatConnected = null;
-    	ChatHandle.disconnect();
+function deleteButtonsChat(e:HTMLInputElement) {
+    let listing = $(e).closest('.channel-listing');
+  	let channel = listing.attr('data-channel');
+    let channelid = listing.attr('data-channelid');
+    $(e).prop('disabled', true); // Disable delete btn
+    if (currentChatConnected === channel) {
+        currentChatConnected = null;
+        ChatHandle.disconnect();
         needsReconnect = false;
-  	}
+    }
+    $(listing).remove();
+    ChatChannels.removeRecentChannelByID(channelid); // Remove from DB
+}
 
-  	// Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
-  	// We cannot async / promise the disconnect on the websocket
-  	if (action === 'join') {
-    	setTimeout(function () {
-      		joinChat(channel);
-              needsReconnect = true;
-    	}, 500);
-  	} if (ChatHandle.isConnected() === false) {
-    	// Clear the right-side text of what channel we're connect to & reload channels after deletion
-    	$('#channelConnectedName').removeClass('text-success').addClass('text-danger');
-    	$('#channelConnectedName').text('Not Connected');
-    	ChatChannels.getAllRecentChannels().then(channels => displayChannels(channels));
-  	}
-});
+// Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
+function joinChatButtons(e: HTMLElement) {
+    let channel = $(e).closest('.channel-listing').attr('data-channel');
+    console.log("Trying to join a channel");
+    //Joins a chat
+    setTimeout(async function () {
+        await joinChat(channel);
+        needsReconnect = true;
+        if (ChatHandle.isConnected() === false) {
+            // Clear the right-side text of what channel we're connect to & reload channels after deletion
+            $('#channelConnectedName').removeClass('text-success').addClass('text-danger');
+            $('#channelConnectedName').text('Not Connected');
+            ChatChannels.getAllRecentChannels().then(channels => displayChannels(channels));
+        }
+    }, 500);
+}
+
+async function leaveChatButton() {
+    $('button[data-action=leave]').prop('disabled', true);
+  	$('button[data-action=join]').prop('disabled', false);
+    // Always disconnect unless we're deleting
+    currentChatConnected = null;
+    ChatHandle.disconnect();
+    needsReconnect = false;
+    let channels = await ChatChannels.getAllRecentChannels();
+    displayChannels(channels);
+}
 
 /**
  * Join a chat after ensuring everything is kosher, and display the connection
@@ -296,10 +282,10 @@ function displayChannels(channels) {
       		<div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
         		<h4 class="col whiteText channelName p-0 mb-1" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
         		<div class="d-flex btn-group mb-1" role="group">
-          			<button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon"><i class="fas fa-sync-alt"></i></button>
-          			<button data-action="join" class="btn btn-success" ${disableJoin}>Join</button>
-          			<button data-action="leave" class="btn btn-danger" ${disableLeave}>Leave</button>
-          			<button title="Delete" data-action="delete" class="btn btn-danger btn-icon"><i class="fas fa-trash"></i></button>
+          			<button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon fas fa-sync-alt" onclick="autoJoinChatButtons(this)"></button>
+          			<button data-action="join" class="btn btn-success" ${disableJoin} onclick="joinChatButtons(this)">Join</button>
+          			<button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(this)">Leave</button>
+          			<button title="Delete" data-action="delete" class="btn btn-danger btn-icon fas fa-trash" onclick="deleteButtonsChat(this)"></button>
         		</div>
       		</div>
     	`);
@@ -415,17 +401,9 @@ function reconnect() {
         $('#reconnectModal').modal('toggle');
         reconnectDelay = setTimeout(async () => {
             try {
-                let authInfo = await AuthHandle.readAuth();
-                let token = await AuthHandle.requestToken(authInfo[0].clientID, authInfo[0].secret, false);
-                if (token !== false) {
-                    joinChat(currentChannelToRejoin, true);
-                    console.log("Rejoined chat. Hopefully..........")
-                    $('#reconnectModal').modal('hide');
-                } else {
-                    console.log("We failed to rejoin chat because there was an error with requesting a new token.");
-                    errorMessage("Failed to rejoin chat. Error occured because Glimboi could not request a token.",
-                    "Wait a few mintues and then request a new token. Then rejoin chat.")
-                }
+                console.log("Rejoined chat. Hopefully..........")
+                $('#reconnectModal').modal('hide');
+                joinChat(currentChannelToRejoin, true);
             } catch (e) {
                 errorMessage("Failed to rejoin Glimesh chat", "Wait a few minutes and request another token.");
                 $('#reconnectModal').modal('hide');
