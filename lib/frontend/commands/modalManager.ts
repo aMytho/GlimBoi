@@ -181,7 +181,7 @@ async function insertEditData(command:CommandType) {
             await ActionCreator.buildAudioUI("edit", {source: command.sound})
         }
         if (command.media && command.media !== "null") {
-            let media = await OBSHandle.getMediaByName(command.media);
+            let media = await MediaHandle.getMediaByName(command.media);
             console.log(media)// @ts-ignore legacy check
             if (media !== null && media !== "null") {
                 if (media.type.startsWith("image")) {

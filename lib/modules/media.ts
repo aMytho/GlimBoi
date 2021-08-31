@@ -1,7 +1,7 @@
 // This file handles all obs actions
 let websocketServer;
 let wss:any;
-let OBSDB:Nedb;
+let MediaDB:Nedb;
 let wsController = {};
 let mediaWait:any = [];
 
@@ -10,15 +10,15 @@ let mediaWait:any = [];
  * @param {string} updatedPath The path to the db
  */
 function updatePath(updatedPath:string) {
-    OBSDB = new Datastore({ filename: `${updatedPath}/data/obs.db`, autoload: true });
+    MediaDB = new Datastore({ filename: `${updatedPath}/data/obs.db`, autoload: true });
 }
 
 /**
- * Gets all of the OBS data from the db and sets it to OBSDATA
+ * Gets all of the Media data from the database
  */
 function getAll(): Promise<MediaType[]> {
     return new Promise(resolve => {
-        OBSDB.find({}, function (err: Error | null, docs: MediaType[]) {
+        MediaDB.find({}, function (err: Error | null, docs: MediaType[]) {
             resolve(docs);
         });
     })
@@ -32,7 +32,7 @@ function getAll(): Promise<MediaType[]> {
  * @param {string} position The position to show it in the overlay (display elements only)
  */
 function addMedia(name:mediaName, path:mediaPath, type:mediaType, position:mediaPosition) {
-    OBSDB.insert([{name: name.toLowerCase(), path: path, type: type, position: position}], function (err, newDocs) {});
+    MediaDB.insert([{name: name.toLowerCase(), path: path, type: type, position: position}], function (err, newDocs) {});
 }
 
 /**
@@ -46,11 +46,11 @@ function editMedia(name:mediaName, path:mediaPath, type:mediaType, position:medi
     console.log(name, path, position);
     name = name.toLowerCase();
     if (path !== null) {
-        OBSDB.update({ name: name }, { $set: { path: path, position: position, type: type } }, {}, function (err, numReplaced) {
+        MediaDB.update({ name: name }, { $set: { path: path, position: position, type: type } }, {}, function (err, numReplaced) {
             console.log("Media updated");
         });
     } else {
-        OBSDB.update({ name: name }, { $set: { position: position } }, {}, function (err, numReplaced) {
+        MediaDB.update({ name: name }, { $set: { position: position } }, {}, function (err, numReplaced) {
             console.log("Media updated");
         });
     }
@@ -62,7 +62,7 @@ function editMedia(name:mediaName, path:mediaPath, type:mediaType, position:medi
  */
 function removeMedia(media: mediaName) {
     media = media.toLowerCase()
-    OBSDB.remove({ name: media }, {}, function (err, numRemoved) {
+    MediaDB.remove({ name: media }, {}, function (err, numRemoved) {
         console.log("Media removed");
     })
 }
@@ -75,7 +75,7 @@ function removeMedia(media: mediaName) {
 function getMediaByName(name: mediaName): Promise<MediaType> {
     name = name.toLowerCase();
     return new Promise(resolve => {
-        OBSDB.find({ name: name }, function (err, docs: MediaType[]) {
+        MediaDB.find({ name: name }, function (err, docs: MediaType[]) {
             for (let i = 0; i < docs.length; i++) {
                 if (docs[i].name === name) {
                     resolve(docs[i]);
@@ -93,7 +93,7 @@ function getMediaByName(name: mediaName): Promise<MediaType> {
 function getMediaByType(type: mediaType): Promise<MediaType[]> {
     return new Promise(resolve => {
         let mediaArray = [];
-        OBSDB.find({}, function (err, docs: MediaType[]) {
+        MediaDB.find({}, function (err, docs: MediaType[]) {
             for (let i = 0; i < docs.length; i++) {
                 if (docs[i].type.startsWith(type)) {
                     mediaArray.push(docs[i])

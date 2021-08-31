@@ -8,7 +8,7 @@ const UserHandle:UserHandle = require(appData[0] + "/modules/users.js");
 const QuoteHandle:QuoteHandle = require(appData[0] + "/modules/quotes.js");
 const RankHandle:RankHandle = require(appData[0] + "/modules/users/userRank.js");
 const CommandHandle:CommandHandle = require(appData[0] + "/modules/commands.js");
-const OBSHandle:OBSHandle = require(appData[0] + "/modules/OBS.js");
+const MediaHandle:MediaHandle = require(appData[0] + "/modules/media.js");
 const ChatHandle:ChatHandle = require(appData[0] + "/modules/chat.js");
 const ChatChannels:ChatChannels = require(appData[0] + "/modules/chat/chatChannels.js");
 const ModHandle:ModHandle = require(appData[0] + "/modules/modPanel.js");
@@ -69,7 +69,7 @@ window.onload = function() {
                         case "EventsLink": loadEvents(); currentPage = "events"; break;
                         case "UsersLink": loadUsers(); currentPage = "users"; break;
                         case "RanksLink": rankPrep(); currentPage = "ranks"; break;
-                        case "OBSLink": loadOBSData(); currentPage = "media"; break;
+                        case "OBSLink": loadMediaTable(); currentPage = "media"; break;
                         case "MusicLink": loadMusicProgram(); currentPage = "music"; break;
                         case "ModPanelLink": loadModPanel(); currentPage = "mod"; break;
                         case "SettingsLink": showSettings(); currentPage = "settings"; break;
@@ -138,8 +138,3 @@ function successMessage(messageType: string, message: string) {
     document.getElementById("successMessageSolution")!.innerHTML = message;
     $('#modalSuccess').modal("show");
 }
-
-// temp logging, trying to track down a bug
-let loggingInterval = setInterval(() => {
-    console.log(`LOGGER: Chat Connection Status: ${ChatHandle.isConnected()}, Time: ${new Date()}, Websocket: ${ChatHandle.getConnection()}`)
-}, 30000)

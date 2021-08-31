@@ -1,11 +1,11 @@
-OBSHandle.updatePath(appData[1]);
-let OBSTable
+MediaHandle.updatePath(appData[1]);
+let MediaTable;
 
-function loadOBSData() {
+function loadMediaTable() {
     $(document).ready(async function () {
         prepMediaModals()
-    	OBSTable = $("#obsResources").DataTable({
-      		data: await OBSHandle.getAll(), // returns all the commands
+    	MediaTable = $("#obsResources").DataTable({
+      		data: await MediaHandle.getAll(), // returns all the commands
       		columns: [
         		{
     	      		title: "Asset Name",
@@ -27,7 +27,7 @@ function loadOBSData() {
             pageLength: 25
     	});
         $('#obsResources tbody').on('click', 'tr', async function () {
-            let data = OBSTable.row( this ).data();
+            let data = MediaTable.row( this ).data();
             editMedia(data.name);
             $('#editMediaModal').modal("show");
         } );
@@ -49,10 +49,10 @@ async function addMedia() {
         return
     }
     console.log(mName, media);
-    if (await OBSHandle.getMediaByName(mName) == null && mName !== "null") {
-        OBSHandle.addMedia(mName, media.files[0].path, media.files[0].type, (document.getElementById("addMediaPosition") as HTMLSelectElement).value);
-        OBSTable.row.add({ name: mName.toLowerCase(), type: media.files[0].type, path: media.files[0].path, position: (document.getElementById("addMediaPosition") as HTMLSelectElement).value })
-        OBSTable.draw(); //Show changes
+    if (await MediaHandle.getMediaByName(mName) == null && mName !== "null") {
+        MediaHandle.addMedia(mName, media.files[0].path, media.files[0].type, (document.getElementById("addMediaPosition") as HTMLSelectElement).value);
+        MediaTable.row.add({ name: mName.toLowerCase(), type: media.files[0].type, path: media.files[0].path, position: (document.getElementById("addMediaPosition") as HTMLSelectElement).value })
+        MediaTable.draw(); //Show changes
         $("#addMediaModal").modal("hide");
         document.getElementById("mediaAddModalContent").innerHTML = addMediaModal()
     } else {
@@ -61,7 +61,7 @@ async function addMedia() {
 }
 
 async function editMedia(name) {
-    let mediaData = await OBSHandle.getMediaByName(name);
+    let mediaData = await MediaHandle.getMediaByName(name);
     if (mediaData !== null) {
         document.getElementById("editMediaBody").innerHTML = fillMediaEdit(mediaData);
     } else {
@@ -80,17 +80,17 @@ function editMediaCheck() {
         return
     }
     if (newPath.files[0] == undefined || newPath.files[0] == null ) {
-        OBSHandle.editMedia(newName, null, null, newPosition);
+        MediaHandle.editMedia(newName, null, null, newPosition);
     } else {
-        OBSHandle.editMedia(newName, newPath.files[0].path, newPath.files[0].type, newPosition);
+        MediaHandle.editMedia(newName, newPath.files[0].path, newPath.files[0].type, newPosition);
     }
-    let indexes = OBSTable
+    let indexes = MediaTable
       	.rows()
       	.indexes()
       	.filter(function (value, index) {
-	    	return newName === OBSTable.row(value).data().name;
+	    	return newName === MediaTable.row(value).data().name;
       	});
-    	let row = OBSTable.row(indexes[0]);
+    	let row = MediaTable.row(indexes[0]);
     	let data = row.data();
     	data.position = newPosition;
         if (newPath.files[0] !== undefined && newPath.files[0] !== null) {
@@ -107,16 +107,16 @@ async function removeMedia(media) {
         document.getElementById("RemoveMediaError").innerText = "You must enter a media name!"
         return
     } else {
-        let deletedMedia = await OBSHandle.getMediaByName(media);
+        let deletedMedia = await MediaHandle.getMediaByName(media);
         if (deletedMedia !== null) {
-            OBSHandle.removeMedia(media);
-            let filteredData = OBSTable
+            MediaHandle.removeMedia(media);
+            let filteredData = MediaTable
             .rows()
             .indexes()
             .filter(function (value, index) {
-                return OBSTable.row(value).data().name == media;
+                return MediaTable.row(value).data().name == media;
             });
-            OBSTable.rows(filteredData).remove().draw();
+            MediaTable.rows(filteredData).remove().draw();
             $("#removeMediaModal").modal("hide");
         } else {
             document.getElementById("RemoveMediaError").innerText = "No media was found with that name."
@@ -125,7 +125,7 @@ async function removeMedia(media) {
 }
 
 async function displayMedia(media, source) {
-    let content = await OBSHandle.getMediaByName(media);
+    let content = await MediaHandle.getMediaByName(media);
     if (content == null) {
         if (source == "audio") {
             document.getElementById("errorDisplayMedia2").innerText = "The content type was not valid. Please select an audio file.";
@@ -133,11 +133,11 @@ async function displayMedia(media, source) {
             document.getElementById("errorDisplayMedia").innerText = "The content type was not valid. Please select a video, image, or GIF.";
         }
     } else if(content.type.startsWith("image")) {
-        OBSHandle.activateMedia(content, "imageGif");
+        MediaHandle.activateMedia(content, "imageGif");
     } else if (content.type.startsWith("video")) {
-        OBSHandle.activateMedia(content, "video");
+        MediaHandle.activateMedia(content, "video");
     } else if (content.type.startsWith("audio")) {
-        OBSHandle.activateMedia(content, "soundEffect");
+        MediaHandle.activateMedia(content, "soundEffect");
     }
 }
 
@@ -155,7 +155,7 @@ async function prepMediaModals() {
     	document.getElementById("audioBodyModal").innerHTML = audioResetModal()
   	}).on('shown.bs.modal', async function (e) {
     	let selectElement = document.getElementById("playAudioModalSelect");
-        let audioItems = await OBSHandle.getMediaByType("audio");
+        let audioItems = await MediaHandle.getMediaByType("audio");
         for (let i = 0; i < audioItems.length; i++) {
             let name = audioItems[i].name
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
@@ -165,8 +165,8 @@ async function prepMediaModals() {
     	document.getElementById("displayImageModalBody").innerHTML = imageResetModal();
   	}).on('shown.bs.modal', async function (e) {
     	let selectElement = document.getElementById("playImageModalSelect");
-        let imageItems = await OBSHandle.getMediaByType("image");
-        let videoItems = await OBSHandle.getMediaByType("video");
+        let imageItems = await MediaHandle.getMediaByType("image");
+        let videoItems = await MediaHandle.getMediaByType("video");
         imageItems = imageItems.concat(videoItems);
         for (let i = 0; i < imageItems.length; i++) {
             let name = imageItems[i].name

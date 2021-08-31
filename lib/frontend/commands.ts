@@ -244,7 +244,7 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 if (possibleAudio == "None") {
                     throw "No audio selection was made."
                 }
-                if (await OBSHandle.getMediaByName(possibleAudio) !== null) {
+                if (await MediaHandle.getMediaByName(possibleAudio) !== null) {
                     resetMessageCommandModal(action.firstElementChild, mode)
                     return { type: "Audio", source: possibleAudio };
                 } else {
@@ -275,7 +275,7 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 if (possibleImageGif == "None") {
                     throw "No Image or Gif selection was made."
                 }
-                if (await OBSHandle.getMediaByName(possibleImageGif) !== null) {
+                if (await MediaHandle.getMediaByName(possibleImageGif) !== null) {
                     resetMessageCommandModal(action.firstElementChild, mode)
                     return { type: "ImageGif", source: possibleImageGif };
                 } else {
@@ -306,7 +306,7 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 if (possibleVideo == "None") {
                     throw "No Video selection was made."
                 }
-                if (await OBSHandle.getMediaByName(possibleVideo) !== null) {
+                if (await MediaHandle.getMediaByName(possibleVideo) !== null) {
                     resetMessageCommandModal(action.firstElementChild, mode)
                     return { type: "Video", source: possibleVideo };
                 } else {

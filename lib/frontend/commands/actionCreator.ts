@@ -117,7 +117,7 @@ async function buildAudioUI(mode:actionMode, commandInfo) {
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     // Now we fill the dropdown with our sound effects. This is pulled from the media tab.
     let audioSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild;
-    let options = await OBSHandle.getMediaByType("audio");
+    let options = await MediaHandle.getMediaByType("audio");
     audioSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name
@@ -150,7 +150,7 @@ async function buildImageGifUI(mode:actionMode, commandInfo) {
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     let imageGifSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
-    let options = await OBSHandle.getMediaByType("image");
+    let options = await MediaHandle.getMediaByType("image");
     imageGifSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name
@@ -184,7 +184,7 @@ async function buildVideoUI(mode:actionMode, commandInfo) {
     action.className = "action";// @ts-ignore
     action.style = "border: 1px solid darkslategray; background-color: rgb(64, 91, 134); width: 100%; height: 100%;"
     let videoSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild;
-    let options = await OBSHandle.getMediaByType("video");
+    let options = await MediaHandle.getMediaByType("video");
     videoSelect.innerHTML += "<option value=\"" + "None" + "\">" + "None (Default)" + "</option>";
     for (let i = 0; i < options.length; i++) {
         let opt = options[i].name

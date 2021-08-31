@@ -87,7 +87,7 @@ async function runCommand({message, command, user}) {
 
     // If legacy we create a ImageGif or Video action from the media property
     if (command.media && command.media !== "null") {
-        let media = await OBSHandle.getMediaByName(command.media);
+        let media = await MediaHandle.getMediaByName(command.media);
         if (media !== null) {
             if (media.type.startsWith("image")) {
                 let action = new CommandHandle.ChatAction.ImageGif({source: command.media})

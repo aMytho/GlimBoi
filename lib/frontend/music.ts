@@ -205,7 +205,7 @@ function updateInfo(info, notMusicTab) {
             }
         }
     } catch(e) {}
-    OBSHandle.playSong({ name: info.name, artists: info.artists });
+    MediaHandle.playSong({ name: info.name, artists: info.artists });
     if (settings.music.chatAttribution && ChatHandle.isConnected() && notMusicTab) {
         ChatMessages.filterMessage(artistsMedia, "glimboi");
     }
