@@ -184,8 +184,8 @@ function postChat():void {
     // Load the chat settings/stats
     ChatSettings.loadChatSettings(settings);
     ChatStats.loadChatStats();
-    // Load Overlay (OBS and Music)
-    OBSHandle.startServer();
+    // Load Overlay (Media and Music)
+    MediaHandle.startServer();
     // Check for webhooks to send
     if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentWebhooks == false) {
         if (settings.Webhooks.discord.waitForConfirmation) {
