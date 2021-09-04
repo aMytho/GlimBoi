@@ -1,4 +1,3 @@
-AuthHandle.checkForID(); // Gives the api file auth information
 const CacheStore = new DumbCacheStore;
 CacheStore.setFile();
 LogHandle.updatePath(appData[1]);
@@ -105,7 +104,6 @@ async function getSettings() {
     let tempSettings = jQuery.extend(true, {}, updatedSettings);
     settings = $.extend(true, tempSettings, settings);
     updateSettings();
-    unlockBot();
 }
 
 

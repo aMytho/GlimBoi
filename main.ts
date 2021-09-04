@@ -52,7 +52,7 @@ function createWindow () { //make Win a window
   	win.loadFile(__dirname + '\\../src/index.html');
   	win.setIcon('resources/Icons/icon.ico');
 }
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow);
 
 // send info to the renderer so it can use glimboi modules. This MUST come first and it needs to be very fast.
 ipcMain.on("appDataRequest", (event) => {
@@ -65,11 +65,11 @@ ipcMain.on("windowSize", (event, arg: "close" | "maximize" | "minimize" | "refre
 			win.close();
 			console.log("Recieved close request, closing.");
 		break;
-		case "maximize": 
+		case "maximize":
 			win.maximize();
   			console.log("Maximizing window");
 		break;
-		case "minimize": 
+		case "minimize":
 			win.minimize();
 			console.log("Minimizing Window");
 		break;
@@ -82,8 +82,8 @@ ipcMain.on("windowSize", (event, arg: "close" | "maximize" | "minimize" | "refre
 
 
 ipcMain.handle("getLogLocation", async (event) => {
-	let fileSelection = await dialog.showSaveDialog(win, { 
-	title: "Create Chat Log:", defaultPath: app.getPath("logs"), buttonLabel: "Create/Write", 
+	let fileSelection = await dialog.showSaveDialog(win, {
+	title: "Create Chat Log:", defaultPath: app.getPath("logs"), buttonLabel: "Create/Write",
 	properties: ['showOverwriteConfirmation'], filters: [{ name: "Chat Logs", extensions: ["txt"]}]
 	})
 	return fileSelection;

@@ -54,12 +54,6 @@ declare function errorMessage(errorType: string | any, errorMessage?: string | a
 // @ts-ignore
 declare function successMessage(messageType: string, message: string): void
 /**
- * Sets the auth status message
- * @param stage The number to set the status as
- */
-// @ts-ignore
-declare function updateStatus(stage:authStatusNumber): void
-/**
  * Adds a command to the table
  * @param param0 Command Info
  */
