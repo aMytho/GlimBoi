@@ -1,146 +1,156 @@
 //This file handles connecting the users dev app to glimesh.tv
-let authPath = "./"; //Default path, most likely wrong. Call updatePath(path) to set to the right path.
-let authDB:Nedb; //Auth database containing all auth info
+const CLIENT_ID = "468920e4-d88f-46ee-bbf6-94bed88d8872";
+const REDIRECT_URL = "http://localhost:3000";
+const SCOPES = "chat public";
+let accessToken:accessToken = "";
+let hasAuthed = false;
 
 /**
- * Requests an access token
- * @param {string} clientID The client ID of the user
- * @param {string} secretKey The secret key of the user
- * @param {boolean} isManual Is this manually triggered?
+ * Requests a refresh token
  */
-async function requestToken(clientID: clientID, secretKey: secretKey, isManual: boolean): Promise<accessToken | false> {
+async function requestToken(alertUser = false): Promise<accessToken | false> {
     return new Promise(async resolve => {
-        let res = await fetch(`https://glimesh.tv/api/oauth/token?grant_type=client_credentials&client_id=${clientID}&client_secret=${secretKey}&scope=public chat`, { method: "POST" })
-        let data = await res.json()
+        let refreshToken = await getRefreshToken();
+        console.log("Refresh token: " + refreshToken);
+        if (!refreshToken) {
+            errorMessage("Auth Error", "Please authorize the bot first.");
+        }
+
+        let tokenBody = {
+            token: refreshToken,
+            client: CLIENT_ID,
+        };
+        let res = await fetch(`https://calm-citadel-14699.herokuapp.com/token`, {
+            method: "POST",
+            body: new URLSearchParams(tokenBody),
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        });
+
+        let data = await res.json();
+        console.log(data);
         try {
             if (data.access_token == undefined) {
                 errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
                 return;
             }
-            //Updates the DB with the info
-            authDB.update({}, { $set: { access_token: data.access_token, created_at: data.created_at } }, { multi: true }, function (err, numReplaced) {
-                console.log("Access token recieved and added to the database. Ready to join chat!");
-                updateStatus(2); // Everything is ready, they can join chat!
-                isManual ? successMessage("Auth complete", "The bot is ready to join your chat. Customize it and head to the chat section!") : null;
-                resolve(data.access_token);
-            });
+            console.log("Access token recieved and added to the database. Ready to join chat!");
+            hasAuthed = true;
+            accessToken = data.access_token;
+            setRefreshToken(data.refresh_token);
+            if (alertUser) {
+                successMessage("Authorized", "Token Recieved. You can now join chat!");
+            }
+            resolve(data.access_token);
         } catch (e) {
-            console.log(e); // in case of errors...
+            console.log(e);
             errorMessage(e, "Auth Error");
             resolve(false);
         }
     });
 }
 
-/**
- * Updates the path to the DB. The path variable is updated
- */
-function updatePath(updatedPath:string): void {
-  	console.log("Path is " + updatedPath);
-  	authPath = updatedPath;
-  	authDB = new Datastore({ filename: `${authPath}/data/auth.db`, autoload: true });
-}
 
 /**
- * Reads the authentication database
- * @returns Returns auth info
+ * Starts the authorization process.
  */
-function readAuth(): Promise<Auth[]> {
-    return new Promise(resolve => {
-        authDB.find({}, function (err: Error | null, docs: Auth[]) {
-            resolve(docs);
-        });
-    });
-}
+async function requestUserAuthorization() {
+    console.log("Starting authorization client server");
+    let { verifier, challenge } = await generateVerifierAndChallenge();
+    loadLink(`glimesh.tv/oauth/authorize?response_type=code&code_challenge=${challenge}&code_challenge_method=S256&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&scope=${SCOPES}`);
 
+    const http:typeof import("http") = require('http');
 
-/**
- * Updates the client ID and secret ID
- * @param {string} client Client ID
- * @param {string} secret Secret Key
- */
-function updateID(client:clientID, secret:secretKey): Promise<"UPDATEDID"> {
- 	return new Promise(resolve => {
-  		authDB.update({}, { $set: { clientID: client, secret: secret } }, { multi: true }, function (err, numReplaced) {
-    		console.log("Updated the auth IDs.");
-    		resolve("UPDATEDID");
-  		});
- 	});
-}
+    let server = http.createServer(async function (req, res) {
+        const url = require('url');
+        const queryObject: { code?: string } = url.parse(req.url, true).query;
 
-/**
- * Creates the document in auth.db . It will contain a client and secret ID. Updates if data already exists (determined by previous query)
- * @param {string} client Client ID
- * @param {string} secret Secret ID
- */
-function createID(client:clientID, secret:secretKey): Promise<"NOAUTH" | Auth > {
-  	return new Promise(resolve => {
-    	if (client == "" && secret !== "") {
-      		authDB.update({}, {$set: {secret: secret}} , { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments: Auth) {
-        		console.log("Updated the Secret.");
-        		resolve(affectedDocuments);
-        		return;
-      		});
-    	}
-		else if (secret == "" && client !== "") {
-        	authDB.update({}, {$set: {clientID: client}}, { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments: Auth) {
-          		console.log("Updated the client ID");
-          		resolve(affectedDocuments);
-          		return;
-        	});
-      	} else if (client.length > 2 && secret.length > 2) {
-        	authDB.update({}, {$set: {clientID: client, secret: secret}}, { upsert:true, returnUpdatedDocs: true},function (err, numReplaced, affectedDocuments: Auth) {
-          		console.log("Updated the client ID");
-          		resolve(affectedDocuments);
-          		return;
-        	});
-      	} else if (client == "" && secret == ""){
-        	console.log("No auth info recieved. No changes to auth.db");
-        	resolve("NOAUTH");
-        	return;
-      	}
-   	});
-}
+        console.log(queryObject);
+        if (queryObject.code) {
+            res.end("<h1>You can now close this window</h1>");
+            let tokenRequestBody = {
+                code_verifier: verifier,
+                client_id: CLIENT_ID,
+                code: queryObject.code,
+                grant_type: "authorization_code",
+                redirect_uri: REDIRECT_URL,
+                scope: SCOPES
+            };
 
-/**
- * Returns the access token. Returns undefined if none is found
- */
-function getToken(): Promise<undefined | accessToken> {
-  	return new Promise(resolve => {
-    	authDB.find( {}, function (err: Error | null, docs:Auth[]) {
-      		if (docs == undefined || docs.length == 0) {
-        		resolve(undefined);
+            let tokenResponse = await fetch(`https://glimesh.tv/api/oauth/token`,{
+                method: "POST",
+                body: new URLSearchParams(tokenRequestBody),
+                });
+            let data = await tokenResponse.json();
+
+            if (data.access_token && data.refresh_token) {
+                console.log("Access token recieved and added to the database. Ready to join chat!");
+                accessToken = data.access_token;
+                setRefreshToken(data.refresh_token);
+                server.close();
+                hasAuthorized = true;
+                return data.access_token
             } else {
-        		resolve(docs[0].access_token);
-        	}
-      	});
-  	});
-}
-
-/**
- * Returns the client ID from the database. Returns undefined if none is found
- */
-function getID(): Promise<null | clientID> {
-    return new Promise(resolve => {
-        authDB.find({}, function (err: Error | null, docs: Auth[]) {
-            if (docs[0] == undefined) {
-                resolve(null);
-            } else {
-                resolve(docs[0].clientID);
+                errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
+                return;
             }
-        });
-    });
+        }
+        res.end("<h1>Auth Error</h1");
+        res.writeHead(200, { 'Content-Type': 'text/html'});
+    })
+    server.listen(3000);
 }
 
-/**
- * Checks if the client ID and secret have been entered. If not alert the user
- */
-async function checkForID() {
-    let clientID = await getID();
-    if (clientID == null) {
-        errorMessage("Auth Missing", `Please authenticate before doing anything in the bot.
-         GlimBoi cannot run without the proper authentication. Complete the auth tutorial on the home page!`);
+
+
+async function generateVerifierAndChallenge() {
+    let array = new Uint32Array(56 / 2);
+    window.crypto.getRandomValues(array);
+    let verifier =  Array.from(array, dec2hex).join('');
+
+    let hashed = await sha256(verifier);
+    let challenge = base64urlencode(hashed);
+    return {verifier: verifier, challenge: challenge};
+
+    function dec2hex(dec) {
+        return ('0' + dec.toString(16)).substr(-2)
+    }
+
+
+    function sha256(plain) { // returns promise ArrayBuffer
+        const encoder = new TextEncoder();
+        const data = encoder.encode(plain);
+        return window.crypto.subtle.digest('SHA-256', data);
+    }
+
+    function base64urlencode(a) {
+        let str = "";
+        let bytes = new Uint8Array(a);
+        let len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            str += String.fromCharCode(bytes[i]);
+        }
+        return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
     }
 }
 
-export { checkForID, createID, getID, getToken, readAuth, requestToken, updateID, updatePath};
+
+/**
+ * Returns the access token.
+ */
+function getToken(): accessToken {
+    return accessToken
+}
+
+async function getRefreshToken() {
+    let data = await fs.readFile("refresh.txt", {encoding: "utf8"});
+    return data;
+}
+
+function setRefreshToken(token:string) {
+    fs.writeFile("refresh.txt", token, {encoding: "utf8"});
+}
+
+
+export {getRefreshToken, getToken, requestToken, requestUserAuthorization };
