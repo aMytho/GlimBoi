@@ -2,6 +2,8 @@
   <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatChannelsDM">
     <div class="card-body px-0 pl-1">
       <button onclick="$('#newChatModal').modal('show');" class="btn btn-success" style="position: absolute;right: 5px;bottom: 5px;">Add new </button>
+      <a class="btn btn-danger" onclick="reconnectMessage = false;this.remove();" style="position: absolute;bottom: 1px;left: 100px;">Click to Hide Reconnect Message (SEE HOMEPAGE)</a>
+
 
       <button type="button" class="btn btn-primary" data-placement="right" data-toggle="tooltip" style="position: absolute;left: 5px;bottom: 5px;" title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
         <i class="fas fa-question-circle"></i>

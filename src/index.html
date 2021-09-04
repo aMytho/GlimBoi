@@ -88,10 +88,6 @@
                         <a class="nav-link disabled" href="#" >
                         <i class="fa fa-wifi" id="overlayStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Overlay: Inactive</span> </i></a>
                     </li>
-                    <li class="nav-item glimNavItem" id="authNavIcon">
-                        <a class="nav-link disabled" href="#" >
-                        <i class="fa fa-ban" id="authStatus" aria-hidden="true" title="Not authenticated" style="color: rgb(134, 34, 34);"> <span style="color: rgb(189, 57, 57);">Not Authenticated! Some features will not work!</span> </i></a>
-                    </li>
                     <li class="nav-item glimNavItem" id="betaNavIcon">
                         <a class="nav-link disabled" href="#"><span class="badge badge-pill badge-info">Beta</span>
                         </a>
@@ -114,43 +110,11 @@
                         <div class="introaaa">
                             <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
                         </div>
-                        <p>To get started select "create bot." You will create a <span style="color: violet;"> <a href="#" onclick="loadLink('glimesh.github.io/api-docs/docs/dev-app/')" style="color: violet"> Developer
-                    Application</a></span> to connect the bot to Glimesh. <b>The account that creates the application will be the account that the bot uses.</b></p>
-                        <p class="text-center">Use the following values</p>
-                        <table class="table">
-                            <thead>
-                              <tr>
-                                <th scope="col">Property</th>
-                                <th scope="col">Value</th>
-                              </tr>
-                            </thead>
-                            <tbody class="whiteText">
-                              <tr>
-                                <th scope="row">Name</th>
-                                <td>Glimboi CHANNEL_NAME</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Homepage</th>
-                                <td>http://localhost:3000</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Description</th>
-                                <td>Glimboi chatbot for CHANNEL_NAME</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Image</th>
-                                <td>Optional</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">Allowed Redirect URIs</th>
-                                <td>http://localhost:3000/success</td>
-                              </tr>
-                            </tbody>
-                        </table>
-                        <p>Save the application. Then enter the client ID and secret key on the right. Save them to GlimBoi. Then request a token. After the initial request Glimboi will automatically authenticate itself on launch. If any problems arise you can simply request another token.</p>
+                        <p>To get started select "Authorize." Log in with the account you want the bot to speak as. GLimboi should request a token, but if you can't join a chat you should request one yourself.</p>
+            <p>The bot WILL get disconnected, but it should rejoin after 5 seconds. You can toggle the message on the chat page. Please keep it enabled for a bit to make sure it works :)</p>
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('glimesh.tv/users/settings/applications')">Create Bot</button>
+                                <button class="btn btn-info btn-block" type="submit" id="authButton2" disabled onclick="">Home Channel</button>
                             </div>
                             <div class="col">
                                 <button class="btn btn-info btn-block" type="submit" id="authButton3" onclick="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
@@ -164,22 +128,12 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-12">
-                        <form>
-                            <div class="form-row">
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Client ID" id="clientID">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Secret Key" id="secretID">
-                                </div>
-                            </div>
-                        </form>
-                        <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="saveAuth()">Save</button>
-                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.readAuth().then(data => AuthHandle.requestToken(data[0].clientID, data[0].secret, true))">Request Token</button>
-                        <button class="btn btn-info btn-block" type="submit" id="authButton5" onclick="loadLink('aMytho.github.io/GlimBoi/docs/intro/introduction/')">Auth Tutorial</button>
+                        <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="AuthHandle.requestUserAuthorization()">Authorize</button>
+                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.requestToken(true);">Request Token</button>
                         <div class="row mt-3">
                             <div class="col-12">
-                                <div id="chart">
+                                <div id="chart" class="mt-2">
+                                    <h3 class="text-center">Bot Information</h3>
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -256,10 +210,14 @@
         </style>
         <script>
             //Creates the chart. Only build the first time. Also checks for updates
-            loadBotStats();
-            checkForUpdate();
-            getSettings();
-            rememberID(true);
+            async function startEverything() {
+                loadBotStats();
+                checkForUpdate();
+                getSettings();
+                await startAuthProcess();
+                unlockRequestToken();
+            }
+            startEverything();
         </script>
     </body>
 </html>
