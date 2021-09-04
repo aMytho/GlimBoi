@@ -15,24 +15,15 @@ let botName = "GlimBoi"; //The username of the bot in normal caps
 async function checkAndJoinChat(accessToken: accessToken, channelID: number, isReconnect: boolean) {
     // First we check the auth token and make sure its valid.
     if (accessToken) {
-        let validToken = await ApiHandle.getTokenStatus(accessToken);
-        console.log(validToken);
-        if (validToken) {
-            connectToGlimesh(accessToken, channelID, isReconnect);
+        if (isReconnect) {
+            await AuthHandle.requestToken();
+            console.log("Joining chat with a new token.")
+            connectToGlimesh(AuthHandle.getToken(), channelID, isReconnect);
         } else {
-            // Invalid token.
-            try {
-                let authInfo = await AuthHandle.readAuth();
-                let newToken = await AuthHandle.requestToken(authInfo[0].clientID, authInfo[0].secret, false);
-                if (newToken) {
-                    connectToGlimesh(newToken, channelID, isReconnect);
-                }
-            } catch(e) {
-                errorMessage("Auth Error", "Error getting new token. Ensure your auth credentials are correct.")
-            }
+            connectToGlimesh(accessToken, channelID, isReconnect);
         }
     } else {
-        errorMessage("Auth Error", "Complete the auth process to join a chat. Try requesting a token.")
+        errorMessage("Auth Error", "Authorize the bot if you have not done so already. If you have request a new token on the homepage.")
     }
 }
 
@@ -77,7 +68,9 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         postChat();
 
         if (isReconnect) {
-            ChatMessages.filterMessage("Glimboi was disconnected and has now returned.", "glimboi");
+            if (reconnectMessage) {
+                ChatMessages.filterMessage("Glimboi was disconnected and has now returned.", "glimboi");
+            }
         } else {
             ChatMessages.filterMessage("Glimboi has joined the chat :glimsmile:", "glimboi");
         }
@@ -107,6 +100,9 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
             ChatStats.stopChatStats();
             ChatLogger.endMessageLogging();
             leaveChatButton();//sets the UI so it shows that we are not in a chat
+            if (needsReconnect) {
+                reconnect();
+            }
         } catch (e) {
             console.log(e);
         }

@@ -74,7 +74,7 @@ window.onload = function() {
                         case "ModPanelLink": loadModPanel(); currentPage = "mod"; break;
                         case "SettingsLink": showSettings(); currentPage = "settings"; break;
                         case "ChatLink": loadChatWindow(); currentPage = "chat"; break;
-                        case "GlimBoiHeader": loadBotStats(); rememberID(false); currentPage = "home"; break;
+                        case "GlimBoiHeader": loadBotStats(); unlockRequestToken(); currentPage = "home"; break;
                     }
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();

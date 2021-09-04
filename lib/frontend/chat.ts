@@ -7,6 +7,7 @@ let ChatLogger:typeof import("../modules/chat/chatLogging");
 let chatID; // the channel ID
 let reconnectDelay, currentChannelToRejoin;
 let needsReconnect = false;
+let reconnectMessage = true;
 
 var contentTarget;
 var contentBody;
@@ -22,7 +23,7 @@ ChatChannels.updatePath(appData[1]);
  */
 async function getBot(): Promise<null | string> {
     try {
-        let token = await AuthHandle.getToken();
+        let token = AuthHandle.getToken();
         if (token == undefined || token.length == 0) { // No token, no bot name
             return null
         } else { // We have a token so we can request the name from glimesh
@@ -93,15 +94,17 @@ function joinChatButtons(e: HTMLElement) {
     }, 500);
 }
 
-async function leaveChatButton() {
+async function leaveChatButton(manual = false) {
     $('button[data-action=leave]').prop('disabled', true);
   	$('button[data-action=join]').prop('disabled', false);
     // Always disconnect unless we're deleting
     currentChatConnected = null;
     ChatHandle.disconnect();
-    needsReconnect = false;
     let channels = await ChatChannels.getAllRecentChannels();
     displayChannels(channels);
+    if (manual) {
+        needsReconnect = false;
+    }
 }
 
 /**
@@ -110,32 +113,27 @@ async function leaveChatButton() {
  */
 async function joinChat(chat: string, isReconnect?: boolean) {
     let chatToJoin = chat;
-    let token = await AuthHandle.getToken();
-    if (token == undefined || token.length == 0) {
-        errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.",
-        "Go to the home page of Glimboi and auth again.")
+    let token = AuthHandle.getToken();
+    let response = await ApiHandle.getChannelID(chatToJoin);
+    if (response == null) {
+        errorMessage("Auth Error.", "You need to complete authentication and request a token.");
+    } else if (response == false) {// @ts-ignore
+        errorMessage(response, "Please make sure that the channel exists. Check your spelling.");
     } else {
-        let response = await ApiHandle.getChannelID(chatToJoin);
-        if (response == null) {
-            errorMessage("Auth Error.", "You need to complete authentication and request a token.");
-        } else if (response == false) {// @ts-ignore
-            errorMessage(response, "Please make sure that the channel exists. Check your spelling.");
+        //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
+        currentChatConnected = chatToJoin;
+        ChatHandle.checkAndJoinChat(token, response, isReconnect); // Joins the channel
+        successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
+        currentChannelToRejoin = chat
+        await addChannelAndDisplay(chatToJoin);
+        let channelNameText = ""
+        if (chatToJoin.toLowerCase() === 'glimboi') {
+            channelNameText = 'GlimBoi (TEST)';
         } else {
-            //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
-            currentChatConnected = chatToJoin;
-            ChatHandle.checkAndJoinChat(token, response, isReconnect); // Joins the channel
-            successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
-            currentChannelToRejoin = chat
-            await addChannelAndDisplay(chatToJoin);
-            let channelNameText = ""
-            if (chatToJoin.toLowerCase() === 'glimboi') {
-                channelNameText = 'GlimBoi (TEST)';
-            } else {
-                channelNameText = chatToJoin;
-            }
-            $('#channelConnectedName').text(channelNameText);
-            $('#channelConnectedName').removeClass('text-danger').addClass('text-success ');
+            channelNameText = chatToJoin;
         }
+        $('#channelConnectedName').text(channelNameText);
+        $('#channelConnectedName').removeClass('text-danger').addClass('text-success ');
     }
 }
 
@@ -144,10 +142,10 @@ async function joinChat(chat: string, isReconnect?: boolean) {
  */
 $(document).on('click', '#triggerNewChatAdd', async function (event) {
     let chatToJoin = $('#newChatName').val();
-    let token = await AuthHandle.getToken();
+    let token = AuthHandle.getToken();
     if (token == undefined || token.length == 0) {
         errorMessage("The auth process is not yet complete. Please complete it before trying to join a chat.",
-        "Go to the home page of Glimboi and request a token.")
+        "Go to the home page of Glimboi and request a token.");
     } else {
         // Authenticate if we can and check the channel
         let response = await ApiHandle.getChannelID((chatToJoin as string));
@@ -285,7 +283,7 @@ function displayChannels(channels) {
         		<div class="d-flex btn-group mb-1" role="group">
           			<button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon fas fa-sync-alt" onclick="autoJoinChatButtons(this)"></button>
           			<button data-action="join" class="btn btn-success" ${disableJoin} onclick="joinChatButtons(this)">Join</button>
-          			<button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(this)">Leave</button>
+          			<button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(true)">Leave</button>
           			<button title="Delete" data-action="delete" class="btn btn-danger btn-icon fas fa-trash" onclick="deleteButtonsChat(this)"></button>
         		</div>
       		</div>

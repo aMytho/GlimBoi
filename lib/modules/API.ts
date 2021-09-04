@@ -32,7 +32,7 @@ function glimeshError(data:Glimesh.RootQueryType): Glimesh.RootQueryType["data"]
 }
 
 async function glimeshQuery(query): Promise<Glimesh.RootQueryType["data"] | false | null> {
-    let token = await AuthHandle.getToken();
+    let token = AuthHandle.getToken();
     let result = await fetch("https://glimesh.tv/api/graph", {method: "POST", body: query, headers: {Authorization: `Bearer ${token}`}});
     let parsedResult:Glimesh.RootQueryType = await result.json();
     if (parsedResult.errors) {
@@ -146,7 +146,7 @@ async function getStreamWebhook(streamer: string): Promise<null | any[]> {
  */
 async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | userName> {
     console.log("key is" + key);
-    let token = await AuthHandle.getToken();
+    let token = AuthHandle.getToken();
     return new Promise(async resolve => {
         let requestResult = await fetch("https://glimesh.tv/api", { method: "POST", body: requestInfo, headers: { Authorization: `bearer ${token}` } })
         let data = await requestResult.json();
@@ -187,17 +187,8 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise
  * Checks if an access token is still valid
  * @returns {Promise}
  */
-async function getTokenStatus(token: accessToken): Promise<boolean> {
-    let authInfo = await AuthHandle.readAuth();
-    console.log(authInfo);
-    let response = await fetch("https://glimesh.tv/api/oauth/introspect", { method: "POST", body: new URLSearchParams({
-        token: token,
-        client_id: authInfo[0].clientID,
-        client_secret: authInfo[0].secret
-    }) })
-    let data = await response.json();
-    console.log(data);
-    return data.active || false
+async function getTokenStatus(token: accessToken) {
+
 }
 
 /**
