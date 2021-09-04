@@ -127,5 +127,9 @@ function restartApp() {
 }
 
 function unlockRequestToken() {
-    document.getElementById("joinChannelBOT").attributes.removeNamedItem("disabled");
+    if (hasAuthorized) {
+        try {
+            document.getElementById("joinChannelBOT").attributes.removeNamedItem("disabled");
+        } catch(e) {}
+    }
 }

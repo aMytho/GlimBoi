@@ -26,18 +26,8 @@
             </div>
         </div>
         <div class="col-md-6 col-12">
-            <form>
-                <div class="form-row">
-                    <div class="col">
-                        <input type="text" class="form-control" placeholder="Client ID" id="clientID">
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control" placeholder="Secret Key" id="secretID">
-                    </div>
-                </div>
-            </form>
             <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="AuthHandle.requestUserAuthorization()">Authorize</button>
-                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.requestToken(true);">Request Token</button>
+            <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.requestToken(true);">Request Token</button>
                 <div class="col-12">
                     <div id="chart" class="mt-2">
                         <table class="table">

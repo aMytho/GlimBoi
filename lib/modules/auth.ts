@@ -88,6 +88,7 @@ async function requestUserAuthorization() {
                 console.log("Access token recieved and added to the database. Ready to join chat!");
                 accessToken = data.access_token;
                 setRefreshToken(data.refresh_token);
+                unlockBot();
                 server.close();
                 hasAuthorized = true;
                 return data.access_token
@@ -144,12 +145,16 @@ function getToken(): accessToken {
 }
 
 async function getRefreshToken() {
-    let data = await fs.readFile("refresh.txt", {encoding: "utf8"});
-    return data;
+    try {
+        let data = await fs.readFile(`${appData[1]}/data/refresh.txt`, {encoding: "utf8"});
+        return data;
+    } catch (e) {
+        return "";
+    }
 }
 
 function setRefreshToken(token:string) {
-    fs.writeFile("refresh.txt", token, {encoding: "utf8"});
+    fs.writeFile(`${appData[1]}/data/refresh.txt`, token, {encoding: "utf8", flag: "w"});
 }
 
 
