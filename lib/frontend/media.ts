@@ -142,8 +142,9 @@ async function displayMedia(media, source) {
 }
 
 async function prepMediaModals() {
-    $('#addMediaModal').on('hidden.bs.modal', function (e) {
-    	document.getElementById("mediaAddModalContent").innerHTML = addMediaModal();
+    $('#addMediaModal').on('click', function (e) {
+    	const MediaUI:typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+        MediaUI.loadAddModal();
   	})
     $('#editMediaModal').on('hidden.bs.modal', function (e) {
     	document.getElementById("mediaEditModalContent").innerHTML = editMediaModal();

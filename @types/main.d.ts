@@ -38,7 +38,7 @@ type appDataType = [string, string]
  * The first value has the app path, the second shows the path to the user data folder
  */
 // @ts-ignore
-declare var appData: appDataTypeW
+declare var appData: appDataType
 /**
  * Displays an error message to the user
  * @param errorType Type of the error
