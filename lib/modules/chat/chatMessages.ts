@@ -41,14 +41,10 @@ function filterMessage(message:string, source?: "user" | "glimboi") {
  * @param {string} data A message to be sent to chat
  */
 function sendMessage(data:message) {
-  	let msgArray:any = ["1","7","__absinthe__:control","doc"]; // array of data to send to glimesh
-  	// adds the message to it.
-  	msgArray.splice(4, 0, {"query":"mutation {createChatMessage(channelId:\""+chatID+"\",message:{message:\""+data+"\"}) {message }}","variables":{}});
-  	let test = JSON.stringify(msgArray); // make it sendable (json)
   	try {
     	let websocketConnetion = ChatHandle.getConnection();
         if (websocketConnetion.readyState !== 2 && websocketConnetion.readyState !== 3) {
-            websocketConnetion.send(test);
+            ApiHandle.sendMessage(data);
         } else {
             throw "Socket error, probably not logged in yet"
         }
@@ -63,12 +59,8 @@ function sendMessage(data:message) {
  * @param {string} data The message to be sent to chat
  */
 function glimboiMessage(data: message, logError: boolean = false) {
-    let msgArray: any = ["1", "7", "__absinthe__:control", "doc"];
-    msgArray.splice(4, 0, { "query": "mutation {createChatMessage(channelId:\"" + chatID + "\", message:{message:\"" + data + "\"}) {message }}", "variables": {} });
-    let test = JSON.stringify(msgArray);
     try {
-        //console.log(test)
-        ChatHandle.getConnection().send(test)
+        ApiHandle.sendMessage(data);
     } catch (e) {
         if (logError) {
             console.log(e);

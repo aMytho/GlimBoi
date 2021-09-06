@@ -138,8 +138,3 @@ function successMessage(messageType: string, message: string) {
     document.getElementById("successMessageSolution")!.innerHTML = message;
     $('#modalSuccess').modal("show");
 }
-
-// temp logging, trying to track down a bug
-let loggingInterval = setInterval(() => {
-    console.log(`LOGGER: Chat Connection Status: ${ChatHandle.isConnected()}, Time: ${new Date()}, Websocket: ${ChatHandle.getConnection()}`)
-}, 30000)

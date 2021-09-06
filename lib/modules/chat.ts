@@ -1,5 +1,5 @@
 //This file handles connecting the bot to a chat.
-
+import WebSocket from "ws";
 const ChatParser:typeof import("../modules/chat/chatParser") = require(appData[0] + "/modules/chat/chatParser.js");
 
 let connection:WebSocket; // the websocket connection
@@ -51,18 +51,18 @@ function isConnected(): boolean {
  * @param {number} channelID The channel ID for the channel we are joining
  */
 function connectToGlimesh(access_token:string, channelID:number, isReconnect:boolean) {
-    const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&token=${access_token}` // The websocket URL
+    const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&client_id=${AuthHandle.getClientID()}` // The websocket URL
     connection = new WebSocket(url); // Connection is now an offical connection!
     chatID = channelID // The channel ID is now an accessible variable for this module
 
-    connection.onopen = function () { // When the connection opens...
+    connection.on("open", function open() { // When the connection opens...
         console.log("Connected to Glimesh Chat");
         connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
         subscribeToGlimeshEvent("chat", { channelID: channelID });
         //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
         heartbeat = setInterval(() => {
-            connection.send('[1,"4","phoenix","heartbeat",{}]');
-        }, 20000);
+            connection.send(`[null,"4","phoenix","heartbeat",{}]`);
+        }, 30000);
 
         // Run the post chat scripts
         postChat();
@@ -74,13 +74,14 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         } else {
             ChatMessages.filterMessage("Glimboi has joined the chat :glimsmile:", "glimboi");
         }
-    };
+    });
 
     //We recieve a message from glimesh chat! (includes heartbeats and other info)
-    connection.onmessage = function (event) {
+    connection.on("message", function incoming(event) {
         console.log(event);
+        event = JSON.parse(event.toString());
         //First check for heartbeat message.
-        let chatMessage = JSON.parse(event.data);
+        let chatMessage = event;
         if (chatMessage[1] == null) {
             ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
         } else if (chatMessage[1] == 4) {
@@ -89,11 +90,12 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         } else if (chatMessage[1] == 7) {
             // This is a message the bot has sent
         }
-    };
+});
 
     //The connection closed, if error the error will be triggered too
-    connection.onclose = function (event) {
+    connection.on("close", function close(event) {
         console.log(event);
+        console.trace("Connection closed");
         try {
             clearInterval(heartbeat); // stops the hearbteat
             ChatSettings.stopChatSettings(); // stops everything else
@@ -111,26 +113,17 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
                 ipcRenderer.send("logEnd") // ends the logging
             }, 3000);
         }
-        if (event.wasClean) {
-            console.log(`Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-            if (needsReconnect) {
-                //reconnect();
-            } else {
-                successMessage("Chat Disconnected!", "Chat has been successfully disconnected.");
-            }
-        } else {
-            console.log("Connection died and it was not a clean event.");
-            errorMessage(String([event.code, event.reason]), "Chat Error. Attempting to reconnect...");
-            reconnect();
+        if (!needsReconnect) {
+            successMessage("Chat Disconnected!", "Chat has been successfully disconnected.");
         }
-    };
+    });
 
     // oh noes, an error!
-    connection.onerror = function (error) {
+    connection.on("error", function error(error) {
         console.log(`Chat Connection Error: ${error}`);
         // Chat error or parse error?, the disconnect is triggered so we don't need any extra code
-    };
-}
+    })
+};
 
 /**
  * Listens for a specific event in the Glimesh API
@@ -215,6 +208,5 @@ function postChat():void {
         }
     });
 }
-
 
 export {checkAndJoinChat, getConnection, isConnected, connectToGlimesh, disconnect, getBotName}

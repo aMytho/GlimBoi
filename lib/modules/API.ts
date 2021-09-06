@@ -137,6 +137,17 @@ async function getStreamWebhook(streamer: string): Promise<null | any[]> {
     }
 }
 
+async function sendMessage(message, isSecondAttempt?: boolean) {
+  	let query = `mutation{createChatMessage(channelId: ${channelID}, message: {message: "${message}"}) {message}}`
+    console.log(query);
+    let response = await glimeshQuery(query);
+    console.log(response);
+    if (query == null && !isSecondAttempt) {
+        await AuthHandle.requestToken();
+        sendMessage(message, true);
+    }
+}
+
 
 /**
  * Makes a request (mutation) to the Glimesh API
@@ -259,4 +270,4 @@ function getStreamerName() {
 }
 
 export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact, Webhooks};
+getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact, sendMessage, Webhooks};

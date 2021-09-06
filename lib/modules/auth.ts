@@ -157,5 +157,8 @@ function setRefreshToken(token:string) {
     fs.writeFile(`${appData[1]}/data/refresh.txt`, token, {encoding: "utf8", flag: "w"});
 }
 
+function getClientID() {
+    return CLIENT_ID;
+}
 
-export {getRefreshToken, getToken, requestToken, requestUserAuthorization };
+export {getClientID, getRefreshToken, getToken, requestToken, requestUserAuthorization };
