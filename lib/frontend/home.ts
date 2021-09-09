@@ -4,9 +4,9 @@ console.log(appData[0]);
 
 // start the app authentication process
 async function startAuthProcess() {
+    unlockBot();
     console.log(JSON.stringify(isDev));
     if (isDev) {
-        unlockBot();
         return
     }
     let refreshToken = await AuthHandle.getRefreshToken();
@@ -16,8 +16,6 @@ async function startAuthProcess() {
         let newToken = await AuthHandle.requestToken();
         if (newToken) {
             console.log("Authentication successful.");
-            // set the new token
-            unlockBot();
         } else {
             console.log("Authentication failed. Refresh did not succeed");
         }

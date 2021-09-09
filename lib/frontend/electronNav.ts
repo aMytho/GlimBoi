@@ -1,5 +1,4 @@
 //handles sending users to different to parts of the app
-// @ts-ignore
 const {shell, ipcRenderer} = require("electron"); // @ts-ignore
 let appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 const Datastore = require("nedb");
@@ -13,7 +12,7 @@ const ChatHandle:ChatHandle = require(appData[0] + "/modules/chat.js");
 const ChatChannels:ChatChannels = require(appData[0] + "/modules/chat/chatChannels.js");
 const ModHandle:ModHandle = require(appData[0] + "/modules/modPanel.js");
 const EventHandle:EventHandle = require(appData[0] + "/modules/events.js");
-const ApiHandle:ApiHandle = require(appData[0] + "/modules/API.js"); // @ts-ignore
+const ApiHandle:ApiHandle = require(appData[0] + "/modules/API.js");
 const fs:typeof import("fs").promises = require("fs").promises;
 const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
 const LogHandle:LogHandle = require(appData[0] + "/modules/log.js")
@@ -72,7 +71,7 @@ window.onload = function() {
                         case "OBSLink": loadOBSData(); currentPage = "media"; break;
                         case "MusicLink": loadMusicProgram(); currentPage = "music"; break;
                         case "ModPanelLink": loadModPanel(); currentPage = "mod"; break;
-                        case "SettingsLink": showSettings(); currentPage = "settings"; break;
+                        case "SettingsLink": showIntegrations(); currentPage = "settings"; break;
                         case "ChatLink": loadChatWindow(); currentPage = "chat"; break;
                         case "GlimBoiHeader": loadBotStats(); unlockRequestToken(); currentPage = "home"; break;
                     }
@@ -138,3 +137,19 @@ function successMessage(messageType: string, message: string) {
     document.getElementById("successMessageSolution")!.innerHTML = message;
     $('#modalSuccess').modal("show");
 }
+
+
+async function getDataDirectory() {
+    try { // Check if the file exists.
+        await fs.readdir(appData[1] + '/data/');
+        console.log("Data directory found!");
+    } catch (e) { // if not create the directory
+        console.log("No data directory exists, creating it");
+        try {
+            await fs.mkdir(appData[1] + '/data/');
+        } catch (e) {
+            errorMessage("Error creating/reading data directory. You can try reloading. If the issue persists contact us on twitter or discord.")
+        }
+    }
+}
+getDataDirectory();

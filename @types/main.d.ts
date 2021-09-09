@@ -26,10 +26,6 @@ type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
 type LogHandle = typeof import("../lib/modules/log")// @ts-ignore
 type CacheStore = typeof import("../lib/modules/cache")
 
-// @ts-ignore
-declare var fs: typeof import("fs")
-// @ts-ignore
-declare var ipcRenderer: typeof import("electron").ipcRenderer
 type Type = typeof import("bootstrap")
 type pageState = "home" | "commands" | "points" | "events" | "users" | "ranks" | "media" | "music" | "mod" | "settings" | "chat"
 declare var dirName:string

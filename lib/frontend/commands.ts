@@ -425,19 +425,51 @@ function moveAction(element:HTMLElement, direction: "up" | "down") {
  */
 function commandModalPrep() {
     const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`)
-  	$('#modalCart').on('show.bs.modal', function (e) {// @ts-ignore
+    $('#modalCart').on('show.bs.modal', function (e) {// @ts-ignore
         if (e.relatedTarget) {
             CommandUI.loadModalAdd();
         }
-  	});
-  	$('#modalEditCommand').on('hidden.bs.modal', function (e) {
-    	document.getElementById("editModal").innerHTML = editCommandReset();
-    	document.getElementById("errorMessageEdit").innerHTML = "";
-  	});
-  	$('#modalDelete').on('hidden.bs.modal', function (e) {
-    	document.getElementById("removeModal").innerHTML = removeCommandReset();
-    	document.getElementById("errorMessageDelete").innerHTML = "";
-  	});
+    });
+    $('#modalEditCommand').on('hidden.bs.modal', function (e) {
+        document.getElementById("editModal").innerHTML = editCommandReset();
+        document.getElementById("errorMessageEdit").innerHTML = "";
+    });
+    $('#modalDelete').on('hidden.bs.modal', function (e) {
+        document.getElementById("removeModal").innerHTML = removeCommandReset();
+        document.getElementById("errorMessageDelete").innerHTML = "";
+    });
+
+    $('#saveCommandSettings').on('click', function (e) {
+        successMessage("Settings Saved", "Command settings have been saved.");
+        CacheStore.setMultiple([
+            {commandRepeatDelay: Number(repeatDelay.value)},
+            {commandRepeatProtection: getRepeatProtection()}
+        ]);
+    });
+    let repeatDelay = document.getElementById("repeatDelaySlider")! as HTMLInputElement
+    repeatDelay.value = String(CacheStore.get("commandRepeatDelay", 10, false));
+    let repeatDelayValue = document.getElementById("repeatDelayValue")!;
+    repeatDelayValue.innerHTML = repeatDelay.value;
+    repeatDelay.oninput = function (ev) {
+        repeatDelayValue.innerHTML = (ev.target as HTMLInputElement).value
+    }
+    const getRepeatProtection = () => {
+        let value = (document.getElementById("repeatProtect") as HTMLInputElement)!.value
+        switch (value) {
+            case "5 (not recommended)":
+                return 5
+            break;
+            case "15 (default)":
+                return 15
+            break;
+            case "30":
+                return 30
+            break;
+            case "60":
+                return 60
+            break;
+        }
+    }
 }
 
 //@ts-ignore

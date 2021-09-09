@@ -211,9 +211,8 @@
         <script>
             //Creates the chart. Only build the first time. Also checks for updates
             async function startEverything() {
-                loadBotStats();
                 checkForUpdate();
-                getSettings();
+                loadBotStats();
                 await startAuthProcess();
                 unlockRequestToken();
             }
