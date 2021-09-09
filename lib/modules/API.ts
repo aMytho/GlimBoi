@@ -126,13 +126,17 @@ async function getBotAccount(): Promise<string | null> {
 async function getStreamWebhook(streamer: string): Promise<null | any[]> {
     let query = `query {channel(streamerUsername: "${streamer}") {stream {title,thumbnailUrl}}}`;
     let response = await glimeshQuery(query);
-    if (typeof response == "object" && response !== null) {
-        if (Object.values(response.channel.stream).includes(null)) {
-            return null;
+    try {
+        if (typeof response == "object" && response !== null) {
+            if (Object.values(response.channel.stream).includes(null)) {
+                return null;
+            } else {
+                return [response.channel.stream.title, response.channel.stream.thumbnailUrl];
+            }
         } else {
-            return [response.channel.stream.title, response.channel.stream.thumbnailUrl];
+            return null;
         }
-    } else {
+    } catch (e) {
         return null;
     }
 }
