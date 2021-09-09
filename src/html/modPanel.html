@@ -198,7 +198,7 @@
         <!--Footer-->
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-info" data-dismiss="modal" onclick="toggleFilter(!settings.Moderation.filterEnabled)">Toggle</button>
+          <button type="button" class="btn btn-outline-info" data-dismiss="modal" onclick="toggleFilter(!CacheStore.get('modFilterEnabled', false))">Toggle</button>
         </div>
       </div>
     </div>

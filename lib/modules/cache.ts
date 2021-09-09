@@ -63,15 +63,13 @@ class DumbCacheStore {
      */
     async setFile() {
         try {// @ts-ignore
-            this.cache = JSON.parse(await fs.readFile(this.path));
+            this.cache = JSON.parse(await fs.readFile(this.path)); // Reads the cache file
         } catch (e) {
             try {
-                await fs.writeFile(this.path, JSON.stringify({}));// @ts-ignore
+                await fs.writeFile(this.path, JSON.stringify({}));// @ts-ignore if it doesn't exist, create it
                 this.cache = JSON.parse(await fs.readFile(this.path));
             } catch(e2) {
-                await fs.mkdir(appData[1] + '/data'); // Makes the folder
-                await fs.writeFile(this.path, JSON.stringify({}));// @ts-ignore
-                this.cache = JSON.parse(await fs.readFile(this.path));
+                this.cache = {}; // If something goes wrong, just return an empty object
             }
         }
     }

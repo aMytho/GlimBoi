@@ -7,7 +7,7 @@ let ChatLogger:typeof import("../modules/chat/chatLogging");
 let chatID; // the channel ID
 let reconnectDelay, currentChannelToRejoin;
 let needsReconnect = false;
-let reconnectMessage = true;
+let reconnectMessage = false;
 
 var contentTarget;
 var contentBody;
@@ -219,6 +219,7 @@ function loadChatWindow() {
   	} catch (e) {
     	console.log(e);
   	}
+    viewOrChangeChatSettings("view");
 }
 
 /**
@@ -449,9 +450,24 @@ function adjustMessageStateByUsername(username:userName, state:messageState) {
 function askForWebhookConfirmation(webhook:webhookType) {
     if (webhook == "discord") {
         $("#discordWebhook").modal('show');
-        (document.getElementById("discordWebhookMessage") as HTMLInputElement).value = settings.Webhooks.discord.defaultMessage;
+        (document.getElementById("discordWebhookMessage") as HTMLInputElement).value = CacheStore.get("discordWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "guilded") {
         $("#guildedWebhook").modal('show');
-        (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = settings.Webhooks.guilded.defaultMessage;
+        (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
+    }
+}
+
+
+function viewOrChangeChatSettings(mode: "view" | "change") {
+    if (mode == "view") {
+        if (CacheStore.get("chatLogging", false)) {
+            document.getElementById("loggingEnabled")!.toggleAttribute("checked");
+        }
+        (document.getElementById("healthReminder") as HTMLInputElement).value = String(CacheStore.get("chatHealth", 0));
+    } else {
+        CacheStore.setMultiple([
+            {chatLogging: (document.getElementById("loggingEnabled") as HTMLInputElement)!.checked},
+            {chatHealth: Number((document.getElementById("healthReminder") as HTMLInputElement).value)}
+        ]);
     }
 }

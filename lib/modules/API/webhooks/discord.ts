@@ -5,12 +5,12 @@
  * @param {string} message The message to send
  */
 async function sendDiscordMessage(message?:string) {
-    let discordMessage = message || settings.Webhooks.discord.defaultMessage;
+    let discordMessage = message || CacheStore.get("discordWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     discordMessage = discordMessage.split("$streamer").join(ApiHandle.getStreamerName());
     if (checkIfEnabled()) {
         let body = new FormData();
         body.append("content", discordMessage);
-        await fetch(settings.Webhooks.discord.webhookUri, {method: "POST", body: body});
+        await fetch(CacheStore.get("discordWebhookURL", ""), {method: "POST", body: body});
         console.log("Finished Discord webhook");
         hasSentWebhooks = true;
     } else {
@@ -23,8 +23,8 @@ async function sendDiscordMessage(message?:string) {
  * @returns {boolean} True if enabled, false if not
  */
 function checkIfEnabled(): boolean {
-    if (settings.Webhooks.discord.enabled) {
-        if (settings.Webhooks.discord.webhookUri) {
+    if (CacheStore.get("discordWebhookEnabled", false)) {
+        if (CacheStore.get("discordWebhookURL", "")) {
             return true
         } else {
             errorMessage("Discord Webhook error", "Discord webhook is enabled but no webhook URI has been set");

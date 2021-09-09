@@ -108,7 +108,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         } catch (e) {
             console.log(e);
         }
-        if (settings.chat.logging == true) {
+        if (CacheStore.get("chatLogging", false) == true) {
             setTimeout(() => {
                 ipcRenderer.send("logEnd") // ends the logging
             }, 3000);
@@ -171,13 +171,13 @@ function postChat():void {
     ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
     ChatLogger = require(appData[0] + "/modules/chat/chatLogging.js");
     // Load the chat settings/stats
-    ChatSettings.loadChatSettings(settings);
+    ChatSettings.loadChatSettings();
     ChatStats.loadChatStats();
     // Load Overlay (OBS and Music)
     OBSHandle.startServer();
     // Check for webhooks to send
     if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentWebhooks == false) {
-        if (settings.Webhooks.discord.waitForConfirmation) {
+        if (CacheStore.get("discordWebhookConfirmation", true)) {
             askForWebhookConfirmation("discord");
         } else {
             ApiHandle.Webhooks.DiscordWebhook.sendDiscordMessage();
@@ -185,7 +185,7 @@ function postChat():void {
         }
     }
     if (ApiHandle.Webhooks.GuildedWebhook.checkIfEnabled() && hasSentWebhooks == false) {
-        if (settings.Webhooks.guilded.waitForConfirmation) {
+        if (CacheStore.get("guildedWebhookConfirmation", true)) {
             askForWebhookConfirmation("guilded");
         } else {
             ApiHandle.Webhooks.GuildedWebhook.sendGuildedMessage();

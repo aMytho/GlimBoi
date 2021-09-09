@@ -6,7 +6,7 @@
  */
 async function sendGuildedMessage(message?:string) {
     let streamerName = ApiHandle.getStreamerName();
-    let guildedMessage = message || settings.Webhooks.guilded.defaultMessage;
+    let guildedMessage = message || CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     guildedMessage = guildedMessage.split("$streamer").join(streamerName);
     let streamInfo = await ApiHandle.getStreamWebhook(streamerName);
     let streamThumbnail:string, streamTitle:string;
@@ -19,7 +19,7 @@ async function sendGuildedMessage(message?:string) {
     }
     if (checkIfEnabled()) {
         let body = buildGuildedMessage([streamThumbnail, streamTitle, streamerName, guildedMessage]);
-        await fetch(settings.Webhooks.guilded.webhookUri, {method: "POST", body: body, headers: { "Content-Type": "application/json" }});
+        await fetch(CacheStore.get("guildedWebhookURL", ""), {method: "POST", body: body, headers: { "Content-Type": "application/json" }});
         console.log("Finished Guilded webhook");
         hasSentWebhooks = true;
     } else {
@@ -31,7 +31,7 @@ async function sendGuildedMessage(message?:string) {
  * Checks if the webhook is enabled and that a URL exists
  */
 function checkIfEnabled() {
-    if (settings.Webhooks.guilded.enabled && settings.Webhooks.guilded.webhookUri) {
+    if (CacheStore.get("guildedWebhookEnabled", false) && CacheStore.get("guildedWebhookURL", "")) {
         return true;
     } else {
         return false;

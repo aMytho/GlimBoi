@@ -1,59 +1,9 @@
-interface Settings {
-    Points?: {
-        enabled?: boolean;
-        name?: string;
-        StartingAmount?: number;
-        accumalation?: number;
-    },
-    Commands: {
-        enabled: boolean;
-        Prefix: string;
-        Error: boolean;
-        repeatDelay: number;
-        repeatSpamProtection: number;
-    },
-    chat: {
-        logging: boolean;
-        filter: boolean;
-        health: number;
-    },
-    music: {
-        chatAttribution: boolean;
-        writeToFile: boolean;
-    },
-    Moderation: {
-        filterEnabled: boolean;
-        warning1: warningAction;
-        warning2: warningAction;
-        warning3: warningAction;
-        warningAbove: warningAction;
-        modMessage: boolean;
-    },
-    Webhooks: {
-        discord: {
-            enabled: boolean;
-            waitForConfirmation: boolean;
-            defaultMessage: string;
-            webhookUri: string;
-        }
-        guilded: {
-            enabled: boolean;
-            waitForConfirmation: boolean;
-            defaultMessage: string;
-            webhookUri: string;
-        }
-    }
-}
-
 type settingsProperty = | "pointsName" | "pointsStartingAmount" | "pointsAccumalation" |
 "commandsRepeatDelay" | "commandsRepeatSpamProtection" | "chatLogging" | "chatHealth" | "musicChatAttribution" |
 "musicWriteToFile" | "moderationFilterEnabled" | "moderationWarning1" | "moderationWarning2" |
 "moderationWarning3" | "moderationWarningAbove" | "moderationModMessage" | "webhooksDiscordEnabled" | "webhooksDiscordWaitForConfirmation" |
 "webhooksDiscordDefaultMessage" | "webhooksDiscordWebhookUri" | "webhooksGuildedEnabled" | "webhooksGuildedWaitForConfirmation" |
-"webhooksGuildedDefaultMessage" | "webhooksGuildedWebhookUri";
-
-// @ts-ignore
-declare let settings: Settings
+"webhooksGuildedDefaultMessage" | "webhooksGuildedWebhookUri" | "commandRepeatDelay" | "commandRepeatProtection";
 
 interface LogType {
     event: logEvent;
