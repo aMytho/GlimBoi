@@ -91,6 +91,7 @@ async function requestUserAuthorization() {
                 unlockBot();
                 server.close();
                 hasAuthorized = true;
+                successMessage("Authorized", "Token Recieved. You can now join chat! You can authorize as another acount at any time.");
                 return data.access_token
             } else {
                 errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
