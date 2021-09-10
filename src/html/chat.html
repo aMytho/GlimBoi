@@ -2,6 +2,7 @@
   <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatChannelsDM">
     <div class="card-body px-0 pl-1">
       <button onclick="$('#newChatModal').modal('show');" class="btn btn-success" style="position: absolute;right: 5px;bottom: 5px;">Add new </button>
+      <a class="btn btn-info" onclick="reconnectMessage = true;this.remove();" style="position: absolute;bottom: 1px;left: 30%;">Click to Enable Reconnect Messages</a>
 
       <button type="button" class="btn btn-primary" data-placement="right" data-toggle="tooltip" style="position: absolute;left: 5px;bottom: 5px;" title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
         <i class="fas fa-question-circle"></i>
@@ -13,21 +14,51 @@
   </div>
   <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatControls">
     <div class="card-body">
-      <h3 class="whiteText text-center">Chat Controls</h3>
+      <h3 class="whiteText text-center">Chat Settings</h3>
       <div class="row">
         <h4 id="channelConnectedName" class="col-12 whiteText text-center py-3 my-3 border border-white border-left-0 border-right-0 text-danger">
           Not Connected
         </h4>
       </div>
-      <div class="row">
-        <div class="col-4 mx-auto">
-          <h3 class="whiteText text-center" id="fasUsers"><span><i class="fas fa-users"></i></span> 0</h3>
+      <div class="row mt-2">
+        <div class="col whiteText">
+           <h3>Health Reminder</h3>
+           <p>Get reminders to stretch, drink water, and take a break.</p>
+           <div class="row">
+              <div class="col-11">
+                 <form>
+                    <div class="form-group mt-n1">
+                       <label for="sel1">Reminder:</label>
+                       <select class="form-control" id="healthReminder" style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                          <option value="0">Disabled (default)</option>
+                          <option value="30">30 minutes</option>
+                          <option value="60">60 minutes</option>
+                          <option value="120">2 hours</option>
+                       </select>
+                    </div>
+                 </form>
+              </div>
+           </div>
         </div>
-        <div class="col-4 mx-auto">
-          <h3 class="whiteText text-center" id="fasHeart"><span><i class="fas fa-heart"></i></span> 0</h3>
+        <div class="col whiteText">
+           <h3>Log Messages</h3>
+           <p>Logs chat messages to a text file.</p>
+           <div class="row">
+              <div class="col-2">
+                 <label class="switch">
+                 <input type="checkbox" id="loggingEnabled">
+                 <span class="slider round"></span>
+                 </label>
+              </div>
+              <div class="col-10">
+                 <p class="text-left">Disabled / Enabled</p>
+              </div>
+           </div>
+           <div class="row">
+               <a class="btn btn-info" onclick="viewOrChangeChatSettings('change');successMessage('Settings Saved', 'Chat settings have been saved.')">Save</a>
+           </div>
         </div>
-      </div>
-      <p class="text-center">These stats update every 15 minutes.</p>
+     </div>
     </div>
   </div>
 </div>
@@ -177,3 +208,73 @@
         opacity: 50%;
     }
 </style>
+
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    }
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+    input:checked + .slider {
+    background-color: #2196F3;
+    }
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+    .slider.round:before {
+    border-radius: 50%;
+    }
+    li .active {
+        color: #17a2b8;
+    }
+    .settingsInput {
+        width:auto;
+        margin-left: 1rem;
+    }
+    .niceSwitch label {
+        float: left;
+        width:50px;
+        text-align: right;
+        margin: 0 0 0 10px;
+    }
+    .niceSwitch p{
+        margin-left:5rem;
+    }
+ </style>

@@ -7,7 +7,7 @@ let createWriteStream: any;
  * @param message The message to be logged
  */
 async function logMessageToFile(user, message) {
-    if (settings.chat.logging) {
+    if (CacheStore.get("chatLogging", false)) {
         if (loggingFile && loggingFile.closed == false) {
             try {
                 loggingFile.write(`${user}: ${message} || ${new Date()}`, "utf-8")
@@ -25,7 +25,7 @@ async function logMessageToFile(user, message) {
 
 /**
  * Starts the message logging.
- * @returns 
+ * @returns
  */
 async function startLogging() {
     return new Promise(async resolve => {
@@ -42,9 +42,9 @@ async function startLogging() {
             resolve(true);
         }
     })
-    
+
 }
-    
+
 /**
  * Stops the message logging.
  */

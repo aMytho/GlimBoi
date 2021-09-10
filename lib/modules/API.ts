@@ -32,7 +32,7 @@ function glimeshError(data:Glimesh.RootQueryType): Glimesh.RootQueryType["data"]
 }
 
 async function glimeshQuery(query): Promise<Glimesh.RootQueryType["data"] | false | null> {
-    let token = await AuthHandle.getToken();
+    let token = AuthHandle.getToken();
     let result = await fetch("https://glimesh.tv/api/graph", {method: "POST", body: query, headers: {Authorization: `Bearer ${token}`}});
     let parsedResult:Glimesh.RootQueryType = await result.json();
     if (parsedResult.errors) {
@@ -126,14 +126,29 @@ async function getBotAccount(): Promise<string | null> {
 async function getStreamWebhook(streamer: string): Promise<null | any[]> {
     let query = `query {channel(streamerUsername: "${streamer}") {stream {title,thumbnailUrl}}}`;
     let response = await glimeshQuery(query);
-    if (typeof response == "object" && response !== null) {
-        if (Object.values(response.channel.stream).includes(null)) {
-            return null;
+    try {
+        if (typeof response == "object" && response !== null) {
+            if (Object.values(response.channel.stream).includes(null)) {
+                return null;
+            } else {
+                return [response.channel.stream.title, response.channel.stream.thumbnailUrl];
+            }
         } else {
-            return [response.channel.stream.title, response.channel.stream.thumbnailUrl];
+            return null;
         }
-    } else {
+    } catch (e) {
         return null;
+    }
+}
+
+async function sendMessage(message, isSecondAttempt?: boolean) {
+  	let query = `mutation{createChatMessage(channelId: ${channelID}, message: {message: "${message}"}) {message}}`
+    console.log(query);
+    let response = await glimeshQuery(query);
+    console.log(response);
+    if (query == null && !isSecondAttempt) {
+        await AuthHandle.requestToken();
+        sendMessage(message, true);
     }
 }
 
@@ -146,7 +161,7 @@ async function getStreamWebhook(streamer: string): Promise<null | any[]> {
  */
 async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | userName> {
     console.log("key is" + key);
-    let token = await AuthHandle.getToken();
+    let token = AuthHandle.getToken();
     return new Promise(async resolve => {
         let requestResult = await fetch("https://glimesh.tv/api", { method: "POST", body: requestInfo, headers: { Authorization: `bearer ${token}` } })
         let data = await requestResult.json();
@@ -187,17 +202,8 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise
  * Checks if an access token is still valid
  * @returns {Promise}
  */
-async function getTokenStatus(token: accessToken): Promise<boolean> {
-    let authInfo = await AuthHandle.readAuth();
-    console.log(authInfo);
-    let response = await fetch("https://glimesh.tv/api/oauth/introspect", { method: "POST", body: new URLSearchParams({
-        token: token,
-        client_id: authInfo[0].clientID,
-        client_secret: authInfo[0].secret
-    }) })
-    let data = await response.json();
-    console.log(data);
-    return data.active || false
+async function getTokenStatus(token: accessToken) {
+
 }
 
 /**
@@ -268,4 +274,4 @@ function getStreamerName() {
 }
 
 export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact, Webhooks};
+getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact, sendMessage, Webhooks};

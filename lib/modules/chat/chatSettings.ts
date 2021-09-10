@@ -7,19 +7,19 @@ let repeatCommand:NodeJS.Timeout; // An interval that sends repeating commands
  * Loads and activates all the chat settings.
  * @param {object} settings
  */
-function loadChatSettings(settings:Settings) {
-    startLogs(settings.chat.logging);
-    startHealth(settings.chat.health);
-    startRepeatingCommands(settings.Commands.repeatDelay);
+function loadChatSettings() {
+    startLogs(CacheStore.get("chatLogging", false));
+    startHealth(CacheStore.get("chatHealth", 0));
+    startRepeatingCommands(CacheStore.get("commandRepeatDelay", 10, false));
 }
 
 /**
  * Updates the chat settings.
  * @param {object} settings
  */
-function updateChatSettings(settings:Settings) {
-    updateHealth(settings.chat.health);
-    updateRepeatingCommands(settings.Commands.repeatDelay);
+function updateChatSettings() {
+    updateHealth(CacheStore.get("chatHealth", 0));
+    updateRepeatingCommands(CacheStore.get("commandRepeatDelay", 10, false));
 }
 /**
  * Called when the chat is disconnected. Turns off all intervals
@@ -35,21 +35,21 @@ function stopChatSettings() {
  * @param {boolean} healthEnabled
  * @param {number} healthReminder
  */
-function startHealth(healthReminder:number) {
-  	if (healthReminder !== 0) {
-    	console.log("Health reminders are enabled. Interval: " + healthReminder + " minutes.");
-    	console.log(healthInterval, healthReminder)
-    	healthInterval = setInterval(() => {
-      		if (healthReminder !== 0) {
-        		ChatMessages.filterMessage(
-          		"You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
-          		"glimboi"
-        		);
-      		}
-    	}, healthReminder*60000);
-  	} else {
-      	console.log("Health reminders are disabled.")
-  	}
+function startHealth(healthReminder: number) {
+    if (healthReminder !== 0) {
+        console.log("Health reminders are enabled. Interval: " + healthReminder + " minutes.");
+        console.log(healthInterval, healthReminder)
+        healthInterval = setInterval(() => {
+            if (healthReminder !== 0) {
+                ChatMessages.filterMessage(
+                    "You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
+                    "glimboi"
+                );
+            }
+        }, healthReminder * 60000);
+    } else {
+        console.log("Health reminders are disabled.")
+    }
 }
 
 /**
@@ -90,16 +90,16 @@ function startLogs(logEnabled:boolean) {
  * Starts an interval to send repeating commands to chat. Dependent on repeat spam protection and delay.
  * @param {number} repeatDelay
  */
-function startRepeatingCommands(repeatDelay:number) {
+function startRepeatingCommands(repeatDelay: number) {
     //Sends a random repeatable message to chat based on the user setting.
     repeatCommand = setInterval(() => {
-      	if (ChatStats.getUserMessageCount() <= settings.Commands.repeatSpamProtection) {
-        	console.log("There is not enough non bot messages to send a repeat message. Waitng till next time.");
-      	} else {
-          	console.log("Sending a repeating command.")
-        	CommandHandle.randomRepeatCommand() // Gets a repeatable command
-      	}
-    }, repeatDelay*60000);
+        if (ChatStats.getUserMessageCount() <= CacheStore.get("commandRepeatProtection", 10, false)) {
+            console.log("There is not enough non bot messages to send a repeat message. Waitng till next time.");
+        } else {
+            console.log("Sending a repeating command.")
+            CommandHandle.randomRepeatCommand() // Gets a repeatable command
+        }
+    }, repeatDelay * 60000);
 }
 
 function updateRepeatingCommands(delay:number) {

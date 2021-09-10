@@ -26,10 +26,6 @@ type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
 type LogHandle = typeof import("../lib/modules/log")// @ts-ignore
 type CacheStore = typeof import("../lib/modules/cache")
 
-// @ts-ignore
-declare var fs: typeof import("fs")
-// @ts-ignore
-declare var ipcRenderer: typeof import("electron").ipcRenderer
 type Type = typeof import("bootstrap")
 type pageState = "home" | "commands" | "points" | "events" | "users" | "ranks" | "media" | "music" | "mod" | "settings" | "chat"
 declare var dirName:string
@@ -53,12 +49,6 @@ declare function errorMessage(errorType: string | any, errorMessage?: string | a
  */
 // @ts-ignore
 declare function successMessage(messageType: string, message: string): void
-/**
- * Sets the auth status message
- * @param stage The number to set the status as
- */
-// @ts-ignore
-declare function updateStatus(stage:authStatusNumber): void
 /**
  * Adds a command to the table
  * @param param0 Command Info

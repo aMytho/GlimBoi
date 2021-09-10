@@ -10,7 +10,7 @@ let activeWarnings: warning[] = [];
  * @param {number} userID The ID of the user who said the message
  */
 async function scanMessage(user:userName, message:string, messageID:number, userID:number) {
-    if (settings.Moderation.filterEnabled) {
+    if (CacheStore.get("modFilterEnabled", false)) {
         // The user exists
         let parsedMessage = message.split(" ")
         let badWordFound = 0;
@@ -31,22 +31,22 @@ async function scanMessage(user:userName, message:string, messageID:number, user
                     switch (userWarnings) {
                         case 0:
                             activeWarnings.push({ user: user, amount: 1 });
-                            determineModAction(settings.Moderation.warning1, { messageID: messageID, userID: userID, userName: user })
+                            determineModAction(CacheStore.get("modWarning1", "none"), { messageID: messageID, userID: userID, userName: user })
                             forgiveUserWarnings(user, 1)
                             break;
                         case 1:
                             updateUserWarnings(user, userWarnings + 1);
-                            determineModAction(settings.Moderation.warning2, { messageID: messageID, userID: userID, userName: user })
+                            determineModAction(CacheStore.get("modWarning2", "none"), { messageID: messageID, userID: userID, userName: user })
                             forgiveUserWarnings(user, userWarnings + 1)
                             break;
                         case 2:
                             updateUserWarnings(user, userWarnings + 1);
-                            determineModAction(settings.Moderation.warning3, { messageID: messageID, userID: userID, userName: user })
+                            determineModAction(CacheStore.get("modWarning3", "none"), { messageID: messageID, userID: userID, userName: user })
                             forgiveUserWarnings(user, userWarnings + 1)
                             break;
                         default:
                             updateUserWarnings(user, userWarnings + 1);
-                            determineModAction(settings.Moderation.warningAbove, { messageID: messageID, userID: userID, userName: user })
+                            determineModAction(CacheStore.get("modWarningMax", "none"), { messageID: messageID, userID: userID, userName: user })
                             forgiveUserWarnings(user, userWarnings + 1)
                             break;
                     }
@@ -95,7 +95,7 @@ async function determineModAction(action: modAction, modInfo:modInfoPack) {
         LogHandle.logEvent({event: getFriendlyName(action) , users: [modInfo.caused, result], data: modInfo})
     }
     // THe streamer did this from the bot, we check the page and use that to determine what to show them
-    if (modInfo.source == "ruleset" && settings.Moderation.modMessage) {
+    if (modInfo.source == "ruleset" && false) {
         //sendModMessage(String(modInfo.userName));
     }
 }
@@ -105,7 +105,7 @@ async function determineModAction(action: modAction, modInfo:modInfoPack) {
  * @param {string} user The user to get warnings for
  * @returns {number} The amount of warnings the user has
  */
-function getUserWarnings(user:string) {
+function getUserWarnings(user:string): number {
     for (let i = 0; i < activeWarnings.length; i++) {
         if (user == activeWarnings[i].user) {
             return activeWarnings[i].amount

@@ -1,93 +1,27 @@
 //Handles the charts for the homepage and the auth.
-AuthHandle.updatePath(appData[1]);
+let hasAuthorized = false;
 console.log(appData[0]);
 
-function rememberID(firstRun: boolean) { // checks if an id has been entered for auth
-    AuthHandle.readAuth().then(data => {
-        //Checks if any data is there, this is checking if a file even exists.
-        let clientIdElement = document.getElementById("clientID")!;
-        let secretIdElement = document.getElementById("secretID")!;
-        let saveIdElement = document.getElementById("saveAuth")!;
-        if (data.length == 0) {
-            console.log("The auth file does not yet exist.");
-            //Now we set the buttons/ inputs on the home page to be empty.
-            clientIdElement.removeAttribute("disabled");
-            secretIdElement.removeAttribute("disabled");
-            saveIdElement.setAttribute("onclick", "saveAuth()")
-            saveIdElement.innerHTML = "Save";
-            return;
+// start the app authentication process
+async function startAuthProcess() {
+    unlockBot();
+    console.log(JSON.stringify(isDev));
+    if (isDev) {
+        return
+    }
+    let refreshToken = await AuthHandle.getRefreshToken();
+    if (refreshToken) {
+        hasAuthorized = true;
+        console.log("Refresh token found. Attempting to authenticate...");
+        let newToken = await AuthHandle.requestToken();
+        if (newToken) {
+            console.log("Authentication successful.");
+        } else {
+            console.log("Authentication failed. Refresh did not succeed");
         }
-    	//First we check if the client ID and secret exist. If they do we continue, else we ask for the IDs.
-    	if (data[0].clientID!.length < 2 || data[0].secret!.length < 2) {
-      		console.log("The client ID or secret do not yet exist in proper form. Please save them to the auth file!");
-      		//Now we set the buttons/ inputs on the home page to be empty.
-      		clientIdElement.removeAttribute("disabled");
-      		secretIdElement.removeAttribute("disabled");
-      		saveIdElement.setAttribute("onclick", "saveAuth()")
-      		saveIdElement.innerHTML = "Save";
-    	} else {
-      		//Now we can safely assume that they have the client ID and secret saved. We reflect this on the buttons.
-      		clientIdElement.setAttribute("disabled", "");
-      		secretIdElement.setAttribute("disabled", "");
-      		clientIdElement.setAttribute("placeholder", "ID Saved!")
-      		secretIdElement.setAttribute("placeholder", "ID Saved!")
-      		saveIdElement.setAttribute("onclick", "editAuth()")
-      		saveIdElement.innerHTML = "Edit Auth";
-            document.getElementById("joinChannelBOT")!.removeAttribute("disabled");
-      		if (firstRun) {
-                updateStatus(1); // sets to  request a token status message
-        		if (isDev == false) { //They have entered auth info, request a token
-          			console.log("Getting the first token for this session");
-          			AuthHandle.requestToken(data[0].clientID!, data[0].secret!, false)
-        		} else { errorMessage("Possbile Error", "You have already been authenticated. If you belive this to be false you can restart GlimBoi.") }
-      		}
-    	}
-  	})
-}
-
-
-function saveAuth() { //sets the state to saved
-    let clientIdElement = document.getElementById("clientID")! as HTMLInputElement;
-    let secretIdElement = document.getElementById("secretID")! as HTMLInputElement;
-    let saveIdElement = document.getElementById("saveAuth")!;
-  	clientIdElement.setAttribute("disabled", "");
-  	secretIdElement.setAttribute("disabled", "");
-  	saveIdElement.setAttribute("onclick", "editAuth()")
-  	saveIdElement.innerHTML = "Edit Auth";
-  	AuthHandle.createID(clientIdElement.value, secretIdElement.value).then(data => {
-        document.getElementById("joinChannelBOT")!.removeAttribute("disabled");
-    	if (data == "NOAUTH") { // no changes
-      		errorMessage("No Changes", "No changes were made to the auth file. The client ID and secret ID will not be updated.")
-      		// Both IDs updated
-    	} else if (data.clientID !== undefined && data.clientID.length > 2 && data.secret !== undefined && data.secret.length > 2) {
-      		successMessage("Auth Updated", "The client ID and secret ID have been updated. To complete the authentication process select request token on the homepage.");
-      		updateStatus(1);
-      		// The client ID was updated but the secret was not.
-    	} else if (data.clientID !== undefined && data.clientID.length > 2 && (data.secret == "" || data.secret == undefined)) {
-      		successMessage("Auth Updated", "The client ID has been updated. If the secret ID has already been saved you can request a token. Otherwise you need to enter the secret ID.");
-      		// The secret was updated but the client Id was not
-    	} else if (data.secret !== undefined && data.secret.length > 2 && (data.clientID == "" || data.clientID == undefined)) {
-      		successMessage("Auth Updated", "The secret ID has been updated. If the client ID has already been saved you can request a token. Otherwise you need to enter the client ID.");
-    	}
-  	});
-  	console.log(clientIdElement.value, secretIdElement.value)
-  	// We set the value to "ID SAVED" because we don't want the ID showing, streamers would probably show it accidentally.
-  	clientIdElement.value = "ID Saved";
-  	secretIdElement.value = "ID Saved";
-}
-
-function editAuth() { //Sets the state to editable
-    let clientIdElement = document.getElementById("clientID")! as HTMLInputElement;
-    let secretIdElement = document.getElementById("secretID")! as HTMLInputElement;
-    let saveIdElement = document.getElementById("saveAuth")!;
-  	clientIdElement.removeAttribute("disabled");
-  	secretIdElement.removeAttribute("disabled");
-  	saveIdElement.setAttribute("onclick", "saveAuth()")
-  	saveIdElement.innerHTML = "Save";
-  	clientIdElement.value = "";
-  	secretIdElement.value = "";
-  	clientIdElement.setAttribute("placeholder", "Enter Client ID")
-  	secretIdElement.setAttribute("placeholder", "Enter Secret ID")
+    } else {
+        successMessage("Welcome!", "Please authorize the bot before doing anything. The account that authorizes the bot will be what your bot name is.");
+    }
 }
 
 
@@ -129,18 +63,6 @@ function syncUsers(data:userName | UserType, action: "add" | string) {
     	}
   	} catch (e) {
     	console.log(e)
-  	}
-}
-
-function updateStatus(stage:authStatusNumber) {
-    let authStatusElement = document.getElementById("authStatus")!;
-  	if (stage == 1) {
-    	authStatusElement.innerHTML = ` <span style="color: rgb(149, 101, 22);"> Auth Saved. Request a Token!</span> `;
-    	authStatusElement.className = "fas fa-user-lock"
-  	} else if (stage == 2) {
-    	authStatusElement.innerHTML = ` <span style="color: rgb(17, 92, 33);"> GlimBoi is ready to join the chat!</span> `;
-    	authStatusElement.className = "fas fa-user";
-    	authStatusElement.style.color = "#115c21"
   	}
 }
 
@@ -200,4 +122,12 @@ function checkForUpdate() {
 function restartApp() {
   	console.log("trying to restart the app for the update")
   	ipcRenderer.send('restart_app');
+}
+
+function unlockRequestToken() {
+    if (hasAuthorized) {
+        try {
+            document.getElementById("joinChannelBOT").attributes.removeNamedItem("disabled");
+        } catch(e) {}
+    }
 }

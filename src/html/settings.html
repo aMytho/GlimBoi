@@ -3,123 +3,14 @@
        <div class="card glimPanel mx-auto" style="width: 18rem;width: 97%;">
           <div class="card-body">
              <ul class="nav nav-tabs" id="settingsTab">
-                <li class="active mx-2">
-                   <h2 data-toggle="tab" href="#chatTab" style="cursor:pointer" class="whiteText" id="chatNavSelector">Chat</h2>
-                </li>
-                <li class="mx-2">
-                   <h2 data-toggle="tab" href="#commandsTab" style="cursor:pointer" class="whiteText">Commands</h2>
-                </li>
-                <li class="mx-2">
-                    <h2 data-toggle="tab" href="#musicTab" style="cursor:pointer" class="whiteText" id="musicNavSelector">Music</h2>
-                 </li>
+
                 <li class="mx-2">
                     <h2 data-toggle="tab" href="#webhooksTab" style="cursor:pointer" class="whiteText">Webhooks</h2>
                  </li>
              </ul>
              <div class="tab-content">
-                <div id="chatTab" class="tab-pane fade in active">
-                   <div class="row mt-2">
-                      <div class="col whiteText">
-                         <h3>Health Reminder</h3>
-                         <p>Get reminders to stretch, drink water, and take a break.</p>
-                         <div class="row">
-                            <div class="col-11">
-                               <form>
-                                  <div class="form-group mt-n1">
-                                     <label for="sel1">Reminder:</label>
-                                     <select class="form-control" id="healthReminder" style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                        <option id="hr0">Disabled (default)</option>
-                                        <option id="hr30">30 minutes</option>
-                                        <option id="hr60">60 minutes</option>
-                                        <option id="hr120">2 hours</option>
-                                     </select>
-                                  </div>
-                               </form>
-                            </div>
-                         </div>
-                      </div>
-                      <div class="col whiteText">
-                         <h3>Log Messages</h3>
-                         <p>Logs chat messages to a text file.</p>
-                         <div class="row">
-                            <div class="col-1">
-                               <label class="switch">
-                               <input type="checkbox" id="loggingEnabled">
-                               <span class="slider round"></span>
-                               </label>
-                            </div>
-                            <div class="col-11">
-                               <p class="text-left">Disabled / Enabled</p>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-                <div id="commandsTab" class="tab-pane fade">
-                   <div class="row mt-2">
-                      <div class="col whiteText">
-                         <h3>Repeat Protection</h3>
-                         <p>The amount of non bot messages for the next repeatable message to go through.</p>
-                         <form>
-                            <div class="form-group mt-n1">
-                               <label for="sel1">Cooldown:</label>
-                               <select class="form-control" id="repeatProtect" style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                  <option id="rp15">15 (default)</option>
-                                  <option id="rp5">5 (not recommended)</option>
-                                  <option id="rp30">30</option>
-                                  <option id="rp60">60</option>
-                               </select>
-                            </div>
-                         </form>
-                      </div>
-                      <div class="col whiteText">
-                         <h3>Repeat Delay</h3>
-                         <p>The amount of time that must pass until the next repeatable command is sent to chat.</p>
-                         <form>
-                            <div class="form-group">
-                               <label for="initialValueSlider">Initial</label>
-                               <input type="range" class="form-control-range" id="repeatDelaySlider" min="5" max="60" step="5">
-                               <p id="repeatDelayValue"></p>
-                            </div>
-                         </form>
-                      </div>
-                   </div>
-                </div>
-                <div id="musicTab" class="tab-pane fade">
-                    <div class="row mt-2">
-                        <div class="col whiteText">
-                        <h3>Chat Attribution</h3>
-                         <p>Send the song name and artist to chat when a song plays.</p>
-                         <div class="row">
-                            <div class="col-1">
-                               <label class="switch">
-                               <input type="checkbox" id="attributionMusicEnabled">
-                               <span class="slider round"></span>
-                               </label>
-                            </div>
-                            <div class="col-11">
-                               <p class="text-left">Disabled / Enabled</p>
-                            </div>
-                         </div>
-                        </div>
-                        <div class="col whiteText">
-                        <h3>Write to File</h3>
-                         <p>Send the song name and artist to a text file. Can be displayed in OBS with custom styling.</p>
-                         <div class="row">
-                            <div class="col-1">
-                               <label class="switch">
-                               <input type="checkbox" id="fileMusicEnabled">
-                               <span class="slider round"></span>
-                               </label>
-                            </div>
-                            <div class="col-11">
-                               <p class="text-left">Disabled / Enabled</p>
-                            </div>
-                         </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="webhooksTab" class="tab-pane fade">
+
+                <div id="webhooksTab" class="tab-pane fade-in active">
                     <div class="row mt-2">
                        <div class="col-sm-5 col-12 whiteText ml-2">
                           <h3>Discord</h3>
@@ -172,8 +63,8 @@
                     </div>
                  </div>
              </div>
-             <div class="card-footer"><a class="btn btn-warning" href="#" onclick="resetSettings()">Reset to Default</a>
-                <a class="btn btn-info" href="#" onclick="saveSettings()">Save</a>
+             <div class="card-footer">
+                <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
                 <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#openDB">Edit Database</a>
              </div>
           </div>

@@ -43,7 +43,7 @@ function loadMusicProgram() {
             // @ts-ignore
             document.getElementById("playPauseIcon")!.classList = "fas fa-play fa-lg"
         }
-        updateInfo(musicPlaylist[currentSongIndex], false)
+        updateInfo(musicPlaylist[currentSongIndex], false);
     }
 
 
@@ -55,7 +55,9 @@ function loadMusicProgram() {
         document.getElementById("repeatButton")!.setAttribute("data-original-title", "Repeat Enabled")
     }
 
-    document.getElementById("pathOfMusicOverlay")!.innerText = dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays/musicOverlay.html'
+    document.getElementById("pathOfMusicOverlay")!.innerText = dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays/musicOverlay.html';
+    document.getElementById("musicNowPlayingPath")!.innerText = `${appData[1] + "/data/nowPlaying.txt"}`;
+    viewOrChangeMusicSettings("view");
 }
 
 /**
@@ -206,10 +208,10 @@ function updateInfo(info, notMusicTab) {
         }
     } catch(e) {}
     MediaHandle.playSong({ name: info.name, artists: info.artists });
-    if (settings.music.chatAttribution && ChatHandle.isConnected() && notMusicTab) {
+    if (CacheStore.get("musicAttribution", false) && ChatHandle.isConnected() && notMusicTab) {
         ChatMessages.filterMessage(artistsMedia, "glimboi");
     }
-    if (settings.music.writeToFile && notMusicTab) {
+    if (CacheStore.get("musicFile", false) && notMusicTab) {
         fs.writeFile(appData[1] + '/data/nowPlaying.txt', artistsMedia);
     }
 }
@@ -319,5 +321,22 @@ async function loadPreviousFolder() {
         }
     } else {
         errorMessage("GlimBoi cannot detect which folder was last played.", "Try playing a new folder. It will be automatically saved and preloaded for next time.")
+    }
+}
+
+
+function viewOrChangeMusicSettings(action: "view" | "change") {
+    if (action == "view") {
+        if (CacheStore.get("musicAttribution", false)) {
+            document.getElementById("attributionMusicEnabled")!.toggleAttribute("checked");
+        }
+        if (CacheStore.get("musicFile", false, false)) {
+            document.getElementById("fileMusicEnabled")!.toggleAttribute("checked");
+        }
+    } else {
+        CacheStore.setMultiple([
+            { musicAttribution: (document.getElementById("attributionMusicEnabled") as HTMLInputElement)!.checked },
+            { musicFile: (document.getElementById("fileMusicEnabled") as HTMLInputElement)!.checked }
+        ]);
     }
 }
