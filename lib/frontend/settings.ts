@@ -57,6 +57,13 @@ function showIntegrations() {
     if (CacheStore.get("guildedWebhookConfirmation", true)) {
         document.getElementById("guildedWebhookConfirmation")!.toggleAttribute("checked");
     }
+    // OBS - - -
+    if (CacheStore.get("obsEnabled", false)) {
+        document.getElementById("obsEnabled")!.toggleAttribute("checked");
+    }
+    (document.getElementById("obsPassword") as HTMLInputElement)!.value = CacheStore.get("obsPassword", "");
+    (document.getElementById("obsUrl") as HTMLInputElement)!.value = CacheStore.get("obsUrl", "ws://localhost:4444");
+
 }
 
 
@@ -72,7 +79,10 @@ function saveIntegrations() {
         {discordWebhookMessage: (document.getElementById("discordWebhookMessage") as HTMLInputElement)!.value},
         {guildedWebhookMessage: (document.getElementById("guildedWebhookMessage") as HTMLInputElement)!.value},
         {discordWebhookURL: (document.getElementById("discordWebhookURL") as HTMLInputElement)!.value},
-        {guildedWebhookURL: (document.getElementById("guildedWebhookURL") as HTMLInputElement)!.value}
+        {guildedWebhookURL: (document.getElementById("guildedWebhookURL") as HTMLInputElement)!.value},
+        {obsEnabled: (document.getElementById("obsEnabled") as HTMLInputElement)!.checked},
+        {obsPassword: (document.getElementById("obsPassword") as HTMLInputElement)!.value},
+        {obsUrl: (document.getElementById("obsUrl") as HTMLInputElement)!.value},
     ]);
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")

@@ -2,8 +2,8 @@
 
 let commandsDB:Nedb; //Database of commands.
 
-const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js")
-const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js")
+const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js");
+const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js");
 
 /**
  * @class Default command
@@ -25,7 +25,7 @@ class Command implements CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
-    actions: any
+    actions: ChatAction[]; //What the command will do once activated
     constructor({commandName, uses, points, cooldown, rank, repeat, actions}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
@@ -127,9 +127,9 @@ function editCommand({ commandName, actions, cooldown, uses, points, rank, repea
 }
 
 /**
+ * Returns a command (promise). Null if not found
  * @param {string} command Name of command.
  * @returns A command
- * This technically does not need a promise, but all the functions that use it are meant to deal with promises. This will be fixed later
  */
 function findCommand(command: commandName): Promise<null | CommandType> {
     return new Promise(resolve => {

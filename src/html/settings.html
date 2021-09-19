@@ -1,167 +1,228 @@
 <div class="row justify-content-md-center pt-3">
     <div class="col-12 mx-auto">
-       <div class="card glimPanel mx-auto" style="width: 18rem;width: 97%;">
-          <div class="card-body">
-             <ul class="nav nav-tabs" id="settingsTab">
+        <div class="card glimPanel mx-auto" style="width: 18rem;width: 97%;">
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="settingsTab">
 
-                <li class="mx-2">
-                    <h2 data-toggle="tab" href="#webhooksTab" style="cursor:pointer" class="whiteText">Webhooks</h2>
-                 </li>
-             </ul>
-             <div class="tab-content">
+                    <li class="mx-2">
+                        <h2 data-toggle="tab" href="#webhooksTab" style="cursor:pointer" class="active whiteText">Going-Live
+                        </h2>
+                    </li>
+                    <li class="mx-2">
+                        <h2 data-toggle="tab" href="#obsTab" style="cursor:pointer" class="whiteText">OBS WebSocket</h2>
+                    </li>
+                </ul>
+                <div class="tab-content">
 
-                <div id="webhooksTab" class="tab-pane fade-in active">
-                    <div class="row mt-2">
-                       <div class="col-sm-5 col-12 whiteText ml-2">
-                          <h3>Discord</h3>
-                          <p>Send a message to your server when you join a channel.</p>
-                          <div class="niceSwitch">
-                            <label class="switch">
-                                <input type="checkbox" id="discordWebhookEnabled">
-                                <span class="slider round"></span>
-                                </label>
-                                <p>Disabled / Enabled</p>
-                          </div>
-                        <p>Webhook URI</p>
-                        <input class="icon-input settingsInput" type="text" placeholder="Discord Webhook URI" id="discordWebhookURL" style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                        <p>Default Message</p>
-                        <input class="icon-input settingsInput" type="text" placeholder="Default Message" id="discordWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                        <p>If enabled Glimboi will ask for confirmation before sending the message. You can also add stream specific details (what you're doing that stream)</p>
-                        <div class="niceSwitch">
-                            <label class="switch">
-                                <input type="checkbox" id="discordWebhookConfirmation">
-                                <span class="slider round"></span>
-                                </label>
-                                <p>Disabled / Enabled</p>
-                          </div>
-                       </div>
-                       <div class="col-12 col-sm-1 whiteText"></div><!--NOW ON GUILDED-->
-                       <div class="col-sm-5 col-12 whiteText">
-                        <h3>Guilded</h3>
-                          <p>Send a message to your guild when you join a channel.</p>
-                          <div class="niceSwitch">
-                            <label class="switch">
-                                <input type="checkbox" id="guildedWebhookEnabled">
-                                <span class="slider round"></span>
-                                </label>
-                                <p>Disabled / Enabled</p>
-                          </div>
-                        <p>Webhook URI</p>
-                        <input class="icon-input settingsInput" type="text" placeholder="Guilded Webhook URI" id="guildedWebhookURL" style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 80%;">
-                        <p>Default Message</p>
-                        <input class="icon-input settingsInput" type="text" placeholder="Default Message" id="guildedWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                        <p>If enabled Glimboi will ask for confirmation before sending the message. You can also add stream specific details (what you're doing that stream)</p>
-                        <div class="niceSwitch">
-                            <label class="switch">
-                                <input type="checkbox" id="guildedWebhookConfirmation">
-                                <span class="slider round"></span>
-                                </label>
-                                <p>Disabled / Enabled</p>
-                          </div>
-                       </div>
-                       </div>
+                    <div id="webhooksTab" class="tab-pane fade-in active">
+                        <div class="row mt-2">
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <h3>Discord</h3>
+                                <p>Send a message to your server when you join a channel.</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="discordWebhookEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>Webhook URI</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Discord Webhook URI"
+                                    id="discordWebhookURL"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                                <p>Default Message</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                                    id="discordWebhookMessage"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                                    add stream specific details (what you're doing that stream)</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="discordWebhookConfirmation">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-1 whiteText"></div>
+                            <!--NOW ON GUILDED-->
+                            <div class="col-sm-5 col-12 whiteText">
+                                <h3>Guilded</h3>
+                                <p>Send a message to your guild when you join a channel.</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="guildedWebhookEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>Webhook URI</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Guilded Webhook URI"
+                                    id="guildedWebhookURL"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 80%;">
+                                <p>Default Message</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                                    id="guildedWebhookMessage"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                                    add stream specific details (what you're doing that stream)</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="guildedWebhookConfirmation">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                 </div>
-             </div>
-             <div class="card-footer">
-                <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
-                <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#openDB">Edit Database</a>
-             </div>
-          </div>
-       </div>
-    </div>
-    <!-- Modal: open db -->
-    <div class="modal fade" id="openDB" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-       <div class="modal-dialog" role="document">
-          <div class="modal-content glimPanel whiteText">
-             <!--Header-->
-             <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Edit Database</h4>
-             </div>
-             <!--Body-->
-             <div class="modal-body">
-                <div class="icon-input-container">
-                   <p class="whiteText">You can manually edit the database if the bot is having problems. You should only edit these files if you know what you are doing.</p>
-                   <p class="whiteText">The file names must remain the same. This is a NeDB (MongoDB) database. You should research it before editing these files.</p>
-                   <p class="errorMessage">Copy the files in the folder before editing them. There is no way to reverse these changes once made.</p>
+                    <div id="obsTab" class="tab-pane fade-in">
+                        <div class="row mt-2">
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <h3>OBS WebSocket</h3>
+                                <p>Interact with OBS from Glimboi.</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="obsEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>WebSocket Password</p>
+                                <p>A password is optional with OBS webscokets. If you are on a public internet
+                                    connection you should add a password.</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="OBS websocket password"
+                                    id="obsPassword"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                            </div>
+                            <div class="col-12 col-sm-1 whiteText"></div>
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <h3>WebSocket URL</h3>
+                                <p>The URL to connect to. If OBS and Glimboi are on the same device it is likely "localhost" (the default)</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="OBS websocket URL"
+                                    id="obsUrl"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-             </div>
-             <!--Footer-->
-             <div class="modal-footer">
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
+                <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#openDB">Edit
+                    Database</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal: open db -->
+<div class="modal fade" id="openDB" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Edit Database</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <p class="whiteText">You can manually edit the database if the bot is having problems. You should
+                        only edit these files if you know what you are doing.</p>
+                    <p class="whiteText">The file names must remain the same. This is a NeDB (MongoDB) database. You
+                        should research it before editing these files.</p>
+                    <p class="errorMessage">Copy the files in the folder before editing them. There is no way to reverse
+                        these changes once made.</p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
                 <p id="errorQuoteExit"></p>
                 <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
                 <button class="btn btn-outline-danger" onclick="shell.openPath(appData[1] + '/data')">Open</button>
-             </div>
-          </div>
-       </div>
+            </div>
+        </div>
     </div>
-    <!-- Modal: open db -->
-    <style>
-       .switch {
-       position: relative;
-       display: inline-block;
-       width: 50px;
-       height: 24px;
-       }
-       .switch input {
-       opacity: 0;
-       width: 0;
-       height: 0;
-       }
-       .slider {
-       position: absolute;
-       cursor: pointer;
-       top: 0;
-       left: 0;
-       right: 0;
-       bottom: 0;
-       background-color: #ccc;
-       -webkit-transition: .4s;
-       transition: .4s;
-       }
-       .slider:before {
-       position: absolute;
-       content: "";
-       height: 16px;
-       width: 16px;
-       left: 4px;
-       bottom: 4px;
-       background-color: white;
-       -webkit-transition: .4s;
-       transition: .4s;
-       }
-       input:checked + .slider {
-       background-color: #2196F3;
-       }
-       input:focus + .slider {
-       box-shadow: 0 0 1px #2196F3;
-       }
-       input:checked + .slider:before {
-       -webkit-transform: translateX(26px);
-       -ms-transform: translateX(26px);
-       transform: translateX(26px);
-       }
-       /* Rounded sliders */
-       .slider.round {
-       border-radius: 34px;
-       }
-       .slider.round:before {
-       border-radius: 50%;
-       }
-       li .active {
-           color: #17a2b8;
-       }
-       .settingsInput {
-           width:auto;
-           margin-left: 1rem;
-       }
-       .niceSwitch label {
-           float: left;
-           width:50px;
-           text-align: right;
-           margin: 0 0 0 10px;
-       }
-       .niceSwitch p{
-           margin-left:5rem;
-       }
-    </style>
+</div>
+<!-- Modal: open db -->
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    li .active {
+        color: #17a2b8;
+    }
+
+    .settingsInput {
+        width: auto;
+        margin-left: 1rem;
+    }
+
+    .niceSwitch label {
+        float: left;
+        width: 50px;
+        text-align: right;
+        margin: 0 0 0 10px;
+    }
+
+    .niceSwitch p {
+        margin-left: 5rem;
+    }
+</style>

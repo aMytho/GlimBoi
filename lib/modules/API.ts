@@ -3,6 +3,7 @@
 // If you fork this change the user agent from glimboi to your own project please :)
 
 const Webhooks: typeof import("../modules/API/webhook") = require(appData[0] + "/modules/API/webhook.js");
+const WebSockets: typeof import("../modules/API/websocket") = require(appData[0] + "/modules/API/websocket.js");
 
 let channelID = "";
 let streamer = ""; // Streamer name
@@ -274,4 +275,5 @@ function getStreamerName() {
 }
 
 export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact, sendMessage, Webhooks};
+getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact,
+sendMessage, Webhooks, WebSockets};

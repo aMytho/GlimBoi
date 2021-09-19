@@ -9,7 +9,8 @@ function prepareActions(mode) {
     // Adds a command
     document.getElementById(`${mode}CommandButtonModal`)!.onclick = async function () {
         // First we check to make sure all the command settings are valid
-        let commandSettings = await validateSettings(mode)
+        const commandValidator: typeof import("../commands/commandValidator") = require(appData[0] + "/frontend/commands/commandValidator.js");
+        let commandSettings = await commandValidator.validateSettings(mode)
         if (commandSettings) {
             console.log("All command settings for this command are valid.");
         } else {
@@ -17,7 +18,7 @@ function prepareActions(mode) {
             return
         }
         // Now we check each action
-        let tempCommandActions = await validateActions(mode);
+        let tempCommandActions = await commandValidator.validateActions(mode);
         if (!tempCommandActions) {
             console.log("Command actions were not valid.");
             return
@@ -30,7 +31,7 @@ function prepareActions(mode) {
         });
         // Now we add the actions to the settings. We send the settings to be added as a new command. Command complete!
         commandSettings.actions = commandActions;
-        console.log(commandSettings)
+
         if (mode == "add") {
             CommandHandle.addCommand(commandSettings);
             addCommandTable(commandSettings);
@@ -50,6 +51,7 @@ function prepareActions(mode) {
     document.getElementById("CreateImageGif")!.onclick = () => addActionToUI("ImageGif", mode);
     document.getElementById("CreateVideo")!.onclick = () => addActionToUI("Video", mode);
     document.getElementById("CreateTimeout")!.onclick = () => addActionToUI("Timeout", mode);
+    document.getElementById("CreateObsWebSocket")!.onclick = () => addActionToUI("ObsWebSocket", mode);
     document.getElementById("CreateWait")!.onclick = () => addActionToUI("Wait", mode);
 }
 
@@ -117,10 +119,13 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         case "ImageGif": await ActionCreator.buildImageGifUI(mode, data);
         break;
 
-        case "Video": await ActionCreator.buildVideoUI(mode, data);
+        case "ObsWebSocket": await ActionCreator.buildObsWebSocketUI(mode, data);
         break;
 
         case "Timeout": await ActionCreator.buildTimeoutUI(mode, data)
+        break;
+
+        case "Video": await ActionCreator.buildVideoUI(mode, data);
         break;
 
         case "Wait": await ActionCreator.buildWaitUI(mode, data);

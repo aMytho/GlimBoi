@@ -14,7 +14,7 @@ class ChatAction implements ChatActionType {
     effect: actionEffect
     info: actionInfo
     generateVariables: actionVariables
-    constructor(action:actionName, effect:actionEffect, info:actionInfo, varsToSet:any = []) {
+    constructor(action:actionName, effect:actionEffect, info:actionInfo, varsToSet:CommandActionVariables[] = []) {
         this.action = action;
         this.effect = effect;
         this.info = info;
@@ -26,7 +26,7 @@ class ChatAction implements ChatActionType {
     }
 
     parseGenerateVariables(variables) {
-        let toBeGenerated = []
+        let toBeGenerated = [];
         for (let i = 0; i < variables.length; i++) {
             toBeGenerated[i] = variables[i].variable
         }
@@ -95,7 +95,7 @@ class Audio extends ChatAction {
     async run() {
         let toBePlayed = await MediaHandle.getMediaByName(this.source);
         if (toBePlayed !== null) {
-            MediaHandle.activateMedia(toBePlayed, "soundEffect");
+            Server.activateMedia(toBePlayed, "soundEffect");
         }
         return
     }
@@ -135,10 +135,43 @@ class ImageGif extends ChatAction {
     async run() {
         let toBeShown = await MediaHandle.getMediaByName(this.source);
         if (toBeShown !== null) {
-            MediaHandle.activateMedia(toBeShown, "imageGif");
+            Server.activateMedia(toBeShown, "imageGif");
         }
         return
     }
+}
+
+/**
+ * Trigger an action in OBS.
+ */
+class ObsWebSocket extends ChatAction {
+    requestType: string
+    data: any
+    returns: any
+    instruction: string
+    constructor({requestType, data, variables, instruction}:BuildObsWebSocket) {
+        super("ObsWebSocket", "Triggers an action in OBS", "data", variables);
+        this.requestType = requestType;
+        this.data = data;
+        this.returns = variables;
+        this.instruction = instruction
+    }
+
+    async run() {
+        let obsPacket = new ApiHandle.WebSockets.OBSWebSocket.ObsRequest(this.requestType, this.data);
+        let test = await ApiHandle.WebSockets.OBSWebSocket.sendObsData(obsPacket.request, this.checkforVariables());
+        console.log(test);
+        return test
+    }
+
+    checkforVariables() {
+        if (this.returns) {
+            return this.returns
+        } else {
+            return false
+        }
+    }
+
 }
 
 /**
@@ -179,7 +212,7 @@ class Video extends ChatAction {
     async run() {
         let toBePlayed = await MediaHandle.getMediaByName(this.source);
         if (toBePlayed !== null) {
-            MediaHandle.activateMedia(toBePlayed, "video");
+            Server.activateMedia(toBePlayed, "video");
         }
         return
     }
@@ -206,4 +239,4 @@ class Wait extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, Timeout, Video, Wait}
+export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, Timeout, Video, Wait}
