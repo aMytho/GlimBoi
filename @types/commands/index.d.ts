@@ -5,7 +5,7 @@ interface CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
-    actions: any
+    actions: ChatAction[];
     message?: string
     sound?: string
     media?: string
@@ -111,8 +111,24 @@ interface WaitType extends ChatActionType {
 
 type BuildWait = {wait:number}
 
+type BuildObsWebSocket = {
+    requestType: string
+    data: any
+    variables: CommandActionVariables[]
+    instruction: string
+}
 
-type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "Video" | "Timeout" | "Wait"
+type CommandActionVariables = {
+    variable: string
+    data: string
+}
+
+type CustomUserVaribles = {
+    name: string;
+    data: string | any;
+}
+
+type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "ObsWebSocket" | "Video" | "Timeout" | "Wait"
 type actionEffect = string;
 type actionInfo = any[] | any
 type actionVariables = string[]
