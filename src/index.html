@@ -64,7 +64,7 @@
                         <a class="nav-link disabled" href="../src/html/modPanel.html" id="ModPanelLink">Moderation</a>
                     </li>
                     <li class="nav-item glimNavItem" id="Settings">
-                        <a class="nav-link disabled" href="../src/html/settings.html" id="SettingsLink">Settings</a>
+                        <a class="nav-link disabled" href="../src/html/settings.html" id="SettingsLink">Integrations</a>
                     </li>
                     <li class="nav-item glimNavItem" id="Chat">
                         <a class="nav-link disabled" href="../src/html/chat.html" id="ChatLink">Chat</a>
@@ -76,21 +76,26 @@
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item glimNavItem" id="musicNavIcon">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color:#b2dbff">
+                            Status
+                        </a>
+                        <div class="dropdown-menu mt-0" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item navbarAlt" href="#">
+                                <p>Chat: <span id="navChatStatus" style="color:red">None</span></p>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item navbarAlt" href="#" style="margin: 0px;">
+                                <p id="version"></p>
+                                <span class="badge badge-pill badge-warning" style="position: relative;left: 20%;">Testing</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item glimNavItem" id="musicNavIcon" style="display: none;">
                         <audio id="musicAudio">
                             <source src="#" type="audio/mp3">
                             Your browser does not support the audio element.
                           </audio>
-                        <a class="nav-link disabled" href="#" >
-                        <i class="fas fa-music" id="musicStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Music: Inactive</span> </i></a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="overlayNavIcon">
-                        <a class="nav-link disabled" href="#" >
-                        <i class="fa fa-wifi" id="overlayStatus" aria-hidden="true" title="Not Active" style="color: rgb(134, 79, 34);"> <span style="color:  rgb(134, 79, 34);;">Overlay: Inactive</span> </i></a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="betaNavIcon">
-                        <a class="nav-link disabled" href="#"><span class="badge badge-pill badge-info">Beta</span>
-                        </a>
                     </li>
                     <li class="nav-item glimNavItem">
                         <a class="nav-link" href="#" id="close">Exit</a>
@@ -184,7 +189,6 @@
                 </div>
             </div>
         </div>
-        <p id="version" class="whiteText ml-3"></p>
         <div id="notification" class="hidden glimPanel">
             <p id="message" class="whiteText"></p>
             <button id="close-button" onClick="closeNotification()" class="hidden btn btn-outline-primary">
