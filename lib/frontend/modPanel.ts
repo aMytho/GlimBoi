@@ -63,8 +63,7 @@ function loadModPanel() {
     (document.getElementById("warning2") as HTMLInputElement)!.value = CacheStore.get("modWarning2", "none");
     (document.getElementById("warning3") as HTMLInputElement)!.value = CacheStore.get("modWarning3", "none");
     (document.getElementById("warningMore") as HTMLInputElement)!.value = CacheStore.get("modWarningMax", "none");
-    // Loads the banned words
-    displayBannedWords();
+    // Load logs
     LogHandle.getLogByType(["Ban User", "Delete Message", "Long Timeout User", "Short Timeout User", "UnBan User"]).then(data => {
         if (data !== null) {
             data.forEach(logItem => {
@@ -88,6 +87,8 @@ function loadModPanel() {
             filterStatusMessageSpan.innerText = "Disabled"
         }
     });
+    // Loads the banned words
+    return Promise.resolve().then(displayBannedWords);
 }
 
 function saveWarnings() {
