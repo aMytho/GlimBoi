@@ -3,7 +3,6 @@ async function loadObsAction(action, isEdit:false | CommandType = false) {
     if (isEdit) {
         html = fillObsData(isEdit, html)
     }
-    console.log(html);
     return html;
 }
 
@@ -34,6 +33,12 @@ function fillObsData(data, html) {
             html.firstElementChild.firstElementChild.querySelector(`[value="${data.requestType}"]`).setAttribute("selected", "selected");
             return html;
         case "startStopStreamRecording":
+            switch (data.requestType) {
+                case "StartStreaming": data.requestType = "startStream"; break
+                case "StopStreaming": data.requestType = "stopStream"; break
+                case "StartRecording": data.requestType = "startRecording"; break
+                case "StopRecording": data.requestType = "stopRecording"; break
+            }
             html.firstElementChild.firstElementChild.value = data.requestType;
             html.firstElementChild.firstElementChild.querySelector(`[value="${data.requestType}"]`).setAttribute("selected", "selected");
             return html;

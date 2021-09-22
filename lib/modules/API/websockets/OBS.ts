@@ -46,7 +46,7 @@ function connect() {
  */
 async function sendObsData(data: any, dataToGet?: CommandActionVariables[], isRetry = false): Promise<false | any> {
     if (host.readyState === WebSocket.OPEN) {
-        getws().send(JSON.stringify(data));
+        host.send(JSON.stringify(data));
         if (dataToGet) {
             await connect();
             return await waitForRespone(data["message-id"], dataToGet);
@@ -98,23 +98,31 @@ async function waitForRespone(messageToListenFor: string, dataToGet: CommandActi
  * The base OBS request. Contains the basic info and any extra user added data.
  */
 class ObsRequest {
-    request: {"request-type": string, "message-id": string};
-    constructor(requestType:string, data: any) {
+    request: { "request-type": string, "message-id": string };
+    constructor(requestType: string, data: any) {
         this.request = {
             "request-type": requestType,
             "message-id": `Request-${messageID++}`,
         }
         this.mergeParams(data);
+        this.handleSpecialRequests(this.request);
     }
 
     mergeParams(data: any) {
         this.request = Object.assign(this.request, data);
     }
+
+    handleSpecialRequests(data: any) {
+        let keys = Object.keys(data);
+        keys.forEach(key => {
+            switch (key) {
+                case "embedPictureFormat":
+                    this.request["saveToFilePath"] = `${appData[1]}/screenshots/${Date.now()}.png`
+                    break;
+            }
+        })
+    }
 }
 
-function getws() {
-    return host
-}
 
-
-export {connect, ObsRequest, sendObsData, getws};
+export {connect, ObsRequest, sendObsData};

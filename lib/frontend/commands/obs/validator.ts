@@ -5,7 +5,7 @@ async function checkObsCommand(commandType, command) {
         case "changeScene": return getChangeSceneValue(command);
         case "replayBuffer": return getReplayBufferSelection(command);
         case "startStopStreamRecording": return getStartStopStreamingSelection(command);
-        case "screenshot": return {type: "ObsWebSocket", requestType: "TakeSourceScreenshot", variables: [], data: {embedPictureFormat: `png`}, instruction: "screenshot"}
+        case "screenshot": return {type: "ObsWebSocket", requestType: "TakeSourceScreenshot", variables: [], data: {embedPictureFormat: `png`, saveToFilePath: `${appData[1]}/test.png` }, instruction: "screenshot"}
         case "none": return {error: "No OBS instruction was selected."}
     }
 }
