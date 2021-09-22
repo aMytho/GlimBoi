@@ -71,6 +71,9 @@ class DumbCacheStore {
             } catch(e2) {
                 this.cache = {}; // If something goes wrong, just return an empty object
             }
+        } finally {
+            const migrations: typeof import("../modules/migrations") = require(appData[0] + "/modules/migrations.js");
+            migrations.migrate();
         }
     }
 }
