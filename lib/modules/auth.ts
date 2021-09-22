@@ -105,7 +105,10 @@ async function requestUserAuthorization() {
 }
 
 
-
+/**
+ * Generates a code verifier and challenge for glimesh auth.
+ * @returns {Promise<glimeshPKCEInfo>}
+ */
 async function generateVerifierAndChallenge() {
     let array = new Uint32Array(56 / 2);
     window.crypto.getRandomValues(array);
@@ -145,6 +148,10 @@ function getToken(): accessToken {
     return accessToken
 }
 
+/**
+ * Returns the refresh token if it exists. If not returns ""
+ * @returns
+ */
 async function getRefreshToken() {
     try {
         let data = await fs.readFile(`${appData[1]}/data/refresh.txt`, {encoding: "utf8"});
@@ -154,11 +161,19 @@ async function getRefreshToken() {
     }
 }
 
+/**
+ * Sets a new refresh token
+ * @param token The token to set
+ */
 function setRefreshToken(token:string) {
     fs.writeFile(`${appData[1]}/data/refresh.txt`, token, {encoding: "utf8", flag: "w"});
 }
 
-function getClientID() {
+/**
+ * Returns the client ID
+ * @returns {string} The client ID
+ */
+function getClientID(): string {
     return CLIENT_ID;
 }
 

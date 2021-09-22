@@ -39,6 +39,11 @@ type accessToken = string
  */
 type authStatusNumber = 0 | 1 | 2
 
+type glimeshPKCEInfo = {
+    verifier: string;
+    challenge: string;
+}
+
 /**
  * String representing the type of webhook.
  */
@@ -49,7 +54,7 @@ type glimeshRequest = "userID" | "channelID"
 /**
  * The event we want to listen for
  */
-type glimeshEvent = "chat" | "followers" | "subscribers"
+type glimeshEvent = "chat" | "followers" | "subscribers" | "viewers"
 
 interface incomingGlimeshMessage {
     id: string; // We convert this to a number as soon as possible.

@@ -24,7 +24,8 @@ type ChatHandle = typeof import("../lib/modules/chat")// @ts-ignore
 type ChatChannels = typeof import("../lib/modules/chat/chatChannels")// @ts-ignore
 type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
 type LogHandle = typeof import("../lib/modules/log")// @ts-ignore
-type CacheStore = typeof import("../lib/modules/cache")
+type CacheStore = typeof import("../lib/modules/cache")// @ts-ignore
+type Server = typeof import("../lib/modules/server")
 
 type Type = typeof import("bootstrap")
 type pageState = "home" | "commands" | "points" | "events" | "users" | "ranks" | "media" | "music" | "mod" | "settings" | "chat"
