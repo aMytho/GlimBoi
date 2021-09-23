@@ -29,7 +29,6 @@ async function requestToken(alertUser = false): Promise<accessToken | false> {
         });
 
         let data = await res.json();
-        console.log(data);
         try {
             if (data.access_token == undefined) {
                 errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
