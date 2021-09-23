@@ -45,44 +45,43 @@ function testGuildedMessage() {
 /**
  * Builds the message to be sent to the webhook.
  */
-function buildGuildedMessage([thumbnail, title, streamer, guildedMessage]):string {
+function buildGuildedMessage([thumbnail, title, streamer, guildedMessage]): string {
     if (thumbnail) {
         let body = {
             "content": guildedMessage,
             "embeds": [{
-            "title": `${title}`,
-            "url": `https://glimesh.tv/${streamer}`,
-            "color": 3164874,
-            "footer": {
-            "text": "Sent from Glimboi"
-            },
-            "image": {
-            "url": `${thumbnail}`
-            },
-            "author": {
-            "name": `${streamer} is now streaming`
-            }
+                "title": `${title}`,
+                "url": `https://glimesh.tv/${streamer}`,
+                "color": 3164874,
+                "footer": {
+                    "text": "Sent from Glimboi"
+                },
+                "image": {
+                    "url": `${thumbnail}`
+                },
+                "author": {
+                    "name": `${streamer} is now streaming`
+                }
             }
             ]
-           }
-           return JSON.stringify(body);
+        }
+        return JSON.stringify(body);
     } else {
         let body = {
             "content": guildedMessage,
             "embeds": [{
-            "title": `${streamer} just went live on Glimesh`,
-            "url": `https://glimesh.tv/${streamer}`,
-            "color": 3164874,
-            "footer": {
-            "text": "Sent from Glimboi"
-            },
-            "author": {
-            "name": `${streamer} is now streaming`
-            }
-            }
-            ]
-           }
-           return JSON.stringify(body);
+                "title": `${streamer} just went live on Glimesh`,
+                "url": `https://glimesh.tv/${streamer}`,
+                "color": 3164874,
+                "footer": {
+                    "text": "Sent from Glimboi"
+                },
+                "author": {
+                    "name": `${streamer} is now streaming`
+                }
+            }]
+        }
+        return JSON.stringify(body);
     }
 }
 
