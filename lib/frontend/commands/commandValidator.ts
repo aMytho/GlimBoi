@@ -10,8 +10,9 @@
     let commandPoints = parseFloat((document.getElementById(`${mode}CommandPoints`) as HTMLInputElement).value);
     let commandUses = parseFloat((document.getElementById(`${mode}CommandUses`) as HTMLInputElement).value);
     let commandCooldown = parseFloat((document.getElementById(`${mode}CommandCooldown`) as HTMLInputElement).value)
-    let commandRank = (document.getElementById(`${mode}CommandRank`) as HTMLInputElement).value;
-    let commandRepeat = (document.getElementById(`${mode}CommandRepeat`) as HTMLInputElement).value;
+    let commandRank = (document.getElementById(`${mode}CommandRank`) as HTMLSelectElement).value;
+    let commandRepeat = (document.getElementById(`${mode}CommandRepeat`) as HTMLSelectElement).value;
+    let commandDelete = (document.getElementById(`${mode}CommandDelete`) as HTMLSelectElement).value;
 
     // First we check the command name.
     commandName = commandName.replace(new RegExp("^[!]+"), "").trim(); // Removes the ! if it exists
@@ -66,9 +67,12 @@
     //Now we set the repeat switch.
     // @ts-ignore
     if (commandRepeat == "false") { commandRepeat = false } else { commandRepeat = true };
+    // @ts-ignore
+    if (commandDelete == "false") { commandDelete = false } else { commandDelete = true };
 
     // Now we can assume the command is fully safe to add to the db.
-    return {commandName: commandName, points: commandPoints, uses: commandUses, cooldown: commandCooldown, rank: commandRank, repeat: commandRepeat};
+    return {commandName: commandName, points: commandPoints, uses: commandUses, cooldown: commandCooldown,
+        rank: commandRank, repeat: commandRepeat, shouldDelete: commandDelete};
 }
 
 /**

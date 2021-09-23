@@ -25,14 +25,16 @@ class Command implements CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
+    shouldDelete: boolean
     actions: ChatAction[]; //What the command will do once activated
-    constructor({commandName, uses, points, cooldown, rank, repeat, actions}:CommandContructor) {
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
         this.points = points; //Points required per command
         this.cooldown = cooldown; // How long until it can be activated again?
         this.rank = rank; //Default is everyone
         this.repeat = repeat; // should this command be repeatable?
+        this.shouldDelete = shouldDelete; // Should the command be deleted after use? (!cmd)
         this.actions = actions; // What the command will do once activated
     }
 }
@@ -49,61 +51,19 @@ function updatePath(updatedPath:string) {
  * Creates a new command. Reloads the current commands after completion.
  * @returns A command
  */
-function addCommand(commandData:CommandContructor) {
+function addCommand(commandData: CommandContructor) {
     let newCommand = new Command(commandData);
     console.log(newCommand);
-  	try {
-    	//inserts a document as a command. Uses the command made above.
-    	commandsDB.insert(newCommand, function(err, doc) {
-    	    console.log('Inserted command', doc.commandName, ' to the commands DB');
-  		});
-  	} catch(e) {
-    	console.log(e);
-    	console.log("Failure to add Command. Ensure only one instance of the bot is running and check your commands.db file (in the data folder) for curruption.")
-  	}
-  	return newCommand;
-}
-
-/**
- * Filters a command from chat and if valid adds it
- * @param {string} commandName The name of the command
- * @param {string} commandData The data for the chatmessage
- * @param {string} type !command or !cmd
- */
-function addCommandFilter(commandName:commandName, commandData:string, type: "!command" | "!cmd") {
-  	commandName = commandName.toLowerCase()
-  	if (commandName == null || commandName == undefined || commandName == "" || commandName == " ") {
-    	ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi" )
-    	return
-  	}
-  	if (type == "!command") {
-    	commandData = commandData.substring(12 + commandName.length + 2)
-    	console.log(commandData)
-  	} else {
-    	commandData = commandData.substring(8 + commandName.length + 2)
-    	console.log(commandData)
-  	}
-  	commandData = commandData.trim()
-  	if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
-    	ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ")
-    	return
-  	}
-  	commandName = commandName.replace(new RegExp("^[\!]+"), "").trim();
-  	console.log(commandName, commandData);
-  	findCommand(commandName).then(data => {
-    	if (data !== null) {
-      		console.log(commandName + " already exists.")
-      		ChatMessages.filterMessage(commandName + " already exists", "glimboi")
-    	} else {
-      		let newCMD = addCommand({commandName: commandName, uses: 0, points: 0, cooldown: 0, rank: "Everyone", repeat: false, actions: [new ChatAction.ChatMessage({message: commandData})]});
-      		ChatMessages.filterMessage(commandName + " added!", "glimboi");
-      		try {
-        		addCommandTable({commandName: commandName, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions})
-      		} catch(e) {
-        		console.log(e)
-      		}
-    	}
-  	})
+    try {
+        //inserts a document as a command. Uses the command made above.
+        commandsDB.insert(newCommand, function (err, doc) {
+            console.log('Inserted command', doc.commandName, ' to the commands DB');
+        });
+    } catch (e) {
+        console.log(e);
+        console.log("Failure to add Command. ^^^")
+    }
+    return newCommand;
 }
 
 /**
@@ -111,7 +71,7 @@ function addCommandFilter(commandName:commandName, commandData:string, type: "!c
  * @param {string} commandName Lowercase version of the command name.
  */
 function removeCommand(commandName: commandName) {
-    commandsDB.remove({ commandName: commandName }, {}, function (err, numRemoved) {
+    commandsDB.remove({ commandName: commandName }, {}, function () {
         console.log(commandName + " was removed from the db");
     });
 }
@@ -121,7 +81,9 @@ function removeCommand(commandName: commandName) {
  */
 function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat }:CommandContructor) {
     console.log(commandName, actions, cooldown, uses, points, rank, repeat)
-    commandsDB.update({ commandName: commandName }, { $set: { actions: actions, cooldown: Number(cooldown), uses: Number(uses), points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
+    commandsDB.update({ commandName: commandName }, { $set: {
+        actions: actions, cooldown: Number(cooldown), uses: Number(uses),
+        points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
     });
 }
@@ -187,10 +149,14 @@ function addCommandCount(command: commandName) {
  * Explains how to use commands in chat.
  */
 function info() {
-    ChatMessages.filterMessage("placeholder", "glimboi")
+    ChatMessages.filterMessage(`Glimboi command docs -> https://glimboi.com/docs/intro/commands/`, "glimboi")
 }
 
-async function countCommands() {
+/**
+ * Counts how many commands are in the database.
+ * @returns
+ */
+async function countCommands(): Promise<number> {
     return new Promise(resolve => {
         commandsDB.count({}, function (err, count) {
             resolve(count);
@@ -198,6 +164,6 @@ async function countCommands() {
     })
 }
 
-export { addCommand, addCommandCount, addCommandFilter, ChatAction, CommandRunner,
+export { addCommand, addCommandCount, ChatAction, CommandRunner,
 countCommands, editCommand, findCommand, getAll, info,
 randomRepeatCommand, removeCommand , updatePath};

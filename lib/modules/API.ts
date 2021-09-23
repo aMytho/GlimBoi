@@ -153,6 +153,16 @@ async function sendMessage(message, isSecondAttempt?: boolean) {
     }
 }
 
+/**
+ * Deletes a message from glimesh chat with a given ID
+ * @param messageID The message ID to delete
+ */
+async function deleteMessage(messageID: number) {
+    let query = `mutation{deleteChatMessage(channelId: ${channelID}, messageId: ${messageID}) {id}}`
+    let response = await glimeshQuery(query);
+    console.log(response);
+    return response
+}
 
 /**
  * Makes a request (mutation) to the Glimesh API
@@ -274,6 +284,6 @@ function getStreamerName() {
     return streamer;
 }
 
-export { getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
+export { deleteMessage, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
 getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact,
 sendMessage, Webhooks, WebSockets};

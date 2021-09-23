@@ -1,6 +1,6 @@
 // handles all the data from command modals
 
-const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js")
+const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js");
 
 function prepareActions(mode) {
    // Activates all bootstrap tooltips
@@ -173,6 +173,16 @@ async function insertEditData(command:CommandType) {
     } else if (command.repeat == false) {
         repeatEnabled.innerHTML += "<option value=\"" + "true" + "\">" + "Enabled" + "</option>";
         repeatEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
+    }
+
+    // Enables or disables the shouldDelete property
+    let deleteEnabled = document.getElementById("editCommandDelete")!;
+    if (command.shouldDelete == true) {
+        deleteEnabled.innerHTML += "<option value=\"" + "true" + "\" selected>" + "Enabled" + "</option>";
+        deleteEnabled.innerHTML += "<option value=\"" + "false" + "\">" + "Disabled (Default)" + "</option>";
+    } else if (command.shouldDelete == false) {
+        deleteEnabled.innerHTML += "<option value=\"" + "true" + "\">" + "Enabled" + "</option>";
+        deleteEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
     }
 
     // Now we show the actions. If none exist (v1 command) we convert the message prperties to their action equivalents

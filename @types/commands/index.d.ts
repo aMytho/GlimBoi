@@ -5,6 +5,7 @@ interface CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
+    shouldDelete: boolean;
     actions: ChatAction[];
     message?: string
     sound?: string
@@ -36,6 +37,10 @@ interface CommandContructor {
      * Will this command be on the repeat list?
      */
     repeat: boolean;
+    /**
+     * Will the command be deleted once used? (!cmd)
+     */
+     shouldDelete: boolean;
     /**
      * What the command does
      */

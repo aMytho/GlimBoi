@@ -1,4 +1,4 @@
-// This file handles commands. Runs, replace var, ,repeats, etc
+// This file handles commands. Runs, replace vars, repeats, etc
 
 // Holds all of the commands that are on cooldown
 let cooldownArray:commandName[] = [];
@@ -16,14 +16,21 @@ async function checkCommand(data) {
         let commandExists = await CommandHandle.findCommand(command);
         if (commandExists !== null) {
             try {
-                let hasPerms = await permissionCheck(commandExists, data.user.username.toLowerCase())
+                let hasPerms = await permissionCheck(commandExists, data.user.username.toLowerCase());
                 if (hasPerms == "ACCEPTED") {
                     runCommand({message: cleaned, command: commandExists, user: data.user}); // Run the command passing the message, command, and the user.
+                    if (commandExists.shouldDelete) {
+                        let messageDeleted = await ApiHandle.deleteMessage(data.id);
+                        if (messageDeleted) {
+                            LogHandle.logEvent({event: "Delete Message" , users: ["Glimboi", data.user.username], data: {messageID: data.id}})
+                            adjustMessageState(data.id, "deleted");
+                        }
+                    }
                 } else if (hasPerms == "NEWUSER") {
                     checkCommand(data);
                 } else { // They don't have permission
                     ChatMessages.filterMessage(hasPerms, "glimboi");
-                    console.log(hasPerms)
+                    console.log(hasPerms);
                 }
             } catch (e) {}
         } else {
