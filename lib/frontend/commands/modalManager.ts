@@ -180,7 +180,7 @@ async function insertEditData(command:CommandType) {
     if (command.shouldDelete == true) {
         deleteEnabled.innerHTML += "<option value=\"" + "true" + "\" selected>" + "Enabled" + "</option>";
         deleteEnabled.innerHTML += "<option value=\"" + "false" + "\">" + "Disabled (Default)" + "</option>";
-    } else if (command.shouldDelete == false) {
+    } else {
         deleteEnabled.innerHTML += "<option value=\"" + "true" + "\">" + "Enabled" + "</option>";
         deleteEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
     }

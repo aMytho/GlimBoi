@@ -79,11 +79,11 @@ function removeCommand(commandName: commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  */
-function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat }:CommandContructor) {
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete }:CommandContructor) {
     console.log(commandName, actions, cooldown, uses, points, rank, repeat)
     commandsDB.update({ commandName: commandName }, { $set: {
         actions: actions, cooldown: Number(cooldown), uses: Number(uses),
-        points: Number(points), rank: rank, repeat: repeat } }, {}, function (err, numReplaced) {
+        points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete } }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
     });
 }
