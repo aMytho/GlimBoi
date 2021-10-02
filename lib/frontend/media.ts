@@ -19,86 +19,19 @@ function loadMediaTable() {
     	      		title: "File Path",
 	          		data: "path",
         		},
-                {
-                    title: "Position",
-                    data: "position",
-              },
       		],
-            pageLength: 25
+            pageLength: 25,
+            columnDefs: [
+            ]
     	});
-        $('#obsResources tbody').on('click', 'tr', async function () {
+        $('#obsResources').on('click', 'tbody tr', async function () {
             let data = MediaTable.row( this ).data();
-            editMedia(data.name);
+            let mediaToBeEditied = await MediaHandle.getMediaByName(data.name);
+            const MediaUI:typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+            MediaUI.loadEditModal(mediaToBeEditied);
             $('#editMediaModal').modal("show");
         } );
   	});
-}
-
-
-async function addMedia() {
-    let mName = document.getElementById("addMediaName").innerText.trim()
-    let media = (document.getElementById("addMediaInput") as HTMLFormElement)
-    if (mName == "" || mName == undefined || mName == null) {
-        document.getElementById("addMediaError").innerText = "You must add a media name."
-        document.getElementById("addMediaName").parentElement.classList.add("errorClass")
-        return
-    }
-    if (media.files[0] == undefined || media.files[0] == null ) {
-        document.getElementById("addMediaError").innerText = "You must add a media file."
-        document.getElementById("addMediaInput").parentElement.classList.add("errorClass")
-        return
-    }
-    console.log(mName, media);
-    if (await MediaHandle.getMediaByName(mName) == null && mName !== "null") {
-        MediaHandle.addMedia(mName, media.files[0].path, media.files[0].type, (document.getElementById("addMediaPosition") as HTMLSelectElement).value);
-        MediaTable.row.add({ name: mName.toLowerCase(), type: media.files[0].type, path: media.files[0].path, position: (document.getElementById("addMediaPosition") as HTMLSelectElement).value })
-        MediaTable.draw(); //Show changes
-        $("#addMediaModal").modal("hide");
-        document.getElementById("mediaAddModalContent").innerHTML = addMediaModal()
-    } else {
-        document.getElementById("addMediaError").innerText = "That media is already added.";
-    }
-}
-
-async function editMedia(name) {
-    let mediaData = await MediaHandle.getMediaByName(name);
-    if (mediaData !== null) {
-        document.getElementById("editMediaBody").innerHTML = fillMediaEdit(mediaData);
-    } else {
-        document.getElementById("editMediaError").innerText = "That media file does not exist."
-    }
-}
-
-function editMediaCheck() {
-    let newName = document.getElementById("mediaEditName").innerText.substring(4).trim().toLowerCase()
-    let newPosition = (document.getElementById("editMediaFileInput") as HTMLInputElement).value
-    let newPath = (document.getElementById("editMediaInput") as HTMLFormElement)
-    console.log(newPosition, newPath)
-    if (newName == "" || newName == undefined || newName == null) {
-        document.getElementById("editMediaError").innerText = "You must have a media name."
-        document.getElementById("editMediaName").parentElement.classList.add("errorClass")
-        return
-    }
-    if (newPath.files[0] == undefined || newPath.files[0] == null ) {
-        MediaHandle.editMedia(newName, null, null, newPosition);
-    } else {
-        MediaHandle.editMedia(newName, newPath.files[0].path, newPath.files[0].type, newPosition);
-    }
-    let indexes = MediaTable
-      	.rows()
-      	.indexes()
-      	.filter(function (value, index) {
-	    	return newName === MediaTable.row(value).data().name;
-      	});
-    	let row = MediaTable.row(indexes[0]);
-    	let data = row.data();
-    	data.position = newPosition;
-        if (newPath.files[0] !== undefined && newPath.files[0] !== null) {
-            data.path = newPath.files[0].path;
-            data.type = newPath.files[0].type
-        }
-    	row.data(data).draw();
-    $("#editMediaModal").modal("hide");
 }
 
 async function removeMedia(media) {
@@ -133,21 +66,18 @@ async function displayMedia(media, source) {
             document.getElementById("errorDisplayMedia").innerText = "The content type was not valid. Please select a video, image, or GIF.";
         }
     } else if(content.type.startsWith("image")) {
-        MediaHandle.activateMedia(content, "imageGif");
+        Server.activateMedia(content, "imageGif");
     } else if (content.type.startsWith("video")) {
-        MediaHandle.activateMedia(content, "video");
+        Server.activateMedia(content, "video");
     } else if (content.type.startsWith("audio")) {
-        MediaHandle.activateMedia(content, "soundEffect");
+        Server.activateMedia(content, "soundEffect");
     }
 }
 
 async function prepMediaModals() {
-    $('#addMediaModal').on('click', function (e) {
-    	const MediaUI:typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+    $('#addMediaButton').on('click', function (e) {
+        const MediaUI:typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
         MediaUI.loadAddModal();
-  	})
-    $('#editMediaModal').on('hidden.bs.modal', function (e) {
-    	document.getElementById("mediaEditModalContent").innerHTML = editMediaModal();
   	})
     $('#removeMediaModal').on('hidden.bs.modal', function (e) {
     	document.getElementById("mediaRemoveModalContent").innerHTML = removeMediaModal();
@@ -175,4 +105,23 @@ async function prepMediaModals() {
         }
   	})// Only works in production
     document.getElementById("pathOfOverlay").innerText = appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/index.html")
+}
+
+function saveMediaSettings(reset: boolean) {
+    if (reset) {
+        CacheStore.setMultiple([
+            {serverPort: 3000},
+            {serverUrl: "localhost"},
+        ])
+    } else {
+        CacheStore.setMultiple([
+            {serverPort: parseInt((document.getElementById("mediaPort") as HTMLInputElement).value.trim())},
+            {serverUrl: (document.getElementById("mediaUrl") as HTMLInputElement).value.trim()},
+        ])
+    }
+}
+
+function showMediaSettings() {
+    (document.getElementById("mediaPort") as HTMLInputElement).value = CacheStore.get("serverPort", 3000).toString();
+    (document.getElementById("mediaUrl") as HTMLInputElement).value = CacheStore.get("serverUrl", "localhost").toString();
 }

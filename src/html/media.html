@@ -19,6 +19,8 @@
                         data-target="#playImageModal">Display Media</a>
                     <a class="btn btn-info btn-group mt-2 btn-inline" href="#" data-toggle="modal"
                         data-target="#overlayInfo">Overlay Info</a>
+                    <a class="btn btn-info btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#mediaSettings" onclick="showMediaSettings()">Overlay Settings</a>
                 </div>
             </div>
             <h5 class="whiteText text-center mt-2">Add media to use it in command effects. The overlay must be active in
@@ -146,6 +148,35 @@
                 <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-outline-primary"
                     onclick="displayMedia(document.getElementById('playImageModalSelect').value)">Display</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="mediaSettings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Media Settings</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body whiteText text-center">
+                <input class="icon-input settingsInput" type="text" placeholder="IP to host media server."
+                id="mediaUrl" style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                <input class="icon-input settingsInput" type="number" placeholder="3000"
+                id="mediaPort" style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                <p>Enter the URL and port of the overlay. Default URL is localhost (your own machine) and 3000 for the port.</p>
+                <p>You only need to change this if Glimboi and OBS are running on separate devices. (Change IP so other devices can access it.)</p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="saveMediaSettings(true)">Reset</button>
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal"
+                    onclick="saveMediaSettings(false)">Save</button>
             </div>
         </div>
     </div>
