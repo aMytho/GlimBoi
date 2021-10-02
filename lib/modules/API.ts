@@ -36,6 +36,7 @@ async function glimeshQuery(query): Promise<Glimesh.RootQueryType["data"] | fals
     let token = AuthHandle.getToken();
     let result = await fetch("https://glimesh.tv/api/graph", {method: "POST", body: query, headers: {Authorization: `Bearer ${token}`}});
     let parsedResult:Glimesh.RootQueryType = await result.json();
+    console.log(parsedResult);
     if (parsedResult.errors) {
         return glimeshError(parsedResult);
     } else {
@@ -89,17 +90,17 @@ async function getUserID(user: string): Promise<number | "INVALID" | false> {
  * @async
  * @returns {Promise}
  */
-async function getStats(): Promise<{viewcount: number, followers: number}> {
-    let query = `query {channel(id: "${channelID}") {stream {countViewers, streamer {countFollowers}}}}`;
+async function getStats(): Promise<{viewcount: number, followers: number, streamTimeSeconds: number}> {
+    let query = `query {channel(id: "${channelID}") {streamer {countFollowers}, stream {countViewers, metadata(last: 1) {edges {node {streamTimeSeconds}}}}}}`;
     let response = await glimeshQuery(query);
     if (typeof response == "object" && response !== null) {
         if (Object.values(response.channel.stream).includes(null)) {
-            return {viewcount: 0, followers: 0}
+            return {viewcount: 0, followers: 0, streamTimeSeconds: 0};
         } else {
-            return {viewcount: response.channel.stream.countViewers, followers: response.channel.streamer.countFollowers}
+            return {viewcount: response.channel.stream.countViewers, followers: response.channel.streamer.countFollowers, streamTimeSeconds: response.channel.stream.metadata.edges[0].node.streamTimeSeconds}
         }
     } else {
-        return {viewcount: 0, followers: 0}
+        return {viewcount: 0, followers: 0, streamTimeSeconds: 0};
     }
 }
 

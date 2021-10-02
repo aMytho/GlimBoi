@@ -19,7 +19,8 @@ let listofvariables: (string | CustomUserVaribles)[] = [
     "$youtube", // youtube channel URL
     "$twitter", // twitter profile URL
     "$catfact", // Random cat fact
-    "$dogfact", // Random dog fact,
+    "$dogfact", // Random dog fact
+    "$uptime" // How long the user has been streaming.
  // Custom variables
 ]
 
@@ -115,6 +116,12 @@ async function searchForVariables(data: {message:string, activation?:string, use
           let dogFact = await ApiHandle.randomAnimalFact("dog");
           return dogFact
       break;
+      case "$uptime":
+            let uptime = await ApiHandle.getStats();
+            if (uptime) {
+                return uptime.streamTimeSeconds / 60;
+            }
+            return NaN
       default: return replaceCustomVariable(variable);
         break;
     }
