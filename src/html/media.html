@@ -1,0 +1,193 @@
+<div class="card-deck m-3">
+    <div class="col-lg-12 mx-lg-0 mt-3 mt-lg-2 col-12 p-0">
+        <div class="card glimPanel whiteTex overflow-auto p-3 w-100 m-0">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <a class="btn btn-primary btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#addMediaModal" id="addMediaButton">Add Media</a>
+                    <a class="btn btn-danger btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#removeMediaModal">Remove Media</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <a class="btn btn-info btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#showMediaModal" onclick="Server.startServer()">Launch Overlay</a>
+                    <a class="btn btn-info btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#playAudioModal">Play Audio</a>
+                    <a class="btn btn-info btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#playImageModal">Display Media</a>
+                    <a class="btn btn-info btn-group mt-2 btn-inline" href="#" data-toggle="modal"
+                        data-target="#overlayInfo">Overlay Info</a>
+                </div>
+            </div>
+            <h5 class="whiteText text-center mt-2">Add media to use it in command effects. The overlay must be active in
+                OBS or a browser to display/hear the media.</h5>
+            <table id="obsResources" class="display table w-100"></table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add Media -->
+<div class="modal fade" id="addMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="height: 90%;width: 90%;max-width: none;">
+        <div class="modal-content glimPanel whiteText h-100" id="mediaContent">
+
+        </div>
+    </div>
+</div>
+<!-- Modal: Add Media -->
+
+
+<!-- Modal: Edit Media -->
+<div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="height: 90%;width: 90%;max-width: none;">
+        <div class="modal-content glimPanel whiteText h-100" id="mediaContentEdit">
+
+        </div>
+    </div>
+</div>
+<!-- Modal: Edit Media -->
+
+<!-- Modal: Remove Media -->
+<div class="modal fade" id="removeMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Remove Media</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body" id="removeMediaBody">
+                <div class="icon-input-container">
+                    <input class="icon-input" type="text" placeholder="Media Name" id="mediaRemoveInput">
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <p id="RemoveMediaError"></p>
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button class="btn btn-outline-danger" id="mediaRemoveButton"
+                    onclick="removeMedia(document.getElementById('mediaRemoveInput').value)">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal: Media -->
+
+<div class="modal fade" id="showMediaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Overlay Launched</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body whiteText">
+                <p>The OBS overlay has launched. Copy the following link and paste it in a browser source.</p>
+                <p class="mt-2" id="pathOfOverlay" style="color: aquamarine;"></p>
+                <p class="mt-2">The overlay will launch automatically when you join a chat. This button is only for
+                    testing purposes. If you encounter any issues with the overlay be sure to let us know! Usually a
+                    simple restart fixes it.</p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="playAudioModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Play Audio</h4>
+            </div>
+            <div class="modal-body whiteText text-center" id="audioBodyModal">
+                <select id="playAudioModalSelect">
+                    <option value="null">None</option>
+                </select>
+                <p id="audioMessage">Select the audio to be played in the overlay</p>
+                <p class="mt-2 errorMessage" id="errorDisplayMedia2"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-primary"
+                    onclick="displayMedia(document.getElementById('playAudioModalSelect').value, 'audio')">Play</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="playImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Display Image/GIF/Video</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body whiteText text-center" id="displayImageModalBody">
+                <select id="playImageModalSelect">
+                    <option value="none">None</option>
+                </select>
+                <p>Select the media to be shown in the overlay</p>
+                <p class="mt-2 errorMessage" id="errorDisplayMedia"></p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-primary"
+                    onclick="displayMedia(document.getElementById('playImageModalSelect').value)">Display</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="overlayInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Overlay Info</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body whiteText text-center">
+                <p>You can have various actions in the bot trigger media. You can play audio and display images,GIFs,
+                    and videos. You must add the overlay as a browser source in OBS. The overlay is index.html in
+                    <span><a onclick="shell.openPath(dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays')"
+                            href="#">this</a></span> directory. It will allow your viewers to hear and see the media.
+                </p>
+                <p class="mt-2">The overlay will launch when you join a chat. To test it without joining a chat you can
+                    launch it from the overlay tab. Then open the file in the browser. Click anywhere on the page and it
+                    will become active.</p>
+                <p class="mt-2">To add media on command acitvation edit a command and add a corresponding action. <b>You
+                        must add the media on this page first.</b> Then the rest of the bot can use it.</p>
+                <p class="mt-2">If the overlay is not connecting try refreshing the cache in OBS and check that the
+                    overlay status is active in the nav bar.</p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #obsResources tr[class="even"] {
+        cursor: pointer;
+    }
+
+    #obsResources tr[class="odd"] {
+        cursor: pointer;
+    }
+</style>

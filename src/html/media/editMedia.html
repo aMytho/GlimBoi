@@ -1,12 +1,12 @@
 <!--Header-->
 <div class="modal-header text-center">
-    <h4 class="modal-title w-100">Add Media</h4>
+    <h4 class="modal-title w-100">Edit Media</h4>
 </div>
 <!--Body-->
 <div class="modal-body" style="display: flex; justify-content: center; padding: 4rem 0;overflow: auto;">
-    <div id="mySidenavR" class="sidenavR">
+    <div id="mySidenavR2" class="sidenavR">
         <a href="javascript:void(0)" class="closebtn"
-            onclick="document.getElementById('mySidenavR').style.width = '0';">×</a>
+            onclick="document.getElementById('mySidenavR2').style.width = '0';">×</a>
         <h4 class="text-center">Required Settings</h4>
         <table class="table table-hover mx-1">
             <thead>
@@ -16,27 +16,29 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr style="display: none;">
                     <td data-toggle="tooltip" data-placement="top" title="The name of the media">Name</td>
-                    <td><input type="text" class="settingInput" id="addMediaName" placeholder="Media name" /></td>
+                    <td><input type="text" class="settingInput" id="editMediaName" placeholder="Media name" /></td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The file to play.">File</td>
                     <td contenteditable="false">
                         <input type="file"
-                        id="addMediaInput" name="Media File"
-                        accept="image/png, image/jpeg, image/gif, audio/mp3, audio/wav, video/mp4, video/webm, video/mov,"></td>
+                        id="editMediaInput" name="Media File"
+                        accept="image/png, image/jpeg, image/gif, audio/mp3, audio/wav, video/mp4, video/webm, video/mov,">
+                        <p>If empty used existing media.</p>
+                    </td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="How may pixels from the left side">Position X
                     </td>
-                    <td><input type="text" class="settingInput" id="addMediaPositionX" placeholder="Media Position"
+                    <td><input type="text" class="settingInput" id="editMediaPositionX" placeholder="Media Position"
                             value="0" /></td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="How many pixels from the top side.">Position Y
                     </td>
-                    <td><input type="text" class="settingInput" id="addMediaPositionY" placeholder="Media Position"
+                    <td><input type="text" class="settingInput" id="editMediaPositionY" placeholder="Media Position"
                             value="0" /></td>
                 </tr>
             </tbody>
@@ -53,40 +55,40 @@
             <tbody>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The duration of the media">Duration (seconds)</td>
-                    <td><input type="text" class="settingInput" id="addMediaDuration"/></td>
+                    <td><input type="text" class="settingInput" id="editMediaDuration"/></td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The duration of the media">Volume 1-10</td>
-                    <td><input type="range" class="settingInput" id="addMediaVolume" min="0" max="10" placeholder="2" /></td>
+                    <td><input type="range" class="settingInput" id="editMediaVolume" min="0" max="10" placeholder="2" /></td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The height of the media">Height</td>
-                    <td><input type="text" class="settingInput" id="addMediaHeight" /></td>
+                    <td><input type="text" class="settingInput" id="editMediaHeight" /></td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The width of the media">Width</td>
-                    <td><input type="text" class="settingInput" id="addMediaWidth" /></td>
+                    <td><input type="text" class="settingInput" id="editMediaWidth" /></td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The speed of the media">Speed</td>
-                    <td><input type="text" class="settingInput" id="addMediaSpeed" /></td>
+                    <td><input type="text" class="settingInput" id="editMediaSpeed" /></td>
                 </tr>
                 </tbody>
             </table>
         <div class="mt-3">
             <h5 class="text-center">Any errors will appear below</h5>
-            <ul id="addMediaErrors">
+            <ul id="editMediaErrors">
 
             </ul>
         </div>
     </div>
-    <span id="addOpenMenu" style="font-size:30px;cursor:pointer;position: absolute;top: 10px;right: 10px;"
-        onclick="document.getElementById('mySidenavR').style.width = '50%';">☰</span>
+    <span id="editOpenMenu" style="font-size:30px;cursor:pointer;position: absolute;top: 10px;right: 10px;"
+        onclick="document.getElementById('mySidenavR2').style.width = '50%';">☰</span>
     <div class="container">
         <div class="row">
             <div class="col-6">
                 <h4>Modify settings to begin!</h4>
-                <div id="addMediaList">
+                <div id="editMediaList">
                 </div>
             </div>
             <div class="col-6">
@@ -98,14 +100,14 @@
 </div>
 <!--Footer-->
 <div class="modal-footer">
-    <p id="errorMessageAdd"></p>
+    <p id="errorMessageEdit"></p>
     <div class="dropleft">
         <button type="button" class="btn btn-outline-info" data-toggle-second="tooltip" data-placement="top"
-            title="Learn about action scripts" onclick="loadLink('glimboi.com/docs/intro/media/')">Info</button>
+            title="Learn about action scripts" onclick="loadLink('glimboi.com/docs/intro/commands/')">Info</button>
         <button type="button" class="btn btn-outline-warning" data-dismiss="modal" data-toggle-second="tooltip"
             data-placement="top" title="Close">Close</button>
         <button class="btn btn-outline-primary" data-toggle-second="tooltip" data-placement="top" title="Add Media"
-            id="addMediaButtonModal">Add</button>
+            id="editMediaButtonModal">Edit</button>
     </div>
 
 </div>
