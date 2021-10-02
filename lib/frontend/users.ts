@@ -382,26 +382,26 @@ async function loadUserTable() {
             }],
         pageLength: 25
     });
-    $('#userTable tbody tr .deletionIcon').on('click', async function (e) {
+    $('#userTable').on('click', 'tbody tr .deletionIcon', async function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         removeUserFromTable(data.userName);
         UserHandle.removeUser(data.userName, false, "Glimboi");
     })
-    $('#userTable tbody tr').on('click', '.quoteIcon', async function (e) {
+    $('#userTable').on('click', 'tbody tr .quoteIcon', async function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         let user = await UserHandle.findByUserName(data.userName) as UserType;
         console.log('Building quote list with ' + user.userName)
         makeList(data);
     })
-    $('#userTable tbody tr').on('click', 'a', function (e) {
+    $('#userTable').on('click', ' tbody tr a', function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         console.log(data)
         loadLink("glimesh.tv/" + data.userName)
     });
-    $('#userTable tbody tr').on('click', async function (e) {
+    $('#userTable').on('click', ' tbody tr', async function (e) {
         console.log("zzz");
         let data = userTable.row($(this)).data();
         console.log(data);

@@ -53,7 +53,7 @@ function loadCommandTable() {
             }],
             pageLength: 25
         });
-        $('#example tbody').on('click', 'tr', async function () {
+        $('#example').on('click', 'tbody tr', async function () {
             let data = table.row( this ).data();
             const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
             let commandClicked = await CommandHandle.findCommand(data.commandName);
