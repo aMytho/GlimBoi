@@ -11,7 +11,6 @@ let hasAuthed = false;
 async function requestToken(alertUser = false): Promise<accessToken | false> {
     return new Promise(async resolve => {
         let refreshToken = await getRefreshToken();
-        console.log("Refresh token: " + refreshToken);
         if (!refreshToken) {
             errorMessage("Auth Error", "Please authorize the bot first.");
         }
@@ -121,7 +120,6 @@ async function generateVerifierAndChallenge() {
         return ('0' + dec.toString(16)).substr(-2)
     }
 
-
     function sha256(plain) { // returns promise ArrayBuffer
         const encoder = new TextEncoder();
         const data = encoder.encode(plain);
@@ -144,7 +142,7 @@ async function generateVerifierAndChallenge() {
  * Returns the access token.
  */
 function getToken(): accessToken {
-    return accessToken
+    return accessToken;
 }
 
 /**
