@@ -171,7 +171,6 @@ class ObsWebSocket extends ChatAction {
             return false
         }
     }
-
 }
 
 /**
