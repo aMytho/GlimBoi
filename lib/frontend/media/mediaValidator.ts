@@ -39,7 +39,7 @@ async function validateSettings(mode: "add" | "edit"): Promise<MediaType | false
     if (mediaPositionY === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaPositionY`), mode);
 
-    mediaDuration = simpleNumberTest(mediaDuration, "MediaDuration", mode, true);
+    mediaDuration = simpleNumberTest(mediaDuration, "MediaDuration", mode, true, true);
     if (mediaDuration === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaDuration`), mode);
 
@@ -47,15 +47,15 @@ async function validateSettings(mode: "add" | "edit"): Promise<MediaType | false
     if (mediaVolume === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaVolume`), mode);
 
-    mediaHeight = simpleNumberTest(mediaHeight, "MediaHeight", mode, true);
+    mediaHeight = simpleNumberTest(mediaHeight, "MediaHeight", mode, true, true);
     if (mediaHeight === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaHeight`), mode);
 
-    mediaWidth = simpleNumberTest(mediaWidth, "MediaWidth", mode, true);
+    mediaWidth = simpleNumberTest(mediaWidth, "MediaWidth", mode, true, true);
     if (mediaWidth === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaWidth`), mode);
 
-    mediaSpeed = simpleNumberTest(mediaSpeed, "MediaSpeed", mode, true);
+    mediaSpeed = simpleNumberTest(mediaSpeed, "MediaSpeed", mode, true, true);
     if (mediaSpeed === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaSpeed`), mode);
 
@@ -67,7 +67,6 @@ async function validateSettings(mode: "add" | "edit"): Promise<MediaType | false
         };
     } else {
         let existingMedia = await MediaHandle.getMediaByName(mediaName.toLowerCase());
-        console.log(existingMedia);
         if (mediaFile.files[0] !== undefined) {
             existingMedia.type = mediaFile.files[0].type;
             existingMedia.path = mediaFile.files[0].path;
@@ -107,7 +106,7 @@ function resetMessageMediaModal(toBeReset: HTMLElement, mode: "add" | "edit") {
 /**
  * Tests if the number is a number
  */
-function simpleNumberTest(varToTest: any, friendlyName: string, mode: "add" | "edit", optional: boolean): number | false {
+function simpleNumberTest(varToTest: any, friendlyName: string, mode: "add" | "edit", optional: boolean, cannotBeZero?: boolean): number | false {
     if (optional && varToTest === "") return 0;
     varToTest = Number(varToTest);
     if (isNaN(varToTest) == true) { // Make sure it is a number
@@ -116,8 +115,10 @@ function simpleNumberTest(varToTest: any, friendlyName: string, mode: "add" | "e
     } else if (Math.sign(varToTest) == -1) { // Make sure it is positive
         errorMessageMediaModal(`${friendlyName} cannot be negative`, document.getElementById(`${mode}${friendlyName}`), mode);
         return false
+    } else if (cannotBeZero && Math.sign(varToTest) == 0) { // Make sure it is positive
+        errorMessageMediaModal(`${friendlyName} cannot be zero`, document.getElementById(`${mode}${friendlyName}`), mode);
+        return false
     }
-    varToTest = Math.round(varToTest); // Rounds the number
     return varToTest;
 }
 
