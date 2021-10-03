@@ -446,3 +446,44 @@ function prepUserModals() {
     	document.getElementById("modalUserEditing")!.innerHTML = ``
   	})
 }
+
+function syncQuotes(user:UserType | userName, quote, action) {
+    // removes it from the list as well as the user quote list.
+    try {
+      if (action == "remove" && typeof user !== "string") {
+            makeList(user);
+      } else if (action == "add") {
+            console.log(user);
+            let filteredData = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+              if (userTable.row(value).data().userName == user) {
+                    makeList(userTable.row(value).data());
+                    return;
+              }
+            });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+}
+
+function syncUsers(data:userName | UserType, action: "add" | string) {
+    try {
+      if (action == "add") {
+            addUserTable(data as UserType);
+      } else {
+            console.log("The user " + data + " will now be deleted from the table.");
+            let filteredData = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+              return userTable.row(value).data().userName == data;
+            });
+            userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
+      }
+    } catch (e) {
+      console.log(e)
+    }
+}
