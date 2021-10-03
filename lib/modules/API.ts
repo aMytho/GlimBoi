@@ -93,7 +93,7 @@ async function getUserID(user: string): Promise<number | "INVALID" | false> {
 async function getStats(): Promise<{viewcount: number, followers: number, streamTimeSeconds: number}> {
     let query = `query {channel(id: "${channelID}") {streamer {countFollowers}, stream {countViewers, metadata(last: 1) {edges {node {streamTimeSeconds}}}}}}`;
     let response = await glimeshQuery(query);
-    if (typeof response == "object" && response !== null) {
+    if (typeof response == "object" && response !== null && response.channel.stream !== null) {
         if (Object.values(response.channel.stream).includes(null)) {
             return {viewcount: 0, followers: 0, streamTimeSeconds: 0};
         } else {
