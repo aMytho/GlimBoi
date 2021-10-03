@@ -207,7 +207,7 @@ function updateInfo(info, notMusicTab) {
             }
         }
     } catch(e) {}
-    MediaHandle.playSong({ name: info.name, artists: info.artists });
+    Server.updateMusicOverlay({ name: info.name, artists: info.artists });
     if (CacheStore.get("musicAttribution", false) && ChatHandle.isConnected() && notMusicTab) {
         ChatMessages.filterMessage(artistsMedia, "glimboi");
     }
