@@ -15,7 +15,8 @@ const EventHandle:EventHandle = require(appData[0] + "/modules/events.js");
 const ApiHandle:ApiHandle = require(appData[0] + "/modules/API.js");
 const fs:typeof import("fs").promises = require("fs").promises;
 const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
-const LogHandle:LogHandle = require(appData[0] + "/modules/log.js")
+const LogHandle:LogHandle = require(appData[0] + "/modules/log.js");
+const Server:Server = require(appData[0] + "/modules/server.js");
 const mm = require("music-metadata");
 let currentPage:pageState = "home"
 
@@ -55,7 +56,7 @@ window.onload = function() {
         	// Get the path to page content file
         	const href = linkEl.getAttribute("href");
         	let id = linkEl.id
-        	if (href) {
+        	if (href && href !== "#") {
             	let data = await fs.readFile(`${appData[0]}/${href}`);
                 	// show the selected page
                 	contentEl.innerHTML = "";
@@ -152,3 +153,15 @@ async function getDataDirectory() {
     }
 }
 getDataDirectory();
+
+
+function placeholder() {
+    let overlayStatusBar = document.getElementById("overlayStatus")!;
+        overlayStatusBar.title = "Overlay Active";
+        overlayStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);">Overlay: Active</span>`
+        overlayStatusBar.style.color = "rgb(17, 92, 33)"
+        let musicStatusBar = document.getElementById("musicStatus")!;
+        musicStatusBar.title = "Music Active";
+        musicStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);"> Music: Active</span>`
+        musicStatusBar.style.color = "rgb(17, 92, 33)"
+}

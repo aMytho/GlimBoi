@@ -1,9 +1,5 @@
 // This file handles all obs actions
-let websocketServer;
-let wss:any;
 let MediaDB:Nedb;
-let wsController = {};
-let mediaWait:any = [];
 
 /**
  * Sets the path to the database
@@ -26,34 +22,63 @@ function getAll(): Promise<MediaType[]> {
 
 /**
  * Adds media to the database
- * @param {string} name The name of the media
- * @param {string} path Where the media is located
- * @param {string} type The type of media (img,gif,vid,etc)
- * @param {string} position The position to show it in the overlay (display elements only)
  */
-function addMedia(name:mediaName, path:mediaPath, type:mediaType, position:mediaPosition) {
-    MediaDB.insert([{name: name.toLowerCase(), path: path, type: type, position: position}], function (err, newDocs) {});
+function addMedia({ name = "Default", path = "", type = "img/png", duration = undefined,
+volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0,0] } = {}) {
+    if (duration == 0) {
+        duration = undefined;
+    }
+    MediaDB.insert([
+        {
+            name: name.toLowerCase(), path: path, type: type, duration: duration,
+            volume: volume, speed: speed, height: height, width: width, scale: scale,
+            coordinates: coordinates
+        }
+    ], function (err, newDocs) {
+        console.log(newDocs)
+        console.log("Media added");
+    });
 }
 
 /**
- * Edits media
- * @param {string} name The name of the media
- * @param {string} path Where the media is located
- * @param {string} type The type of media (img,gif,vid,etc)
- * @param {string} position The position to show it in the overlay (display elements only)
+ * Edits media in the database
  */
-function editMedia(name:mediaName, path:mediaPath, type:mediaType, position:mediaPosition) {
-    console.log(name, path, position);
+function editMedia({ name = "Default", path = "", type = "img/png", duration = undefined,
+    volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0, 0] } = {}) {
     name = name.toLowerCase();
-    if (path !== null) {
-        MediaDB.update({ name: name }, { $set: { path: path, position: position, type: type } }, {}, function (err, numReplaced) {
-            console.log("Media updated");
+        if (duration == 0) {
+            duration = undefined;
+        }
+    MediaDB.update({ name: name }, {
+        $set: {
+            path: path, type: type, duration: duration,
+            volume: volume, speed: speed, height: height, width: width, scale: scale,
+            coordinates: coordinates
+        }
+    }, {}, function (err, numReplaced) {
+        console.log("Media updated");
+    });
+}
+
+/**
+ * Converts the media to the modern version 2.0+
+ * @param param0
+ * @returns
+ */
+function convertMedia({ name = "Default", path = "", type = "img/png", duration = undefined,
+    volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0, 0] } = {}) {
+    return new Promise(resolve => {
+        name = name.toLowerCase();
+        MediaDB.update({ name: name }, {
+            $set: {
+                duration: duration, volume: volume, speed: speed, height: height, width: width,
+                scale: scale, coordinates: coordinates
+            }
+        }, {}, function (err, numReplaced) {
+            console.log("Media Converted");
+            resolve(true)
         });
-    } else {
-        MediaDB.update({ name: name }, { $set: { position: position } }, {}, function (err, numReplaced) {
-            console.log("Media updated");
-        });
-    }
+    })
 }
 
 /**
@@ -104,74 +129,4 @@ function getMediaByType(type: mediaType): Promise<MediaType[]> {
     })
 }
 
-/**
- * Sends media to the overlay
- * @param {MediaType} media The media to send
- * @param {mediaWSSName} action The action we are sending
- */
-function activateMedia(media: MediaType, action: mediaWSSName) {
-    try {
-        wss.send(JSON.stringify({action: action, data: media}));
-        mediaWait.push(media);
-    } catch(e) {}
-}
-
-/**
- * Sends details to the overlay so it can play a song
- */
-function playSong(song:any) {
-    try {
-        wss.send(JSON.stringify({action: "newSong", data: song}))
-    } catch(e) {}
-}
-
-/**
- * Starts the server for overlays
- */
-function startServer() {
-    if (wss == undefined) {
-        console.log("Starting overlay");
-        websocketServer = require("ws");
-        wss = new websocketServer.Server({ port: 8080 })
-        wss.on("connection", function connection(ws) {
-            // @ts-ignore
-            wsController.ws = ws
-            console.log("Client connected.");
-            wss.send = function (data:JSON) {
-                ws.send(data)
-            }
-            ws.on("message", function responseHandler(message:string) {
-                try {
-                    let parsedMessage = JSON.parse(message);
-                    for (let i = 0; i < mediaWait.length; i++) {
-                        console.log(mediaWait)
-                        if (mediaWait[i].path == parsedMessage.file) {
-                            mediaWait.splice(i);
-                        }
-                    }
-                    if (isDev == true) {
-                        console.log(parsedMessage);
-                    }
-                } catch(e) {console.log(e)}
-            })
-        })
-        let overlayStatusBar = document.getElementById("overlayStatus")!;
-        overlayStatusBar.title = "Overlay Active";
-        overlayStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);">Overlay: Active</span>`
-        overlayStatusBar.style.color = "rgb(17, 92, 33)"
-        let musicStatusBar = document.getElementById("musicStatus")!;
-        musicStatusBar.title = "Music Active";
-        musicStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);"> Music: Active</span>`
-        musicStatusBar.style.color = "rgb(17, 92, 33)"
-    }
-}
-
-/**
- * Stops the server
- */
-function stopServer() {
-    wss.close()
-    wss.removeAllListeners("connection");
-}
-
-export {activateMedia, addMedia, editMedia, getAll, getMediaByName, getMediaByType, playSong, removeMedia, startServer, stopServer, updatePath}
+export {addMedia, convertMedia, editMedia, getAll, getMediaByName, getMediaByType, removeMedia, updatePath}
