@@ -12,6 +12,11 @@ let ObsEmitter = new EventEmitter;
  * Connects to the OBS websocket
  */
 function connect() {
+    // make sure a connection doesn't already exist
+    if (host.readyState === WebSocket.OPEN) {
+        console.log("OBS connection already open");
+        return;
+    }
     host = new WebSocket(CacheStore.get("obsUrl", "ws://127.0.0.1:4444", true));
     return new Promise((resolve, reject) => {
         host.onopen = () => {

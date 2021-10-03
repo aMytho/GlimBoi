@@ -6,6 +6,11 @@ let host:import("ws").Server;
  * Starts the server. Pulls the address and port fromt the cache.
  */
 function startServer() {
+    // make sure the server isn't already running
+    if (host !== undefined) {
+        console.log("Server already running.");
+        return;
+    }
     let {Server} = require('ws');
     // Create the server.
     let serverInfo = {
@@ -14,6 +19,7 @@ function startServer() {
     }
     host = new Server(serverInfo);
     setupListeners();
+
 }
 
 /**
@@ -31,6 +37,8 @@ function setupListeners() {
 
     host.on("error", function(err) {
         console.log("Error: " + err);
+        // restart the ws server
+        restartServer();
     });
 
     host.on("message", function(data) {
@@ -77,7 +85,9 @@ function close() {
  */
 function restartServer() {
     close();
-    startServer();
+    setTimeout(() => {
+        startServer();
+    }, 7000);
 }
 
 
