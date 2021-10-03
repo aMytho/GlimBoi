@@ -2,7 +2,7 @@
 // Connects to the glimboi server. we send http requests back and forth to know when to play videos/sounds
 
 function connect() {
-    let connection = new WebSocket("ws://localhost:8080");
+    let connection = new WebSocket("ws://localhost:3000");
     let timer;
 
     connection.onopen = function (event) {
