@@ -169,10 +169,13 @@ function commandModalPrep() {
         successMessage("Settings Saved", "Command settings have been saved.");
         CacheStore.setMultiple([
             {commandRepeatDelay: Number(repeatDelay.value)},
-            {commandRepeatProtection: getRepeatProtection()}
+            {commandRepeatProtection: getRepeatProtection()},
+            {commandCooldownMessage: cooldownMessageValue}
         ]);
     });
-    let repeatDelay = document.getElementById("repeatDelaySlider")! as HTMLInputElement
+
+    let cooldownMessageValue = (document.getElementById("cooldownMessage") as HTMLInputElement).value;
+    let repeatDelay = document.getElementById("repeatDelaySlider")! as HTMLInputElement;
     repeatDelay.value = String(CacheStore.get("commandRepeatDelay", 10, false));
     let repeatDelayValue = document.getElementById("repeatDelayValue")!;
     repeatDelayValue.innerHTML = repeatDelay.value;

@@ -116,7 +116,7 @@ async function runCommand({message, command, user}) {
 async function permissionCheck(command:CommandType, user:userName) {
     if (command.cooldown && cooldownArray.includes(command.commandName)) {
         console.log(`Cooldown for ${command.commandName} is still active.`);
-        return `${command.commandName} is still on cooldown.`
+        return CacheStore.get("commandCooldownMessage", false) || `${command.commandName} is still on cooldown.`
     }
     let userData = await UserHandle.findByUserName(user);
     if (userData !== "ADDUSER") {
