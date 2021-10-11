@@ -5,7 +5,8 @@ interface CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
-    actions: any
+    shouldDelete: boolean;
+    actions: ChatAction[];
     message?: string
     sound?: string
     media?: string
@@ -37,6 +38,10 @@ interface CommandContructor {
      */
     repeat: boolean;
     /**
+     * Will the command be deleted once used? (!cmd)
+     */
+     shouldDelete: boolean;
+    /**
      * What the command does
      */
     actions: any
@@ -58,14 +63,12 @@ interface commandDoc extends CommandType {
 
 interface ChatActionType {
     action: actionName
-    effect: actionEffect
     info: actionInfo
     generateVariables: actionVariables
 }
 
 declare class ChatAction implements ChatActionType {
     action: actionName
-    effect: actionEffect
     info: actionInfo
     generateVariables: actionVariables
     removeGeneratedVariables(): void
@@ -111,9 +114,24 @@ interface WaitType extends ChatActionType {
 
 type BuildWait = {wait:number}
 
+type BuildObsWebSocket = {
+    requestType: string
+    data: any
+    variables: CommandActionVariables[]
+    instruction: string
+}
 
-type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "Video" | "Timeout" | "Wait"
-type actionEffect = string;
+type CommandActionVariables = {
+    variable: string
+    data: string
+}
+
+type CustomUserVaribles = {
+    name: string;
+    data: string | any;
+}
+
+type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "ObsWebSocket" | "ReadFile" |  "Video" | "Timeout" | "Wait" | "WriteFile"
 type actionInfo = any[] | any
 type actionVariables = string[]
 

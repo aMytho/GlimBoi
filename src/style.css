@@ -324,3 +324,22 @@ table.whiteText td {
 .border-radius-5 {
     border-radius: 5px !important;
 }
+
+.dropdown-menu {
+    background-color: #1b2e4b !important;
+}
+
+.navbar-nav li:hover .dropdown-menu {
+    display: block;
+}
+
+.navbarAlt {
+    padding-left: 1rem !important;
+    cursor: default;
+    white-space: normal !important;
+}
+
+.navbarAlt p,
+span {
+    color: aliceblue;
+}

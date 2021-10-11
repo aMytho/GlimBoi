@@ -1,5 +1,10 @@
 // Holds functions for actions
-let listofvariables: string[] | {name:string}[] = [
+
+
+/**
+ * The list of all the Glimboi variables and user created ones (while active)
+ */
+let listofvariables: (string | CustomUserVaribles)[] = [
     "$target", // The word after the command. ex !so Mytho (Mytho would be the target)
     "$user", //The user who activated the command.
     "$time", // The current time.
@@ -14,7 +19,9 @@ let listofvariables: string[] | {name:string}[] = [
     "$youtube", // youtube channel URL
     "$twitter", // twitter profile URL
     "$catfact", // Random cat fact
-    "$dogfact" // Random dog fact
+    "$dogfact", // Random dog fact
+    "$uptime" // How long the user has been streaming.
+ // Custom variables
 ]
 
 /**
@@ -109,12 +116,23 @@ async function searchForVariables(data: {message:string, activation?:string, use
           let dogFact = await ApiHandle.randomAnimalFact("dog");
           return dogFact
       break;
+      case "$uptime":
+            let uptime = await ApiHandle.getStats();
+            if (uptime) {
+                return uptime.streamTimeSeconds / 60;
+            }
+            return NaN
       default: return replaceCustomVariable(variable);
         break;
     }
 }
 
-function replaceCustomVariable(variable) {
+/**
+ * Replaces a custom variable with its data
+ * @param {CustomUserVaribles} variable The variable to replace
+ * @returns
+ */
+function replaceCustomVariable(variable: CustomUserVaribles) {
     for (let i = 0; i < listofvariables.length; i++) {// @ts-ignore
         if (variable.name == listofvariables[i].name) {// @ts-ignore
             return listofvariables[i].data
@@ -122,16 +140,27 @@ function replaceCustomVariable(variable) {
     }
 }
 
-
-function addVariable(variable) {
+/**
+ * Adds a custom variable
+ * @param variable {CustomUserVaribles}
+ */
+function addVariable(variable: CustomUserVaribles) {
     listofvariables.push(variable)
 }
 
-function getv () {
+/**
+ * Returns all of the glimboi and command variables (if active)
+ * @returns
+ */
+function getv() {
     return listofvariables
 }
 
-function removeVariables(variables = []) {
+/**
+ * Removes the custom varaibles added froma command
+ * @param variables
+ */
+function removeVariables(variables:string[] = []) {
     for (let i = 0; i < listofvariables.length; i++) {// @ts-ignore
         if (listofvariables[i].name !== undefined) {
             variables.forEach(element => {// @ts-ignore

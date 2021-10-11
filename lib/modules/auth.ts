@@ -11,7 +11,6 @@ let hasAuthed = false;
 async function requestToken(alertUser = false): Promise<accessToken | false> {
     return new Promise(async resolve => {
         let refreshToken = await getRefreshToken();
-        console.log("Refresh token: " + refreshToken);
         if (!refreshToken) {
             errorMessage("Auth Error", "Please authorize the bot first.");
         }
@@ -29,7 +28,6 @@ async function requestToken(alertUser = false): Promise<accessToken | false> {
         });
 
         let data = await res.json();
-        console.log(data);
         try {
             if (data.access_token == undefined) {
                 errorMessage("Auth Error", "Please ensure the correct information is entered for authentication.");
@@ -105,7 +103,10 @@ async function requestUserAuthorization() {
 }
 
 
-
+/**
+ * Generates a code verifier and challenge for glimesh auth.
+ * @returns {Promise<glimeshPKCEInfo>}
+ */
 async function generateVerifierAndChallenge() {
     let array = new Uint32Array(56 / 2);
     window.crypto.getRandomValues(array);
@@ -118,7 +119,6 @@ async function generateVerifierAndChallenge() {
     function dec2hex(dec) {
         return ('0' + dec.toString(16)).substr(-2)
     }
-
 
     function sha256(plain) { // returns promise ArrayBuffer
         const encoder = new TextEncoder();
@@ -142,9 +142,13 @@ async function generateVerifierAndChallenge() {
  * Returns the access token.
  */
 function getToken(): accessToken {
-    return accessToken
+    return accessToken;
 }
 
+/**
+ * Returns the refresh token if it exists. If not returns ""
+ * @returns
+ */
 async function getRefreshToken() {
     try {
         let data = await fs.readFile(`${appData[1]}/data/refresh.txt`, {encoding: "utf8"});
@@ -154,11 +158,19 @@ async function getRefreshToken() {
     }
 }
 
+/**
+ * Sets a new refresh token
+ * @param token The token to set
+ */
 function setRefreshToken(token:string) {
     fs.writeFile(`${appData[1]}/data/refresh.txt`, token, {encoding: "utf8", flag: "w"});
 }
 
-function getClientID() {
+/**
+ * Returns the client ID
+ * @returns {string} The client ID
+ */
+function getClientID(): string {
     return CLIENT_ID;
 }
 

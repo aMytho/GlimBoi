@@ -2,7 +2,20 @@ interface MediaType {
     name: mediaName;
     path: mediaPath;
     type: mediaType;
-    position: mediaPosition;
+    /**
+     * @deprecated
+     */
+    position?: mediaPosition;
+    /**
+     * Coordinates from the top-left corner of the media.
+     */
+    coordinates: [number, number];
+    duration?: number
+    height?: number;
+    width?: number;
+    scale?: number;
+    volume?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | number;
+    speed?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | number;
 }
 
 /**

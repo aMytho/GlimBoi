@@ -7,7 +7,7 @@ const UserHandle:UserHandle = require(appData[0] + "/modules/users.js");
 const QuoteHandle:QuoteHandle = require(appData[0] + "/modules/quotes.js");
 const RankHandle:RankHandle = require(appData[0] + "/modules/users/userRank.js");
 const CommandHandle:CommandHandle = require(appData[0] + "/modules/commands.js");
-const OBSHandle:OBSHandle = require(appData[0] + "/modules/OBS.js");
+const MediaHandle:MediaHandle = require(appData[0] + "/modules/media.js");
 const ChatHandle:ChatHandle = require(appData[0] + "/modules/chat.js");
 const ChatChannels:ChatChannels = require(appData[0] + "/modules/chat/chatChannels.js");
 const ModHandle:ModHandle = require(appData[0] + "/modules/modPanel.js");
@@ -15,7 +15,8 @@ const EventHandle:EventHandle = require(appData[0] + "/modules/events.js");
 const ApiHandle:ApiHandle = require(appData[0] + "/modules/API.js");
 const fs:typeof import("fs").promises = require("fs").promises;
 const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
-const LogHandle:LogHandle = require(appData[0] + "/modules/log.js")
+const LogHandle:LogHandle = require(appData[0] + "/modules/log.js");
+const Server:Server = require(appData[0] + "/modules/server.js");
 const mm = require("music-metadata");
 let currentPage:pageState = "home"
 
@@ -55,7 +56,7 @@ window.onload = function() {
         	// Get the path to page content file
         	const href = linkEl.getAttribute("href");
         	let id = linkEl.id
-        	if (href) {
+        	if (href && href !== "#") {
             	let data = await fs.readFile(`${appData[0]}/${href}`);
                 	// show the selected page
                 	contentEl.innerHTML = "";
@@ -68,7 +69,7 @@ window.onload = function() {
                         case "EventsLink": loadEvents(); currentPage = "events"; break;
                         case "UsersLink": loadUsers(); currentPage = "users"; break;
                         case "RanksLink": rankPrep(); currentPage = "ranks"; break;
-                        case "OBSLink": loadOBSData(); currentPage = "media"; break;
+                        case "OBSLink": loadMediaTable(); currentPage = "media"; break;
                         case "MusicLink": loadMusicProgram(); currentPage = "music"; break;
                         case "ModPanelLink": loadModPanel(); currentPage = "mod"; break;
                         case "SettingsLink": showIntegrations(); currentPage = "settings"; break;
@@ -138,7 +139,6 @@ function successMessage(messageType: string, message: string) {
     $('#modalSuccess').modal("show");
 }
 
-
 async function getDataDirectory() {
     try { // Check if the file exists.
         await fs.readdir(appData[1] + '/data/');
@@ -153,3 +153,15 @@ async function getDataDirectory() {
     }
 }
 getDataDirectory();
+
+
+function placeholder() {
+    let overlayStatusBar = document.getElementById("overlayStatus")!;
+        overlayStatusBar.title = "Overlay Active";
+        overlayStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);">Overlay: Active</span>`
+        overlayStatusBar.style.color = "rgb(17, 92, 33)"
+        let musicStatusBar = document.getElementById("musicStatus")!;
+        musicStatusBar.title = "Music Active";
+        musicStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);"> Music: Active</span>`
+        musicStatusBar.style.color = "rgb(17, 92, 33)"
+}

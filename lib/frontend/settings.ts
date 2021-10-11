@@ -6,16 +6,12 @@ ModHandle.loadFilter(appData[1]);
 // removes the disable class on the navbar
 function unlockBot() {
     try {
-        document.getElementById("CommandLink")!.classList.remove("disabled");
-        document.getElementById("PointsLink")!.classList.remove("disabled");
-        document.getElementById("UsersLink")!.classList.remove("disabled");
-        document.getElementById("SettingsLink")!.classList.remove("disabled");
-        document.getElementById("ChatLink")!.classList.remove("disabled");
-        document.getElementById("EventsLink")!.classList.remove("disabled");
-        document.getElementById("RanksLink")!.classList.remove("disabled");
-        document.getElementById("OBSLink")!.classList.remove("disabled");
-        document.getElementById("MusicLink")!.classList.remove("disabled");
-        document.getElementById("ModPanelLink")!.classList.remove("disabled");
+        let mainNav = document.getElementById("mainNavBar")!;
+        let navItems = [...mainNav.children];
+        // Remove the diable class from all navbar items
+        navItems.forEach(item => {
+            item.firstElementChild!.classList.remove("disabled");
+        });
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means. A restart may fix the problem.")
@@ -57,6 +53,12 @@ function showIntegrations() {
     if (CacheStore.get("guildedWebhookConfirmation", true)) {
         document.getElementById("guildedWebhookConfirmation")!.toggleAttribute("checked");
     }
+    // OBS - - -
+    if (CacheStore.get("obsEnabled", false)) {
+        document.getElementById("obsEnabled")!.toggleAttribute("checked");
+    }
+    (document.getElementById("obsPassword") as HTMLInputElement)!.value = CacheStore.get("obsPassword", "");
+    (document.getElementById("obsUrl") as HTMLInputElement)!.value = CacheStore.get("obsUrl", "ws://localhost:4444");
 }
 
 
@@ -72,7 +74,10 @@ function saveIntegrations() {
         {discordWebhookMessage: (document.getElementById("discordWebhookMessage") as HTMLInputElement)!.value},
         {guildedWebhookMessage: (document.getElementById("guildedWebhookMessage") as HTMLInputElement)!.value},
         {discordWebhookURL: (document.getElementById("discordWebhookURL") as HTMLInputElement)!.value},
-        {guildedWebhookURL: (document.getElementById("guildedWebhookURL") as HTMLInputElement)!.value}
+        {guildedWebhookURL: (document.getElementById("guildedWebhookURL") as HTMLInputElement)!.value},
+        {obsEnabled: (document.getElementById("obsEnabled") as HTMLInputElement)!.checked},
+        {obsPassword: (document.getElementById("obsPassword") as HTMLInputElement)!.value},
+        {obsUrl: (document.getElementById("obsUrl") as HTMLInputElement)!.value},
     ]);
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")

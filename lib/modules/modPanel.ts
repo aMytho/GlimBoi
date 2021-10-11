@@ -25,7 +25,7 @@ function bannedWordsReset() {
     return new Promise(async resolve => {
         console.log(dirName, __dirname);
         try {
-            let data = await fs.readFile(dirName + "\\../resources/json/defaultBannedWords.json", 'utf-8');
+            let data = await fs.readFile(`${dirName}../../resources/json/defaultBannedWords.json`, 'utf-8');
             // Removes all the entries from the database
             bannedWordsDB.remove({}, { multi: true }, function (err, numRemoved) {
                 // Adds the new entries

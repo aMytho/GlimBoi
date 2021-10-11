@@ -115,7 +115,38 @@ async function removeCommand(user: userName, command: commandName) {
  */
 async function addCommand(user: userName, command: commandName, commandData: string, type: "!command" | "!cmd") {
     if (await permissionCheck(user, "canAddCommands", "add commands")) {
-        CommandHandle.addCommandFilter(command, commandData, type)
+        command = command.toLowerCase()
+        if (command == null || command == undefined || command == "" || command == " ") {
+            ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi");
+            return
+        }
+        if (type == "!command") {
+            commandData = commandData.substring(12 + command.length + 2);
+            console.log(commandData);
+        } else {
+            commandData = commandData.substring(8 + command.length + 2);
+            console.log(commandData);
+        }
+        commandData = commandData.trim()
+        if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
+            ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ");
+            return
+        }
+        command = command.replace(new RegExp("^[\!]+"), "").trim();
+        console.log(command, commandData);
+        let commandExists = await CommandHandle.findCommand(command);
+        if (commandExists !== null) {
+            console.log(command + " already exists.");
+            ChatMessages.filterMessage(command + " already exists", "glimboi");
+        } else {
+            let newCMD = CommandHandle.addCommand({ commandName: command, uses: 0, points: 0, cooldown: 0,
+                rank: "Everyone", repeat: false, shouldDelete: false, actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
+            });
+            ChatMessages.filterMessage(command + " added!", "glimboi");
+            try {
+                addCommandTable({ commandName: command, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions })
+            } catch (e) {}
+        }
     }
 }
 
@@ -598,7 +629,7 @@ async function checkPoll(user: string, message: string | undefined) {
  * Asks the 8ball for an answer.
  * @param user The username of the user
  * @param message The message which should contain the command and question
- * @returns 
+ * @returns
  */
 async function eightBall(user:string, message: string) {
     if (CacheStore.get("eightBallEnabled", true, true)) {

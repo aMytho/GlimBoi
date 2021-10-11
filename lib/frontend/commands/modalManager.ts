@@ -1,6 +1,6 @@
 // handles all the data from command modals
 
-const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js")
+const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js");
 
 function prepareActions(mode) {
    // Activates all bootstrap tooltips
@@ -9,7 +9,8 @@ function prepareActions(mode) {
     // Adds a command
     document.getElementById(`${mode}CommandButtonModal`)!.onclick = async function () {
         // First we check to make sure all the command settings are valid
-        let commandSettings = await validateSettings(mode)
+        const commandValidator: typeof import("../commands/commandValidator") = require(appData[0] + "/frontend/commands/commandValidator.js");
+        let commandSettings = await commandValidator.validateSettings(mode)
         if (commandSettings) {
             console.log("All command settings for this command are valid.");
         } else {
@@ -17,7 +18,7 @@ function prepareActions(mode) {
             return
         }
         // Now we check each action
-        let tempCommandActions = await validateActions(mode);
+        let tempCommandActions = await commandValidator.validateActions(mode);
         if (!tempCommandActions) {
             console.log("Command actions were not valid.");
             return
@@ -30,7 +31,7 @@ function prepareActions(mode) {
         });
         // Now we add the actions to the settings. We send the settings to be added as a new command. Command complete!
         commandSettings.actions = commandActions;
-        console.log(commandSettings)
+
         if (mode == "add") {
             CommandHandle.addCommand(commandSettings);
             addCommandTable(commandSettings);
@@ -48,9 +49,12 @@ function prepareActions(mode) {
     document.getElementById("CreateAudio")!.onclick = () => addActionToUI("Audio", mode);
     document.getElementById("CreateBan")!.onclick = () => addActionToUI("Ban", mode);
     document.getElementById("CreateImageGif")!.onclick = () => addActionToUI("ImageGif", mode);
+    document.getElementById("CreateObsWebSocket")!.onclick = () => addActionToUI("ObsWebSocket", mode);
+    document.getElementById("CreateReadFile")!.onclick = () => addActionToUI("ReadFile", mode);
     document.getElementById("CreateVideo")!.onclick = () => addActionToUI("Video", mode);
     document.getElementById("CreateTimeout")!.onclick = () => addActionToUI("Timeout", mode);
     document.getElementById("CreateWait")!.onclick = () => addActionToUI("Wait", mode);
+    document.getElementById("CreateWriteFile")!.onclick = () => addActionToUI("WriteFile", mode);
 }
 
 function prepareModals(mode) {
@@ -117,13 +121,23 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         case "ImageGif": await ActionCreator.buildImageGifUI(mode, data);
         break;
 
-        case "Video": await ActionCreator.buildVideoUI(mode, data);
+        case "ObsWebSocket": await ActionCreator.buildObsWebSocketUI(mode, data);
+        break;
+
+        case "ReadFile": await ActionCreator.buildReadFileUI(mode, data);
         break;
 
         case "Timeout": await ActionCreator.buildTimeoutUI(mode, data)
         break;
 
+        case "Video": await ActionCreator.buildVideoUI(mode, data);
+        break;
+
         case "Wait": await ActionCreator.buildWaitUI(mode, data);
+        break;
+
+        case "WriteFile": await ActionCreator.buildWriteFileUI(mode, data);
+        break;
         default: null
         break
     }
@@ -170,6 +184,16 @@ async function insertEditData(command:CommandType) {
         repeatEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
     }
 
+    // Enables or disables the shouldDelete property
+    let deleteEnabled = document.getElementById("editCommandDelete")!;
+    if (command.shouldDelete == true) {
+        deleteEnabled.innerHTML += "<option value=\"" + "true" + "\" selected>" + "Enabled" + "</option>";
+        deleteEnabled.innerHTML += "<option value=\"" + "false" + "\">" + "Disabled (Default)" + "</option>";
+    } else {
+        deleteEnabled.innerHTML += "<option value=\"" + "true" + "\">" + "Enabled" + "</option>";
+        deleteEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
+    }
+
     // Now we show the actions. If none exist (v1 command) we convert the message prperties to their action equivalents
     if (command.actions) {
         for (let i = 0; i < command.actions.length; i++) {
@@ -181,7 +205,7 @@ async function insertEditData(command:CommandType) {
             await ActionCreator.buildAudioUI("edit", {source: command.sound})
         }
         if (command.media && command.media !== "null") {
-            let media = await OBSHandle.getMediaByName(command.media);
+            let media = await MediaHandle.getMediaByName(command.media);
             console.log(media)// @ts-ignore legacy check
             if (media !== null && media !== "null") {
                 if (media.type.startsWith("image")) {

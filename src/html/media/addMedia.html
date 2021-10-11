@@ -1,0 +1,278 @@
+<!--Header-->
+<div class="modal-header text-center">
+    <h4 class="modal-title w-100">Add Media</h4>
+</div>
+<!--Body-->
+<div class="modal-body" style="display: flex; justify-content: center; padding: 4rem 0;overflow: auto;">
+    <div id="mySidenavR" class="sidenavR">
+        <a href="javascript:void(0)" class="closebtn"
+            onclick="document.getElementById('mySidenavR').style.width = '0';">×</a>
+        <h4 class="text-center">Required Settings</h4>
+        <table class="table table-hover mx-1">
+            <thead>
+                <tr>
+                    <th>Setting</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The name of the media">Name</td>
+                    <td><input type="text" class="settingInput" id="addMediaName" placeholder="Media name" /></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The file to play.">File</td>
+                    <td contenteditable="false">
+                        <input type="file"
+                        id="addMediaInput" name="Media File"
+                        accept="image/png, image/jpeg, image/gif, audio/mp3, audio/wav, video/mp4, video/webm, video/mov,"></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="How may pixels from the left side">Position X
+                    </td>
+                    <td><input type="text" class="settingInput" id="addMediaPositionX" placeholder="Media Position"
+                            value="0" /></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="How many pixels from the top side.">Position Y
+                    </td>
+                    <td><input type="text" class="settingInput" id="addMediaPositionY" placeholder="Media Position"
+                            value="0" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <h4 class="text-center">Optional Settings</h4>
+        <p class="text-center">Leave blank if not needed. Press info at the bottom for more options.</p>
+        <table class="table table-hover mx-1">
+            <thead>
+                <tr>
+                    <th>Setting</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The duration of the media">Duration (seconds)</td>
+                    <td><input type="text" class="settingInput" id="addMediaDuration"/></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The duration of the media">Volume 1-10</td>
+                    <td><input type="range" class="settingInput" id="addMediaVolume" min="0" max="10" placeholder="2" /></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The height of the media">Height</td>
+                    <td><input type="text" class="settingInput" id="addMediaHeight" /></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The width of the media">Width</td>
+                    <td><input type="text" class="settingInput" id="addMediaWidth" /></td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" data-placement="top" title="The speed of the media">Speed</td>
+                    <td><input type="text" class="settingInput" id="addMediaSpeed" value="1" /></td>
+                </tr>
+                </tbody>
+            </table>
+        <div class="mt-3">
+            <h5 class="text-center">Any errors will appear below</h5>
+            <ul id="addMediaErrors">
+
+            </ul>
+        </div>
+    </div>
+    <span id="addOpenMenu" style="font-size:30px;cursor:pointer;position: absolute;top: 10px;right: 10px;"
+        onclick="document.getElementById('mySidenavR').style.width = '50%';">☰</span>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <h4>Modify settings to begin!</h4>
+                <div id="addMediaList">
+                </div>
+            </div>
+            <div class="col-6">
+                <h5></h5>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--Footer-->
+<div class="modal-footer">
+    <p id="errorMessageAdd"></p>
+    <div class="dropleft">
+        <button type="button" class="btn btn-outline-info" data-toggle-second="tooltip" data-placement="top"
+            title="Learn about action scripts" onclick="loadLink('glimboi.com/docs/intro/media/')">Info</button>
+        <button type="button" class="btn btn-outline-warning" data-dismiss="modal" data-toggle-second="tooltip"
+            data-placement="top" title="Close">Close</button>
+        <button class="btn btn-outline-primary" data-toggle-second="tooltip" data-placement="top" title="Add Media"
+            id="addMediaButtonModal">Add</button>
+    </div>
+
+</div>
+<style>
+    #list {
+        max-height: fit-content;
+    }
+
+    .action {
+        margin: 1.5rem 0rem 1rem 0rem;
+    }
+
+    .actionMain {
+        margin-bottom: 0.2rem
+    }
+
+    .sidenavR {
+        background-color: #1b2e4b;
+        height: 100%;
+        overflow-x: hidden;
+        padding-top: 60px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: .5s;
+        width: 0;
+        z-index: 1;
+    }
+
+    .sidenav a,
+    .sidenavR a {
+        color: aliceblue;
+        display: block;
+        font-size: 25px;
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        transition: .3s;
+    }
+
+    .sidenav a:hover,
+    .offcanvas a:focus,
+    .sidenavR a:hover,
+    .offcanvas a:focus {
+        color: #f1f1f1;
+    }
+
+    .sidenav .closebtn,
+    .sidenavR .closebtn {
+        font-size: 36px;
+        margin-left: 50px;
+        position: absolute;
+        right: 25px;
+        top: 0;
+    }
+
+    @media screen and (max-height:450px) {
+
+        .sidenav,
+        .sidenavR {
+            padding-top: 15px;
+        }
+
+        .sidenav a,
+        .sidenavR a {
+            font-size: 18px;
+        }
+    }
+
+    .topnav {
+        overflow: hidden;
+        background-color: #1b2e4b;
+    }
+
+    .topnav h3 {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 12px 14px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    .topnav .icon {
+        display: none;
+    }
+
+    @media screen and (max-width: 600px) {
+        .topnav a:not(:first-child) {
+            display: none;
+        }
+
+        .topnav a.icon {
+            float: right;
+            display: block;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .topnav.responsive {
+            position: relative;
+        }
+
+        .topnav.responsive .icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .topnav.responsive h3 {
+            float: none;
+            display: block;
+            text-align: left;
+        }
+    }
+
+    .settingInput {
+        background-color: transparent;
+        color: aliceblue;
+        width: 100%;
+        border: none;
+        padding: 0px !important;
+        outline: none;
+    }
+
+    .settingSelect {
+        width: 100%;
+        background-color: rgb(0, 86, 179);
+        color: aliceblue;
+        /*border: none !important;*/
+    }
+
+    .settingSelect:focus {
+        outline: none;
+    }
+
+    .textarea {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        resize: none;
+        min-height: 40px;
+        line-height: 20px;
+        background-color: #1b2e4b;
+        text-rendering: auto;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-transform: none;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: start;
+        appearance: textfield;
+        -webkit-rtl-ordering: logical;
+        cursor: text;
+        font: 400 13.3333px Arial;
+        border-width: 2px;
+        border-style: inset;
+        border-color: -internal-light-dark(rgb(118, 118, 118), rgb(195, 195, 195));
+        border-image: initial;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    .textarea[contenteditable]:empty::before {
+        content: "The message to be sent";
+        color: gray;
+    }
+</style>

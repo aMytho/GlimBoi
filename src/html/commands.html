@@ -289,10 +289,16 @@
                             <td>!twitter | Follow me on twitter at https://twitter.com/Glimboi</td>
                             <td>Returns the channels twitter URL. Must be in the Glimesh API.</td>
                         </tr>
+                        <tr>
+                            <td>$uptime</td>
+                            <td>You have been streaming for 100 minutes!</td>
+                            <td>!uptime | You have been streaming for 100 minutes!</td>
+                            <td>Returns how long the streamer has been live in minutes.</td>
+                        </tr>
                         </tbody>
                         </table>
                 </div>
-                <div class="tab-pane fade show active" id="cmdSettingsTab" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="tab-pane fade show" id="cmdSettingsTab" role="tabpanel" aria-labelledby="pills-home-tab">
                     <div class="row mt-2">
                         <div class="col whiteText">
                            <h3>Repeat Protection</h3>
@@ -320,6 +326,17 @@
                               </div>
                            </form>
                         </div>
+                        <div class="col whiteText">
+                            <h3>Cooldown Message</h3>
+                            <p>The message sent to chat when a cooldown is tripped.</p>
+                            <form>
+                               <div class="form-group">
+                                <input class="icon-input settingsInput" type="text" placeholder="Cooldown Message"
+                                id="cooldownMessage"
+                                style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                               </div>
+                            </form>
+                         </div>
                      </div>
                      <a id="saveCommandSettings" class="btn btn-info" style="position: relative;left: 48%;">Save</a>
                 </div>

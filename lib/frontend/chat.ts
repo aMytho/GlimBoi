@@ -134,6 +134,8 @@ async function joinChat(chat: string, isReconnect?: boolean) {
         }
         $('#channelConnectedName').text(channelNameText);
         $('#channelConnectedName').removeClass('text-danger').addClass('text-success ');
+        $('#navChatStatus').text(channelNameText);
+        $('#navChatStatus').removeClass('text-danger').addClass('text-success ');
     }
 }
 
@@ -259,6 +261,8 @@ function displayChannels(channels) {
     	if (currentChatConnected === null) {
       		$('#channelConnectedName').removeClass('text-success').addClass('text-danger');
       		$('#channelConnectedName').text('Not Connected');
+      		$('#navChatStatus').removeClass('text-success').addClass('text-danger');
+      		$('#navChatStatus').text('Not Connected');
     	} else if (currentlyConnected) {
       		$('#channelConnectedName').removeClass('text-danger').addClass('text-success');
       		$('#channelConnectedName').text(currentChatConnected);

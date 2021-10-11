@@ -17,14 +17,15 @@ type CommandHandle = typeof import("../lib/modules/commands")// @ts-ignore
 type ActionCreator = typeof import("../lib/frontend/commands/actionCreator")// @ts-ignore
 type UserHandle = typeof import("../lib/modules/users")// @ts-ignore
 type RankHandle = typeof import("../lib/modules/users/userRank")// @ts-ignore
-type OBSHandle = typeof import("../lib/modules/OBS")// @ts-ignore
+type MediaHandle = typeof import("../lib/modules/media")// @ts-ignore
 type EventHandle = typeof import("../lib/modules/events")// @ts-ignore
 type QuoteHandle = typeof import("../lib/modules/quotes")// @ts-ignore
 type ChatHandle = typeof import("../lib/modules/chat")// @ts-ignore
 type ChatChannels = typeof import("../lib/modules/chat/chatChannels")// @ts-ignore
 type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
 type LogHandle = typeof import("../lib/modules/log")// @ts-ignore
-type CacheStore = typeof import("../lib/modules/cache")
+type CacheStore = typeof import("../lib/modules/cache")// @ts-ignore
+type Server = typeof import("../lib/modules/server")
 
 type Type = typeof import("bootstrap")
 type pageState = "home" | "commands" | "points" | "events" | "users" | "ranks" | "media" | "music" | "mod" | "settings" | "chat"
@@ -34,7 +35,7 @@ type appDataType = [string, string]
  * The first value has the app path, the second shows the path to the user data folder
  */
 // @ts-ignore
-declare var appData: appDataTypeW
+declare var appData: appDataType
 /**
  * Displays an error message to the user
  * @param errorType Type of the error

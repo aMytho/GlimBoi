@@ -382,26 +382,26 @@ async function loadUserTable() {
             }],
         pageLength: 25
     });
-    $('#userTable tbody tr .deletionIcon').on('click', async function (e) {
+    $('#userTable').on('click', 'tbody tr .deletionIcon', async function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         removeUserFromTable(data.userName);
         UserHandle.removeUser(data.userName, false, "Glimboi");
     })
-    $('#userTable tbody tr').on('click', '.quoteIcon', async function (e) {
+    $('#userTable').on('click', 'tbody tr .quoteIcon', async function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         let user = await UserHandle.findByUserName(data.userName) as UserType;
         console.log('Building quote list with ' + user.userName)
         makeList(data);
     })
-    $('#userTable tbody tr').on('click', 'a', function (e) {
+    $('#userTable').on('click', ' tbody tr a', function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         console.log(data)
         loadLink("glimesh.tv/" + data.userName)
     });
-    $('#userTable tbody tr').on('click', async function (e) {
+    $('#userTable').on('click', ' tbody tr', async function (e) {
         console.log("zzz");
         let data = userTable.row($(this)).data();
         console.log(data);
@@ -445,4 +445,45 @@ function prepUserModals() {
   	$('#modalUserEditing').on('hidden.bs.modal', function (e) {
     	document.getElementById("modalUserEditing")!.innerHTML = ``
   	})
+}
+
+function syncQuotes(user:UserType | userName, quote, action) {
+    // removes it from the list as well as the user quote list.
+    try {
+      if (action == "remove" && typeof user !== "string") {
+            makeList(user);
+      } else if (action == "add") {
+            console.log(user);
+            let filteredData = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+              if (userTable.row(value).data().userName == user) {
+                    makeList(userTable.row(value).data());
+                    return;
+              }
+            });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+}
+
+function syncUsers(data:userName | UserType, action: "add" | string) {
+    try {
+      if (action == "add") {
+            addUserTable(data as UserType);
+      } else {
+            console.log("The user " + data + " will now be deleted from the table.");
+            let filteredData = userTable
+            .rows()
+            .indexes()
+            .filter(function (value, index) {
+              return userTable.row(value).data().userName == data;
+            });
+            userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
+      }
+    } catch (e) {
+      console.log(e)
+    }
 }

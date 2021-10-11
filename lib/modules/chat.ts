@@ -59,6 +59,9 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         console.log("Connected to Glimesh Chat");
         connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
         subscribeToGlimeshEvent("chat", { channelID: channelID });
+        subscribeToGlimeshEvent("followers", { channelID: channelID });
+        //subscribeToGlimeshEvent("viewers", { channelID: channelID });
+
         //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
         heartbeat = setInterval(() => {
             connection.send(`[null,"4","phoenix","heartbeat",{}]`);
@@ -82,13 +85,14 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         event = JSON.parse(event.toString());
         //First check for heartbeat message.
         let chatMessage = event;
-        if (chatMessage[1] == null) {
-            ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
-        } else if (chatMessage[1] == 4) {
-            //Heartbeat
-            console.log(`Status: ${chatMessage[3]}`);
-        } else if (chatMessage[1] == 7) {
-            // This is a message the bot has sent
+        switch (chatMessage[1]) {
+            case null: ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
+            break;
+            break;
+            case 4: console.log(`Status: ${chatMessage[3]}`);
+            break;
+            case 8: console.log("NEW FOLLOWER OH WOW AMAZING");
+            break;
         }
 });
 
@@ -134,8 +138,10 @@ function subscribeToGlimeshEvent(event: glimeshEvent, {channelID}) {
             connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id } message } }","variables":{} }]`);
             break;
         case "followers":
+            connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${channelID}) { user { username } } }","variables":{} }]`);
             break;
-
+        case "viewers": connection.send(`["1","9","__absinthe__:control","doc",{"query":"subscription{ channel(id: ${channelID}) { stream {countViewers} } }","variables":{} }]`);
+            break;
         default:
             break;
     }
@@ -173,8 +179,10 @@ function postChat():void {
     // Load the chat settings/stats
     ChatSettings.loadChatSettings();
     ChatStats.loadChatStats();
-    // Load Overlay (OBS and Music)
-    OBSHandle.startServer();
+    // Load Overlay (Media and Music)
+    Server.startServer();
+    // Connect to OBS
+    ApiHandle.WebSockets.OBSWebSocket.connect();
     // Check for webhooks to send
     if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentWebhooks == false) {
         if (CacheStore.get("discordWebhookConfirmation", true)) {
@@ -209,4 +217,4 @@ function postChat():void {
     });
 }
 
-export {checkAndJoinChat, getConnection, isConnected, connectToGlimesh, disconnect, getBotName}
+export {checkAndJoinChat, getConnection, isConnected, connectToGlimesh, disconnect, getBotName, subscribeToGlimeshEvent}
