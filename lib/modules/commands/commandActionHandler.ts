@@ -11,12 +11,10 @@ const ActionResources:typeof import("../commands/actionResources") = require(app
  */
 class ChatAction implements ChatActionType {
     action: actionName
-    effect: actionEffect
     info: actionInfo
     generateVariables: actionVariables
-    constructor(action:actionName, effect:actionEffect, info:actionInfo, varsToSet:CommandActionVariables[] = []) {
+    constructor(action:actionName, info:actionInfo, varsToSet:CommandActionVariables[] = []) {
         this.action = action;
-        this.effect = effect;
         this.info = info;
         this.generateVariables = this.parseGenerateVariables(varsToSet);
     }
@@ -30,6 +28,7 @@ class ChatAction implements ChatActionType {
         for (let i = 0; i < variables.length; i++) {
             toBeGenerated[i] = variables[i].variable
         }
+        console.log(toBeGenerated);
         return toBeGenerated;
     }
 }
@@ -40,7 +39,7 @@ class ChatAction implements ChatActionType {
 class ChatMessage extends ChatAction {
     message:string
     constructor({message}:BuildChatMessage) {
-        super("ChatMessage", "Sends a message to chat", "message", undefined)
+        super("ChatMessage", "message", undefined)
         this.message = message;
     }
 
@@ -62,15 +61,14 @@ class ApiRequestGet extends ChatAction {
     headers:any
     returns: any
     constructor({url, headers, returns}:BuildApiRequestGet) {
-        let returnsData = returns
-        super("ApiRequestGet", "Requests data from an API", ["url", "headers", "path"], returns );
+        super("ApiRequestGet", ["url", "headers", "path"], returns );
         this.url = url;
         this.headers = headers;
-        this.returns = returnsData;
+        this.returns = returns;
     }
 
     async run() {
-        let requestData = await ActionResources.ApiRequest({url: this.url, headers: this.headers, mode: "GET", request: null, path: this.returns, pathType: this.getPathType()})
+        await ActionResources.ApiRequest({url: this.url, headers: this.headers, mode: "GET", request: null, path: this.returns, pathType: this.getPathType()})
         return this.generateVariables
     }
 
@@ -88,7 +86,7 @@ class ApiRequestGet extends ChatAction {
 class Audio extends ChatAction {
     source: mediaName
     constructor({source}:BuildAudio) {
-        super("Audio", "Plays audio in the overlay", "source", undefined);
+        super("Audio", "source", undefined);
         this.source = source;
     }
 
@@ -107,7 +105,7 @@ class Audio extends ChatAction {
 class Ban extends ChatAction {
     target: any
     constructor({target}) {
-        super("Ban", "Times a user out for 5 minutes", "target", undefined)
+        super("Ban", "target", undefined)
         this.target = target
     }
 
@@ -128,7 +126,7 @@ class Ban extends ChatAction {
 class ImageGif extends ChatAction {
     source: mediaName
     constructor({source}:BuildimageGif) {
-        super("ImageGif", "Shows an image/GIF in the overlay", "source", undefined);
+        super("ImageGif", "source", undefined);
         this.source = source;
     }
 
@@ -150,7 +148,7 @@ class ObsWebSocket extends ChatAction {
     returns: any
     instruction: string
     constructor({requestType, data, variables, instruction}:BuildObsWebSocket) {
-        super("ObsWebSocket", "Triggers an action in OBS", "data", variables);
+        super("ObsWebSocket", "data", variables);
         this.requestType = requestType;
         this.data = data;
         this.returns = variables;
@@ -174,13 +172,33 @@ class ObsWebSocket extends ChatAction {
 }
 
 /**
+ * Reads a file and sets variable for the data.
+ */
+class ReadFile extends ChatAction {
+    file: string
+    returns: CommandActionVariables[]
+    constructor({file, returns}) {
+        super("ReadFile", ["file"], returns)
+        this.file = file;
+        this.returns = returns;
+    }
+
+    async run() {
+        let fileModule:typeof import("../files/fileManager") = require(appData[0] + "/modules/files/fileManager.js");
+        let fileData = await fileModule.readDataFromFile(this.file);
+        ActionResources.addVariable({data: fileData, name: this.returns[0].variable});
+        return this.generateVariables;
+    }
+}
+
+/**
  * Times out a user, preventing them from speaking for 5 or 15 minutes
  */
 class Timeout extends ChatAction {
     target: any
     duration: timeout
     constructor({target, duration}) {
-        super("Timeout", "Times a user out for 5 minutes", ["target", "duration"], undefined)
+        super("Timeout", ["target", "duration"], undefined)
         this.target = target
         this.duration = duration;
     }
@@ -204,7 +222,7 @@ class Timeout extends ChatAction {
 class Video extends ChatAction {
     source: mediaName
     constructor({source}:BuildVideo) {
-        super("Video", "Plays a video in the overlay", "source", undefined);
+        super("Video", "source", undefined);
         this.source = source;
     }
 
@@ -225,7 +243,7 @@ class Video extends ChatAction {
 class Wait extends ChatAction {
      wait: number
     constructor({wait}:WaitType) {
-        super("Wait", "Waits a specific amount of time", "wait", undefined)
+        super("Wait", "wait", undefined)
         this.wait = Number(wait);
     }
 
@@ -238,4 +256,26 @@ class Wait extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, Timeout, Video, Wait}
+/**
+ * Writes to a file.
+ */
+class WriteFile extends ChatAction {
+    file: string
+    data: string
+    constructor({file, data}: {file: string, data: string}) {
+        super("WriteFile", ["file", "data"], undefined)
+        this.file = file;
+        this.data = data;
+    }
+
+    async run({user, activation}) {
+        let fileModule:typeof import("../files/fileManager") = require(appData[0] + "/modules/files/fileManager.js");
+        let data = await ActionResources.searchForVariables({message: this.data, user: user, activation: activation});
+        console.log(data);
+        fileModule.writeDataToFile(this.file, data);
+    }
+}
+
+export {ActionResources, ApiRequestGet, Audio, Ban,
+    ChatMessage, ImageGif, ObsWebSocket, ReadFile, Timeout,
+    Video, Wait, WriteFile}

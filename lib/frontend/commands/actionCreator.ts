@@ -141,6 +141,15 @@ async function buildImageGifUI(mode:actionMode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
 }
 
+async function buildReadFileUI(mode:actionMode, commandInfo) {
+    let action = await getActionHTML("ReadFile");
+    if (commandInfo) {
+        (action.children[1].firstElementChild.firstElementChild.lastElementChild as HTMLInputElement).innerText = commandInfo.file;
+        (action.children[1].lastElementChild.firstElementChild.firstElementChild as HTMLInputElement).innerText = commandInfo.returns[0].variable;
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
+
 async function buildObsWebSocketUI(mode:actionMode, commandInfo) {
     console.log(commandInfo)
     let action = await getActionHTML("ObsWebSocket");
@@ -199,6 +208,14 @@ async function buildWaitUI(mode:actionMode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
+async function buildWriteFileUI(mode: actionMode, commandInfo) {
+    let action = await getActionHTML("WriteFile");
+    if (commandInfo) {
+        (action.children[1].firstElementChild.firstElementChild.lastElementChild as HTMLDivElement).innerText = commandInfo.file;
+        (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSpanElement).innerText = commandInfo.data;
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
 
 async function getActionHTML(action: string) {
     let div = document.createElement("div");
@@ -210,4 +227,4 @@ async function getActionHTML(action: string) {
 }
 
 export {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI, buildImageGifUI,
-buildObsWebSocketUI, buildTimeoutUI, buildVideoUI, buildWaitUI}
+    buildReadFileUI, buildObsWebSocketUI, buildTimeoutUI, buildVideoUI, buildWaitUI, buildWriteFileUI}

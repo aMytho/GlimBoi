@@ -229,7 +229,6 @@ async function determineActionAndCheck(action, mode:actionMode) {
             }
         case "ObsWebSocket":
             try {
-                console.log()
                 const obsValaditor: typeof import("../commands/obs/validator") = require(appData[0] + "/frontend/commands/obs/validator.js");
                 let obsData = await obsValaditor.checkObsCommand(action.children[1].children[1].id, action.children[1].children[1]);
                 return obsData
@@ -238,6 +237,40 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
             }
+        case "Read File":
+        try {
+            let possibleFile;
+            if (mode == "add") {
+                possibleFile = action.children[1].firstElementChild.firstElementChild.firstElementChild;
+                if (possibleFile.files && possibleFile.files[0]) {
+                    resetMessageCommandModal(action.firstElementChild, mode);
+                    possibleFile = possibleFile.files[0].path;
+                } else {
+                    throw "No file was selected."
+                }
+            } else {
+                possibleFile = action.children[1].firstElementChild.firstElementChild.firstElementChild;
+                if (possibleFile.files && possibleFile.files[0]) {
+                    resetMessageCommandModal(action.firstElementChild, mode);
+                    possibleFile = possibleFile.files[0].path;
+                } else {
+                    possibleFile = strip(action.children[1].firstElementChild.firstElementChild.lastElementChild.innerText.trim());
+                    resetMessageCommandModal(action.firstElementChild, mode);
+                }
+            }
+            let possibleVariable = action.children[1].children[1].firstElementChild.firstElementChild.innerText.trim() as string;
+            if (!possibleVariable.startsWith("$")) {
+                possibleVariable = "$" + possibleVariable;
+            }
+            if (possibleVariable.length == 0 || possibleVariable == "$") {
+                throw "No variable was provided."
+            }
+            return {type: "ReadFile", file: possibleFile, returns: [{variable: possibleVariable, data: null }]}
+        } catch(e) {
+            console.log(e);
+            errorMessageCommandModal(e, action.firstElementChild, mode);
+            return false
+        }
         case "Timeout":
             try {
                 console.log(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText)
@@ -282,6 +315,40 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 resetMessageCommandModal(action.firstElementChild, mode)
                 return {type: "Wait", wait: possibleWait}
             } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
+        case "Write File":
+            let possibleFile;
+            try {
+                if (mode == "add") {
+                    possibleFile = action.children[1].firstElementChild.firstElementChild.firstElementChild;
+                    if (possibleFile.files && possibleFile.files[0]) {
+                        resetMessageCommandModal(action.firstElementChild, mode);
+                        possibleFile = possibleFile.files[0];
+                    } else {
+                        throw "No file was selected."
+                    }
+                } else {
+                    possibleFile = action.children[1].firstElementChild.firstElementChild.firstElementChild;
+                    if (possibleFile.files && possibleFile.files[0]) {
+                        resetMessageCommandModal(action.firstElementChild, mode);
+                        possibleFile = possibleFile.files[0].path;
+                    } else {
+                        possibleFile = strip(action.children[1].firstElementChild.firstElementChild.lastElementChild.innerText.trim());
+                        resetMessageCommandModal(action.firstElementChild, mode);
+                    }
+                }
+
+                let possibleData = strip(action.children[1].children[1].firstElementChild.firstElementChild.innerText);
+                if (possibleData.length == 0) {
+                    throw "No data was entered."
+                }
+
+                resetMessageCommandModal(action.firstElementChild, mode)
+                return { type: "WriteFile", file: possibleFile, data: possibleData }
+            } catch (e) {
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false

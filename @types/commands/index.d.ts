@@ -63,14 +63,12 @@ interface commandDoc extends CommandType {
 
 interface ChatActionType {
     action: actionName
-    effect: actionEffect
     info: actionInfo
     generateVariables: actionVariables
 }
 
 declare class ChatAction implements ChatActionType {
     action: actionName
-    effect: actionEffect
     info: actionInfo
     generateVariables: actionVariables
     removeGeneratedVariables(): void
@@ -133,8 +131,7 @@ type CustomUserVaribles = {
     data: string | any;
 }
 
-type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "ObsWebSocket" | "Video" | "Timeout" | "Wait"
-type actionEffect = string;
+type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "ObsWebSocket" | "ReadFile" |  "Video" | "Timeout" | "Wait" | "WriteFile"
 type actionInfo = any[] | any
 type actionVariables = string[]
 

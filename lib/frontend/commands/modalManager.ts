@@ -49,10 +49,12 @@ function prepareActions(mode) {
     document.getElementById("CreateAudio")!.onclick = () => addActionToUI("Audio", mode);
     document.getElementById("CreateBan")!.onclick = () => addActionToUI("Ban", mode);
     document.getElementById("CreateImageGif")!.onclick = () => addActionToUI("ImageGif", mode);
+    document.getElementById("CreateObsWebSocket")!.onclick = () => addActionToUI("ObsWebSocket", mode);
+    document.getElementById("CreateReadFile")!.onclick = () => addActionToUI("ReadFile", mode);
     document.getElementById("CreateVideo")!.onclick = () => addActionToUI("Video", mode);
     document.getElementById("CreateTimeout")!.onclick = () => addActionToUI("Timeout", mode);
-    document.getElementById("CreateObsWebSocket")!.onclick = () => addActionToUI("ObsWebSocket", mode);
     document.getElementById("CreateWait")!.onclick = () => addActionToUI("Wait", mode);
+    document.getElementById("CreateWriteFile")!.onclick = () => addActionToUI("WriteFile", mode);
 }
 
 function prepareModals(mode) {
@@ -122,6 +124,9 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         case "ObsWebSocket": await ActionCreator.buildObsWebSocketUI(mode, data);
         break;
 
+        case "ReadFile": await ActionCreator.buildReadFileUI(mode, data);
+        break;
+
         case "Timeout": await ActionCreator.buildTimeoutUI(mode, data)
         break;
 
@@ -129,6 +134,10 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         break;
 
         case "Wait": await ActionCreator.buildWaitUI(mode, data);
+        break;
+
+        case "WriteFile": await ActionCreator.buildWriteFileUI(mode, data);
+        break;
         default: null
         break
     }
