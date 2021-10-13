@@ -3,6 +3,7 @@ import log from 'electron-log' // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 import { autoUpdater } from 'electron-updater'; //handles updates
 import isDev from "electron-is-dev"; // detects if we are in dev mode
+import windowStateKeeper from 'electron-window-state';
 
 ipcMain.on('app_version', (event) => {
   	console.log("The current version is recieved. " + app.getVersion());
@@ -36,11 +37,17 @@ ipcMain.on('restart_app', () => {
 let win: BrowserWindow; // The main window
 
 
-function createWindow () { //make Win a window
-  	const {width,height} = screen.getPrimaryDisplay().workAreaSize
+function createWindow () {
+    const {width,height} = screen.getPrimaryDisplay().workAreaSize;
+    let mainWindowState = windowStateKeeper({
+        defaultWidth: width,
+        defaultHeight: height
+      });
    	win = new BrowserWindow({
-    	width: width,
-    	height: height,
+    	width: mainWindowState.width,
+    	height: mainWindowState.height,
+        x: mainWindowState.x,
+        y: mainWindowState.y,
     	backgroundColor: "#060818",
     	webPreferences: {
       		nodeIntegration: true,
@@ -51,6 +58,7 @@ function createWindow () { //make Win a window
   	})
   	win.loadFile(__dirname + '\\../src/index.html');
   	win.setIcon('resources/Icons/icon.ico');
+    mainWindowState.manage(win);
 }
 app.whenReady().then(createWindow);
 
