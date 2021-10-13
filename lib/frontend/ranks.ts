@@ -51,6 +51,7 @@ async function removeRank() {
 function saveRankSettings(rank:rankName) {
     let updatedRank = {
         rank: rank,
+        rankTier: Number((document.getElementById("tierRank") as HTMLInputElement).value),
         canAddCommands: (document.getElementById("addCommandsRank") as HTMLInputElement).checked,
         canEditCommands: (document.getElementById("editCommandsRank") as HTMLInputElement).checked,
         canRemoveCommands: (document.getElementById("removeCommandsRank") as HTMLInputElement).checked,

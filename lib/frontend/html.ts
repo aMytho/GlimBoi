@@ -182,6 +182,7 @@ function resetModalRankRemove() {
 
 function loadSpecificRank(rank: RankType) {
     (document.getElementById("rankName") as HTMLInputElement)!.innerText = rank.rank;
+    (document.getElementById("tierRank") as HTMLInputElement)!.value = rank.rankTier.toString();
     (document.getElementById("rankMessage") as HTMLInputElement)!.innerText = "Make sure to save your changes!";
     (document.getElementById("addCommandsRank") as HTMLInputElement)!.checked = rank.canAddCommands;
     (document.getElementById("editCommandsRank") as HTMLInputElement)!.checked = rank.canEditCommands;

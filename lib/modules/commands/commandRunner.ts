@@ -122,7 +122,9 @@ async function permissionCheck(command:CommandType, user:userName) {
     if (userData !== "ADDUSER") {
         if (command.rank !== "Everyone") {
             console.log(`Command requires ${command.rank}, the user is ${userData.role}`);
-            if (userData.role !== command.rank) {
+            let commandRankData = await RankHandle.getRankPerms(command.rank);
+            let userRankData = await RankHandle.getRankPerms(userData.role);
+            if (commandRankData.rankTier > userRankData.rankTier) {
                 return "You don't have the required rank to use that command!"
             }
         }

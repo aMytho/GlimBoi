@@ -1,16 +1,16 @@
 // This file manages the rank system
 let rankDB:Nedb; //Controls the Rank DB
-let userRank = {rank: "user", canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
+let userRank = {rank: "user", rankTier: 1, canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
 canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false,
 canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false,
 canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
 canStartEvents: true};
-let modRank = {rank: "Mod", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
+let modRank = {rank: "Mod", rankTier: 2, canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
 canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false,
 canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true,
 canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
 canStartEvents: true};
-let streamerRank = {rank: "Streamer", canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
+let streamerRank = {rank: "Streamer", rankTier: 3, canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
 canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true,
 canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true,
 canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true, modImmunity: true,
@@ -22,6 +22,7 @@ canStartEvents: true};
  */
 class Rank implements RankType {
     rank:rankName
+    rankTier:number;
     canAddCommands: boolean;
     canEditCommands: boolean;
     canRemoveCommands: boolean;
@@ -43,6 +44,7 @@ class Rank implements RankType {
     canStartEvents: boolean;
     constructor(rank:rankName) {
         this.rank = rank;
+        this.rankTier = 1;
         this.canAddCommands = false;
         this.canEditCommands = false;
         this.canRemoveCommands = false;
@@ -102,8 +104,26 @@ function checkRankProperties(docs: RankType[]) {
             let isChanged = false;
             for (const key in userRank) {
                 if (rank[key] === undefined) {
-                    rank[key] = userRank[key];
-                    isChanged = true;
+                    if (key == "rankTier") {
+                        switch(rank.rank) {
+                            case "Streamer":
+                                rank.rankTier = 3;
+                                break;
+                            case "Mod":
+                                rank.rankTier = 2;
+                                break;
+                            case "user":
+                                rank.rankTier = 1;
+                                break;
+                            default:
+                                rank.rankTier = 1;
+                                break;
+                        };
+                        isChanged = true;
+                    } else {
+                        rank[key] = userRank[key];
+                        isChanged = true;
+                    }
                 }
             }
             if (isChanged) {

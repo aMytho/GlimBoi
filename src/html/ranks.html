@@ -215,6 +215,12 @@
                         <span class="slider round"></span>
                     </label>
                 </div>
+                <div class="col-3 whiteText px-3">
+                    <h3>Rank Tier (CMD Only)</h3>
+                </div>
+                <div class="col-1 whiteText px-3">
+                    <input type="number" id="tierRank" class="textarea">
+                </div>
             </div>
             <h5 class="whiteText mb-2 ml-1">Note that mod permissions and some events do not yet respect the rank system. This will be adjusted in a future update.</h5>
         </div>
@@ -282,6 +288,41 @@
 
     .slider.round:before {
       border-radius: 50%;
+    }
+
+    .textarea {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        resize: none;
+        min-height: 40px;
+        line-height: 20px;
+        background-color: #1b2e4b;
+        text-rendering: auto;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-transform: none;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: start;
+        appearance: textfield;
+        -webkit-rtl-ordering: logical;
+        cursor: text;
+        font: 400 13.3333px Arial;
+        border-width: 2px;
+        border-style: inset;
+        border-color: -internal-light-dark(rgb(118, 118, 118), rgb(195, 195, 195));
+        border-image: initial;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        color: turquoise;
+    }
+
+    .textarea[contenteditable]:empty::before {
+        content: "The message to be sent";
+        color: gray;
     }
     </style>
 

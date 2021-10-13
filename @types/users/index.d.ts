@@ -47,7 +47,8 @@ type quoteData = string;
 type quoteID = number
 
 interface RankType {
-    rank:rankName
+    rank: rankName;
+    rankTier: number;
     canAddCommands: boolean;
     canEditCommands: boolean;
     canRemoveCommands: boolean;
