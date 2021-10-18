@@ -95,22 +95,56 @@ $(document).on('keypress','input, textarea', function (event) {
 
     let id = $(this).attr('id');
 
-    if (id === 'commandEditInput') $('#editCommandButtonFinish').click()
-    if (id === 'commandRemoveInput') $('#removeCommandButtonFinish').click()
-    if (id === 'messageArea') $('#sendMessage').click()
-    if (id === 'quoteRemoveSearch') $('#userRemoveQuoteSearch').click()
-    if (id === 'userAddInput') $('#addUserFinish').click()
-    if (id === 'userEditSearch') $('#userEditSearchButton').click()
-    if (id === 'userQuoteInputQ') $('#addQuoteFinish').click()
-    if (id === 'userQuoteInputU') $('#addQuoteFinish').click()
-    if (id === 'userQuoteSearch') $('#userRemoveQuoteSearch').click()
-    if (id === 'userremoveInput') $('#removeUserFinish').click()
-    if (id === 'whichUser') $(this).closest('.modal-content').find('#targetActionButton').click();
-    if (id === 'newChatName') $('#triggerNewChatAdd').click()
-    if (id === 'rankAddInput') $('#addingRankButton').click()
-    if (id === 'rankRemoveInput') $('#rankRemoveButton').click()
-    if (id === 'mediaEditInput') $('#mediaEditButton').click()
-    if (id === 'mediaRemoveInput') $('#mediaRemoveButton').click()
+    switch(id) {
+        case 'commandEditInput':
+            $('#editCommandButtonFinish').click()
+            break;
+        case 'commandRemoveInput':
+            $('#removeCommandButtonFinish').click()
+            break;
+        case 'messageArea':
+            $('#sendMessage').click()
+            break;
+        case 'quoteRemoveSearch':
+            $('#userRemoveQuoteSearch').click()
+            break;
+        case 'userAddInput':
+            $('#addUserFinish').click()
+            break;
+        case 'userEditSearch':
+            $('#userEditSearchButton').click()
+            break;
+        case 'userQuoteInputQ':
+            $('#addQuoteFinish').click()
+            break;
+        case 'userQuoteInputU':
+            $('#addQuoteFinish').click()
+            break;
+        case 'userQuoteSearch':
+            $('#userRemoveQuoteSearch').click()
+            break;
+        case 'userremoveInput':
+            $('#removeUserFinish').click()
+            break;
+        case 'whichUser':
+            $(this).closest('.modal-content').find('#targetActionButton').click();
+            break;
+        case 'newChatName':
+            $('#triggerNewChatAdd').click()
+            break;
+        case 'rankAddInput':
+            $('#addingRankButton').click()
+            break;
+        case 'rankRemoveInput':
+            $('#rankRemoveButton').click()
+            break;
+        case 'mediaEditInput':
+            $('#mediaEditButton').click()
+            break;
+        case 'mediaRemoveInput':
+            $('#mediaRemoveButton').click()
+            break;
+    }
 
     event.preventDefault();
 });
