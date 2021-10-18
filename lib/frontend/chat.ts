@@ -170,7 +170,7 @@ $(document).on('click', '#triggerNewChatAdd', async function (event) {
  */
 function loadChatWindow() {
   	globalChatMessages.forEach(msg => {
-    	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4]);
+    	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4], msg[5]);
   	});
 
     LogHandle.getLogByType(["Delete Message", "Ban User", "Long Timeout User", "Short Timeout User", "UnBan User", "Add Points", "Add User",

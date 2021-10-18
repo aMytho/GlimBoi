@@ -57,6 +57,7 @@ type glimeshRequest = "userID" | "channelID"
 type glimeshEvent = "chat" | "followers" | "subscribers" | "viewers"
 
 interface incomingGlimeshMessage {
+    tokens: string
     id: string; // We convert this to a number as soon as possible.
     message: string; // The message that was recieved
     user: {

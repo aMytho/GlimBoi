@@ -17,4 +17,4 @@ interface channel {
 }
 
 type chatChannel = {channel: string, timestamp: string, autoJoin?: boolean}
-type storedChatMessage = [userName, message, avatar, messageID, messageState]
+type storedChatMessage = [userName, message, avatar, messageID, messageState, any]

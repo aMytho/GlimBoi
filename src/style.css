@@ -236,7 +236,14 @@ table.whiteText td {
     color: aliceblue;
     margin-left: 10px;
 }
+.mustBe40 {
+    height: 40px;
+    width: 40px;
+}
 .admin_chat .chat-body1 p {
+    background: #651c1c none repeat scroll 0 0;
+}
+.admin_chat .chat-body1 img {
     background: #651c1c none repeat scroll 0 0;
 }
 .chat_area .admin_chat .chat-body1 {

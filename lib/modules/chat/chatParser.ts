@@ -1,4 +1,3 @@
-
 function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
     let userChat: userName = chatMessage.user.username
     let messageChat = chatMessage.message;
@@ -176,8 +175,8 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
         }
     }
     try {
-        ChatMessages.logMessage(userChat, messageChat, chatMessage.user.avatarUrl, false, Number(chatMessage.id), "none");
-        globalChatMessages.push([userChat, messageChat, chatMessage.user.avatarUrl, Number(chatMessage.id), "none"]);
+        ChatMessages.logMessage(userChat, messageChat, chatMessage.user.avatarUrl, false, Number(chatMessage.id), "none", chatMessage.tokens);
+        globalChatMessages.push([userChat, messageChat, chatMessage.user.avatarUrl, Number(chatMessage.id), "none", chatMessage.tokens]);
         globalChatMessages = globalChatMessages.slice(Math.max(globalChatMessages.length - 20, 0));
         ModHandle.ModPowers.scanMessage(userChat, messageChat.toLowerCase(), Number(chatMessage.id), userID) // filter the message if needed
     } catch (e3) {

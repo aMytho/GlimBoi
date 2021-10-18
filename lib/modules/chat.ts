@@ -135,7 +135,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
 function subscribeToGlimeshEvent(event: glimeshEvent, {channelID}) {
     switch (event) {
         case "chat":
-            connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id } message } }","variables":{} }]`);
+            connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id }, message, tokens {...on ChatMessageToken {text} ...on EmoteToken {src} ...on UrlToken {url} ...on TextToken {text}} } }","variables":{} }]`);
             break;
         case "followers":
             connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${channelID}) { user { username } } }","variables":{} }]`);

@@ -77,21 +77,25 @@ function glimboiMessage(data: message, logError: boolean = false) {
  * @param {boolean} isReload Is this reloading all the messages for the chat page, or a new message?
  * @param {number} messageID The ID of the message from glimesh chat
  */
-function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState) {
+function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState, messageTokens) {
+    let tokens = getTokens(messageTokens);
     try {
         let adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
-
+        let htmlOfTokens = ``;
+        tokens.forEach(token => {
+            htmlOfTokens += token.outerHTML;
+        });
         $("#chatList").append(`
           <li class="left clearfix ${adminClass} ${state} w-100" name='${user}' title="${getMessageHoverTitle(state)}">
                 <div contentLocation="1" class="chat-body1 clearfix testing" name='${user}' oncontextmenu="loadChatContextMenu(event)">
                     <span class="chat-img1 pull-left" name='${user}'>
                       <img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
                     </span>
-                    <p name='${user}' messageID='${messageID}'><span id="chatUser" name='${user}' >${user}: </span> ${message}</p>
-                    <!--<div class="whiteText pull-left">09:40PM</div> -->
+                    <p name='${user}' messageID='${messageID}'><span id="chatUser" name='${user}' >${user}: </span> ${htmlOfTokens} </p>
                 </div>
           </li>`
-    );
+          );
+
         let scroll = document.getElementById("chatContainer")
         scroll!.scrollTo(0,document.getElementById("chatList").scrollHeight);
         // log to file
@@ -114,4 +118,26 @@ function getMessageHoverTitle(state:messageState) {
     }
 }
 
-export { filterMessage, glimboiMessage, logMessage, sendMessage }
+function getTokens(tokens: any[]) {
+    tokens.map((token, index, tokens) => {
+        if (token.src) {
+            let img = document.createElement("img");
+            img.src = token.src;
+            img.className = "mustBe40"
+            tokens[index] = img;
+        } else if (token.url) {
+            let a = document.createElement("a");
+            a.href = "#"
+            a.innerText = token.text;
+            a.title = "Copy the link in a browser to view its contents"
+            tokens[index] = a;
+        } else if (token.text) {
+            let p = document.createElement("span") as HTMLSpanElement;
+            p.innerText = token.text;
+            tokens[index] = p;
+        }
+    })
+    return tokens
+}
+
+export { filterMessage, getTokens, glimboiMessage, logMessage, sendMessage }
