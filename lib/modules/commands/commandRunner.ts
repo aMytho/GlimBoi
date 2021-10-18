@@ -18,13 +18,15 @@ async function checkCommand(data) {
             try {
                 let hasPerms = await permissionCheck(commandExists, data.user.username.toLowerCase());
                 if (hasPerms == "ACCEPTED") {
-                    runCommand({message: cleaned, command: commandExists, user: data.user}); // Run the command passing the message, command, and the user.
+                    await runCommand({ message: cleaned, command: commandExists, user: data.user }); // Run the command passing the message, command, and the user.
                     if (commandExists.shouldDelete) {
-                        let messageDeleted = await ApiHandle.deleteMessage(data.id);
-                        if (messageDeleted) {
-                            LogHandle.logEvent({event: "Delete Message" , users: ["Glimboi", data.user.username], data: {messageID: data.id}})
-                            adjustMessageState(data.id, "deleted");
-                        }
+                        setTimeout(async () => {
+                            let messageDeleted = await ApiHandle.deleteMessage(data.id);
+                            if (messageDeleted) {
+                                LogHandle.logEvent({ event: "Delete Message", users: ["Glimboi", data.user.username], data: { messageID: data.id } })
+                                adjustMessageState(data.id, "deleted");
+                            }
+                        }, 400);
                     }
                 } else if (hasPerms == "NEWUSER") {
                     checkCommand(data);
