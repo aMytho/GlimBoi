@@ -4,34 +4,34 @@ let MediaTable;
 function loadMediaTable() {
     $(document).ready(async function () {
         prepMediaModals()
-    	MediaTable = $("#obsResources").DataTable({
-      		data: await MediaHandle.getAll(), // returns all the commands
-      		columns: [
-        		{
-    	      		title: "Asset Name",
-	          		data: "name",
-        		},
-        		{
-    	      		title: "Type",
-	          		data: "type",
-        		},
-        		{
-    	      		title: "File Path",
-	          		data: "path",
-        		},
-      		],
+        MediaTable = $("#obsResources").DataTable({
+            data: await MediaHandle.getAll(), // returns all the commands
+            columns: [
+                {
+                    title: "Asset Name",
+                    data: "name",
+                },
+                {
+                    title: "Type",
+                    data: "type",
+                },
+                {
+                    title: "File Path",
+                    data: "path",
+                },
+            ],
             pageLength: 25,
             columnDefs: [
             ]
-    	});
+        });
         $('#obsResources').on('click', 'tbody tr', async function () {
-            let data = MediaTable.row( this ).data();
+            let data = MediaTable.row(this).data();
             let mediaToBeEditied = await MediaHandle.getMediaByName(data.name);
-            const MediaUI:typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+            const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
             MediaUI.loadEditModal(mediaToBeEditied);
             $('#editMediaModal').modal("show");
-        } );
-  	});
+        });
+    });
 }
 
 async function removeMedia(media) {
@@ -44,11 +44,11 @@ async function removeMedia(media) {
         if (deletedMedia !== null) {
             MediaHandle.removeMedia(media);
             let filteredData = MediaTable
-            .rows()
-            .indexes()
-            .filter(function (value, index) {
-                return MediaTable.row(value).data().name == media;
-            });
+                .rows()
+                .indexes()
+                .filter(function (value, index) {
+                    return MediaTable.row(value).data().name == media;
+                });
             MediaTable.rows(filteredData).remove().draw();
             $("#removeMediaModal").modal("hide");
         } else {
@@ -65,7 +65,7 @@ async function displayMedia(media, source) {
         } else {
             document.getElementById("errorDisplayMedia").innerText = "The content type was not valid. Please select a video, image, or GIF.";
         }
-    } else if(content.type.startsWith("image")) {
+    } else if (content.type.startsWith("image")) {
         Server.activateMedia(content, "imageGif");
     } else if (content.type.startsWith("video")) {
         Server.activateMedia(content, "video");
@@ -76,26 +76,26 @@ async function displayMedia(media, source) {
 
 async function prepMediaModals() {
     $('#addMediaButton').on('click', function (e) {
-        const MediaUI:typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+        const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
         MediaUI.loadAddModal();
-  	})
+    })
     $('#removeMediaModal').on('hidden.bs.modal', function (e) {
-    	document.getElementById("mediaRemoveModalContent").innerHTML = removeMediaModal();
-  	})
+        document.getElementById("mediaRemoveModalContent").innerHTML = removeMediaModal();
+    })
     $('#playAudioModal').on('hidden.bs.modal', function (e) {
-    	document.getElementById("audioBodyModal").innerHTML = audioResetModal()
-  	}).on('shown.bs.modal', async function (e) {
-    	let selectElement = document.getElementById("playAudioModalSelect");
+        document.getElementById("audioBodyModal").innerHTML = audioResetModal()
+    }).on('shown.bs.modal', async function (e) {
+        let selectElement = document.getElementById("playAudioModalSelect");
         let audioItems = await MediaHandle.getMediaByType("audio");
         for (let i = 0; i < audioItems.length; i++) {
             let name = audioItems[i].name
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
-  	})
+    })
     $('#playImageModal').on('hidden.bs.modal', function (e) {
-    	document.getElementById("displayImageModalBody").innerHTML = imageResetModal();
-  	}).on('shown.bs.modal', async function (e) {
-    	let selectElement = document.getElementById("playImageModalSelect");
+        document.getElementById("displayImageModalBody").innerHTML = imageResetModal();
+    }).on('shown.bs.modal', async function (e) {
+        let selectElement = document.getElementById("playImageModalSelect");
         let imageItems = await MediaHandle.getMediaByType("image");
         let videoItems = await MediaHandle.getMediaByType("video");
         imageItems = imageItems.concat(videoItems);
@@ -103,21 +103,38 @@ async function prepMediaModals() {
             let name = imageItems[i].name
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
-  	})// Only works in production
+    })// Only works in production
     document.getElementById("pathOfOverlay").innerText = appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/index.html")
 }
 
-function saveMediaSettings(reset: boolean) {
+async function saveMediaSettings(reset: boolean) {
     if (reset) {
         CacheStore.setMultiple([
-            {serverPort: 3000},
-            {serverUrl: "localhost"},
+            { serverPort: 3000 },
+            { serverUrl: "localhost" },
         ])
     } else {
         CacheStore.setMultiple([
-            {serverPort: parseInt((document.getElementById("mediaPort") as HTMLInputElement).value.trim())},
-            {serverUrl: (document.getElementById("mediaUrl") as HTMLInputElement).value.trim()},
+            { serverPort: parseInt((document.getElementById("mediaPort") as HTMLInputElement).value.trim()) },
+            { serverUrl: (document.getElementById("mediaUrl") as HTMLInputElement).value.trim() },
         ])
+    };
+
+    let defaultFile = await fs.readFile(appData[0] + "/frontend/templates/connection.js");
+    let defaultFileData = defaultFile.toString();
+    try {
+        let position = defaultFileData.indexOf("\n"); // Find the first new line
+        if (position !== -1) {
+            defaultFileData = defaultFileData.substr(position + 1);
+            defaultFileData = "let url = `ws://" + CacheStore.get("serverUrl", "localhost") + ":" + CacheStore.get("serverPort", 3000) + "`;\n" + defaultFileData;
+            console.log(defaultFileData);
+            fs.writeFile(appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/js/connection.js"), defaultFileData);
+        } else {
+            throw "error with new line replacement in media file";
+        }
+    } catch (error) {
+        console.log(error);
+        fs.writeFile(appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/js/connection.js"), defaultFileData);
     }
 }
 
