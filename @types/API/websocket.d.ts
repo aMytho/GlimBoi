@@ -52,6 +52,14 @@ declare namespace ClientAPIs {
                  */
                 sources: SceneItem[];
             }
+
+            export interface isAuthRequired {
+                authRequired: boolean
+                challenge?: string
+                "message-id"?: string
+                salt?: string
+                status: "ok" | "string"
+            }
         }
     }
 }

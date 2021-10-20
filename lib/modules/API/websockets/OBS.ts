@@ -18,10 +18,18 @@ function connect() {
         return;
     }
     host = new WebSocket(CacheStore.get("obsUrl", "ws://127.0.0.1:4444", true));
-    return new Promise((resolve, reject) => {
-        host.onopen = () => {
+    return new Promise((resolve) => {
+        host.onopen = async () => {
             console.log("OBS connection opened");
-            resolve(true);
+            let authSucceeded = await authenticate();
+            if (authSucceeded) {
+                resolve(true);
+            } else {
+                resolve(false);
+                errorMessage("OBS Auth Error", `Glimboi was not able to authenticate with OBS Websocket.
+                Please check that the password is correct and reload the bot.`);
+                host.close(1000);
+            }
         }
 
         host.onmessage = (event) => {
@@ -61,7 +69,8 @@ async function sendObsData(data: any, dataToGet?: CommandActionVariables[], isRe
     } else {
         console.log("OBS connection not open");
         if (!isRetry) {
-            console.log("Attempting to connect to obs since its not open.")
+            console.log("Attempting to connect to obs since its not open.");
+            await connect();
             return await sendObsData(data, dataToGet, true);
         }
     }
@@ -129,5 +138,46 @@ class ObsRequest {
     }
 }
 
+/**
+ * Checks if auth is needed and if so, sends it.
+ * @returns
+ */
+async function authenticate() {
+    return new Promise(resolve => {
+        // The auth request
+        let authNeededRequest = new ObsRequest("GetAuthRequired", {});
+        // Wait for the response
+        ObsEmitter.once(authNeededRequest.request["message-id"], (data: ClientAPIs.WebsSockets.OBS.isAuthRequired) => {
+            if (data.authRequired) { // Auth is required, we hash a password and send it
+                console.log("Auth is required, hashing password");
+                let sha256 = require("crypto-js/sha256");
+                let Base64 = require("crypto-js/enc-base64");
+
+                let userPassword = CacheStore.get("obsPassword", "lol123");
+                if (userPassword == "") {
+                    console.log("They didn't enter a password")
+                    resolve(false);
+                }
+
+                const hash = Base64.stringify(sha256(CacheStore.get("obsPassword", "lol123") + data.salt)) as string;
+                let password = Base64.stringify(sha256(hash + data.challenge)) as string;
+
+                let authRequest = new ObsRequest("Authenticate", {auth: password});
+                // Wait for the response.
+                ObsEmitter.once(authRequest.request["message-id"], (data: any) => {
+                    if (data.status == "ok") {
+                        resolve(true); // it worked
+                    } else {
+                        resolve(false); // oops
+                    }
+                })
+                host.send(JSON.stringify(authRequest.request));
+            } else {
+                resolve(true);
+            }
+        })
+        host.send(JSON.stringify(authNeededRequest.request));
+    })
+}
 
 export {connect, ObsRequest, sendObsData};
