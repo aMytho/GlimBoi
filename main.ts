@@ -53,11 +53,10 @@ function createWindow () {
       		nodeIntegration: true,
               contextIsolation: false
     	},
-    	icon: "UI/Icons/icon.ico",
     	frame: false
   	})
   	win.loadFile(__dirname + '\\../src/index.html');
-  	win.setIcon('resources/Icons/icon.ico');
+  	win.setIcon('resources/Icons/icon.png');
     mainWindowState.manage(win);
 }
 app.whenReady().then(createWindow);
