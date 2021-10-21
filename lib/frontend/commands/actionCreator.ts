@@ -151,7 +151,6 @@ async function buildReadFileUI(mode:actionMode, commandInfo) {
 }
 
 async function buildObsWebSocketUI(mode:actionMode, commandInfo) {
-    console.log(commandInfo)
     let action = await getActionHTML("ObsWebSocket");
     (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLSelectElement).onchange = async function(event) {
         let obsActionResources:typeof import("../commands/obs/resources") = require(appData[0] + "/frontend/commands/obs/resources.js");

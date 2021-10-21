@@ -155,11 +155,13 @@ class ObsWebSocket extends ChatAction {
         this.instruction = instruction
     }
 
-    async run() {
+    async run({activation, user}:RunChatMessage) {
         let obsPacket = new ApiHandle.WebSockets.OBSWebSocket.ObsRequest(this.requestType, this.data);
-        let test = await ApiHandle.WebSockets.OBSWebSocket.sendObsData(obsPacket.request, this.checkforVariables());
-        console.log(test);
-        return test
+        obsPacket = await this.checkForReplacedVariables(this.requestType, obsPacket, {activation: activation, user: user});
+        console.log(obsPacket);
+        let result = await ApiHandle.WebSockets.OBSWebSocket.sendObsData(obsPacket.request, this.checkforVariables());
+        console.log(result);
+        return result
     }
 
     checkforVariables() {
@@ -167,6 +169,26 @@ class ObsWebSocket extends ChatAction {
             return this.returns
         } else {
             return false
+        }
+    }
+
+    /**
+     * Checks if any data needs to have variables replaced
+     * @param requestType The type of request that we are sending
+     * @param request The OBS packet that we are sending
+     * @param param2 Data about the command
+     * @returns The OBS packet with replaced variables
+     */
+    async checkForReplacedVariables(requestType:string, request, {activation, user}:RunChatMessage) {
+        switch (requestType) {
+            case "ToggleMute":
+            case "SetMute":
+                request.request["source"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["source"]});
+                return request
+            case "SetCurrentScene":
+                request.request["scene-name"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["scene-name"]});
+                return request
+            default: return request
         }
     }
 }

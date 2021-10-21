@@ -1,0 +1,29 @@
+<div class="col-12">
+    <div class="row">
+        <div class="col-6">
+            <span class="textarea sceneSwitch" role="textbox" contenteditable
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 20px;"></span>
+        </div>
+        <div class="col-6">
+            <p>Enter the source to mute. $variables supported</p>
+        </div>
+        <style>
+            .sceneSwitch[contenteditable]:empty::before {
+                content: "Enter the source to mute. Caps matter." !important;
+                color: gray;
+            }
+        </style>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <select class="settingSelect" style="margin-left: 1rem;">
+                <option value="mute">Mute</option>
+                <option value="unMute">UnMute</option>
+                <option value="toggleMute">Toggle</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <p>Select your desired effect.</p>
+        </div>
+    </div>
+</div>

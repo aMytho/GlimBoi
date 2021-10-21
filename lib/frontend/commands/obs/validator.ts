@@ -3,6 +3,7 @@
 async function checkObsCommand(commandType, command) {
     switch (commandType) {
         case "changeScene": return getChangeSceneValue(command);
+        case "muteSource": return getMuteSourceInfo(command);
         case "replayBuffer": return getReplayBufferSelection(command);
         case "startStopStreamRecording": return getStartStopStreamingSelection(command);
         case "screenshot": return {type: "ObsWebSocket", requestType: "TakeSourceScreenshot", variables: [], data: {embedPictureFormat: `png`, saveToFilePath: `${appData[1]}/test.png` }, instruction: "screenshot"}
@@ -35,5 +36,15 @@ function getStartStopStreamingSelection(command) {
     }
 }
 
+function getMuteSourceInfo(command: HTMLElement) {
+    let source = (command.firstElementChild.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
+    let actionToTake = (command.firstElementChild.lastElementChild.firstElementChild.firstElementChild as HTMLSelectElement).value;
+    if (actionToTake == "toggleMute") {
+        return { type: "ObsWebSocket", requestType: "ToggleMute", variables: [], data: { source: source }, instruction: "muteSource" };
+    } else {
+        let shouldMute = (actionToTake == "mute")
+        return { type: "ObsWebSocket", requestType: "SetMute", variables: [], data: {source: source, mute: shouldMute}, instruction: "muteSource" };
+    }
+}
 
-export {checkObsCommand}
+export { checkObsCommand }
