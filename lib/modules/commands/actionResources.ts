@@ -20,7 +20,8 @@ let listofvariables: (string | CustomUserVaribles)[] = [
     "$twitter", // twitter profile URL
     "$catfact", // Random cat fact
     "$dogfact", // Random dog fact
-    "$uptime" // How long the user has been streaming.
+    "$uptime", // How long the user has been streaming.
+    "$message"
  // Custom variables
 ]
 
@@ -43,87 +44,78 @@ async function searchForVariables(data: {message:string, activation?:string, use
 /**
  *
  * @param {string} variable The command variable ex $user, $dadjoke, $target,etc
- * @param {string} activation What activated the command
+ * @param {string} activation What activated the command. so mytho and everything after it
  * @param {string} user The user who activated the command
  */
- async function replaceVariable({variable, activation, user}) {
+async function replaceVariable({ variable, activation, user }) {
     //Checks the variablelist and replaces it with its new value.
     switch (variable) {
-      case "$target": //The first word after the command
+        case "$target": //The first word after the command
             return activation.split(" ")[1];
-        break;
-      case "$user": //The user who said the message.
-           return user.username;
-        break;
-      case "$time": //Current time
+        case "$user": //The user who said the message.
+            return user.username;
+        case "$time": //Current time
             return new Date().toTimeString();
-        break;
-      case "$watchtime":
+        case "$watchtime":
             let watchTime = await UserHandle.findByUserName(user.username)
             if (watchTime == "ADDUSER") {
                 let newUser = await UserHandle.addUser(user.username, false);
                 if (newUser !== "INVALIDUSER") {// @ts-ignore
-                  return newUser.watchTime;
+                    return newUser.watchTime;
                 } else {
                     return "No user found."
                 }
             } else {
                 return watchTime.watchTime
             }
-        break;
-      case "$cmdcount":
+        case "$cmdcount":
             let count = await CommandHandle.findCommand(activation.split(" ")[0])
             return count.uses
-        break;
-      case "$game":
+        case "$game":
             //user = await ApiHandle.getUserID(user.username)
             //variableList[5] = user
             return null
-        break;
-      case "$advice":
+        case "$advice":
             let advice = await ApiHandle.getAdvice().catch(reason => advice = 'Advice Error');
             return advice
-        break;
-      case "$dadjoke":
+        case "$dadjoke":
             let joke = await ApiHandle.getDadJoke().catch(reason => joke = 'Joke Error');
             return joke
-        break;
-      case "$discord":
+        case "$discord":
             let discord = await ApiHandle.getSocials("socialDiscord", ApiHandle.getStreamerName()).catch(reason => discord = 'Discord Error');
             return "https://discord.gg/" + discord
-        break;
-      case "$guilded":
+        case "$guilded":
             let guilded = await ApiHandle.getSocials("socialGuilded", ApiHandle.getStreamerName()).catch(reason => guilded = 'Guilded Error');
             return "https://guilded.gg/" + guilded
-        break;
-      case "$instagram":
+        case "$instagram":
             let instagram = await ApiHandle.getSocials("socialInstagram", ApiHandle.getStreamerName()).catch(reason => instagram = 'Instagram Error');
             return "https://instagram.com/" + instagram
-        break;
-      case "$youtube":
+        case "$youtube":
             let youtube = await ApiHandle.getSocials("socialYoutube", ApiHandle.getStreamerName()).catch(reason => youtube = 'Youtube Error');
             return "https://youtube.com/" + youtube
-        break;
-      case "$twitter":
+        case "$twitter":
             let twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => twitter = 'Twitter Error');
             return "https://twitter.com/" + twitter
-        break;
-      case "$catfact":
-          let catFact = await ApiHandle.randomAnimalFact("cat");
-          return catFact
-      break;
-      case "$dogfact":
-          let dogFact = await ApiHandle.randomAnimalFact("dog");
-          return dogFact
-      break;
-      case "$uptime":
+        case "$catfact":
+            let catFact = await ApiHandle.randomAnimalFact("cat");
+            return catFact
+        case "$dogfact":
+            let dogFact = await ApiHandle.randomAnimalFact("dog");
+            return dogFact
+        case "$uptime":
             let uptime = await ApiHandle.getStats();
             if (uptime) {
                 return uptime.streamTimeSeconds / 60;
             }
             return NaN
-      default: return replaceCustomVariable(variable);
-        break;
+        case "$message":
+            if (activation.split(" ").length > 1) {
+                activation = activation.substr(activation.indexOf(" ") + 1);
+                return activation
+            } else {
+                return null
+            }
+        default: return replaceCustomVariable(variable);
     }
 }
 
