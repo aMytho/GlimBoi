@@ -3,6 +3,7 @@
 async function checkObsCommand(commandType, command) {
     switch (commandType) {
         case "changeScene": return getChangeSceneValue(command);
+        case "changeVisibility": return getVisibilityValue(command);
         case "muteSource": return getMuteSourceInfo(command);
         case "replayBuffer": return getReplayBufferSelection(command);
         case "startStopStreamRecording": return getStartStopStreamingSelection(command);
@@ -44,6 +45,16 @@ function getMuteSourceInfo(command: HTMLElement) {
     } else {
         let shouldMute = (actionToTake == "mute")
         return { type: "ObsWebSocket", requestType: "SetMute", variables: [], data: {source: source, mute: shouldMute}, instruction: "muteSource" };
+    }
+}
+
+function getVisibilityValue(command) {
+    let source = (command.firstElementChild.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
+    let actionToTake = (command.firstElementChild.lastElementChild.firstElementChild.firstElementChild as HTMLSelectElement).value;
+    if (actionToTake == "hide") {
+        return { type: "ObsWebSocket", requestType: "SetSceneItemRender", variables: [], data: { source: source, render: false }, instruction: "changeVisibility" };
+    } else {
+        return { type: "ObsWebSocket", requestType: "SetSceneItemRender", variables: [], data: { source: source, render: true }, instruction: "changeVisibility" };
     }
 }
 

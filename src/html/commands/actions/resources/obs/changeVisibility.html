@@ -1,0 +1,28 @@
+<div class="col-12">
+    <div class="row">
+        <div class="col-6">
+            <span class="textarea sceneSwitch" role="textbox" contenteditable
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 20px;"></span>
+        </div>
+        <div class="col-6">
+            <p>Enter the source to change the visibility of. $variables supported</p>
+        </div>
+        <style>
+            .sceneSwitch[contenteditable]:empty::before {
+                content: "Enter the source to affect. Caps matter." !important;
+                color: gray;
+            }
+        </style>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <select class="settingSelect" style="margin-left: 1rem;">
+                <option value="hide">Hide</option>
+                <option value="show">Show</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <p>Select your desired effect.</p>
+        </div>
+    </div>
+</div>

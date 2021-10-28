@@ -1,19 +1,15 @@
-async function loadObsAction(action, isEdit:false | CommandType = false) {
+async function loadObsAction(action, isEdit: false | CommandType = false) {
     let html = await getObsHtml(action);
     if (isEdit) {
-        html = fillObsData(isEdit, html)
+        html = fillObsData(isEdit, html);
     }
     return html;
 }
 
 function getObsHtml(action) {
     switch (action) {
-        case "changeScene": return loadBasicHthml(action);
-        case "muteSource": return loadBasicHthml(action);
-        case "replayBuffer": return loadBasicHthml(action);
-        case "startStopStreamRecording": return loadBasicHthml(action);
-        case "screenshot": return loadBasicHthml(action);
         case "none": return document.createElement("div");
+        default: return loadBasicHthml(action);
     }
 }
 
@@ -30,6 +26,17 @@ function fillObsData(data, html) {
     switch (data.instruction) {
         case "changeScene":
             html.firstElementChild.firstElementChild.innerText = data.data["scene-name"];
+            return html;
+        case "changeVisibility":
+            html.firstElementChild.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
+            let sourceVisible;
+            if (data.data["render"]) {
+                sourceVisible = "show";
+            } else {
+                sourceVisible = "hide";
+            }
+            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.value = sourceVisible;
+            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.querySelector(`[value="${sourceVisible}"]`).setAttribute("selected", "selected");
             return html;
         case "muteSource":
             html.firstElementChild.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
@@ -67,4 +74,4 @@ function fillObsData(data, html) {
 }
 
 
-export {fillObsData, loadObsAction}
+export { fillObsData, loadObsAction }
