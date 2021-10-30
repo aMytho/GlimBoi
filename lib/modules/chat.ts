@@ -1,6 +1,7 @@
 //This file handles connecting the bot to a chat.
 import WebSocket from "ws";
 const ChatParser:typeof import("../modules/chat/chatParser") = require(appData[0] + "/modules/chat/chatParser.js");
+const ChatEvents: typeof import("../modules/chat/chatEvents") = require(appData[0] + "/modules/chat/chatEvents.js");
 
 let connection:WebSocket; // the websocket connection
 let heartbeat:any; //heartbeat
@@ -86,12 +87,14 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         //First check for heartbeat message.
         let chatMessage = event;
         switch (chatMessage[1]) {
-            case null: ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
-            break;
+            case null:
+                if (chatMessage[4].result.data.chatMessage) {
+                    ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
+                } else {
+                    ChatEvents.handleNewFollower(chatMessage[4].result.data.followers.user.username);
+                }
             break;
             case 4: console.log(`Status: ${chatMessage[3]}`);
-            break;
-            case 8: console.log("NEW FOLLOWER OH WOW AMAZING");
             break;
         }
 });
@@ -138,7 +141,8 @@ function subscribeToGlimeshEvent(event: glimeshEvent, {channelID}) {
             connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id }, message, tokens {...on ChatMessageToken {text} ...on EmoteToken {src} ...on UrlToken {url} ...on TextToken {text}} } }","variables":{} }]`);
             break;
         case "followers":
-            connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${channelID}) { user { username } } }","variables":{} }]`);
+            console.log(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: 154) { user { username } } }","variables":{} }]`)
+            connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: 154) { user { username } } }","variables":{} }]`);
             break;
         case "viewers": connection.send(`["1","9","__absinthe__:control","doc",{"query":"subscription{ channel(id: ${channelID}) { stream {countViewers} } }","variables":{} }]`);
             break;
@@ -217,4 +221,4 @@ function postChat():void {
     });
 }
 
-export {checkAndJoinChat, getConnection, isConnected, connectToGlimesh, disconnect, getBotName, subscribeToGlimeshEvent}
+export {checkAndJoinChat, getConnection, isConnected, connectToGlimesh, disconnect, getBotName, subscribeToGlimeshEvent, ChatEvents}

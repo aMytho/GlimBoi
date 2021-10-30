@@ -285,6 +285,29 @@ function getStreamerName() {
     return streamer;
 }
 
+/**
+ * Triggers a streamlabs alert. Thanks Streamlabs!
+ * @param message
+ * @param token
+ */
+async function triggerAlert(message: string, token: string) {
+    try {
+        let alert = await fetch("http://localhost:5000/alerts", {
+            method: "POST",
+            body: new URLSearchParams({
+                message: message,
+                token: token,
+                user: "Mytho"
+            }),
+
+        })
+        let alertData = await alert.json();
+        console.log(alertData);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 export { deleteMessage, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
 getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact,
-sendMessage, Webhooks, WebSockets};
+sendMessage, triggerAlert, Webhooks, WebSockets};

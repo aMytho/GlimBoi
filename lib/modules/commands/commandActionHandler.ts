@@ -299,6 +299,5 @@ class WriteFile extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban,
-    ChatMessage, ImageGif, ObsWebSocket, ReadFile, Timeout,
-    Video, Wait, WriteFile}
+export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, ReadFile, Timeout,
+Video, Wait, WriteFile}

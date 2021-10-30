@@ -5,15 +5,19 @@
                 <ul class="nav nav-tabs" id="settingsTab">
 
                     <li class="mx-2">
-                        <h2 data-toggle="tab" href="#webhooksTab" style="cursor:pointer" class="active whiteText">Going-Live
+                        <h2 data-toggle="tab" href="#webhooksTab" style="cursor:pointer" class="active whiteText">
+                            Going-Live
                         </h2>
                     </li>
                     <li class="mx-2">
                         <h2 data-toggle="tab" href="#obsTab" style="cursor:pointer" class="whiteText">OBS WebSocket</h2>
                     </li>
+                    <li class="mx-2">
+                        <h2 data-toggle="tab" href="#followTab" style="cursor:pointer" class="whiteText">Follow Scripts
+                        </h2>
+                    </li>
                 </ul>
                 <div class="tab-content">
-
                     <div id="webhooksTab" class="tab-pane fade-in active">
                         <div class="row mt-2">
                             <div class="col-sm-5 col-12 whiteText ml-2">
@@ -98,22 +102,64 @@
                             <div class="col-12 col-sm-1 whiteText"></div>
                             <div class="col-sm-5 col-12 whiteText ml-2">
                                 <h3>WebSocket URL</h3>
-                                <p>The URL to connect to. If OBS and Glimboi are on the same device it is likely "localhost" (the default)</p>
+                                <p>The URL to connect to. If OBS and Glimboi are on the same device it is likely
+                                    "localhost" (the default)</p>
                                 <input class="icon-input settingsInput" type="text" placeholder="OBS websocket URL"
                                     id="obsUrl"
                                     style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
                             </div>
                         </div>
                     </div>
+                    <div id="followTab" class="tab-pane fade-in">
+                        <div class="row mt-2">
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <h3>Follow Message</h3>
+                                <p>Send a message when someone follows.</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="followMessageEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>Enter the message to send. You can add $follower to be replaced with the followers
+                                    name.</p>
+                                <input class="icon-input settingsInput" type="text"
+                                    placeholder="Thanks for the follow $follower !" id="followMessage"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                            </div>
+                            <div class="col-12 col-sm-1 whiteText"></div>
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <h3>Streamlabs Alerts</h3>
+                                <p>Play a Streamlabs alert on follow. Requires an existing account.</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="streamlabsEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>Click here to link your Glimesh account to your streamalabs account.</p>
+                                <input class="icon-input settingsInput" type="text"
+                                    placeholder="Streamlabs Token (keep private!)" id="streamlabsKey"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                                <p>Message to show in the alert. Use $follower for the name of the follower.</p>
+                                <input class="icon-input settingsInput" type="text"
+                                    placeholder="Thanks for the follow $user " id="streamlabsMessage"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-footer">
-                <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
-                <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#openDB">Edit
-                    Database</a>
-            </div>
+        </div>
+        <div class="card-footer">
+            <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
+            <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#openDB">Edit
+                Database</a>
         </div>
     </div>
+</div>
 </div>
 <!-- Modal: open db -->
 <div class="modal fade" id="openDB" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"

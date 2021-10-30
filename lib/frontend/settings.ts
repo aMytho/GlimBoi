@@ -59,6 +59,23 @@ function showIntegrations() {
     }
     (document.getElementById("obsPassword") as HTMLInputElement)!.value = CacheStore.get("obsPassword", "");
     (document.getElementById("obsUrl") as HTMLInputElement)!.value = CacheStore.get("obsUrl", "ws://localhost:4444");
+
+    // Follow Message - - -
+    if (CacheStore.get("followMessageEnabled", false)) {
+        document.getElementById("followMessageEnabled")!.toggleAttribute("checked");
+    }
+
+    (document.getElementById("followMessage") as HTMLInputElement)!.value = CacheStore.get("followMessage", "Thanks for the follow $follower !");
+
+    // Streamlabs - - -
+
+    if (CacheStore.get("streamlabsEnabled", false)) {
+        document.getElementById("streamlabsEnabled")!.toggleAttribute("checked");
+    }
+
+    (document.getElementById("streamlabsKey") as HTMLInputElement)!.value = CacheStore.get("streamlabsToken", "");
+    (document.getElementById("streamlabsMessage") as HTMLInputElement)!.value = CacheStore.get("streamlabsMessage", "$follower just followed the stream!");
+
 }
 
 
@@ -78,6 +95,11 @@ function saveIntegrations() {
         {obsEnabled: (document.getElementById("obsEnabled") as HTMLInputElement)!.checked},
         {obsPassword: (document.getElementById("obsPassword") as HTMLInputElement)!.value},
         {obsUrl: (document.getElementById("obsUrl") as HTMLInputElement)!.value},
+        {followMessageEnabled: (document.getElementById("followMessageEnabled") as HTMLInputElement)!.checked},
+        {followMessage: (document.getElementById("followMessage") as HTMLInputElement)!.value},
+        {streamlabsEnabled: (document.getElementById("streamlabsEnabled") as HTMLInputElement)!.checked},
+        {streamlabsToken: (document.getElementById("streamlabsKey") as HTMLInputElement)!.value},
+        {streamlabsMessage: (document.getElementById("streamlabsMessage") as HTMLInputElement)!.value},
     ]);
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")
