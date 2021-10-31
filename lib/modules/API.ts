@@ -292,17 +292,19 @@ function getStreamerName() {
  */
 async function triggerAlert(message: string, token: string) {
     try {
-        let alert = await fetch("http://localhost:5000/alerts", {
-            method: "POST",
-            body: new URLSearchParams({
-                message: message,
-                token: token,
-                user: "Mytho"
-            }),
-
-        })
-        let alertData = await alert.json();
-        console.log(alertData);
+        let querystring = {
+            access_token: token,
+            type: "follow",
+            message: message,
+            user_message: ""
+        }
+        let response = await fetch("https://www.streamlabs.com/api/v1.0/alerts", {
+            method: 'POST',
+            body: JSON.stringify(querystring),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        let data = await response.json();
+        console.log(data);
     } catch (e) {
         console.log(e);
     }
