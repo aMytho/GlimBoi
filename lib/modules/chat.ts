@@ -56,11 +56,19 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
     connection = new WebSocket(url); // Connection is now an offical connection!
     chatID = channelID // The channel ID is now an accessible variable for this module
 
-    connection.on("open", function open() { // When the connection opens...
+    connection.on("open", async function open() { // When the connection opens...
         console.log("Connected to Glimesh Chat");
         connection.send('["1","1","__absinthe__:control","phx_join",{}]'); //requests a connection
-        subscribeToGlimeshEvent("chat", { channelID: channelID });
-        subscribeToGlimeshEvent("followers", { channelID: channelID });
+        subscribeToGlimeshEvent("chat", { channelID: channelID, streamerID: false }); //subscribes to chat
+
+        try {
+            let userId = await ApiHandle.getStreamerId(channelID);
+            subscribeToGlimeshEvent("followers", { channelID: channelID, streamerID: userId });
+        } catch (e) {
+            console.log(e);
+            errorMessage("Chat Error", "Could not get streamer ID. This prevents follow alerts from working.");
+        }
+
         //subscribeToGlimeshEvent("viewers", { channelID: channelID });
 
         //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
@@ -135,14 +143,14 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
 /**
  * Listens for a specific event in the Glimesh API
  */
-function subscribeToGlimeshEvent(event: glimeshEvent, {channelID}) {
+function subscribeToGlimeshEvent(event: glimeshEvent, {channelID, streamerID}) {
     switch (event) {
         case "chat":
             connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id }, message, tokens {...on ChatMessageToken {text} ...on EmoteToken {src} ...on UrlToken {url} ...on TextToken {text}} } }","variables":{} }]`);
             break;
         case "followers":
-            console.log(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: 154) { user { username } } }","variables":{} }]`)
-            connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: 154) { user { username } } }","variables":{} }]`);
+            console.log(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${streamerID}) { user { username } } }","variables":{} }]`)
+            connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${streamerID}) { user { username } } }","variables":{} }]`);
             break;
         case "viewers": connection.send(`["1","9","__absinthe__:control","doc",{"query":"subscription{ channel(id: ${channelID}) { stream {countViewers} } }","variables":{} }]`);
             break;

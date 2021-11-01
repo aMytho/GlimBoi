@@ -234,6 +234,21 @@ async function getAdvice(): Promise<string> {
     }
 }
 
+/**
+ * Returns the streamer ID (userID) of a streamer
+ * @param channelId
+ * @returns
+ */
+async function getStreamerId(channelId: number) {
+    let query = `query {channel(id: ${channelId}) {streamer {id}}}`;
+    let response = await glimeshQuery(query);
+    if (typeof response == "object" && response !== null) {
+        return response.channel.streamer.id
+    } else {
+        return null
+    }
+}
+
 
 /**
  * @async
@@ -311,5 +326,5 @@ async function triggerAlert(message: string, token: string) {
 }
 
 export { deleteMessage, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getTokenStatus, getUserID, glimeshApiRequest, randomAnimalFact,
+getStreamerName, getStreamWebhook, getTokenStatus, getUserID, getStreamerId, glimeshApiRequest, randomAnimalFact,
 sendMessage, triggerAlert, Webhooks, WebSockets};
