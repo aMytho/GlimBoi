@@ -197,10 +197,6 @@ function loadSpecificRank(rank: RankType) {
     (document.getElementById("editQuotesRank") as HTMLInputElement)!.checked = rank.canEditQuotes;
     (document.getElementById("removeQuotesRank") as HTMLInputElement)!.checked = rank.canRemoveQuotes;
     (document.getElementById("controlMusicRank") as HTMLInputElement)!.checked = rank.canControlMusic;
-    (document.getElementById("deleteMessagesRank") as HTMLInputElement)!.checked = rank.canDeleteMessages;
-    (document.getElementById("timeoutUsersRank") as HTMLInputElement)!.checked = rank.canTimeoutUsers;
-    (document.getElementById("banUsersRank") as HTMLInputElement)!.checked = rank.canBanUsers;
-    (document.getElementById("unBanUsersRank") as HTMLInputElement)!.checked = rank.canUnBanUsers;
     (document.getElementById("modImmunityRank") as HTMLInputElement)!.checked = rank.modImmunity;
     (document.getElementById("startEventsRank") as HTMLInputElement)!.checked = rank.canStartEvents;
 }

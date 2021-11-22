@@ -62,10 +62,10 @@ interface RankType {
     canEditQuotes: boolean;
     canRemoveQuotes: boolean;
     canControlMusic: boolean;
-    canDeleteMessages: boolean;
-    canTimeoutUsers: boolean;
-    canBanUsers: boolean;
-    canUnBanUsers: boolean;
+    canDeleteMessages?: boolean;
+    canTimeoutUsers?: boolean;
+    canBanUsers?: boolean;
+    canUnBanUsers?: boolean;
     modImmunity: boolean;
     canStartEvents: boolean;
 }

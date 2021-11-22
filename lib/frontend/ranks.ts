@@ -65,10 +65,6 @@ function saveRankSettings(rank:rankName) {
         canEditQuotes: (document.getElementById("editQuotesRank") as HTMLInputElement).checked,
         canRemoveQuotes: (document.getElementById("removeQuotesRank") as HTMLInputElement).checked,
         canControlMusic: (document.getElementById("controlMusicRank") as HTMLInputElement).checked,
-        canDeleteMessages: (document.getElementById("deleteMessagesRank") as HTMLInputElement).checked,
-        canTimeoutUsers: (document.getElementById("timeoutUsersRank") as HTMLInputElement).checked,
-        canBanUsers: (document.getElementById("banUsersRank") as HTMLInputElement).checked,
-        canUnBanUsers: (document.getElementById("unBanUsersRank") as HTMLInputElement).checked,
         modImmunity: (document.getElementById("modImmunityRank") as HTMLInputElement).checked,
         canStartEvents: (document.getElementById("startEventsRank") as HTMLInputElement).checked,
     }
