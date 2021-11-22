@@ -2,7 +2,7 @@ import { app, BrowserWindow, screen, ipcMain, dialog } from 'electron'; //electr
 import log from 'electron-log' // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
 import { autoUpdater } from 'electron-updater'; //handles updates
-import isDev from "electron-is-dev"; // detects if we are in dev mode
+import isDev = require("electron-is-dev"); // detects if we are in dev mode
 import windowStateKeeper from 'electron-window-state';
 
 ipcMain.on('app_version', (event) => {
