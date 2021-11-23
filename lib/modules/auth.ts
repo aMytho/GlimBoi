@@ -13,13 +13,16 @@ async function requestToken(alertUser = false): Promise<accessToken | false> {
         let refreshToken = await getRefreshToken();
         if (!refreshToken) {
             errorMessage("Auth Error", "Please authorize the bot first.");
+            resolve(false);
         }
 
         let tokenBody = {
-            token: refreshToken,
-            client: CLIENT_ID,
+            grant_type: "refresh_token",
+            client_id: CLIENT_ID,
+            refresh_token: refreshToken,
+            redirect_url: REDIRECT_URL,
         };
-        let res = await fetch(`https://calm-citadel-14699.herokuapp.com/token`, {
+        let res = await fetch(`https://glimesh.tv/api/oauth/token`, {
             method: "POST",
             body: new URLSearchParams(tokenBody),
             headers: {
