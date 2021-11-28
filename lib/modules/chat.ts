@@ -193,8 +193,10 @@ function postChat():void {
     ChatStats.loadChatStats();
     // Load Overlay (Media and Music)
     Server.startServer();
-    // Connect to OBS
-    ApiHandle.WebSockets.OBSWebSocket.connect();
+    if (CacheStore.get("obsEnabled", false)) {
+        // Connect to OBS
+        ApiHandle.WebSockets.OBSWebSocket.connect();
+    }
     // Check for webhooks to send
     if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentWebhooks == false) {
         if (CacheStore.get("discordWebhookConfirmation", true)) {
