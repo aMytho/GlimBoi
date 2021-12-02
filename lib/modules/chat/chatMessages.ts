@@ -129,7 +129,8 @@ function getTokens(tokens: any[]) {
             let a = document.createElement("a");
             a.href = "#"
             a.innerText = token.text;
-            a.title = "Copy the link in a browser to view its contents"
+            a.title = "Copy the link in a browser to view its contents";
+            a.classList.add("copyLink");
             tokens[index] = a;
         } else if (token.text) {
             let p = document.createElement("span") as HTMLSpanElement;

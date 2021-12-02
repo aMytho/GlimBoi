@@ -1,5 +1,5 @@
 //handles sending users to different to parts of the app
-const {shell, ipcRenderer} = require("electron"); // @ts-ignore
+const {clipboard, ipcRenderer, shell} = require("electron"); // @ts-ignore
 let appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
 const Datastore = require("nedb");
 const AuthHandle:AuthHandle = require(appData[0] + "/modules/auth.js");
@@ -198,4 +198,14 @@ function placeholder() {
         musicStatusBar.title = "Music Active";
         musicStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);"> Music: Active</span>`
         musicStatusBar.style.color = "rgb(17, 92, 33)"
+}
+
+/**
+ * Shows a message to the user in a small notification box.
+ * @param message The message to send to the chat
+ */
+function showToast(message: string) {
+    $('.toast').toast({delay: 7000});
+    $('.toast').toast('show');
+    document.getElementById("toastMessage")!.innerHTML = message;
 }

@@ -222,6 +222,12 @@ function loadChatWindow() {
     	console.log(e);
   	}
     viewOrChangeChatSettings("view");
+
+    // use jquery to select all a elements
+    $('#chatContainer').on("click", ".copyLink", function (e) {
+        clipboard.writeText(e.target.innerText);
+        successMessage("Copied!", "The link has been copied to your clipboard.");
+    });
 }
 
 /**
