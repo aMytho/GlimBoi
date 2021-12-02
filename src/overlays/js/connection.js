@@ -42,16 +42,23 @@ function connect() {
                     let newImage = document.createElement("img");
                     newImage.src = message.data.path;
 
-                    newImage.style.position = "absolute";
-                    newImage.style.left = `${message.data.coordinates[0]}px`;
-                    newImage.style.top = `${message.data.coordinates[1]}px`;
-
                     if (message.data.height !== 0) {
                         newImage.style.height = `${message.data.height}px`
                     }
 
                     if (message.data.width !== 0) {
                         newImage.style.width = `${message.data.width}px`
+                    }
+
+                    if (message.data.center) {
+                        newImage.style.position = "absolute"
+                        newImage.style.left = `50%`;
+                        newImage.style.top = `50%`;
+                        newImage.style.transform = `translate(-50%, -50%)`;
+                    } else {
+                        newImage.style.position = "absolute";
+                        newImage.style.left = `${message.data.coordinates[0]}px`;
+                        newImage.style.top = `${message.data.coordinates[1]}px`;
                     }
 
                     if (message.data.duration !== undefined) {
@@ -62,7 +69,7 @@ function connect() {
                     } else {
                         setTimeout(() => {
                             newImage.remove();
-                        connection.send(JSON.stringify({ status: "ok", actionCompleted: "imageGif", file: message.data.path }))
+                            connection.send(JSON.stringify({ status: "ok", actionCompleted: "imageGif", file: message.data.path }))
                         }, 7000);
                     }
 
@@ -73,16 +80,23 @@ function connect() {
                     let newVid = document.createElement("video");
                     newVid.src = message.data.path;
 
-                    newVid.style.position = "absolute";
-                    newVid.style.left = `${message.data.coordinates[0]}px`;
-                    newVid.style.top = `${message.data.coordinates[1]}px`;
-
                     if (message.data.height !== 0) {
                         newVid.style.height = `${message.data.height}px`
                     }
 
                     if (message.data.width !== 0) {
                         newVid.style.width = `${message.data.width}px`
+                    }
+
+                    if (message.data.center) {
+                        newImage.style.position = "absolute"
+                        newImage.style.left = `50%`;
+                        newImage.style.top = `50%`;
+                        newImage.style.transform = `translate(-50%, -50%)`;
+                    } else {
+                        newImage.style.position = "absolute";
+                        newImage.style.left = `${message.data.coordinates[0]}px`;
+                        newImage.style.top = `${message.data.coordinates[1]}px`;
                     }
 
                     newVid.playbackRate = message.data.speed;

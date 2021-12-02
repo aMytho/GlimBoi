@@ -9,6 +9,7 @@ async function validateSettings(mode: "add" | "edit"): Promise<MediaType | false
     let mediaHeight: number | false | string = (document.getElementById(`${mode}MediaHeight`) as HTMLInputElement).value;
     let mediaWidth: number | false | string = (document.getElementById(`${mode}MediaWidth`) as HTMLInputElement).value;
     let mediaSpeed: number | false | string = (document.getElementById(`${mode}MediaSpeed`) as HTMLInputElement).value;
+    let mediaCenterElement = (document.getElementById(`${mode}MediaCenter`) as HTMLSelectElement).value;
 
     // First we check the media name.
     mediaName = mediaName.replace(new RegExp("^[!]+"), "").trim(); // Removes the ! if it exists
@@ -59,11 +60,14 @@ async function validateSettings(mode: "add" | "edit"): Promise<MediaType | false
     if (mediaSpeed === false) return false;
     resetMessageMediaModal(document.getElementById(`${mode}MediaSpeed`), mode);
 
+    let mediaCenter = mediaCenterElement === "true" ? true : false;
+
     // If we get here, we know that the media is valid.
     if (mode === "add") {
         return {
             name: mediaName, coordinates: [mediaPositionX, mediaPositionY], duration: mediaDuration, volume: mediaVolume,
-            type: mediaFile.files[0].type, path: mediaFile.files[0].path, height: mediaHeight, width: mediaWidth, speed: mediaSpeed
+            type: mediaFile.files[0].type, path: mediaFile.files[0].path, height: mediaHeight, width: mediaWidth, speed: mediaSpeed,
+            center: mediaCenter
         };
     } else {
         let existingMedia = await MediaHandle.getMediaByName(mediaName.toLowerCase());
@@ -73,7 +77,8 @@ async function validateSettings(mode: "add" | "edit"): Promise<MediaType | false
         }
         return {
             name: mediaName, coordinates: [mediaPositionX, mediaPositionY], duration: mediaDuration, volume: mediaVolume,
-            type: existingMedia.type, path: existingMedia.path, height: mediaHeight, width: mediaWidth, speed: mediaSpeed
+            type: existingMedia.type, path: existingMedia.path, height: mediaHeight, width: mediaWidth, speed: mediaSpeed,
+            center: mediaCenter
         };
     }
 }

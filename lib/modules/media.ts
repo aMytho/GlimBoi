@@ -24,7 +24,7 @@ function getAll(): Promise<MediaType[]> {
  * Adds media to the database
  */
 function addMedia({ name = "Default", path = "", type = "img/png", duration = undefined,
-volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0,0] } = {}) {
+volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0,0], center = false } = {}) {
     if (duration == 0) {
         duration = undefined;
     }
@@ -32,7 +32,7 @@ volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0,0] }
         {
             name: name.toLowerCase(), path: path, type: type, duration: duration,
             volume: volume, speed: speed, height: height, width: width, scale: scale,
-            coordinates: coordinates
+            coordinates: coordinates, center: center
         }
     ], function (err, newDocs) {
         console.log(newDocs)
@@ -44,7 +44,7 @@ volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0,0] }
  * Edits media in the database
  */
 function editMedia({ name = "Default", path = "", type = "img/png", duration = undefined,
-    volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0, 0] } = {}) {
+    volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0, 0], center = false} = {}) {
     name = name.toLowerCase();
         if (duration == 0) {
             duration = undefined;
@@ -53,7 +53,7 @@ function editMedia({ name = "Default", path = "", type = "img/png", duration = u
         $set: {
             path: path, type: type, duration: duration,
             volume: volume, speed: speed, height: height, width: width, scale: scale,
-            coordinates: coordinates
+            coordinates: coordinates, center: center
         }
     }, {}, function (err, numReplaced) {
         console.log("Media updated");
@@ -66,13 +66,13 @@ function editMedia({ name = "Default", path = "", type = "img/png", duration = u
  * @returns
  */
 function convertMedia({ name = "Default", path = "", type = "img/png", duration = undefined,
-    volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0, 0] } = {}) {
+    volume = 0.5, speed = 1, height = 0, width = 0, scale = 1, coordinates = [0, 0], center = false} = {}) {
     return new Promise(resolve => {
         name = name.toLowerCase();
         MediaDB.update({ name: name }, {
             $set: {
                 duration: duration, volume: volume, speed: speed, height: height, width: width,
-                scale: scale, coordinates: coordinates
+                scale: scale, coordinates: coordinates, center: center
             }
         }, {}, function (err, numReplaced) {
             console.log("Media Converted");

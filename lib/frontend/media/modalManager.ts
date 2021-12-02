@@ -48,6 +48,15 @@ async function loadEditModal(media: MediaType) {
     } else {
         (document.getElementById(`editMediaSpeed`) as HTMLInputElement)!.value = "1";
     }
+
+    let mediaCenterSelect = document.getElementById(`editMediaCenter`) as HTMLSelectElement;
+    if (media.center) {
+        mediaCenterSelect.innerHTML += "<option value=\"" + "true" + "\" selected>" + "Enabled" + "</option>";
+        mediaCenterSelect.innerHTML += "<option value=\"" + "false" + "\">" + "Disabled (Default)" + "</option>";
+    } else {
+        mediaCenterSelect.innerHTML += "<option value=\"" + "false" + "\" selected >" + "Disabled (Default)" + "</option>";
+        mediaCenterSelect.innerHTML += "<option value=\"" + "true" + "\">" + "Enabled" + "</option>";
+    }
 }
 
 /**
