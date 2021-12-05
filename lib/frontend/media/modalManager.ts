@@ -29,8 +29,9 @@ async function loadEditModal(media: MediaType) {
         (document.getElementById(`editMediaDuration`) as HTMLInputElement)!.value = "7";
     }
 
-    if (media.volume) {
+    if (typeof media.volume === "number") {
         (document.getElementById(`editMediaVolume`) as HTMLInputElement)!.value = media.volume.toString();
+        document.getElementById(`editMediaVolumeLabel`)!.innerText = media.volume.toString();
     } else {
         (document.getElementById(`editMediaVolume`) as HTMLInputElement)!.value = "5";
     }
@@ -100,8 +101,7 @@ function preventText(mode) {
 
 function prepareMedia(mode) {
     // Activates all bootstrap tooltips
-    $('[data-toggle-second="tooltip"]').tooltip()
-
+    $('[data-toggle-second="tooltip"]').tooltip();
     // Adds media
     document.getElementById(`${mode}MediaButtonModal`)!.onclick = async function () {
         // First we check to make sure all the command settings are valid
