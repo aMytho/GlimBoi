@@ -58,6 +58,11 @@ function fillObsData(data, html) {
             html.firstElementChild.firstElementChild.value = data.requestType;
             html.firstElementChild.firstElementChild.querySelector(`[value="${data.requestType}"]`).setAttribute("selected", "selected");
             return html;
+        case "setVolume":
+            html.firstElementChild.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
+            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.children[1].value = String(data.data["volume"]);
+            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.children[2].innerText = data.data["volume"].toString();
+            return html;
         case "startStopStreamRecording":
             switch (data.requestType) {
                 case "StartStreaming": data.requestType = "startStream"; break

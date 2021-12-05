@@ -6,6 +6,7 @@ async function checkObsCommand(commandType, command) {
         case "changeVisibility": return getVisibilityValue(command);
         case "muteSource": return getMuteSourceInfo(command);
         case "replayBuffer": return getReplayBufferSelection(command);
+        case "setVolume": return getVolumeValue(command);
         case "startStopStreamRecording": return getStartStopStreamingSelection(command);
         case "screenshot": return {type: "ObsWebSocket", requestType: "TakeSourceScreenshot", variables: [], data: {embedPictureFormat: `png`, saveToFilePath: `${appData[1]}/test.png` }, instruction: "screenshot"}
         case "none": return {error: "No OBS instruction was selected."}
@@ -56,6 +57,12 @@ function getVisibilityValue(command) {
     } else {
         return { type: "ObsWebSocket", requestType: "SetSceneItemRender", variables: [], data: { source: source, render: true }, instruction: "changeVisibility" };
     }
+}
+
+function getVolumeValue(command) {
+    let source = (command.firstElementChild.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
+    let volume = (command.firstElementChild.lastElementChild.firstElementChild.firstElementChild.children[2] as HTMLParagraphElement).innerText;
+    return {type: "ObsWebSocket", requestType: "SetVolume", variables: [], data: {source: source.trim(), volume: parseFloat(volume), useDecibel: true}, instruction: "setVolume"};
 }
 
 export { checkObsCommand }
