@@ -185,6 +185,7 @@ class ObsWebSocket extends ChatAction {
             case "SetMute":
             case "SetSceneItemRender":
             case "SetSourceSettings":
+            case "SetVolume":
                 request.request["source"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["source"]});
                 return request
             case "SetCurrentScene":
