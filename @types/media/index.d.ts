@@ -30,3 +30,8 @@ type mediaPath = string;
 type mediaType = string;
 type mediaPosition = string
 type mediaWSSName = "soundEffect" | "imageGif" | "video"
+
+/**
+ * Version of the media overlay. 2 is the latest version.
+ */
+type mediaOverlayVersion = 1 | 2
