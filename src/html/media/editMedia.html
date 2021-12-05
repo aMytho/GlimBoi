@@ -59,7 +59,10 @@
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The duration of the media">Volume 1-10</td>
-                    <td><input type="range" class="settingInput" id="editMediaVolume" min="0" max="10" placeholder="2" /></td>
+                    <td><input type="range" class="settingInput" id="editMediaVolume"
+                        min="0" max="10" placeholder="2" oninput="this.parentElement.children[1].innerText = this.value"/>
+                        <p id="editMediaVolumeLabel" class="text-center">5</p>
+                    </td>
                 </tr>
                 <tr>
                     <td data-toggle="tooltip" data-placement="top" title="The height of the media">Height</td>

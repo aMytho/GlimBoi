@@ -89,17 +89,20 @@ function connect() {
                     }
 
                     if (message.data.center) {
-                        newImage.style.position = "absolute"
-                        newImage.style.left = `50%`;
-                        newImage.style.top = `50%`;
-                        newImage.style.transform = `translate(-50%, -50%)`;
+                        newVid.style.position = "absolute"
+                        newVid.style.left = `50%`;
+                        newVid.style.top = `50%`;
+                        newVid.style.transform = `translate(-50%, -50%)`;
                     } else {
-                        newImage.style.position = "absolute";
-                        newImage.style.left = `${message.data.coordinates[0]}px`;
-                        newImage.style.top = `${message.data.coordinates[1]}px`;
+                        newVid.style.position = "absolute";
+                        newVid.style.left = `${message.data.coordinates[0]}px`;
+                        newVid.style.top = `${message.data.coordinates[1]}px`;
                     }
 
                     newVid.playbackRate = message.data.speed;
+                    if (typeof message.data.volume == "number") {
+                        newVid.volume = message.data.volume / 10;
+                    }
 
                     if (message.data.duration !== undefined && message.data.duration !== 0) {
                         setTimeout(() => {
@@ -120,7 +123,7 @@ function connect() {
         } catch (e) {
             console.log(e)
             try {
-                connection.send(JSON.stringify({ status: "error", actionCompleted: "none", errorType: String(error) }))
+                connection.send(JSON.stringify({ status: "error", actionCompleted: "none", errorType: String(e) }))
             } catch (f) {
                 console.log(f)
             }
