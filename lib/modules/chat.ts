@@ -6,6 +6,7 @@ const ChatEvents: typeof import("../modules/chat/chatEvents") = require(appData[
 let connection:WebSocket; // the websocket connection
 let heartbeat:any; //heartbeat
 let botName = "GlimBoi"; //The username of the bot in normal caps
+let aNumber = 0;
 
 /**
  * Checks to make sure the token is valid and if it is joins a chat
@@ -74,6 +75,8 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         //every 20 seconds send a heartbeat so the connection won't be dropped for inactivity.
         heartbeat = setInterval(() => {
             connection.send(`[null,"4","phoenix","heartbeat",{}]`);
+            aNumber += 1;
+            console.log(aNumber, new Date());
         }, 30000);
 
         // Run the post chat scripts
@@ -120,6 +123,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
             if (needsReconnect) {
                 reconnect();
             }
+            console.log(aNumber, new Date());
         } catch (e) {
             console.log(e);
         }

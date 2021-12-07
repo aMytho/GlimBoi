@@ -51,7 +51,8 @@ function createWindow () {
     	backgroundColor: "#060818",
     	webPreferences: {
       		nodeIntegration: true,
-              contextIsolation: false
+              contextIsolation: false,
+              backgroundThrottling: false,
     	},
     	frame: false
   	})
