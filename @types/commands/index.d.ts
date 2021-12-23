@@ -131,7 +131,8 @@ type CustomUserVaribles = {
     data: string | any;
 }
 
-type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" | "ObsWebSocket" | "ReadFile" |  "Video" | "Timeout" | "Wait" | "WriteFile"
+type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" |
+"ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Wait" | "WriteFile"
 type actionInfo = any[] | any
 type actionVariables = string[]
 

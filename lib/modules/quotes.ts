@@ -91,7 +91,7 @@ function removeQuote(id: quoteID, user: userName) {
  * @param {string} user The user who owns the quotes that will be deleted
  */
 function removeAllQuotes(user: userName) {
-    console.log(`Removeing all queotes by ${user}`)
+    console.log(`Removeing all quotes by ${user}`)
     try {
         quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
             console.log(numRemoved + " quotes were removed from " + user)

@@ -1,6 +1,6 @@
 //This file handles connecting the bot to a chat.
 import WebSocket from "ws";
-const ChatParser:typeof import("../modules/chat/chatParser") = require(appData[0] + "/modules/chat/chatParser.js");
+const ChatParser: typeof import("../modules/chat/chatParser") = require(appData[0] + "/modules/chat/chatParser.js");
 const ChatEvents: typeof import("../modules/chat/chatEvents") = require(appData[0] + "/modules/chat/chatEvents.js");
 
 let connection:WebSocket; // the websocket connection
@@ -153,7 +153,6 @@ function subscribeToGlimeshEvent(event: glimeshEvent, {channelID, streamerID}) {
             connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id }, message, tokens {...on ChatMessageToken {text} ...on EmoteToken {src} ...on UrlToken {url} ...on TextToken {text}} } }","variables":{} }]`);
             break;
         case "followers":
-            console.log(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${streamerID}) { user { username } } }","variables":{} }]`)
             connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${streamerID}) { user { username } } }","variables":{} }]`);
             break;
         case "viewers": connection.send(`["1","9","__absinthe__:control","doc",{"query":"subscription{ channel(id: ${channelID}) { stream {countViewers} } }","variables":{} }]`);
