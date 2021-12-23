@@ -197,6 +197,34 @@ class ObsWebSocket extends ChatAction {
 }
 
 /**
+ * Adds or removes points from a user.
+ */
+class Points extends ChatAction {
+    target: string
+    points: number
+    constructor({target, points}) {
+        super("Points", ["target", "points"], undefined)
+        this.target = target;
+        this.points = points;
+    }
+
+    async run({activation, user}:RunChatMessage) {
+        let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user});
+        // Remove $ if it exists. Would break queries
+        target = target.replace(/\$/g, "");
+        let userExists = await UserHandle.findByUserName(target);
+        if (userExists == "ADDUSER") {
+            await UserHandle.addUser(target, false, user);
+        }
+        if (this.points > 0) {
+            UserHandle.addPoints(target, this.points);
+        } else if (this.points < 0) {
+            UserHandle.removePointsAboveZero(target, this.points);
+        }
+    }
+}
+
+/**
  * Reads a file and sets variable for the data.
  */
 class ReadFile extends ChatAction {
@@ -301,5 +329,5 @@ class WriteFile extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, ReadFile, Timeout,
-Video, Wait, WriteFile}
+export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, Points, ReadFile,
+Timeout, Video, Wait, WriteFile}

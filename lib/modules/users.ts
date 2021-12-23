@@ -280,6 +280,21 @@ function removePoints(user: userName, value: number): void {
 }
 
 /**
+ * Removes points from a user. Does not go below 0.
+ * @param user The user
+ * @param value How many points will be removed
+ */
+async function removePointsAboveZero(user:userName, value:number) {
+    value = Math.abs(value);
+    let userExists = await findByUserName(user);
+    if (userExists !== "ADDUSER") {
+        if (userExists.points - value >= 0) {
+            removePoints(user, value);
+        }
+    }
+}
+
+/**
  * Counts the number of users
  */
 async function countUsers(): Promise<number> {
@@ -306,4 +321,4 @@ async function getAllPoints() {
 }
 
 export {addPoints, addQuote, addUser, countUsers, earnPointsWT, editUser, editUserAll, editUserPoints, findByUserName,
-getAll, getAllPoints, getTopPoints, removePoints, removeUser, removeQuoteByID, updatePath}
+getAll, getAllPoints, getTopPoints, removePoints, removePointsAboveZero, removeUser, removeQuoteByID, updatePath}

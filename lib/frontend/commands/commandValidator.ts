@@ -237,6 +237,24 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
             }
+        case "Points":
+            try {
+                let user = strip(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText);
+                let points = strip(action.children[1].children[1].firstElementChild.firstElementChild.innerText);
+                if (user.trim().length == 0) {
+                    throw "No user was provided. Enter a name or a variable (ie. $user, $target)"
+                }
+                if (points.trim().length == 0) {
+                    throw "No points were provided. Enter a number or a variable (ie. $user, $target)"
+                } else if (isNaN(Number(points))) {
+                    throw "The points provided is not a number."
+                }
+                return {type: "Points", target: user.trim(), points: Number(points)}
+            } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
         case "Read File":
         try {
             let possibleFile;

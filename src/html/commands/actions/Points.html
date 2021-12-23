@@ -1,0 +1,39 @@
+<div class="topnav">
+    <h3 class="active">Points</h3>
+    <div class="float-right" style="padding:12px 14px">
+        <i class="fas fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
+        <i class="fas fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
+        <i class="far fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
+    </div>
+</div>
+<div class="actionBody mt-2">
+    <div class="actionMain text-center row">
+        <div class="col-6">
+            <span class="textarea" role="textbox" contenteditable id="targetUser"
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+        </div>
+        <div class="col-6">
+            <h6 class="text-center">Enter a user. $variables supported</h6>
+        </div>
+    </div>
+    <div class="actionMain text-center row">
+        <div class="col-6">
+            <span class="textarea" role="textbox" contenteditable id="targetPoints"
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+        </div>
+        <div class="col-6">
+            <h6 class="text-center">Enter the point amount. Use negative numbers to subtract.</h6>
+        </div>
+    </div>
+</div>
+<style>
+    #targetUser[contenteditable]:empty::before {
+        content: "Username $variables supported";
+        color: gray;
+    }
+
+    #targetPoints[contenteditable]:empty::before {
+        content: "Number, positive or negative.";
+        color: gray;
+    }
+</style>

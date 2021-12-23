@@ -173,6 +173,17 @@ async function buildObsWebSocketUI(mode:actionMode, commandInfo) {
 }
 
 
+
+async function buildPointsUI(mode: actionMode, commandInfo) {
+    let action = await getActionHTML("Points");
+    if (commandInfo) {
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText = commandInfo.target;
+        (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSpanElement).innerText = commandInfo.points.toString();
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
+
+
 async function buildTimeoutUI(mode:actionMode, commandInfo) {
     let action = await getActionHTML("Timeout");
     if (commandInfo) {
@@ -180,7 +191,6 @@ async function buildTimeoutUI(mode:actionMode, commandInfo) {
         (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.duration;
     }
     document.getElementById(`${mode}CommandList`)!.appendChild(action)
-
 }
 
 async function buildVideoUI(mode:actionMode, commandInfo) {
@@ -226,4 +236,5 @@ async function getActionHTML(action: string) {
 }
 
 export {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI, buildImageGifUI,
-    buildReadFileUI, buildObsWebSocketUI, buildTimeoutUI, buildVideoUI, buildWaitUI, buildWriteFileUI}
+    buildReadFileUI, buildObsWebSocketUI, buildPointsUI, buildTimeoutUI, buildVideoUI,
+    buildWaitUI, buildWriteFileUI}
