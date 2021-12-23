@@ -107,11 +107,11 @@ function openGlimRealm(fromUI?: boolean) {
  * Returns a random glimdrop event.
  */
 function glimChance() {
-    let glimrealmNumber = Math.floor(Math.random()*35);
+    let glimrealmNumber = Math.floor(Math.random()*37);
     switch (glimrealmNumber) {
         case 0: return {message: "The Glimdrops are hiding. No adjustment in points.", result: 0, type: "add"}
         case 1: return {message: ":glimwow: got his Glimesh T-shirt! You gained 100 points.", result: 100, type: "add"}
-        case 2: return {message: "You and :glimgype: got even more hyped! You gained 100 points!", result: 100, type: "add"}
+        case 2: return {message: "You and :glimhype: got even more hyped! You gained 100 points!", result: 100, type: "add"}
         case 3: return {message: ":glimsad: is sad and you didn't do anything! You lost 50 points.", result: 50, type: "sub"}
         case 4: return {message: "You tripped over a Glimdrop. His friends didn't like that. You have lost 500 points!", result: 500, type: "sub"}
         case 5: return {message: "A Glimdrop hugs you. You have gained 100 points!", result: 100, type: "add"}
@@ -145,6 +145,8 @@ function glimChance() {
         case 32: return {message: ":glimlul: You lost :glimlul: points", result: 0, type: "add"}
         case 33: return {message: "You adopt :glimdog:! You gained 500 points", result: 500, type: "add"}
         case 34: return {message: ":glimdog: ran away! You lost 100 points", result: 100, type: "sub"}
+        case 35: return {message: "You went for a ride with :glimcar:! You gained 150 points", result: 150, type: "add"}
+        case 36: return {message: "You went for a ride with :glimcar: and got lost! You lost 100 points", result: 100, type: "sub"}
     }
 }
 
