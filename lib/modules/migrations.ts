@@ -26,9 +26,9 @@ async function checkForScreenShots() {
  */
 async function checkForMediaOverlay() {
     try {
-        let mediaVersion: mediaOverlayVersion = CacheStore.get("mediaVersion", 1, true);
+        let mediaVersion: mediaOverlayVersion = CacheStore.get("mediaVersion", 2, true);
         // Need an upgrade to 2
-        if (mediaVersion == 1) {
+        if (mediaVersion <= 2) {
             console.log("Upgrading media overlay");
             let defaultFile = await fs.readFile(appData[0] + "/frontend/templates/connection.js");
             let defaultFileData = defaultFile.toString();
@@ -36,13 +36,12 @@ async function checkForMediaOverlay() {
             if (position !== -1) {
                 defaultFileData = defaultFileData.substr(position + 1);
                 defaultFileData = "let url = `ws://" + CacheStore.get("serverUrl", "localhost") + ":" + CacheStore.get("serverPort", 3000) + "`;\n" + defaultFileData;
-                console.log(defaultFileData);
                 fs.writeFile(appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/js/connection.js"), defaultFileData);
             } else {
                 throw "error with new line replacement in media file";
             }
             fs.writeFile(appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/js/connection.js"), defaultFileData);
-            CacheStore.set("mediaVersion", 2);
+            CacheStore.set("mediaVersion", 3);
         } else {
             console.log("Media overlay is up to date");
         }
