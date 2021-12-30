@@ -1,9 +1,7 @@
 node_modules/
 test.js
-nodeAPI1.js
 dist/
 .vscode/
 build/
 changelog.txt
-refresh.txt
 todo.txt
