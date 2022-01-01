@@ -19,14 +19,12 @@ function startServer() {
     }
     host = new Server(serverInfo);
     setupListeners();
-
 }
 
 /**
  * Set up the listeners for the server (msg, close, etc)
  */
 function setupListeners() {
-    // Setup listeners.
     host.on("connection", function() {
         console.log("A user connected to the server.");
     })
@@ -37,7 +35,6 @@ function setupListeners() {
 
     host.on("error", function(err) {
         console.log("Error: " + err);
-        // restart the ws server
         restartServer();
     });
 
