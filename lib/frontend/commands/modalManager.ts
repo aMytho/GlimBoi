@@ -54,6 +54,7 @@ function prepareActions(mode) {
     document.getElementById("CreatePoints")!.onclick = () => addActionToUI("Points", mode);
     document.getElementById("CreateVideo")!.onclick = () => addActionToUI("Video", mode);
     document.getElementById("CreateTimeout")!.onclick = () => addActionToUI("Timeout", mode);
+    document.getElementById("CreateTweet")!.onclick = () => addActionToUI("Twitter", mode);
     document.getElementById("CreateWait")!.onclick = () => addActionToUI("Wait", mode);
     document.getElementById("CreateWriteFile")!.onclick = () => addActionToUI("WriteFile", mode);
 }
@@ -131,7 +132,10 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         case "ReadFile": await ActionCreator.buildReadFileUI(mode, data);
         break;
 
-        case "Timeout": await ActionCreator.buildTimeoutUI(mode, data)
+        case "Timeout": await ActionCreator.buildTimeoutUI(mode, data);
+        break;
+
+        case "Twitter": await ActionCreator.buildTweetUI(mode, data);
         break;
 
         case "Video": await ActionCreator.buildVideoUI(mode, data);

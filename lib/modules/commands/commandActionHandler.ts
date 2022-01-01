@@ -269,6 +269,22 @@ class Timeout extends ChatAction {
 }
 
 /**
+ * Sends a tweet to twitter
+ */
+class Twitter extends ChatAction {
+    tweetMessage: string
+    constructor({tweetMessage}) {
+        super("Twitter", ["tweetMessage"], undefined);
+        this.tweetMessage = tweetMessage;
+    }
+
+    async run({activation, user}) {
+        let target = await ActionResources.searchForVariables({message: this.tweetMessage, activation: activation, user: user});
+        ApiHandle.Webhooks.TwitterWebhook.sendTweet(target);
+    }
+}
+
+/**
  * Plays a video in the overlay
  * @param {string} source The video file we are playing
  */
@@ -330,4 +346,4 @@ class WriteFile extends ChatAction {
 }
 
 export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, Points, ReadFile,
-Timeout, Video, Wait, WriteFile}
+Timeout, Twitter, Video, Wait, WriteFile}

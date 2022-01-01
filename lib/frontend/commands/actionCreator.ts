@@ -190,7 +190,15 @@ async function buildTimeoutUI(mode:actionMode, commandInfo) {
         (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target;
         (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.duration;
     }
-    document.getElementById(`${mode}CommandList`)!.appendChild(action)
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
+
+async function buildTweetUI(mode:actionMode, commandInfo) {
+    let action = await getActionHTML("Twitter");
+    if (commandInfo) {
+
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
 async function buildVideoUI(mode:actionMode, commandInfo) {
@@ -236,5 +244,5 @@ async function getActionHTML(action: string) {
 }
 
 export {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI, buildImageGifUI,
-    buildReadFileUI, buildObsWebSocketUI, buildPointsUI, buildTimeoutUI, buildVideoUI,
-    buildWaitUI, buildWriteFileUI}
+    buildReadFileUI, buildObsWebSocketUI, buildPointsUI, buildTimeoutUI, buildTweetUI,
+    buildVideoUI, buildWaitUI, buildWriteFileUI}

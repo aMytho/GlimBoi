@@ -132,7 +132,7 @@ type CustomUserVaribles = {
 }
 
 type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" |
-"ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Wait" | "WriteFile"
+"ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Twitter" | "Wait" | "WriteFile"
 type actionInfo = any[] | any
 type actionVariables = string[]
 
