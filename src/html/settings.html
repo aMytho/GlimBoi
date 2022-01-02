@@ -38,8 +38,7 @@
                                 <input class="icon-input settingsInput" type="text" placeholder="Default Message"
                                     id="discordWebhookMessage"
                                     style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                                    add stream specific details (what you're doing that stream)</p>
+                                <p>Confirm before send?</p>
                                 <div class="niceSwitch">
                                     <label class="switch">
                                         <input type="checkbox" id="discordWebhookConfirmation">
@@ -47,6 +46,8 @@
                                     </label>
                                     <p>Disabled / Enabled</p>
                                 </div>
+                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                                    add stream specific details (what you're doing that stream)</p>
                             </div>
                             <div class="col-12 col-sm-1 whiteText"></div>
                             <!--NOW ON GUILDED-->
@@ -68,8 +69,7 @@
                                 <input class="icon-input settingsInput" type="text" placeholder="Default Message"
                                     id="guildedWebhookMessage"
                                     style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                                    add stream specific details (what you're doing that stream)</p>
+                                <p>Confirm before send?</p>
                                 <div class="niceSwitch">
                                     <label class="switch">
                                         <input type="checkbox" id="guildedWebhookConfirmation">
@@ -77,7 +77,41 @@
                                     </label>
                                     <p>Disabled / Enabled</p>
                                 </div>
+                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                                    add stream specific details (what you're doing that stream)</p>
                             </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <h3>Twitter</h3>
+                                <p>Tweet when you join a channel.</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="twitterEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>Access Token</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Twitter access token"
+                                    id="twitterToken"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                                <p>Default Message</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                                    id="twitterMessage"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                                <p>Confirm before send?</p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="twitterConfirmation">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                                    add stream specific details (what you're doing that stream)</p>
+                            </div>
+                            <div class="col-12 col-sm-1 whiteText"></div>
                         </div>
                     </div>
                     <div id="obsTab" class="tab-pane fade-in">
@@ -139,7 +173,9 @@
                                     </label>
                                     <p>Disabled / Enabled</p>
                                 </div>
-                                <p>Click <span onclick="loadLink('calm-citadel-14699.herokuapp.com/authorize')" style="color:rgb(251, 133, 251);cursor: pointer;">here</span> to get a token.</p>
+                                <p>Click <span onclick="loadLink('calm-citadel-14699.herokuapp.com/authorize')"
+                                        style="color:rgb(251, 133, 251);cursor: pointer;">here</span> to get a token.
+                                </p>
                                 <p>Enter your generated Streamlabs token. Keep Private!</p>
                                 <input class="icon-input settingsInput" type="text"
                                     placeholder="Streamlabs Token (keep private!)" id="streamlabsKey"
