@@ -18,15 +18,15 @@ class User implements UserType {
     quotes: any[];
     id: number;
     constructor(userName:string, ID:number) {
-      	this.userName = userName;
-      	this.points = Number(CacheStore.get("startingPoints", 0));
-      	this.watchTime = 0;
-      	this.team = null;
-      	this.role = "user";
-      	this.inventory = [];
-      	this.picture = "link";
-      	this.quotes = []
-      	this.id = ID
+        this.userName = userName;
+        this.points = Number(CacheStore.get("startingPoints", 0));
+        this.watchTime = 0;
+        this.team = null;
+        this.role = "user";
+        this.inventory = [];
+        this.picture = "link";
+        this.quotes = []
+        this.id = ID
     }
 }
 
@@ -41,7 +41,8 @@ class User implements UserType {
  */
 async function addUser(user:string, inModal: boolean, createdBy: string = "Glimboi"): Promise<"INVALIDUSER" | "USEREXISTS" | UserType> {
     return await new Promise(done => {
-        usersDB.find({ userName: user.toLowerCase() }, async function (err:string, docs:docs) {
+        user = user.toLowerCase();
+        usersDB.find({ userName: user }, async function (err:string, docs:docs) {
             if (docs.length == 0) {
                 console.log("No user was found with the name " + user);
                 let ID = await ApiHandle.getUserID(user)
@@ -49,7 +50,7 @@ async function addUser(user:string, inModal: boolean, createdBy: string = "Glimb
                     console.log(ID);
                     done("INVALIDUSER")
                 } else {
-                    let tempUser = new User(user.toLowerCase(), ID) //makes the user. L I F E !
+                    let tempUser = new User(user, ID) //makes the user. L I F E !
                     usersDB.insert(tempUser, function (err:Error | null, doc:UserType) {
                         console.log(doc);
                         console.log("User created!");
@@ -148,7 +149,8 @@ async function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED">
  */
 async function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND" | userDoc> {
     return new Promise(resolve => {
-        usersDB.find({ $and: [{ userName: user.toLowerCase() }, { quotes: { $elemMatch: { quoteID: id } } }] }, function (err: Error | null, docs: userDoc[]) {
+        user = user.toLowerCase();
+        usersDB.find({ $and: [{ userName: user }, { quotes: { $elemMatch: { quoteID: id } } }] }, function (err: Error | null, docs: userDoc[]) {
             console.log(docs);
             if (docs.length < 1) {
                 resolve("NOQUOTEFOUND")
@@ -158,7 +160,7 @@ async function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND"
                     if (docs[0].quotes[index].quoteID == id) {
                         console.log("Found the quote in the user DB");
                         docs[0].quotes.splice(index, 1)
-                        usersDB.update({ $and: [{ userName: user.toLowerCase() }, { quotes: { $elemMatch: { quoteID: id } } }] },{ $set: { quotes: docs[0].quotes } },
+                        usersDB.update({ $and: [{ userName: user }, { quotes: { $elemMatch: { quoteID: id } } }] },{ $set: { quotes: docs[0].quotes } },
                             { returnUpdatedDocs: true }, function (err: Error | null, numAffected: number, affectedDocuments: userDoc) {
                                 console.log(affectedDocuments);
                                 QuoteHandle.removeQuote(id, user);
@@ -194,8 +196,9 @@ async function getTopPoints(): Promise<userDoc[]> {
  */
 async function editUser(userName: string, role: rankName, points: number, editor: string = "Glimboi"): Promise<userDoc> {
     return new Promise(resolve => {
-        console.log(userName, role, points)
-        usersDB.update({ userName: userName.toLowerCase() }, { $set: { role: role, points: Number(points) } }, { returnUpdatedDocs: true },
+        userName = userName.toLowerCase();
+        console.log(userName, role, points);
+        usersDB.update({ userName: userName }, { $set: { role: role, points: Number(points) } }, { returnUpdatedDocs: true },
             function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
                 console.log("Edited " + userName);
                 console.log(affectedDocuments);

@@ -69,16 +69,16 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                         break;
                     case "add":
                     case "+":
-                    case "inc": ChatActions.addPointsChat(userChat, message[2], message[3])
+                    case "inc": ChatActions.addPointsChat(userChat, message[2], message[3]);
                         break;
                     case "sub":
                     case "-":
-                    case "del": ChatActions.removePointsChat(userChat, message[2], message[3])
+                    case "del": ChatActions.removePointsChat(userChat, message[2], message[3]);
                         break;
                     case "set":
-                    case "=": ChatActions.editPointsChat(userChat, message[2], message[3])
+                    case "=": ChatActions.editPointsChat(userChat, message[2], message[3]);
                         break;
-                    case "get": ChatActions.getPointsChat(userChat, message[2])
+                    case "get": ChatActions.getPointsChat(userChat, message[2]);
                         break;
                     case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
                         break;

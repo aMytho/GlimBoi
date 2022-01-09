@@ -39,7 +39,6 @@ class DumbCacheStore {
 
     /**
      * Gets a key / value pair, sets the key if setDefault == true
-     *
      * @param {string} key The value we are searching for
      * @param {any} defaultValue If the key doesn't exist we can create the key
      * @param {boolean} setDefault Should we create a new key if it doesn't exist?

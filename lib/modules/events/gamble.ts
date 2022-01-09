@@ -53,8 +53,4 @@ function getGambleMessage(purpose: "win" | "lose", user: userName, amount: numbe
     }
 }
 
-function chanceForAlternateEnding() {
-    return 1 == Math.round(Math.random() * 10)
-}
-
 export {gamble}

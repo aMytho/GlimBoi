@@ -189,11 +189,7 @@ async function getRank(user: userName) {
  * @returns {boolean} True or false
  */
 function checkAmount(amount:number | any): boolean {
-    if (isNaN(amount)) {
-        return false
-    } else {
-        return true
-    }
+    return !isNaN(amount);
 }
 
 /**
@@ -202,30 +198,27 @@ function checkAmount(amount:number | any): boolean {
  * @param {user} target The target user who will be affected
  * @param {number} count The amount of points to add
  */
-async function addPointsChat(user: userName, target: userName, count) {
+async function addPointsChat(user: userName, target: userName, count:string | number | undefined) {
     if (await permissionCheck(user, "canAddPoints", "add points")) {
-        if (target !== undefined) {
-            target = target.toLowerCase();
-            if (checkAmount(count) == true) {
-                let targetExists = await UserHandle.findByUserName(target);
-                if (targetExists !== "ADDUSER") {
-                    UserHandle.addPoints(target, Math.round(Number(count)));
-                    ChatMessages.filterMessage(`${Math.round(Number(count))} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
-                } else {
-                    let userAdded = await UserHandle.addUser(target, false, user);
-                    if (userAdded !== "INVALIDUSER") {
-                        ChatMessages.filterMessage(`${target} has been added to glimboi.`, "glimboi");
-                        UserHandle.addPoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(`${Math.round(Number(count))} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
-                    } else {
-                        ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
-                    }
-                }
+        if (!targetCheck(target, "The target was not included. !points add Mytho 100")) return;
+        if (checkAmount(count) == true) {
+            count = Math.round(Number(count));
+            let targetExists = await UserHandle.findByUserName(target);
+            if (targetExists !== "ADDUSER") {
+                UserHandle.addPoints(target, count);
+                ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
             } else {
-                ChatMessages.filterMessage(Math.round(Number(count)) + " is an invalid number.", "glimboi");
+                let userAdded = await UserHandle.addUser(target, false, user);
+                if (userAdded !== "INVALIDUSER") {
+                    ChatMessages.filterMessage(`${target} has been added to glimboi.`, "glimboi");
+                    UserHandle.addPoints(target, count);
+                    ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
+                } else {
+                    ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
+                }
             }
         } else {
-            ChatMessages.filterMessage("The target was not included. !points add/inc/+ Mytho 100", "glimboi")
+            ChatMessages.filterMessage(`${count} is an invalid number.`, "glimboi");
         }
     }
 }
@@ -236,39 +229,36 @@ async function addPointsChat(user: userName, target: userName, count) {
  * @param {string} target Who is about to lose points
  * @param {number} count How many points will be removed
  */
-async function removePointsChat(user:userName, target, count) {
+async function removePointsChat(user: string, target: string, count: number | string | undefined) {
     if (await permissionCheck(user, "canRemovePoints", "remove points")) {
-        if (target !== undefined) {
-            target = target.toLowerCase()
-            if (checkAmount(count) == true) {
-                let targetExists = await UserHandle.findByUserName(target);
-                if (targetExists !== "ADDUSER") {
-                    if ((targetExists.points - Math.round(Number(count))) < 0) {
-                        UserHandle.editUserPoints(target, 0);
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
-                    } else {
-                        UserHandle.removePoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
-                    }
+        if (!targetCheck(target, "The user was not included. !points sub Mytho 100")) return;
+        if (checkAmount(count) == true) {
+            count = Math.round(Number(count));
+            let targetExists = await UserHandle.findByUserName(target);
+            if (targetExists !== "ADDUSER") {
+                if ((targetExists.points - count) < 0) {
+                    UserHandle.editUserPoints(target, 0);
+                    ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
                 } else {
-                    let userAdded = await UserHandle.addUser(target, false, user);
-                    if (userAdded !== "INVALIDUSER") {
-                        if (((userAdded as UserType).points - Math.round(Number(count))) < 0) {
-                            UserHandle.editUserPoints(target, 0);
-                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
-                        } else {
-                            UserHandle.removePoints(target, Math.round(Number(count)));
-                            ChatMessages.filterMessage(Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points") + " were removed from " + target, "glimboi");
-                        }
-                    } else {
-                        ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
-                    }
+                    UserHandle.removePoints(target, count);
+                    ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
                 }
             } else {
-                ChatMessages.filterMessage(Math.round(Number(count)) + " is an invalid number.", "glimboi");
+                let userAdded = await UserHandle.addUser(target, false, user);
+                if (userAdded !== "INVALIDUSER") {
+                    if (((userAdded as UserType).points - count) < 0) {
+                        UserHandle.editUserPoints(target, 0);
+                        ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
+                    } else {
+                        UserHandle.removePoints(target, count);
+                        ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
+                    }
+                } else {
+                    ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
+                }
             }
         } else {
-            ChatMessages.filterMessage("The user was not included. !points sub/dec/- Mytho 100", "glimboi")
+            ChatMessages.filterMessage(`${count} is an invalid number.`, "glimboi");
         }
     }
 }
@@ -279,30 +269,27 @@ async function removePointsChat(user:userName, target, count) {
  * @param {string} target The user who is getting a new point value
  * @param {number} count The amount of points that will be set
  */
-async function editPointsChat(user, target, count) {
+async function editPointsChat(user:string, target:string, count:number | string | undefined) {
     if (await permissionCheck(user, "canEditPoints", "edit points")) {
-        if (target !== undefined) {
-            target = target.toLowerCase()
-            if (checkAmount(count) == true) {
-                let targetExists = await UserHandle.findByUserName(target);
-                if (targetExists !== "ADDUSER") {
-                    UserHandle.editUserPoints(target, Math.round(Number(count)));
-                    ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points"), "glimboi");
-                } else {
-                    let userAdded = await UserHandle.addUser(target, false, user);
-                    if (userAdded !== "INVALIDUSER") {
-                        ChatMessages.filterMessage(target + " has been added to glimboi.");
-                        UserHandle.editUserPoints(target, Math.round(Number(count)));
-                        ChatMessages.filterMessage(target + " now has " + Math.round(Number(count)) + " " + CacheStore.get("pointsName", "Points"), "glimboi");
-                    } else {
-                        ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly.", "glimboi");
-                    }
-                }
+        if (!targetCheck(target, "The user was not included. !points set Mytho 100")) return;
+        if (checkAmount(count) == true) {
+            count = Math.round(Number(count));
+            let targetExists = await UserHandle.findByUserName(target);
+            if (targetExists !== "ADDUSER") {
+                UserHandle.editUserPoints(target, count);
+                ChatMessages.filterMessage(`${target} now has ${count} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
             } else {
-                ChatMessages.filterMessage(Math.round(Number(count)) + " is an invalid number.", "glimboi");
+                let userAdded = await UserHandle.addUser(target, false, user);
+                if (userAdded !== "INVALIDUSER") {
+                    ChatMessages.filterMessage(`${target} has been added to glimboi.`);
+                    UserHandle.editUserPoints(target, count);
+                    ChatMessages.filterMessage(`${target} now has ${count} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+                } else {
+                    ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
+                }
             }
         } else {
-            ChatMessages.filterMessage("The user was not included. !points set/= Mytho 100", "glimboi")
+            ChatMessages.filterMessage(`${count} is an invalid number.`, "glimboi");
         }
     }
 }
@@ -313,19 +300,15 @@ async function editPointsChat(user, target, count) {
  * @param {string} target The user who you are getting the points for
  */
 async function getPointsChat(user: string, target: string) {
-    if (target !== undefined) {
-        target = target.toLowerCase();
-        let targetExists = await UserHandle.findByUserName(target);
-        if (targetExists !== "ADDUSER") {
-            ChatMessages.filterMessage(target + " has " + targetExists.points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
-        } else {
-            let newUser = await UserHandle.addUser(target, false, user);
-            if (newUser !== "INVALIDUSER") { getPointsChat((newUser as UserType).userName, target) } else {
-                ChatMessages.filterMessage(target + " was not found. Ensure the name is typed correctly and the user exists in glimboi.", "glimboi");
-            }
-        }
+    if (!targetCheck(user, "The user was not specified. ex. !points get Mytho")) return;
+    let targetExists = await UserHandle.findByUserName(target);
+    if (targetExists !== "ADDUSER") {
+        ChatMessages.filterMessage(`${target} has ${targetExists.points} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
     } else {
-        ChatMessages.filterMessage("The user was not specified. ex. !points get Mytho", "glimboi")
+        let newUser = await UserHandle.addUser(target, false, user);
+        if (newUser !== "INVALIDUSER") { getPointsChat((newUser as UserType).userName, target) } else {
+            ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly and the user exists in glimboi.`, "glimboi");
+        }
     }
 }
 
@@ -333,22 +316,18 @@ async function getPointsChat(user: string, target: string) {
  * Returns the amount of points a user has
  * @param {string} user Who we are gettign the points for
  */
- async function getOwnPointsChat(user) {
-    if (user !== undefined) {
-        user = user.toLowerCase();
-        let userExists = await UserHandle.findByUserName(user);
-        if (userExists !== "ADDUSER") {
-            ChatMessages.filterMessage(userExists.userName + " has " + userExists.points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
-        } else {
-            let newUser = await UserHandle.addUser(user, false, user)
-            if (newUser !== "INVALIDUSER") {
-                ChatMessages.filterMessage((newUser as UserType).userName + " has " + (newUser as UserType).points + " " + CacheStore.get("pointsName", "Points"), "glimboi");
-            } else {
-                ChatMessages.filterMessage(user + " was not found.", "glimboi");
-            }
-        }
+async function getOwnPointsChat(user: string) {
+    if (!targetCheck(user, "The user was not specified. ex. !points get Mytho")) return;
+    let userExists = await UserHandle.findByUserName(user);
+    if (userExists !== "ADDUSER") {
+        ChatMessages.filterMessage(`${userExists.userName} has ${userExists.points} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
     } else {
-        ChatMessages.filterMessage("The user was not specified. ex. !points get Mytho", "glimboi")
+        let newUser = await UserHandle.addUser(user, false, user)
+        if (newUser !== "INVALIDUSER") {
+            ChatMessages.filterMessage(`${(newUser as UserType).userName} has ${(newUser as UserType).points} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+        } else {
+            ChatMessages.filterMessage(`${user} was not found.`, "glimboi");
+        }
     }
 }
 
@@ -368,7 +347,7 @@ async function getTopPoints(requestedPosition?: number, leaderBoard?: any) {
                     ChatMessages.filterMessage("That number is not valid.")
                 } else if (topPoints[pointsPosition - 1] !== undefined) {
                     pointsPosition = pointsPosition - 1
-                    ChatMessages.filterMessage("Number " + (pointsPosition + 1) + " is " + topPoints[pointsPosition].userName + " with " + topPoints[pointsPosition].points)
+                    ChatMessages.filterMessage(`Number ${pointsPosition + 1} is ${topPoints[pointsPosition].userName} with ${topPoints[pointsPosition].points}`)
                 } else {
                     ChatMessages.filterMessage("There is not a user with that position.")
                 }
@@ -380,7 +359,7 @@ async function getTopPoints(requestedPosition?: number, leaderBoard?: any) {
         }
     } else {
         if (topPoints.length > 0) {
-            ChatMessages.filterMessage("The top user is " + topPoints[0].userName, "glimboi");
+            ChatMessages.filterMessage(`The top user is ${topPoints[0].userName}`, "glimboi");
         } else {
             ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi");
         }
@@ -415,9 +394,9 @@ async function nextSong(user:userName, action) {
         } else {
             if (musicPlaylist[currentSongIndex]) {
                 if (currentSongIndex + 1 >= musicPlaylist.length) {
-                    ChatMessages.filterMessage("Next up is " + musicPlaylist[0].name, "glimboi");
+                    ChatMessages.filterMessage(`Next up is ${musicPlaylist[0].name}`, "glimboi");
                 } else {
-                    ChatMessages.filterMessage("Next up is " + musicPlaylist[currentSongIndex + 1].name, "glimboi")
+                    ChatMessages.filterMessage(`Next up is ${musicPlaylist[currentSongIndex + 1].name}`, "glimboi")
                 }
             } else {
                 ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
@@ -442,9 +421,9 @@ async function previousSong(user: userName, action: string) {
         } else {
             if (musicPlaylist[currentSongIndex]) {
                 if (currentSongIndex - 1 < 0) {
-                    ChatMessages.filterMessage("Last song was " + musicPlaylist[0].name, "glimboi");
+                    ChatMessages.filterMessage(`Last song was ${musicPlaylist[0].name}`, "glimboi");
                 } else {
-                    ChatMessages.filterMessage("Last song was" + musicPlaylist[currentSongIndex - 1].name, "glimboi")
+                    ChatMessages.filterMessage(`Last song was ${musicPlaylist[currentSongIndex - 1].name}`, "glimboi")
                 }
             } else {
                 ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
@@ -687,6 +666,21 @@ function gamble(user: userName, message) {
  */
 function invalidPerms(user:userName, attemptedAction:string) {
     ChatMessages.filterMessage(`${user} does not have permission to ${attemptedAction}.`, "glimboi");
+}
+
+/**
+ * Checks to see if a target exists. If not sends a message to chat about it
+ * @param target
+ * @param message
+ * @returns
+ */
+function targetCheck(target: any, message = "No target specified."): boolean {
+    if (target && target.length > 0) {
+        return true;
+    } else {
+        ChatMessages.filterMessage(message, "glimboi");
+        return false;
+    }
 }
 
 
