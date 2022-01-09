@@ -58,6 +58,7 @@ async function requestToken(alertUser = false): Promise<accessToken | false> {
  */
 async function requestUserAuthorization() {
     console.log("Starting authorization client server");
+    const {generateVerifierAndChallenge}:typeof import("./auth/oauth") = require(appData[0] + "/modules/auth/oauth.js")
     let { verifier, challenge } = await generateVerifierAndChallenge();
     loadLink(`glimesh.tv/oauth/authorize?response_type=code&code_challenge=${challenge}&code_challenge_method=S256&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&scope=${SCOPES}`);
 
@@ -103,41 +104,6 @@ async function requestUserAuthorization() {
         res.writeHead(200, { 'Content-Type': 'text/html'});
     })
     server.listen(3000);
-}
-
-
-/**
- * Generates a code verifier and challenge for glimesh auth.
- * @returns {Promise<glimeshPKCEInfo>}
- */
-async function generateVerifierAndChallenge() {
-    let array = new Uint32Array(56 / 2);
-    window.crypto.getRandomValues(array);
-    let verifier =  Array.from(array, dec2hex).join('');
-
-    let hashed = await sha256(verifier);
-    let challenge = base64urlencode(hashed);
-    return {verifier: verifier, challenge: challenge};
-
-    function dec2hex(dec) {
-        return ('0' + dec.toString(16)).substr(-2)
-    }
-
-    function sha256(plain) { // returns promise ArrayBuffer
-        const encoder = new TextEncoder();
-        const data = encoder.encode(plain);
-        return window.crypto.subtle.digest('SHA-256', data);
-    }
-
-    function base64urlencode(a) {
-        let str = "";
-        let bytes = new Uint8Array(a);
-        let len = bytes.byteLength;
-        for (let i = 0; i < len; i++) {
-            str += String.fromCharCode(bytes[i]);
-        }
-        return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-    }
 }
 
 
