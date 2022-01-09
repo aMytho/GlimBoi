@@ -65,7 +65,7 @@ function deterMineVictorAndDistributePoints(duel: duel): void {
     console.log(winner, loser, wager);
     UserHandle.addPoints(winner.winner, wager);
     UserHandle.removePoints(loser, wager);
-    ChatMessages.filterMessage(`@${winner.winner} has won the duel with a wager of ${wager} ${CacheStore.get("pointsName", "Points")} against ${loser}!`, "glimboi");
+    ChatMessages.filterMessage(`${winner.winner} has won the duel with a wager of ${wager} ${CacheStore.get("pointsName", "Points")} against ${loser}!`, "glimboi");
     removeDuel(winner.winner, loser);
 }
 // Checks to ensure that a user, opponent, and wager are valid. Also makes sure that the user doesn't have a pending duel
@@ -108,7 +108,7 @@ async function challengeUser(user: string, opponent: string, wager: number) {
         return ChatMessages.filterMessage("Your opponent doesn't have enough points to wager!", "glimboi");
     } else {
         addDuel(user, opponent, wager);
-        ChatMessages.filterMessage(`@${opponent}, ${user} has challenged you to a duel with a wager of ${wager} ${CacheStore.get("pointsName", "Points")}! !accept or !decline.`, "glimboi");
+        ChatMessages.filterMessage(`${opponent}, ${user} has challenged you to a duel with a wager of ${wager} ${CacheStore.get("pointsName", "Points")}! !accept or !decline.`, "glimboi");
         duelTimers[`${user}`] = setTimeout(() => {
             removeDuel(user, opponent);
         }, 30000);
@@ -122,13 +122,13 @@ async function acceptDuel(opponent: userName) {
     if (duel !== undefined) {
         if (duel.status == "pending") {
             duel.status = "active";
-            ChatMessages.filterMessage(`@${opponent} has accepted the duel!`, "glimboi");
+            ChatMessages.filterMessage(`${opponent} has accepted the duel!`, "glimboi");
             deterMineVictorAndDistributePoints(duel);
         } else {
             ChatMessages.filterMessage("You are already in a duel!", "glimboi");
         }
     } else {
-        ChatMessages.filterMessage(`@${opponent}, nobody has challenged you to a duel.`, "glimboi");
+        ChatMessages.filterMessage(`${opponent}, nobody has challenged you to a duel.`, "glimboi");
     }
 }
 
@@ -139,12 +139,12 @@ async function declineDuel(opponent: userName) {
     if (duel !== undefined) {
         if (duel.status == "pending") {
             removeDuel(duel.user, opponent);
-            ChatMessages.filterMessage(`@${opponent} has declined the duel!`, "glimboi");
+            ChatMessages.filterMessage(`${opponent} has declined the duel!`, "glimboi");
         } else {
             ChatMessages.filterMessage("You are already in a duel!", "glimboi");
         }
     } else {
-        ChatMessages.filterMessage(`@${opponent}, nobody has challenged you to a duel.`, "glimboi");
+        ChatMessages.filterMessage(`${opponent}, nobody has challenged you to a duel.`, "glimboi");
     }
 }
 
