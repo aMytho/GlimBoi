@@ -84,7 +84,7 @@
                         <div class="row mt-2">
                             <div class="col-sm-5 col-12 whiteText ml-2">
                                 <h3>Twitter</h3>
-                                <p>Tweet when you join a channel.</p>
+                                <p>Tweet when you join a channel. Does not affect command tweets.</p>
                                 <div class="niceSwitch">
                                     <label class="switch">
                                         <input type="checkbox" id="twitterEnabled">
@@ -92,10 +92,11 @@
                                     </label>
                                     <p>Disabled / Enabled</p>
                                 </div>
-                                <p>Access Token</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Twitter access token"
-                                    id="twitterToken"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                                <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                                onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span></p>
+                                <p>An access token is required to use the Twitter API. Generating one will open an URL in your default browser.
+                                    You <b>must</b> be signed in to approve the app. You can copy the link from the address bar into another browser if you prefer.
+                                </p>
                                 <p>Default Message</p>
                                 <input class="icon-input settingsInput" type="text" placeholder="Default Message"
                                     id="twitterMessage"

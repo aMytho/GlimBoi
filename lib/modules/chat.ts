@@ -217,6 +217,15 @@ function postChat():void {
             hasSentWebhooks = true;
         }
     }
+    if (CacheStore.get("twitterEnabled", false) && hasSentWebhooks == false) {
+        if (CacheStore.get("twitterConfirmation", true)) {
+            askForWebhookConfirmation("twitter");
+        } else {
+            ApiHandle.Webhooks.TwitterWebhook.sendTweet();
+            hasSentWebhooks = true;
+        }
+    }
+
 
     // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)
     ApiHandle.getBotAccount().then(data => {

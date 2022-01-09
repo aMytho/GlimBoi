@@ -303,6 +303,18 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
             }
+        case "Tweet":
+            try {
+                let twitterMessage = action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText;
+                if (twitterMessage.length == 0) {
+                    throw "No message was provided."
+                }
+                return {type: "Twitter", tweetMessage: strip(twitterMessage)};
+            } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
         case "Video":
             try {
                 let possibleVideo = action.children[1].firstElementChild.firstElementChild.firstElementChild.value

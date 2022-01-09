@@ -82,7 +82,6 @@ function showIntegrations() {
     if (CacheStore.get("twitterEnabled", false)) {
         document.getElementById("twitterEnabled")!.toggleAttribute("checked");
     }
-    (document.getElementById("twitterToken") as HTMLInputElement)!.value = CacheStore.get("twitterToken", "");
     (document.getElementById("twitterMessage") as HTMLInputElement)!.value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     if (CacheStore.get("twitterConfirmation", true)) {
         document.getElementById("twitterConfirmation")!.toggleAttribute("checked");
@@ -109,9 +108,8 @@ function saveIntegrations() {
         {streamlabsToken: (document.getElementById("streamlabsKey") as HTMLInputElement)!.value},
         {streamlabsMessage: (document.getElementById("streamlabsMessage") as HTMLInputElement)!.value},
         {twitterConfirmation: (document.getElementById("twitterConfirmation") as HTMLInputElement)!.checked},
-        {twitterEnabled: (document.getElementById("twitterEnabled") as HTMLInputElement)!.value},
+        {twitterEnabled: (document.getElementById("twitterEnabled") as HTMLInputElement)!.checked},
         {twitterMessage: (document.getElementById("twitterMessage") as HTMLInputElement)!.value},
-        {twitterToken: (document.getElementById("twitterToken") as HTMLInputElement)!.value},
     ]);
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")

@@ -39,7 +39,7 @@ type accessToken = string
  */
 type authStatusNumber = 0 | 1 | 2
 
-type glimeshPKCEInfo = {
+type PKCEInfo = {
     verifier: string;
     challenge: string;
 }
@@ -47,7 +47,7 @@ type glimeshPKCEInfo = {
 /**
  * String representing the type of webhook.
  */
-type webhookType = "discord" | "guilded"
+type webhookType = "discord" | "guilded" | "twitter"
 
 type glimeshRequest = "userID" | "channelID"
 

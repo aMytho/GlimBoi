@@ -196,7 +196,7 @@ async function buildTimeoutUI(mode:actionMode, commandInfo) {
 async function buildTweetUI(mode:actionMode, commandInfo) {
     let action = await getActionHTML("Twitter");
     if (commandInfo) {
-
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.tweetMessage;
     }
     document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }

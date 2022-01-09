@@ -185,6 +185,28 @@
     </div>
 </div>
 
+<!-- Modal: Twitter Webhook-->
+<div class="modal fade" id="twitterWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="twitterWebhookModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Twitter Live Notification</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="The message to post to Twitter" id="twitterWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+          <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.TwitterWebhook.sendTweet(document.getElementById('twitterWebhookMessage').value);$('#twitterWebhook').modal('hide')">Send</button>
+        </div>
+      </div>
+    </div>
+</div>
+
 </div>
 
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
