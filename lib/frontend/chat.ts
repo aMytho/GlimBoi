@@ -114,7 +114,7 @@ async function leaveChatButton(manual = false) {
 async function joinChat(chat: string, isReconnect?: boolean) {
     let chatToJoin = chat;
     let token = AuthHandle.getToken();
-    let response = await ApiHandle.getChannelID(chatToJoin);
+    let response = await ApiHandle.getChannelID(chatToJoin, true);
     if (response == null) {
         errorMessage("Auth Error.", "You need to complete authentication and request a token.");
     } else if (response == false) {// @ts-ignore
@@ -464,6 +464,9 @@ function askForWebhookConfirmation(webhook:webhookType) {
     } else if (webhook == "guilded") {
         $("#guildedWebhook").modal('show');
         (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
+    } else if (webhook == "twitter") {
+        $("#twitterWebhook").modal('show');
+        (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "Check out $streamer on https://glimesh.tv/$streamer");
     }
 }
 

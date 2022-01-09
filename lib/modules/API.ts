@@ -52,13 +52,15 @@ async function glimeshQuery(query): Promise<Glimesh.RootQueryType["data"] | fals
  * @param {string} channel The channel name
  * @returns The ID or null if unauthed or false if the channel does not exist.
  */
-async function getChannelID(channel: string): Promise<number | null | false> {
+async function getChannelID(channel: string, setMain?: boolean): Promise<number | null | false> {
     let query = `query {channel (streamerUsername: "${channel}"){id, streamer {displayname}}}`;
     let response = await glimeshQuery(query);
     console.log(response);
     if (typeof response == "object" && response !== null) {
         channelID = response.channel.id;
-        streamer = response.channel.streamer.displayname;
+        if (setMain) {
+            streamer = response.channel.streamer.displayname;
+        }
         return Number(response.channel.id);
     } else if (response == null) {
         return null;
