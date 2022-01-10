@@ -140,7 +140,7 @@ async function requestUserAuthorization(): Promise<boolean> {
 async function requestRefreshToken(): Promise<boolean | null> {
     let refreshToken = CacheStore.get("twitterRefreshToken", "");
     if (refreshToken) {
-        let refreshRequest = await fetch("https://api.twitter.com/2/oauth/token", {
+        let refreshRequest = await fetch("https://api.twitter.com/2/oauth2/token", {
             method: "POST",
             headers: [
                 ["Content-Type", `application/x-www-form-urlencoded`]
