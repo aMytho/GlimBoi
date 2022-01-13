@@ -28,7 +28,8 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                     case "":
                     case "help":
                     case "info":
-                        CommandHandle.info()
+                        ChatMessages.filterMessage(`Glimboi command docs: https://glimboi.com/docs/intro/commands/`, "glimboi");
+                        break;
                     default:
                         break;
                 }

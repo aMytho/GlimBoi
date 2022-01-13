@@ -39,13 +39,13 @@ class User implements UserType {
  * @returns If the user doesn't exist on GLimesh returns code INVALIDUSER
  * @returns If the exists returns USEREXISTS
  */
-async function addUser(user:string, inModal: boolean, createdBy: string = "Glimboi"): Promise<"INVALIDUSER" | "USEREXISTS" | UserType> {
-    return await new Promise(done => {
+function addUser(user:string, inModal: boolean, createdBy: string = "Glimboi"): Promise<"INVALIDUSER" | "USEREXISTS" | UserType> {
+    return new Promise(done => {
         user = user.toLowerCase();
         usersDB.find({ userName: user }, async function (err:string, docs:docs) {
             if (docs.length == 0) {
                 console.log("No user was found with the name " + user);
-                let ID = await ApiHandle.getUserID(user)
+                let ID = await ApiHandle.getUserID(user);
                 if (typeof ID !== "number" || ID == null || typeof ID == "object") {
                     console.log(ID);
                     done("INVALIDUSER")
@@ -54,7 +54,8 @@ async function addUser(user:string, inModal: boolean, createdBy: string = "Glimb
                     usersDB.insert(tempUser, function (err:Error | null, doc:UserType) {
                         console.log(doc);
                         console.log("User created!");
-                        LogHandle.logEvent({ event: "Add User", users: [createdBy, tempUser.userName] });
+                        LogHandle.logEvent({ event: "Add User", users: [createdBy, tempUser.userName],
+                        notification: `${tempUser.userName} was added to the database.` });
                         if (inModal == false) {
                             globalThis.syncUsers(doc, "add")
                         }
@@ -82,7 +83,7 @@ function updatePath(env: string) {
  * @returns If the user does not exist returns ADDUSER
  * @todo Find by ID instead.
  */
-async function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
+function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
     return new Promise(resolve => {
         usersDB.find({ userName: name.toLowerCase() }, function (err: Error | null, docs: userDoc[]) {
             // If the user exists return them, otherwise return ADDUSER
@@ -94,10 +95,10 @@ async function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
 /**
  * @returns All the users in the DB. Sent as an array
  */
-async function getAll(): Promise<userDoc[]> {
+function getAll(): Promise<userDoc[]> {
     return new Promise(resolve => {
         usersDB.find({}, function (err: string, docs: userDoc[]) {
-            resolve(docs)
+            resolve(docs);
         })
     })
 }
@@ -109,12 +110,12 @@ async function getAll(): Promise<userDoc[]> {
  * @param {string} userWhoRemoves The user who removed the abt to be deleted user.
  * @returns {array} The user that was removed
  */
-async function removeUser(user: string, inModal: boolean, userWhoRemoves: string = "Glimboi"): Promise<userName> {
+function removeUser(user: string, inModal: boolean, userWhoRemoves: string = "Glimboi"): Promise<userName> {
     user = user.toLowerCase()
     return new Promise(resolve => {
         usersDB.remove({ userName: user }, {}, function (err: Error | null, numRemoved: number) {
             console.log("Removed " + user);
-            LogHandle.logEvent({ event: "Remove User", users: [userWhoRemoves, user] });
+            LogHandle.logEvent({ event: "Remove User", users: [userWhoRemoves, user], notification: `${user} was removed from the database.` });
             if (inModal == false) {
                 syncUsers(user, "remove")
             }
@@ -129,7 +130,7 @@ async function removeUser(user: string, inModal: boolean, userWhoRemoves: string
  * @param {string} quote
  * @param {number} id
  */
-async function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED"> {
+function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED"> {
     return new Promise(resolve => {
         quote.quoteName = quote.quoteName.toLowerCase()
         usersDB.update({ userName: quote.quoteName }, { $push: { quotes: { quoteID: quote.quoteID, quoteData: quote.quoteData, dbID: id } } },
@@ -147,7 +148,7 @@ async function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED">
  * @param {string} user The user who the quote belongs to. Lowercase please!
  * @async
  */
-async function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND" | userDoc> {
+function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND" | userDoc> {
     return new Promise(resolve => {
         user = user.toLowerCase();
         usersDB.find({ $and: [{ userName: user }, { quotes: { $elemMatch: { quoteID: id } } }] }, function (err: Error | null, docs: userDoc[]) {
@@ -178,7 +179,7 @@ async function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND"
  * Returns the users sorted by points.
  * @returns The array of user
  */
-async function getTopPoints(): Promise<userDoc[]> {
+function getTopPoints(): Promise<userDoc[]> {
     return new Promise(resolve => {
         usersDB.find({}).sort({ points: -1 }).exec(function (err: Error | null, docs: userDoc[]) {
             // docs is [doc1, doc3, doc2];
@@ -194,7 +195,7 @@ async function getTopPoints(): Promise<userDoc[]> {
  * @param {number} points The points they will have
  * @returns {promise}
  */
-async function editUser(userName: string, role: rankName, points: number, editor: string = "Glimboi"): Promise<userDoc> {
+function editUser(userName: string, points: number, role: rankName, watchTime: number, editor: string = "Glimboi"): Promise<userDoc> {
     return new Promise(resolve => {
         userName = userName.toLowerCase();
         console.log(userName, role, points);
@@ -202,20 +203,9 @@ async function editUser(userName: string, role: rankName, points: number, editor
             function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
                 console.log("Edited " + userName);
                 console.log(affectedDocuments);
-                LogHandle.logEvent({ event: "Edit User", users: [editor, userName], data: [role, points] });
-                resolve(affectedDocuments);
-            });
-    })
-}
-
-function editUserAll(user: userName, points, role: rankName, watchTime: number) {
-    return new Promise(resolve => {
-        usersDB.update({ userName: user.toLowerCase() }, { $set: { role: role, points: points, watchTime: watchTime } }, { returnUpdatedDocs: true },
-            function (err: Error | null, numReplaced: number, affectedDocuments: userDoc) {
-                console.log("Edited " + user);
-                console.log(affectedDocuments);
-                LogHandle.logEvent({ event: "Edit User", users: ["Glimboi", user], data: [role, points, watchTime] });
-                editUserTable(user, role, points,   watchTime)
+                LogHandle.logEvent({ event: "Edit User", users: [editor, userName],
+                data: [role, points, watchTime],
+                notification: `${userName} now has rank ${role} with ${points} ${CacheStore.get("pointsName", "Points")}`});
                 resolve(affectedDocuments);
             });
     })
@@ -227,7 +217,7 @@ function editUserAll(user: userName, points, role: rankName, watchTime: number) 
  * @param {number} points How many points they will have
  * @returns {promise}
  */
-async function editUserPoints(userName: string, points: number): Promise<userDoc> {
+function editUserPoints(userName: string, points: number): Promise<userDoc> {
     return new Promise(resolve => {
         console.log(userName, points)
         usersDB.update({ userName: userName.toLowerCase() }, { $set: { points: Number(points) } }, { returnUpdatedDocs: true },
@@ -300,7 +290,7 @@ async function removePointsAboveZero(user:userName, value:number) {
 /**
  * Counts the number of users
  */
-async function countUsers(): Promise<number> {
+function countUsers(): Promise<number> {
     return new Promise(resolve => {
         usersDB.count({}, function (err: Error | null, count: number) {
             resolve(count);
@@ -311,7 +301,7 @@ async function countUsers(): Promise<number> {
 /**
  * Get the total points in the ecosystem
  */
-async function getAllPoints() {
+function getAllPoints() {
     return new Promise(resolve => {
         usersDB.find({}, { points: 1, _id: 0}, function (err, docs) {
             let points = 0;
@@ -323,5 +313,5 @@ async function getAllPoints() {
     })
 }
 
-export {addPoints, addQuote, addUser, countUsers, earnPointsWT, editUser, editUserAll, editUserPoints, findByUserName,
+export {addPoints, addQuote, addUser, countUsers, earnPointsWT, editUser, editUserPoints, findByUserName,
 getAll, getAllPoints, getTopPoints, removePoints, removePointsAboveZero, removeUser, removeQuoteByID, updatePath}

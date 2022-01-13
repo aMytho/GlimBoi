@@ -187,35 +187,31 @@ async function deleteMessage(messageID: number) {
  */
 async function timeoutByUsername(username: userName, duration: timeout) {
     console.log(`Trying to timeout user with name ${username} ${duration}`)
-    if (ChatHandle.isConnected()) {
-        let timeoutType: "longTimeoutUser" | "shortTimeoutUser"
-        duration == "long" ? timeoutType = "longTimeoutUser" : timeoutType = "shortTimeoutUser"
-        let ID = await UserHandle.findByUserName(username);
-        if (typeof ID !== "string") {
-            let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${ID.id}) {updatedAt, user {username}}}`
+    if (!channelCheck()) return null
+    let timeoutType: "longTimeoutUser" | "shortTimeoutUser"
+    duration == "long" ? timeoutType = "longTimeoutUser" : timeoutType = "shortTimeoutUser"
+    let ID = await UserHandle.findByUserName(username);
+    if (typeof ID !== "string") {
+        let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${ID.id}) {updatedAt, user {username}}}`
+        let result = await ApiHandle.glimeshApiRequest(bodyContent, timeoutType);
+        console.log(result);
+        if (typeof result == "string") {// It succeeded
+            adjustMessageStateByUsername(result, "timeout")
+        }
+        return result
+    } else {
+        let newID = await ApiHandle.getUserID(username);
+        if (typeof newID == "number") {
+            let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${newID}) {updatedAt, user {username}}}`
             let result = await ApiHandle.glimeshApiRequest(bodyContent, timeoutType);
-            console.log(result);
             if (typeof result == "string") {// It succeeded
-                adjustMessageStateByUsername(result, "timeout")
+                adjustMessageStateByUsername(result, "timeout");
             }
             return result
         } else {
-            let newID = await ApiHandle.getUserID(username);
-            if (typeof newID == "number") {
-                let bodyContent = `mutation {${timeoutType}(channelId:${ApiHandle.getID()}, userId:${newID}) {updatedAt, user {username}}}`
-                let result = await ApiHandle.glimeshApiRequest(bodyContent, timeoutType);
-                if (typeof result == "string") {// It succeeded
-                    adjustMessageStateByUsername(result, "timeout");
-                }
-                return result
-            } else {
-                errorMessage("Auth/user Error", "You must be in a chat and the the permissions to use that action. The user must exist.");
-                return null
-            }
+            errorMessage("Auth/user Error", "You must be in a chat and the the permissions to use that action. The user must exist.");
+            return null
         }
-    } else {
-        errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
-        return null
     }
 }
 
@@ -225,10 +221,7 @@ async function timeoutByUsername(username: userName, duration: timeout) {
  * @param {string} duration The duration of the timeout
  */
 async function timeoutByUserID(id: number, duration: timeout) {
-    if (!ChatHandle.isConnected()) {
-        errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
-        return null
-    }
+    if (!channelCheck()) return null
     console.log(`Trying to timeout user with id ${id} ${duration}`);
     let timeoutType: glimeshMutation
     duration == "long" ? timeoutType = "longTimeoutUser" : timeoutType = "shortTimeoutUser"
@@ -248,10 +241,7 @@ async function timeoutByUserID(id: number, duration: timeout) {
  * @param {string} username The username of the user to ban
  */
 async function banByUsername(username: userName) {
-    if (!ChatHandle.isConnected()) {
-        errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
-        return null
-    }
+    if (!channelCheck()) return null
     console.log(`trying to ban a user with username ${username}`)
     let userID = await ApiHandle.getUserID(username);
     if (typeof userID == "number") {
@@ -275,10 +265,7 @@ async function banByUsername(username: userName) {
  * @param {number} userID The ID of the user to ban
  */
 async function banByUserID(userID: number) {
-    if (!ChatHandle.isConnected()) {
-        errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
-        return null
-    }
+    if (!channelCheck()) return null
     console.log(`Trying to bane a user with ID ${userID}`)
     let bodyContent = `mutation {banUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
     let result = await ApiHandle.glimeshApiRequest(bodyContent, "ban");
@@ -296,10 +283,7 @@ async function banByUserID(userID: number) {
  * @param {string} username The username of the user to unban
  */
 async function unBanByUsername(username: userName) {
-    if (!ChatHandle.isConnected()) {
-        errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
-        return null
-    }
+    if (!channelCheck()) return null
     let userID = await ApiHandle.getUserID(username);
     if (typeof userID == "number") {
         let bodyContent = `mutation {unbanUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
@@ -315,29 +299,23 @@ async function unBanByUsername(username: userName) {
  * @param {number} userID The ID of the user to unban
  */
 function unBanByUserID(userID: number) {
-    if (!ChatHandle.isConnected()) {
-        errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
-        return null
-    }
+    if (!channelCheck()) return null
     let bodyContent = `mutation {unbanUser(channelId:${ApiHandle.getID()}, userId:${userID}) {updatedAt, user {username}}}`
     return ApiHandle.glimeshApiRequest(bodyContent, "unBan");
 }
 
-// This function sends a message to chat so the user knows why their message was deleted
-function sendModMessage(user: userName) {
-    // choose a randome message to send
-    let possibeMessages = [
-        `Whoa there ${user}, don't say that.`,
-        `${user}, you're not allowed to say that.`,
-        `Watch your mouth ${user}!`,
-        `I don't like your language ${user}.`,
-        `I'm telling my mommy you said that ${user}`,
-        `Stop it ${user}`
-    ]
-    // choose a random message to send
-    let message = possibeMessages[Math.floor(Math.random() * possibeMessages.length)]
-    // send the message
-    ChatMessages.filterMessage(message, "glimboi");
+/**
+ * Checks if a user is in a channel
+ * @returns
+ */
+function channelCheck(): boolean {
+    if (ChatHandle.isConnected()) {
+        return true;
+    }
+    errorMessage("Channel Error", "You must be in a chat to do a mod action. You must also have the permission to do the mod action.");
+    return false;
 }
 
-export {banByUserID, banByUsername, deleteMessage, determineModAction, getUserWarnings, scanMessage, timeoutByUserID, timeoutByUsername, unBanByUserID, unBanByUsername}
+export {banByUserID, banByUsername, deleteMessage, determineModAction,
+    getUserWarnings, scanMessage, timeoutByUserID, timeoutByUsername,
+    unBanByUserID, unBanByUsername}

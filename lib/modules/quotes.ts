@@ -43,7 +43,7 @@ function updatePath(updatedPath: string) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-async function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userName = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
+function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userName = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
     return new Promise(async resolve => {
         let userExists = await UserHandle.findByUserName(quoteName);
         if (userExists == "ADDUSER") {
@@ -52,6 +52,9 @@ async function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: 
                 return await addquote(quoteName, quoteData, onBehalfOf);
             } else {
                 document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created.";
+                setTimeout(() => {
+                    document.getElementById("errorMessageAddQuote")!.innerText = "";
+                }, 3500);
                 resolve("USERNOTEXIST")
             }
         } else {
@@ -104,7 +107,7 @@ function removeAllQuotes(user: userName) {
 /**
  * Returns all quotes as an array
  */
-async function getAll(): Promise<QuoteDB[]> {
+function getAll(): Promise<QuoteDB[]> {
     return new Promise(resolve => {
         quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
             console.log(docs);
@@ -116,7 +119,7 @@ async function getAll(): Promise<QuoteDB[]> {
 /**
  * Returns a random quote from the DB. Null if none exist
  */
-async function randomQuote(): Promise<null | { user: quoteName, data: quoteData }> {
+function randomQuote(): Promise<null | { user: quoteName, data: quoteData }> {
     return new Promise(resolve => {
         quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
             if (docs.length == 0) {
@@ -133,10 +136,10 @@ async function randomQuote(): Promise<null | { user: quoteName, data: quoteData 
 /**
  * Counts the amount of quotes in the DB
  */
-async function countQuotes(): Promise<number> {
+function countQuotes(): Promise<number> {
     return new Promise(resolve => {
         quotesDB.count({}, function (err: Error | null, count: number) {
-            resolve(count)
+            resolve(count);
         })
     })
 }
