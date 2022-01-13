@@ -54,7 +54,6 @@
   "author": "Mytho",
   "license": "MIT",
   "dependencies": {
-    "@popperjs/core": "^2.9.2",
     "crypto-js": "^4.1.1",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.3.1",
