@@ -1,6 +1,8 @@
 //handles sending users to different to parts of the app
 const {clipboard, ipcRenderer, shell} = require("electron"); // @ts-ignore
-let appData = ipcRenderer.sendSync("appDataRequest", null) //Ask main process for app data
+let appData:appDataType = ipcRenderer.sendSync("appDataRequest", null); //Ask main process for app data
+let isDev = appData[2];
+console.log(appData);
 const Datastore = require("nedb");
 const AuthHandle:AuthHandle = require(appData[0] + "/modules/auth.js");
 const UserHandle:UserHandle = require(appData[0] + "/modules/users.js");
@@ -204,8 +206,30 @@ function placeholder() {
  * Shows a message to the user in a small notification box.
  * @param message The message to send to the chat
  */
-function showToast(message: string) {
-    $('.toast').toast({delay: 7000});
-    $('.toast').toast('show');
-    document.getElementById("toastMessage")!.innerHTML = message;
+async function showToast(message: string) {
+    let div = document.createElement("div");
+    let toast = await fs.readFile(`${dirName}/html/common/toast.html`);
+    div.innerHTML += toast.toString();
+    document.getElementById("toastContainer")!.appendChild(div);
+    // Select the toast and activate it
+    let toastDiv = $(div).find(".toast");
+    toastDiv.toast({delay: 10000});
+    toastDiv.toast('show');
+    // Set the message
+    toastDiv.children(".toast-body").text(`\n       ${message} \n`);
+
+    // Every 8 seconds decrease the counter by 1 until its 0
+    let counter = 7;
+    let interval = setInterval(() => {
+        if (counter == 0) {
+            clearInterval(interval);
+            toastDiv.toast('hide');
+            setTimeout(() => {
+                div.remove();
+            }, 1000);
+        } else {
+            toastDiv.find(".text-muted").html(`${counter}`);
+            counter--;
+        }
+    }, 1000);
 }
