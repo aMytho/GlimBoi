@@ -1,14 +1,15 @@
 //Handles the charts for the homepage and the auth.
 let hasAuthorized = false;
-console.log(appData[0]);
 
 // start the app authentication process
 async function startAuthProcess() {
     unlockBot();
     console.log(JSON.stringify(isDev));
     if (isDev) {
+        console.log("Glimboi is in dev mode. No auth needed.");
         return
     }
+    console.log("Glimboi is in production mode.");
     let refreshToken = await AuthHandle.getRefreshToken();
     if (refreshToken) {
         hasAuthorized = true;
@@ -24,11 +25,15 @@ async function startAuthProcess() {
     }
 }
 
+/**
+ * Shows the bot stats on the home page
+ */
 async function loadBotStats() {
-    let userCount = await UserHandle.countUsers();
-    let quoteCount = await QuoteHandle.countQuotes();
-    let commandCount = await CommandHandle.countCommands();
-    let pointCount = await UserHandle.getAllPoints();
+    let [userCount, quoteCount, commandCount, pointCount] = await Promise.all([
+        UserHandle.countUsers(), QuoteHandle.countQuotes(),
+        CommandHandle.countCommands(), UserHandle.getAllPoints()
+    ]);
+
     document.getElementById("userCount")!.innerHTML = userCount.toString();
     document.getElementById("quoteCount")!.innerHTML = quoteCount.toString();
     document.getElementById("commandCount")!.innerHTML = commandCount.toString();
@@ -39,18 +44,12 @@ async function loadBotStats() {
 * Checks for updates on launch. Also sets dev state to true/false. Shows restart button if update is ready.
 */
 function checkForUpdate() {
-  	console.log('checkForUpdates');
+  	console.log('Checking for updates...');
   	const version = document.getElementById('version')!;
   	ipcRenderer.send('app_version');
   	ipcRenderer.on('app_version', (event, arg) => {
     	console.log("Recieved app_version with : " + arg.version)
     	version.innerText = 'Version ' + arg.version;
-    	if (arg.isDev == true) {
-      		isDev = true;
-      		console.log("Glimboi is in dev mode. We will not request the token.")
-    	} else {
-      		console.log("GlimBoi is in production mode. We will request an access token. ")
-    	}
     	ipcRenderer.removeAllListeners('app_version');
   	});
 
