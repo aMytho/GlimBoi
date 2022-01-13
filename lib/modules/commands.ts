@@ -48,21 +48,20 @@ function updatePath(updatedPath:string) {
 }
 
 /**
- * Creates a new command. Reloads the current commands after completion.
+ * Creates a new command.
  * @returns A command
  */
 function addCommand(commandData: CommandContructor) {
     let newCommand = new Command(commandData);
     console.log(newCommand);
-    try {
-        //inserts a document as a command. Uses the command made above.
-        commandsDB.insert(newCommand, function (err, doc) {
-            console.log('Inserted command', doc.commandName, ' to the commands DB');
-        });
-    } catch (e) {
-        console.log(e);
-        console.log("Failure to add Command. ^^^")
-    }
+    //inserts a document as a command.
+    commandsDB.insert(newCommand, function (err, doc) {
+        if (err) {
+            console.log(err);
+            return
+        }
+        console.log('Inserted command', doc.commandName, ' to the commands DB');
+    });
     return newCommand;
 }
 
@@ -110,7 +109,7 @@ function findCommand(command: commandName): Promise<null | CommandType> {
 /**
  * Returns every command in the database.
  */
-async function getAll(): Promise<CommandType[]> {
+function getAll(): Promise<CommandType[]> {
     return new Promise(resolve => {
         commandsDB.find({}, function (err: Error | null, docs: CommandType[]) {
             resolve(docs);
@@ -146,17 +145,10 @@ function addCommandCount(command: commandName) {
 }
 
 /**
- * Explains how to use commands in chat.
- */
-function info() {
-    ChatMessages.filterMessage(`Glimboi command docs -> https://glimboi.com/docs/intro/commands/`, "glimboi")
-}
-
-/**
  * Counts how many commands are in the database.
  * @returns
  */
-async function countCommands(): Promise<number> {
+function countCommands(): Promise<number> {
     return new Promise(resolve => {
         commandsDB.count({}, function (err, count) {
             resolve(count);
@@ -165,5 +157,5 @@ async function countCommands(): Promise<number> {
 }
 
 export { addCommand, addCommandCount, ChatAction, CommandRunner,
-countCommands, editCommand, findCommand, getAll, info,
+countCommands, editCommand, findCommand, getAll,
 randomRepeatCommand, removeCommand , updatePath};

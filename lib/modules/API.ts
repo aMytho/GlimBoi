@@ -213,14 +213,6 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise
 }
 
 /**
- * Checks if an access token is still valid
- * @returns {Promise}
- */
-async function getTokenStatus(token: accessToken) {
-
-}
-
-/**
  * @async
  * Requests random advice
  * @returns {Promise} Returns random advice. If fails returns- "Advice Failed :glimsad:"
@@ -328,5 +320,5 @@ async function triggerAlert(message: string, token: string) {
 }
 
 export { deleteMessage, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getTokenStatus, getUserID, getStreamerId, glimeshApiRequest, randomAnimalFact,
+getStreamerName, getStreamWebhook, getUserID, getStreamerId, glimeshApiRequest, randomAnimalFact,
 sendMessage, triggerAlert, Webhooks, WebSockets};

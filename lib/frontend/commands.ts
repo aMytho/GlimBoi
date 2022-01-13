@@ -3,63 +3,61 @@ CommandHandle.updatePath(appData[1]);
 let table; //The physical table for the UI
 
 //Loads the command table.
-function loadCommandTable() {
-    $(document).ready(async function () {
-        commandModalPrep() // ensures the modals have the proper filter enabled
-        table = $("#example").DataTable({
-            data: await CommandHandle.getAll(), // returns all the commands
-            columns: [
-                {
-                    title: "Commands",
-                    data: "commandName",
-                },
-                {
-                    title: "Data",
-                    data: "message",
-                },
-                {
-                    title: "Uses",
-                    data: "uses",
-                },
-                {
-                    title: "Points",
-                    data: "points",
-                },
-                {
-                    title: "Rank",
-                    data: "rank",
-                },
-            ],
-            columnDefs: [ {
-              targets: 1,
+async function loadCommandTable() {
+    commandModalPrep() // ensures the modals have the proper filter enabled
+    table = $("#example").DataTable({
+        data: await CommandHandle.getAll(), // returns all the commands
+        columns: [
+            {
+                title: "Commands",
+                data: "commandName",
+            },
+            {
+                title: "Data",
                 data: "message",
-                render: function(data, type, row, meta){
-                    if (data == undefined || data == null) {
-                        let actionString = ""
-                        for (let i = 0; i < row.actions.length; i++) {
-                            if (i==3) {
-                                actionString = actionString + "..."
-                                break
-                            }
-                            actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info[0].length > 1 && row.actions[i].info[0] || row.actions[i].info}`]);
-                            if (row.actions.length -1 !== i) {
-                                actionString = actionString.concat(", ")
-                            }
+            },
+            {
+                title: "Uses",
+                data: "uses",
+            },
+            {
+                title: "Points",
+                data: "points",
+            },
+            {
+                title: "Rank",
+                data: "rank",
+            },
+        ],
+        columnDefs: [{
+            targets: 1,
+            data: "message",
+            render: function (data, type, row, meta) {
+                if (data == undefined || data == null) {
+                    let actionString = ""
+                    for (let i = 0; i < row.actions.length; i++) {
+                        if (i == 3) {
+                            actionString = actionString + "..."
+                            break
                         }
-                        return actionString
+                        actionString = actionString.concat(row.actions[i].action, ": ", row.actions[i][`${row.actions[i].info[0].length > 1 && row.actions[i].info[0] || row.actions[i].info}`]);
+                        if (row.actions.length - 1 !== i) {
+                            actionString = actionString.concat(", ")
+                        }
                     }
-                  return data;
-               }
-            }],
-            pageLength: 25
-        });
-        $('#example').on('click', 'tbody tr', async function () {
-            let data = table.row( this ).data();
-            const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
-            let commandClicked = await CommandHandle.findCommand(data.commandName);
-            $('#modalCart').modal("show");
-            CommandUI.loadModalEdit(commandClicked);
-        } );
+                    return actionString
+                }
+                return data;
+            }
+        }],
+        pageLength: 25
+    });
+    $('#example').on('click', 'tbody tr', async function () {
+        let data = table.row(this).data();
+        const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
+        let commandClicked = await CommandHandle.findCommand(data.commandName);
+        $('#modalCart').modal("show");
+        CommandUI.loadModalEdit(commandClicked);
     });
 }
 
@@ -67,31 +65,31 @@ function loadCommandTable() {
 
 //removes commands
 function checkRemoveCommand() {
-  	let commandToBeRemoved = ($("#commandRemoveInput").val() as string).toLowerCase()
-  	commandToBeRemoved = commandToBeRemoved.replace(new RegExp("^[\!]+"), "").trim();
+    let commandToBeRemoved = ($("#commandRemoveInput").val() as string).toLowerCase()
+    commandToBeRemoved = commandToBeRemoved.replace(new RegExp("^[\!]+"), "").trim();
     let removeCommandMessageError = document.getElementById("removeCommandMessage")
 
-  	try {
-    	CommandHandle.findCommand(commandToBeRemoved).then(data => {
-      		if (data !== null) {
-        		console.log("The command " + commandToBeRemoved + " will now be removed from the table");
+    try {
+        CommandHandle.findCommand(commandToBeRemoved).then(data => {
+            if (data !== null) {
+                console.log("The command " + commandToBeRemoved + " will now be removed from the table");
                 removeCommandMessageError.innerHTML = "Command Removed";
-        		removeCommandFromTable(commandToBeRemoved)
-        		CommandHandle.removeCommand(commandToBeRemoved);
-      		} else {
-        		removeCommandMessageError.innerHTML = "This command does not exist.";
-        		setTimeout(() => {
-          			removeCommandMessageError.innerHTML = ""
-        		}, 4000);
-      		}
-    	})
-  	} catch (e) {
-    	console.log(e);
-    	removeCommandMessageError.innerHTML = "This command does not exist.";
-    	setTimeout(() => {
-      		removeCommandMessageError.innerHTML = ""
-    	}, 4000);
-  	}
+                removeCommandFromTable(commandToBeRemoved)
+                CommandHandle.removeCommand(commandToBeRemoved);
+            } else {
+                removeCommandMessageError.innerHTML = "This command does not exist.";
+                setTimeout(() => {
+                    removeCommandMessageError.innerHTML = ""
+                }, 4000);
+            }
+        })
+    } catch (e) {
+        console.log(e);
+        removeCommandMessageError.innerHTML = "This command does not exist.";
+        setTimeout(() => {
+            removeCommandMessageError.innerHTML = ""
+        }, 4000);
+    }
 }
 
 //edits commands
@@ -157,11 +155,11 @@ function commandModalPrep() {
         }
     });
     $('#modalEditCommand').on('hidden.bs.modal', function (e) {
-        document.getElementById("editModal").innerHTML = editCommandReset();
+        (document.getElementById("commandEditInput") as HTMLInputElement).value = "";
         document.getElementById("errorMessageEdit").innerHTML = "";
     });
     $('#modalDelete').on('hidden.bs.modal', function (e) {
-        document.getElementById("removeModal").innerHTML = removeCommandReset();
+        (document.getElementById("commandRemoveInput") as HTMLInputElement).value = "";
         document.getElementById("errorMessageDelete").innerHTML = "";
     });
 

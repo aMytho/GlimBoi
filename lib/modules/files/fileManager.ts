@@ -11,9 +11,6 @@ async function writeDataToFile(file: string, data: string) {
 
 /**
  * Reads a file.
- * @param file
- * @param readEntireFile
- * @param lineToRead
  * @returns
  */
 async function readDataFromFile(file: string) {

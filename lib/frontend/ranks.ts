@@ -73,24 +73,39 @@ function saveRankSettings(rank:rankName) {
     successMessage("Rank Settings Updated", "Your new rank settings have been applied.")
 }
 
-
-async function displayRank(rank:rankName) {
+async function displayRank(rank: rankName) {
     let rankExists = await RankHandle.getRankPerms(rank)
     if (rankExists !== null) {
-        loadSpecificRank(rankExists);
+        (document.getElementById("rankName") as HTMLInputElement)!.innerText = rankExists.rank;
+        (document.getElementById("tierRank") as HTMLInputElement)!.value = rankExists.rankTier.toString();
+        (document.getElementById("rankMessage") as HTMLInputElement)!.innerText = "Make sure to save your changes!";
+        (document.getElementById("addCommandsRank") as HTMLInputElement)!.checked = rankExists.canAddCommands;
+        (document.getElementById("editCommandsRank") as HTMLInputElement)!.checked = rankExists.canEditCommands;
+        (document.getElementById("removeCommandsRank") as HTMLInputElement)!.checked = rankExists.canRemoveCommands;
+        (document.getElementById("addPointsRank") as HTMLInputElement)!.checked = rankExists.canAddPoints;
+        (document.getElementById("editPointsRank") as HTMLInputElement)!.checked = rankExists.canEditPoints;
+        (document.getElementById("removePointsRank") as HTMLInputElement)!.checked = rankExists.canRemovePoints;
+        (document.getElementById("addUsersRank") as HTMLInputElement)!.checked = rankExists.canAddUsers;
+        (document.getElementById("editUsersRank") as HTMLInputElement)!.checked = rankExists.canEditUsers;
+        (document.getElementById("removeUsersRank") as HTMLInputElement)!.checked = rankExists.canRemoveUsers;
+        (document.getElementById("addQuotesRank") as HTMLInputElement)!.checked = rankExists.canAddQuotes;
+        (document.getElementById("editQuotesRank") as HTMLInputElement)!.checked = rankExists.canEditQuotes;
+        (document.getElementById("removeQuotesRank") as HTMLInputElement)!.checked = rankExists.canRemoveQuotes;
+        (document.getElementById("controlMusicRank") as HTMLInputElement)!.checked = rankExists.canControlMusic;
+        (document.getElementById("modImmunityRank") as HTMLInputElement)!.checked = rankExists.modImmunity;
+        (document.getElementById("startEventsRank") as HTMLInputElement)!.checked = rankExists.canStartEvents;
         document.getElementById("saveRankSettings")!.classList.remove("disabled")
     }
 }
 
-
 function rankModalPrep() {
     $('#modalRankAdd').on('hide.bs.modal', function (e) {
-        console.log("Resetting rank add modal");
-        document.getElementById("modalRankAddBody")!.innerHTML = resetModalRankAdd()
-      })
+        (document.getElementById("rankAddInput") as HTMLInputElement).value = "";
+        (document.getElementById("addRank") as HTMLParagraphElement).innerText = "";
+    })
 
     $('#modalRankremove').on('hide.bs.modal', function (e) {
-        console.log("Resetting rank remove modal");
-        document.getElementById("modalRankRemoveBody")!.innerHTML = resetModalRankRemove()
-      })
+        (document.getElementById("rankRemoveInput") as HTMLInputElement).value = "";
+        (document.getElementById("removeRank") as HTMLParagraphElement).innerText = "";
+    })
 }

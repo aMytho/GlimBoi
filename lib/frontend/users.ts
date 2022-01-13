@@ -69,7 +69,10 @@ function quoteSearch(user:userName) {
   	UserHandle.findByUserName(user.toLowerCase()).then(data => {
     	console.log(data);
     	if (data == "ADDUSER") {
-      		document.getElementById('editQuoteError')!.innerHTML = "No user was found with that name."
+            document.getElementById('editQuoteError')!.innerHTML = "No user was found with that name.";
+            setTimeout(() => {
+                document.getElementById('editQuoteError')!.innerHTML = "";
+            }, 3500);
     	} else {
       		let tempButtonUser = document.getElementById('userRemoveQuoteSearch')!;
       		tempButtonUser.innerText = 'Remove';
@@ -90,7 +93,10 @@ function quoteSearch(user:userName) {
     		listItem,
     		i;
     		if (numberOfListItems == 0) {
-        		document.getElementsByClassName('removeQuoteList')[0].innerHTML = "That user does not have any quotes to delete!"
+        		document.getElementsByClassName('removeQuoteList')[0].innerHTML = "That user does not have any quotes to delete!";
+                setTimeout(() => {
+                    document.getElementsByClassName('removeQuoteList')[0].innerHTML = "";
+                }, 3500);
     		} else {
     			// Add it to the page
     			document.getElementsByClassName('removeQuoteList')[0].appendChild(listContainer);
@@ -287,21 +293,6 @@ async function userSearch(user: userName, inModal: boolean) {
     }
 }
 
-function validateUserInfo(user: string) {
-    let userPoints = Number(strip(document.getElementById("editUserPoints")!.innerHTML));
-    let userWatchTime = Number(strip(document.getElementById("editUserWatchTime")!.innerHTML));
-    if (userPoints < 0 || userWatchTime < 0) {
-        errorMessage("Invalid Points or Watch Time", "You cannot have a negative number of points or watch time.");
-        return
-    } else if (isNaN(userPoints) || isNaN(userWatchTime)) {
-        errorMessage("Invalid Points or Watch Time", "You must enter a number for points and watch time.");
-        return
-    } else {
-        UserHandle.editUserAll(user, userPoints, (document.getElementById("userEditRankChoice") as HTMLInputElement).value, userWatchTime);
-        $("#modalUserEditing").modal("hide");
-    }
-}
-
 function editUserTable(user: userName, role: rankName, points, watchTime) {
     try {
         points = Number(points);
@@ -427,24 +418,25 @@ function addUserTable(data: UserType) {
  * Prepares the modals for resetting thier info on close.
  */
 function prepUserModals() {
-  	$('#modalUserEdit').on('hidden.bs.modal', function (e) {
-    	document.getElementById("editUserModal")!.innerHTML = editUserReset()
-  	})
-  	$('#modalUserAdd').on('hidden.bs.modal', function (e) {
-    	document.getElementById("adduserModal")!.innerHTML = addUserReset()
-  	})
-  	$('#modalUserRemove').on('hidden.bs.modal', function (e) {
-    	document.getElementById("removeuserModal")!.innerHTML = removeUserReset()
-  	})
-  	$('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
-    	document.getElementById("removeQuoteModal")!.innerHTML = removeQuoteReset()
-  	});
-  	$('#modalQuoteAdd').on('hidden.bs.modal', function (e) {
-    	document.getElementById("addQuoteModal")!.innerHTML = addQuoteReset()
-  	})
-  	$('#modalUserEditing').on('hidden.bs.modal', function (e) {
-    	document.getElementById("modalUserEditing")!.innerHTML = ``
-  	})
+    $('#modalUserEdit').on('hidden.bs.modal', function (e) {
+        (document.getElementById("userEditSearch") as HTMLInputElement).value = "";
+    })
+    $('#modalUserAdd').on('hidden.bs.modal', function (e) {
+        (document.getElementById("userAddInput") as HTMLInputElement).value = "";
+    })
+    $('#modalUserRemove').on('hidden.bs.modal', function (e) {
+        (document.getElementById("userremoveInput") as HTMLInputElement).value = "";
+    })
+    $('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
+        (document.getElementById("userQuoteSearch") as HTMLInputElement).value = "";
+    });
+    $('#modalQuoteAdd').on('hidden.bs.modal', function (e) {
+        (document.getElementById("userQuoteInputU") as HTMLInputElement).value = "";
+        (document.getElementById("userQuoteInputQ") as HTMLInputElement).value = "";
+    })
+    $('#modalUserEditing').on('hidden.bs.modal', function (e) {
+        document.getElementById("modalUserEditing")!.innerHTML = ``
+    })
 }
 
 function syncQuotes(user:UserType | userName, quote, action) {

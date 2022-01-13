@@ -72,10 +72,10 @@ function loadModPanel() {
         }
     })
     $('#modalWordAdd').on('hidden.bs.modal', function (e) {
-        document.getElementById("addWordModal").innerHTML = bannedWordAddReset()
+        (document.getElementById("wordAddInput") as HTMLInputElement).value = "";
     });
     $('#modalWordRemove').on('hidden.bs.modal', function (e) {
-        document.getElementById("removeWordModal").innerHTML = bannedWordRemoveReset();
+        (document.getElementById("wordRemoveInput") as HTMLInputElement).value = "";
     });
     $('#toggleFilter').on('show.bs.modal', function (e) {
         let filterStatusMessageSpan = document.getElementById("filterStatusTextModal")!;
