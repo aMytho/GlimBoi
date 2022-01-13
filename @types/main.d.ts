@@ -30,7 +30,7 @@ type Server = typeof import("../lib/modules/server")
 type Type = typeof import("bootstrap")
 type pageState = "home" | "commands" | "points" | "events" | "users" | "ranks" | "media" | "music" | "mod" | "settings" | "chat"
 declare var dirName:string
-type appDataType = [string, string]
+type appDataType = [string, string, boolean]
 /**
  * The first value has the app path, the second shows the path to the user data folder
  */
