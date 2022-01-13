@@ -26,9 +26,14 @@ interface LogConstructor {
      * Optional data to be added to the event
      */
     data?: any
+    /**
+     * Should we show the user that the event was logged?
+     */
+    notification?: string
 }
 
-type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" | "Remove Points" | "Add Quote" | friendlyWarningAction
+type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" |
+"Remove Points" | "Add Quote" | friendlyWarningAction | "New Follower"
 
 /**
  * Duration of the timeout

@@ -129,7 +129,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
             }, 3000);
         }
         if (!needsReconnect) {
-            successMessage("Chat Disconnected!", "Chat has been successfully disconnected.");
+            showToast("Successfully disconnected from chat.");
         }
     });
 

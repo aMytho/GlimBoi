@@ -27,7 +27,7 @@ async function logMessageToFile(user, message) {
  * Starts the message logging.
  * @returns
  */
-async function startLogging() {
+function startLogging():Promise<boolean> {
     return new Promise(async resolve => {
         createWriteStream = require("fs").createWriteStream;
         let logLocation = await ipcRenderer.invoke("getLogLocation");
@@ -42,7 +42,6 @@ async function startLogging() {
             resolve(true);
         }
     })
-
 }
 
 /**
@@ -52,7 +51,7 @@ function endMessageLogging() {
     try {
         loggingFile.end();
         console.log("Finishes chat logs.");
-        successMessage("Log Finished", "Message Logging has been finished.");
+        showToast(`Message Logging Finished. ${loggingFile.path}`);
     } catch(e) {
         console.log(e);
     }

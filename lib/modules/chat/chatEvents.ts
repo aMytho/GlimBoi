@@ -9,6 +9,7 @@ function handleNewFollower(follower: string) {
         message = message.replace("$follower", follower);
         console.log(message, follower);
         ChatMessages.sendMessage(message);
+        LogHandle.logEvent({event: "New Follower", users: [follower], notification: `${follower} has just followed the stream!`});
     }
 
     if (CacheStore.get("streamlabsEnabled", false)) {

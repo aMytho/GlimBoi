@@ -72,13 +72,13 @@ function startLogs(logEnabled:boolean) {
             ipcRenderer.send("startLogging", ""); // Tells the main process to start logging messages.
             ipcRenderer.once("startedLogging", (event, args) => { // When the main process recieves our request...
                 console.log("Started to log chat messages.");
-                successMessage("Logging has begun.", "All messages will be saved.");
+                showToast("Logging has begun. All messages will be saved.");
             });
             ipcRenderer.once("noLogSelected", (event, args) => { // If the user didn't select a file...
                 errorMessage("Logging Error", "No file was selected. Messages will not be saved.")
             });
             ipcRenderer.once("endedLog", (event, args) => { // When the logging finishes...
-                console.log("Logging has ended."), successMessage("Logging has ended", "Finished.")
+                console.log("Logging has ended."), showToast("Chat logging has ended")
             })
         }, 3000);
     } else {
