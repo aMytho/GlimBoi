@@ -16,7 +16,8 @@ function handleNewFollower(follower: string) {
         let message = CacheStore.get("streamlabsMessage", "Thanks for the follow $follower");
         message = message.replace("$follower", `*${follower}*`);
         console.log(message, follower);
-        ApiHandle.triggerAlert(message, CacheStore.get("streamlabsToken", ""));
+        let StreamLabsModule:typeof import("../API/webhooks/streamlabs") = require(`${appData[0]}/modules/API/webhooks/streamlabs.js`);
+        StreamLabsModule.triggerAlert(message, CacheStore.get("streamlabsToken", ""));
     }
 }
 
