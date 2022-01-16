@@ -38,10 +38,6 @@ function checkIfEnabled() {
     }
 }
 
-function testGuildedMessage() {
-    sendGuildedMessage("Test of Guilded Webhook");
-}
-
 /**
  * Builds the message to be sent to the webhook.
  */
@@ -86,4 +82,4 @@ function buildGuildedMessage([thumbnail, title, streamer, guildedMessage]): stri
 }
 
 // export the functions
-export {checkIfEnabled, sendGuildedMessage, testGuildedMessage}
+export {checkIfEnabled, sendGuildedMessage}
