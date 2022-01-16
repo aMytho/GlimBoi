@@ -6,17 +6,8 @@ const ChatAction:typeof import("../modules/commands/commandActionHandler") = req
 const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js");
 
 /**
- * @class Default command
- * @param {string} commandName The name of your command. Lowercase please!
- * @param {string} commandData The command response.
- * @param {number} uses The amount of times the command has been used.
- * @param {number} points The amount of points the command costs to run.
- * @param {string} rank The minimum rank to use this command
- * @param {null} special Not yet used. Null for now
- * @param {boolean} repeat Should the command repeat?
- * @param {string} sound Play a sound
- * @param {string} media Display an image or video
- * @param {array} actions What the command will do once activated
+ * A command
+ * @class
  */
 class Command implements CommandType {
     commandName: string;
@@ -26,7 +17,7 @@ class Command implements CommandType {
     rank: rankName;
     repeat: boolean;
     shouldDelete: boolean
-    actions: ChatAction[]; //What the command will do once activated
+    actions: ChatAction[];
     constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
