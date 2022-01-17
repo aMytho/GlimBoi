@@ -1,6 +1,6 @@
 // This file manages gambling.. fun !
 
-async function gamble(user:userName, wager:number) {
+async function gamble(user:string, wager:number) {
     // check to make sure that the user exists and has enough points to wager
     let userData = await UserHandle.findByUserName(user.toLowerCase());
     if (typeof userData == "string") {
@@ -35,7 +35,7 @@ async function gamble(user:userName, wager:number) {
 }
 
 
-function getGambleMessage(purpose: "win" | "lose", user: userName, amount: number) {
+function getGambleMessage(purpose: "win" | "lose", user: string, amount: number) {
     if (purpose == "win") {
         let possibleMessages = [
             `Congratulations ${user}! You just won ${amount} ${CacheStore.get("pointsName", "Points", false)}`,

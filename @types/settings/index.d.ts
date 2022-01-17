@@ -19,9 +19,9 @@ interface LogConstructor {
      */
     event: logEvent
     /**
-     * The users that caused and aare affected by the event
+     * The users that caused and are affected by the event
      */
-    users: userName[];
+    users: string[];
     /**
      * Optional data to be added to the event
      */
@@ -47,7 +47,7 @@ type origin = "manual" | "ruleset"
  * Strength of the filter from 0 (inactive) to 3 (strong)
  */
 type filterStrength = 0 | 1 | 2 | 3
-type warning = { user: userName, amount: number }
+type warning = { user: string, amount: number }
 type warningAction = "deleteMessage" | "shortTimeout" | "longTimeout" | "ban" | "none"
 type friendlyWarningAction = "Delete Message" | "Short Timeout User" | "Long Timeout User" | "Ban User" | "UnBan User"
 type modAction = "deleteMessage" | "shortTimeout" | "longTimeout" | "ban" | "unBan" | "none"
@@ -55,8 +55,8 @@ type bannedWordAction = "add" | "remove"
 type bannedWordsDB = { words: string[] }[]
 interface modInfoPack {
     messageID?: number
-    userName?: userName
+    userName?: string
     userID?: number
     source?: "manual" | "ruleset"
-    caused?: userName
+    caused?: string
 }

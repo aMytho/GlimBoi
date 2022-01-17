@@ -65,7 +65,7 @@ function addQuote() { //Adds a quote to the db and table
   	QuoteHandle.addquote(quoteName, quoteData);
 }
 
-function quoteSearch(user:userName) {
+function quoteSearch(user:string) {
   	UserHandle.findByUserName(user.toLowerCase()).then(data => {
     	console.log(data);
     	if (data == "ADDUSER") {
@@ -117,7 +117,7 @@ function quoteSearch(user:userName) {
   	})
 }
 
-function removeQuote(id, user:userName) {
+function removeQuote(id, user:string) {
   	UserHandle.removeQuoteByID(Number(id), user.toLowerCase()).then(data => {
     	if (data == "NOQUOTEFOUND") {
       		console.log("No quote was found with that ID.");
@@ -166,7 +166,7 @@ function resetAddUserBox() {
 }
 
 // Removes the user from a table. This only affects the table
-function removeUserFromTable(deletedUser:userName) {
+function removeUserFromTable(deletedUser:string) {
     console.log("The user " + deletedUser + " will now be deleted from the table.");
     try {
         let filteredData = userTable
@@ -264,7 +264,7 @@ function saveUserPointSettings() {
     getPoints();
 }
 
-async function userSearch(user: userName, inModal: boolean) {
+async function userSearch(user: string, inModal: boolean) {
     let userExists = await UserHandle.findByUserName(user.toLowerCase())
     if (userExists == "ADDUSER") {
         if (inModal) {
@@ -293,7 +293,7 @@ async function userSearch(user: userName, inModal: boolean) {
     }
 }
 
-function editUserTable(user: userName, role: rankName, points, watchTime) {
+function editUserTable(user: string, role: rankName, points, watchTime) {
     try {
         points = Number(points);
         console.log(user, role, points);
@@ -439,7 +439,7 @@ function prepUserModals() {
     })
 }
 
-function syncQuotes(user:UserType | userName, quote, action) {
+function syncQuotes(user:UserType | string, quote, action) {
     // removes it from the list as well as the user quote list.
     try {
       if (action == "remove" && typeof user !== "string") {
@@ -461,7 +461,7 @@ function syncQuotes(user:UserType | userName, quote, action) {
     }
 }
 
-function syncUsers(data:userName | UserType, action: "add" | string) {
+function syncUsers(data:string | UserType, action: "add" | string) {
     try {
       if (action == "add") {
             addUserTable(data as UserType);

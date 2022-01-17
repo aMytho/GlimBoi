@@ -10,15 +10,15 @@ class Quote implements QuoteType {
     quoteData: string;
     quoteID: number;
     date: string;
-    constructor(quoteName: quoteName, quoteData: quoteData) {
-        console.log(quoteName, quoteData)
+    constructor(quoteName: string, quoteData: string) {
+        console.log(quoteName, quoteData);
         this.quoteName = quoteName; //The person who said the auote
         this.quoteData = quoteData; // The quote itself
         this.quoteID = 1 //ID of the users quotes. We change this after the creation of the quote
         this.date = new Date().toTimeString(); //Tik toc
     }
-    async generateID(quoteCreator: UserType, onBehalfOf: userName) {
-        console.log("Generating ID");
+    async generateID(quoteCreator: UserType, onBehalfOf: string) {
+        console.log("Generating Quote ID");
         let totalQuotes = quoteCreator.quotes.length; // The total amount of quotes the user has
         if (totalQuotes > 0) {
             return Number(quoteCreator.quotes[totalQuotes - 1].quoteID) + 1; //Add 1 to the last quote ID
@@ -43,7 +43,7 @@ function updatePath(updatedPath: string) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userName = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
+function addquote(quoteName: string, quoteData: string, onBehalfOf: string = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
     return new Promise(async resolve => {
         let userExists = await UserHandle.findByUserName(quoteName);
         if (userExists == "ADDUSER") {
@@ -79,7 +79,7 @@ function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userNa
  * Removes a quote
  * @param {string} quoteName The quote data
  */
-function removeQuote(id: quoteID, user: userName) {
+function removeQuote(id: number, user: string) {
     quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
         console.log(`Quote ${id} was removed from ${user}`);
     });
@@ -89,7 +89,7 @@ function removeQuote(id: quoteID, user: userName) {
  * Removes all of the users quotes
  * @param {string} user The user who owns the quotes that will be deleted
  */
-function removeAllQuotes(user: userName) {
+function removeAllQuotes(user: string) {
     console.log(`Removing all quotes by ${user}`);
     quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
         console.log(`${numRemoved} quotes were removed from ${user}`);
@@ -99,9 +99,9 @@ function removeAllQuotes(user: userName) {
 /**
  * Returns all quotes as an array
  */
-function getAll(): Promise<QuoteDB[]> {
+function getAll(): Promise<QuoteType[]> {
     return new Promise(resolve => {
-        quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
+        quotesDB.find({}, function (err: Error | null, docs: QuoteType[]) {
             console.log(docs);
             resolve(docs);
         })
@@ -111,9 +111,9 @@ function getAll(): Promise<QuoteDB[]> {
 /**
  * Returns a random quote from the DB. Null if none exist
  */
-function randomQuote(): Promise<null | { user: quoteName, data: quoteData }> {
+function randomQuote(): Promise<null | { user: string, data: string }> {
     return new Promise(resolve => {
-        quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
+        quotesDB.find({}, function (err: Error | null, docs: QuoteType[]) {
             if (docs.length == 0) {
                 resolve(null);
             } else {

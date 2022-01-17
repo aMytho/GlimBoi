@@ -1,14 +1,14 @@
 // This file handles the bankheist event.
 
 let bankHeistStatus:BHStatus = "ready" // status of the heist
-let users:userName[] = []; // all the users in the heist
+let users:string[] = []; // all the users in the heist
 let currencyGained = 0; // how much money the raiders recieve
 
 /**
  * Starts or joins a bankheist
  * @param {string} user The user who starts/joins a bankheist
  */
-function startBankHeist(user:userName, fromUI?: boolean) {
+function startBankHeist(user:string, fromUI?: boolean) {
     if (bankHeistStatus == "ready") {
         ChatMessages.filterMessage(user + " had just started a bankheist. Type !bankheist to join! Starts in 30 seconds.", "glimboi");
         bankHeistStatus = "prep";
@@ -220,7 +220,7 @@ function distributePoints(points: number) {
 /**
  * Returns a randome rally message.
  */
-function rallyMessage(user:userName) {
+function rallyMessage(user:string) {
     if (CacheStore.get("bankheistQuiet", false, true)) {
         return;
     }

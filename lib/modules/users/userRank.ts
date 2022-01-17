@@ -202,7 +202,7 @@ function addRankProperty(rank:rankName, property:rankProperties) {
  * @param {string} action What the user is attempting to access
  * @param {string} type The type of the action. We use this to determine if we look for boolean, number, string, etc
  */
-function rankController(user: userName, action: rankProperties, type: string): Promise<true | false | null> {
+function rankController(user: string, action: rankProperties, type: string): Promise<true | false | null> {
     return new Promise(async resolve => {
         let userExists = await UserHandle.findByUserName(user);
         if (userExists !== "ADDUSER") {

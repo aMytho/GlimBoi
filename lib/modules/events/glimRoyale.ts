@@ -16,7 +16,7 @@ let weapons:glimRoyaleWeapon[] = [
     {id: 9, name: "Glimdrop", stats: {bonusHP: 100, damage: 40}},
 ]
 
-function startGlimRoyale(user:userName, points: number, fromUI?: boolean) {
+function startGlimRoyale(user:string, points: number, fromUI?: boolean) {
     if (!ChatHandle.isConnected()) {return false}
     let currentStatus = statusCheck();
     if (currentStatus == "active") {
@@ -171,7 +171,7 @@ function statusCheck() {
     return glimRoyaleStatus;
 }
 
-function joinBattle(user:userName) {
+function joinBattle(user:string) {
     if (glimRoyaleStatus == "active") {
         // check if usersInBattle username property already exists
         for (let i = 0; i < usersInBattle.length; i++) {
@@ -198,7 +198,7 @@ function chanceForExtraDamage() {
     return Math.floor(Math.random() * 15);
 }
 
-function chanceOfExtraHP(user: userName) {
+function chanceOfExtraHP(user: string) {
     let extraHPToAdd = Math.floor(Math.random() * 50);
     if (extraHPToAdd > 0) {
         for (let i = 0; i < usersInBattle.length; i++) {
@@ -209,7 +209,7 @@ function chanceOfExtraHP(user: userName) {
     }
 }
 
-function getVictoryMessage(user: userName) {
+function getVictoryMessage(user: string) {
     // choose random message from array
     let messages = [
         `${user} has won the battle!`,
@@ -220,7 +220,7 @@ function getVictoryMessage(user: userName) {
     return messages[Math.floor(Math.random() * messages.length)];
 }
 
-function getSlainMessage(victor: userName, victorWeapon: glimRoyaleWeapon, opponent: userName, opponentWeapon: glimRoyaleWeapon) {
+function getSlainMessage(victor: string, victorWeapon: glimRoyaleWeapon, opponent: string, opponentWeapon: glimRoyaleWeapon) {
 
 }
 
@@ -229,7 +229,7 @@ function getWager() {
 }
 
 
-function userIntro(user: userName) {
+function userIntro(user: string) {
     let messages = [
         `Welcome to Glimroyale, ${user}!`,
         `${user} has joined the Glimroyale. They stand waiting... MENACINGLY`,

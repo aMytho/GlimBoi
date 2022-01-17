@@ -44,7 +44,7 @@ const gamble:typeof import("../modules/events/gamble") = require(appData[0] + "/
  * @param {string} user
  * @param {string} message
  */
-async function handleEvent(event:eventName, user:userName, message: string) {
+async function handleEvent(event:eventName, user:string, message: string) {
     switch (event) {
         case "raffle":
             if (message.startsWith('!enter')) {
@@ -111,7 +111,7 @@ async function handleEvent(event:eventName, user:userName, message: string) {
                     }
                 }
             }
-            break;            
+            break;
         default:
         break;
     }

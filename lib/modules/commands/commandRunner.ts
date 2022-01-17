@@ -118,7 +118,7 @@ async function runCommand({message, command, user}) {
  * @param {string} user The user who activated the command
  * @async
  */
-async function permissionCheck(command:CommandType, user:userName) {
+async function permissionCheck(command:CommandType, user:string) {
     if (command.cooldown && cooldownArray.includes(command.commandName)) {
         console.log(`Cooldown for ${command.commandName} is still active.`);
         return CacheStore.get("commandCooldownMessage", false) || `${command.commandName} is still on cooldown.`

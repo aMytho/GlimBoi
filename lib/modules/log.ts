@@ -38,7 +38,7 @@ class LoggingEvent implements LogType {
      * @param {array} data The data about the event. Null if none
      * @returns {string}
      */
-    determineDescription(event: logEvent, caused:userName, affected:string[], data:any): string {
+    determineDescription(event: logEvent, caused:string, affected:string[], data:any): string {
         switch (event) {
             case "Add User":
                 return `${this.time}: ${caused} added ${affected[0]} to the user list.`;

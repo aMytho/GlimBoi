@@ -446,7 +446,7 @@ function adjustMessageState(id:number, state:messageState) {
     }
 }
 
-function adjustMessageStateByUsername(username:userName, state:messageState) {
+function adjustMessageStateByUsername(username:string, state:messageState) {
     for (let i = 0; i < globalChatMessages.length; i++) {
         if (globalChatMessages[i][0] == username) {
             console.log("We found a matching user message");

@@ -121,7 +121,7 @@ interface ChatMessageType extends ChatActionType {
 }
 
 type BuildChatMessage = {message: string}
-type RunChatMessage = {activation: any, user: userName}
+type RunChatMessage = {activation: any, user: string}
 
 interface ApiRequestGetType extends ChatActionType {
     url:string

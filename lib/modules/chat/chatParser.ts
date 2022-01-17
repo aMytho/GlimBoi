@@ -1,5 +1,5 @@
 function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
-    let userChat: userName = chatMessage.user.username
+    let userChat: string = chatMessage.user.username
     let messageChat = chatMessage.message;
     let userID = Number(chatMessage.user.id);
     console.log(userChat + ": " + messageChat);

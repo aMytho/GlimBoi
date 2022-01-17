@@ -179,7 +179,7 @@ async function deleteMessage(messageID: number) {
  * @param key "shortTimeoutUser" | "longTimeoutUser" | "deleteMessage" | "ban" | "unBan"
  * @returns
  */
-async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | userName> {
+async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | string> {
     console.log("key is" + key);
     let token = AuthHandle.getToken();
     return new Promise(async resolve => {

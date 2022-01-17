@@ -9,7 +9,7 @@ let activeWarnings: warning[] = [];
  * @param {number} messageID The ID of the message
  * @param {number} userID The ID of the user who said the message
  */
-async function scanMessage(user:userName, message:string, messageID:number, userID:number) {
+async function scanMessage(user:string, message:string, messageID:number, userID:number) {
     if (CacheStore.get("modFilterEnabled", false)) {
         // The user exists
         let parsedMessage = message.split(" ")
@@ -132,7 +132,7 @@ function updateUserWarnings(user:string, amount:number) {
  * @param {string} user The user to remove the warning from
  * @param {number} amount How many warnigns they currently have
  */
-function forgiveUserWarnings(user:userName, amount: number) {
+function forgiveUserWarnings(user:string, amount: number) {
     setTimeout(() => {
         for (let i = 0; i < activeWarnings.length; i++) {
             if (user == activeWarnings[i].user) {
@@ -185,7 +185,7 @@ async function deleteMessage(messageID: number) {
  * @param {string} username The username of the user to timeout
  * @param {string} duration The duration of the timeout
  */
-async function timeoutByUsername(username: userName, duration: timeout) {
+async function timeoutByUsername(username: string, duration: timeout) {
     console.log(`Trying to timeout user with name ${username} ${duration}`)
     if (!channelCheck()) return null
     let timeoutType: "longTimeoutUser" | "shortTimeoutUser"
@@ -240,7 +240,7 @@ async function timeoutByUserID(id: number, duration: timeout) {
  * Bans a user using their username
  * @param {string} username The username of the user to ban
  */
-async function banByUsername(username: userName) {
+async function banByUsername(username: string) {
     if (!channelCheck()) return null
     console.log(`trying to ban a user with username ${username}`)
     let userID = await ApiHandle.getUserID(username);
@@ -282,7 +282,7 @@ async function banByUserID(userID: number) {
  * Unbans a user using their username
  * @param {string} username The username of the user to unban
  */
-async function unBanByUsername(username: userName) {
+async function unBanByUsername(username: string) {
     if (!channelCheck()) return null
     let userID = await ApiHandle.getUserID(username);
     if (typeof userID == "number") {

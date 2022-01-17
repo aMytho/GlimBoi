@@ -5,14 +5,14 @@ let duels: duel[] = [];
 let duelTimers = {};
 
 // function to add the user to the duel with a specified opponent
-function addDuel(user: userName, opponent: userName, points: number): void {
+function addDuel(user: string, opponent: string, points: number): void {
     let newDuel: duel = {user: user, opponent: opponent, status: "pending", points: points}
     duels.push(newDuel);
     EventHandle.addEvent("duel");
 }
 
 // check if the user/opponent is already in a duel
-function userIsInDuel(user: userName): boolean {
+function userIsInDuel(user: string): boolean {
     for (let i = 0; i < duels.length; i++) {
         if (duels[i].user == user || duels[i].opponent == user) {
             return true;
@@ -22,7 +22,7 @@ function userIsInDuel(user: userName): boolean {
 }
 
 // remove a duel with a specified user and opponent
-function removeDuel(user: userName, opponent: userName, messageUser?: boolean): void {
+function removeDuel(user: string, opponent: string, messageUser?: boolean): void {
     duelTimers[`${user}`] = clearTimeout(duelTimers[`${user}`]);
     for (let i = 0; i < duels.length; i++) {
         if (duels[i].user == user && duels[i].opponent == opponent) {
@@ -60,7 +60,7 @@ function pickWinner(duel: duel): duelVictor {
 function deterMineVictorAndDistributePoints(duel: duel): void {
     console.log("determinign victor")
     let winner: duelVictor = pickWinner(duel);
-    let loser: userName = winner.loser;
+    let loser: string = winner.loser;
     let wager: number = duel.points;
     console.log(winner, loser, wager);
     UserHandle.addPoints(winner.winner, wager);
@@ -116,7 +116,7 @@ async function challengeUser(user: string, opponent: string, wager: number) {
 }
 
 // function to have the user accept the duel
-async function acceptDuel(opponent: userName) {
+async function acceptDuel(opponent: string) {
     opponent = opponent.toLowerCase();
     let duel: duel = duels.find(d => d.opponent == opponent);
     if (duel !== undefined) {
@@ -133,7 +133,7 @@ async function acceptDuel(opponent: userName) {
 }
 
 // decline a duel
-async function declineDuel(opponent: userName) {
+async function declineDuel(opponent: string) {
     opponent = opponent.toLowerCase();
     let duel: duel = duels.find(d => d.opponent == opponent);
     if (duel !== undefined) {

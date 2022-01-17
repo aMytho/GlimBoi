@@ -1,50 +1,84 @@
+/**
+ * A user
+ */
 interface UserType {
-    userName: userName;
+    /**
+     * The user's name
+     */
+    userName: string;
+    /**
+     * How much currency the user has
+     */
     points: number;
+    /**
+     * How many minutes the user has watched the steam for
+     */
     watchTime: number;
+    /**
+     * Which team the user is on (unimplemented)
+     */
     team: null;
-    role: string
+    /**
+     * The user's rank
+     */
+    role: string;
+    /**
+     * The user's inventory (unimplemented)
+     */
     inventory: any[];
+    /**
+     * The URL to the user's avatar
+     */
     picture: string;
-    quotes: any[];
+    /**
+     * Array containg the users quotes
+     */
+    quotes: UserQuote[];
+    /**
+     * The user's Glimesh user ID
+     */
     id: number;
 }
 
 /**
- * Object containing the affected document
+ * A quote said by a user
  */
-type userDoc = UserType
-
-/**
- * The name of a user
- */
-type userName = string
-
 interface QuoteType {
+    /**
+     * The user who said the quote
+     */
     quoteName: string;
+    /**
+     * The quote message
+     */
     quoteData: string;
+    /**
+     * The ID of the quote that corresponds to the user who said the quote
+     */
     quoteID: number;
+    /**
+     * The date the quote was created
+     */
     date: string;
 }
 
-interface QuoteDB extends QuoteType {
-    _id: string;
+/**
+ * Quote data stored in the user DB
+ */
+interface UserQuote {
+    /**
+     * The ID of the quote. Glimboi ID, not DB ID
+     */
+    quoteID: number;
+    /**
+     * The quote message
+     */
+    quoteData: string;
+    /**
+     * The database ID of the quote
+     */
+    dbID: string;
 }
-
-/**
- * The name of the quote
- */
-type quoteName = string;
-
-/**
- * What is in the quote (the message)
- */
-type quoteData = string;
-
-/**
- * The ID of the quote
- */
-type quoteID = number
 
 interface RankType {
     rank: rankName;
