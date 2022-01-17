@@ -37,6 +37,10 @@ interface CommandType {
      */
     message?: string;
     /**
+     * Whether or not the command can be activated
+     */
+    disabled: boolean;
+    /**
      * The sound to play
      * @deprecated Replaced by actions
      */
@@ -80,7 +84,8 @@ interface CommandContructor {
     /**
      * What the command does
      */
-    actions: any
+    actions: any;
+    disabled: boolean
 }
 
 interface RepeatableCommand extends CommandType {

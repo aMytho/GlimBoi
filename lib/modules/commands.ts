@@ -16,9 +16,10 @@ class Command implements CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
-    shouldDelete: boolean
+    shouldDelete: boolean;
     actions: ChatAction[];
-    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete}:CommandContructor) {
+    disabled: boolean;
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete, disabled}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
         this.points = points; //Points required per command
@@ -27,6 +28,7 @@ class Command implements CommandType {
         this.repeat = repeat; // should this command be repeatable?
         this.shouldDelete = shouldDelete; // Should the command be deleted after use? (!cmd)
         this.actions = actions; // What the command will do once activated
+        this.disabled = disabled; // Can the commaand be activated?
     }
 }
 
@@ -69,10 +71,10 @@ function removeCommand(commandName: commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  */
-function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete }:CommandContructor) {
-    console.log(commandName, actions, cooldown, uses, points, rank, repeat)
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete, disabled }:CommandContructor) {
+    console.log(commandName, actions, cooldown, uses, points, rank, repeat, disabled)
     commandsDB.update({ commandName: commandName }, { $set: {
-        actions: actions, cooldown: Number(cooldown), uses: Number(uses),
+        actions: actions, cooldown: Number(cooldown), uses: Number(uses), disabled: disabled,
         points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete } }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
     });

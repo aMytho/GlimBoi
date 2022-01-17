@@ -140,7 +140,8 @@ async function addCommand(user: userName, command: commandName, commandData: str
             ChatMessages.filterMessage(command + " already exists", "glimboi");
         } else {
             let newCMD = CommandHandle.addCommand({ commandName: command, uses: 0, points: 0, cooldown: 0,
-                rank: "Everyone", repeat: false, shouldDelete: false, actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
+                rank: "Everyone", repeat: false, shouldDelete: false, disabled: false,
+                actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
             });
             ChatMessages.filterMessage(command + " added!", "glimboi");
             try {
