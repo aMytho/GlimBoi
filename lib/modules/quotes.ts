@@ -80,13 +80,9 @@ function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userNa
  * @param {string} quoteName The quote data
  */
 function removeQuote(id: quoteID, user: userName) {
-    try {
-        quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
-            console.log(`Quote ${id} was removed from ${user}`);
-        });
-    } catch (e) {
-        console.log(e);
-    }
+    quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
+        console.log(`Quote ${id} was removed from ${user}`);
+    });
 }
 
 /**
@@ -94,14 +90,10 @@ function removeQuote(id: quoteID, user: userName) {
  * @param {string} user The user who owns the quotes that will be deleted
  */
 function removeAllQuotes(user: userName) {
-    console.log(`Removeing all quotes by ${user}`)
-    try {
-        quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
-            console.log(numRemoved + " quotes were removed from " + user)
-        });
-    } catch (e) {
-        console.log(e);
-    }
+    console.log(`Removing all quotes by ${user}`);
+    quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
+        console.log(`${numRemoved} quotes were removed from ${user}`);
+    });
 }
 
 /**
@@ -123,7 +115,7 @@ function randomQuote(): Promise<null | { user: quoteName, data: quoteData }> {
     return new Promise(resolve => {
         quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
             if (docs.length == 0) {
-                resolve(null)
+                resolve(null);
             } else {
                 let randomQuoteIndex = Math.floor(Math.random() * docs.length);
                 console.log(docs[randomQuoteIndex].quoteName, docs[randomQuoteIndex].quoteData);

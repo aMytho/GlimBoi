@@ -48,7 +48,7 @@ function addUser(user:string, inModal: boolean, createdBy: string = "Glimboi"): 
                 let ID = await ApiHandle.getUserID(user);
                 if (typeof ID !== "number" || ID == null || typeof ID == "object") {
                     console.log(ID);
-                    done("INVALIDUSER")
+                    done("INVALIDUSER");
                 } else {
                     let tempUser = new User(user, ID) //makes the user. L I F E !
                     usersDB.insert(tempUser, function (err:Error | null, doc:UserType) {
@@ -81,7 +81,6 @@ function updatePath(env: string) {
  * Finds a user by their username.
  * @returns If successful returns the user.
  * @returns If the user does not exist returns ADDUSER
- * @todo Find by ID instead.
  */
 function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
     return new Promise(resolve => {
@@ -93,8 +92,8 @@ function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
 }
 
 /**
- * @returns All the users in the DB. Sent as an array
- */
+ * Returns all users
+*/
 function getAll(): Promise<userDoc[]> {
     return new Promise(resolve => {
         usersDB.find({}, function (err: string, docs: userDoc[]) {
@@ -108,7 +107,6 @@ function getAll(): Promise<userDoc[]> {
  * @param {string} user The user you are removing.
  * @param {boolean} inModal Was this done from the GUI?
  * @param {string} userWhoRemoves The user who removed the abt to be deleted user.
- * @returns {array} The user that was removed
  */
 function removeUser(user: string, inModal: boolean, userWhoRemoves: string = "Glimboi"): Promise<userName> {
     user = user.toLowerCase()
@@ -146,7 +144,6 @@ function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED"> {
  * Removes a quote from the users collection and from the quote collection. Attempts to update the user table.
  * @param {Number} id The quote ID (quote id, not database id)
  * @param {string} user The user who the quote belongs to. Lowercase please!
- * @async
  */
 function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND" | userDoc> {
     return new Promise(resolve => {
@@ -193,7 +190,6 @@ function getTopPoints(): Promise<userDoc[]> {
  * @param {string} userName The user
  * @param {string} role The role they will have
  * @param {number} points The points they will have
- * @returns {promise}
  */
 function editUser(userName: string, points: number, role: rankName, watchTime: number, editor: string = "Glimboi"): Promise<userDoc> {
     return new Promise(resolve => {
@@ -215,7 +211,6 @@ function editUser(userName: string, points: number, role: rankName, watchTime: n
  * Edits how many points the user has
  * @param {string} userName The user
  * @param {number} points How many points they will have
- * @returns {promise}
  */
 function editUserPoints(userName: string, points: number): Promise<userDoc> {
     return new Promise(resolve => {
