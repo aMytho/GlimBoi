@@ -34,7 +34,7 @@ function resetPoll() {
  * @param {string[]} options
  * @param {string} user
  */
-function startPoll(question: string, options: string[], user: userName) {
+function startPoll(question: string, options: string[], user: string) {
     if (!EventHandle.isEventActive("poll")) {
         if (!CacheStore.get("pollEnabled", true, false) || !ChatHandle.isConnected()) {
             return false
@@ -76,7 +76,7 @@ function listOptions(): string {
  * @param {number} response
  * @param {string} user
  */
-function addResponse(response: number, user: userName) {
+function addResponse(response: number, user: string) {
     console.log(user, response);
     // Check if the user has already voted
     for (let i = 0; i < PollController.responses.length; i++) {

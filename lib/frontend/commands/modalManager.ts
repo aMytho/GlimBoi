@@ -202,6 +202,16 @@ async function insertEditData(command:CommandType) {
         deleteEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Disabled (Default)" + "</option>";
     }
 
+    // Enabled or disabled the disable property
+    let disableEnabled = document.getElementById("editCommandDisabled")!;
+    if (command.disabled == true) {
+        disableEnabled.innerHTML += "<option value=\"" + "true" + "\" selected>" + "Disable Command" + "</option>";
+        disableEnabled.innerHTML += "<option value=\"" + "false" + "\">" + "Enable Command" + "</option>";
+    } else {
+        disableEnabled.innerHTML += "<option value=\"" + "false" + "\" selected>" + "Enable Command" + "</option>";
+        disableEnabled.innerHTML += "<option value=\"" + "true" + "\">" + "Disable Command" + "</option>";
+    }
+
     // Now we show the actions. If none exist (v1 command) we convert the message prperties to their action equivalents
     if (command.actions) {
         for (let i = 0; i < command.actions.length; i++) {

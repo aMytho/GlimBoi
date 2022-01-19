@@ -7,7 +7,7 @@
  * @param {rankProperties} attemptedAction The rank permission in the db required to modify users
  * @param {string} friendlyAction A user friendly term to describe what the user is trying to do
  */
-async function modifyUserFromChat(user: userName, target: userName, attemptedAction: rankProperties, friendlyAction: string) {
+async function modifyUserFromChat(user: string, target: string, attemptedAction: rankProperties, friendlyAction: string) {
     if (await permissionCheck(user, attemptedAction, friendlyAction)) {
         if (attemptedAction == "canAddUsers") {
             let targetUser = await checkTarget(target, true);
@@ -49,7 +49,7 @@ function randomQuoteChat() {
  * @param {string} user Who recorded the quote
  * @param {string} creator Who said the quote
  */
-async function addQuoteChat(user: userName, data, creator: userName) {
+async function addQuoteChat(user: string, data, creator: string) {
     if (await permissionCheck(user, "canAddQuotes", "add quotes")) {
         console.log(creator, data.message);
         let trimMessage = 10 + creator.length + 2;
@@ -68,7 +68,7 @@ async function addQuoteChat(user: userName, data, creator: userName) {
  * @param {string} creator The creator of the quote
  * @param {Number} id The ID of the quote.
  */
-async function delQuoteChat(user: userName, creator: userName, id: quoteID) {
+async function delQuoteChat(user: string, creator: string, id: number) {
     if (await permissionCheck(user, "canRemoveQuotes", "remove quotes")) {
         console.log(creator, id);// @ts-ignore
         if (creator == "" || creator == " " || id == "" || id == " " || creator == undefined || id == undefined) {
@@ -89,7 +89,7 @@ async function delQuoteChat(user: userName, creator: userName, id: quoteID) {
  * @param {string} user The user who is removing the command
  * @param {string} command The command that will be removed
  */
-async function removeCommand(user: userName, command: commandName) {
+async function removeCommand(user: string, command: commandName) {
     if (await permissionCheck(user, "canRemoveCommands", "remove commands")) {
         if (command.startsWith("!")) {
             command = command.substring(1)
@@ -113,7 +113,7 @@ async function removeCommand(user: userName, command: commandName) {
  * @param {string} commandData The command data
  * @param {string} type !command or !cmd
  */
-async function addCommand(user: userName, command: commandName, commandData: string, type: "!command" | "!cmd") {
+async function addCommand(user: string, command: commandName, commandData: string, type: "!command" | "!cmd") {
     if (await permissionCheck(user, "canAddCommands", "add commands")) {
         command = command.toLowerCase()
         if (command == null || command == undefined || command == "" || command == " ") {
@@ -140,7 +140,8 @@ async function addCommand(user: userName, command: commandName, commandData: str
             ChatMessages.filterMessage(command + " already exists", "glimboi");
         } else {
             let newCMD = CommandHandle.addCommand({ commandName: command, uses: 0, points: 0, cooldown: 0,
-                rank: "Everyone", repeat: false, shouldDelete: false, actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
+                rank: "Everyone", repeat: false, shouldDelete: false, disabled: false,
+                actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
             });
             ChatMessages.filterMessage(command + " added!", "glimboi");
             try {
@@ -173,7 +174,7 @@ async function commandList() {
  * Returns a users rank
  * @param {string} user The user who we need the rank for
  */
-async function getRank(user: userName) {
+async function getRank(user: string) {
     let rank = await UserHandle.findByUserName(user);
     if (rank == "ADDUSER") {
         let newUser = await UserHandle.addUser(user, false, user);
@@ -198,7 +199,7 @@ function checkAmount(amount:number | any): boolean {
  * @param {user} target The target user who will be affected
  * @param {number} count The amount of points to add
  */
-async function addPointsChat(user: userName, target: userName, count:string | number | undefined) {
+async function addPointsChat(user: string, target: string, count:string | number | undefined) {
     if (await permissionCheck(user, "canAddPoints", "add points")) {
         if (!targetCheck(target, "The target was not included. !points add Mytho 100")) return;
         if (checkAmount(count) == true) {
@@ -383,7 +384,7 @@ function getSong() {
  * @param {string} user The user who asked for or set the next song
  * @param {string} action Whether we are getting or setting the next song
  */
-async function nextSong(user:userName, action) {
+async function nextSong(user:string, action) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (action == "set") {
             if (musicPlaylist[currentSongIndex]) {
@@ -410,7 +411,7 @@ async function nextSong(user:userName, action) {
  * @param {string} user The user who is requesting or setting the song
  * @param {string} action Are we setttng or getting the song?
  */
-async function previousSong(user: userName, action: string) {
+async function previousSong(user: string, action: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (action == "set") {
             if (musicPlaylist[currentSongIndex]) {
@@ -436,7 +437,7 @@ async function previousSong(user: userName, action: string) {
  * Enables or Disbles repeat.
  * @param {string} user The user who is wanting to replay a song
  */
-async function replaySong(user: userName) {
+async function replaySong(user: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (musicPlaylist[currentSongIndex]) {
             toggleShuffleRepeat(document.getElementById("repeatButton"), !repeatEnabled, "Repeat");
@@ -451,7 +452,7 @@ async function replaySong(user: userName) {
  * Enables or Diables shuffle.
  * @param {string} user The user who is wanting to shuffle the playlist
  */
-async function toggleShuffle(user: userName) {
+async function toggleShuffle(user: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (musicPlaylist[currentSongIndex]) {
             toggleShuffleRepeat(document.getElementById("shuffleButton"), !shuffleEnabled, "Shuffle")
@@ -466,7 +467,7 @@ async function toggleShuffle(user: userName) {
  * Plays or pauses the music
  * @param {string} user The user who is wanting to play or pause.
  */
-async function playPause(user: userName, action) {
+async function playPause(user: string, action) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (musicPlaylist[currentSongIndex]) {
             toggleMusic()
@@ -480,7 +481,7 @@ async function playPause(user: userName, action) {
  * Check that a giveaway can be started and checks the rank of a user. If passed, starts the giveaway.
  * @param {string} user The user who is wanting to start a giveaway.
  */
-async function checkAndStartGiveaway(user: userName) {
+async function checkAndStartGiveaway(user: string) {
     if (EventHandle.isEventEnabled("giveaway")) {
         if (await permissionCheck(user, "canStartEvents", "start giveaways")) {
             EventHandle.giveaway.startGiveaway(true, user);
@@ -494,7 +495,7 @@ async function checkAndStartGiveaway(user: userName) {
  * Checks if a raffle can be started and if so starts it
  * @param {string} user The user who is wanting to start a raffle.
  */
-async function checkAndStartRaffle(user: userName) {
+async function checkAndStartRaffle(user: string) {
     if (EventHandle.isEventEnabled("raffle")) {
         if (await permissionCheck(user, "canStartEvents", "start raffles")) {
             EventHandle.raffle.startRaffle(user, true);
@@ -508,7 +509,7 @@ async function checkAndStartRaffle(user: userName) {
  * Checks if Glimrealm can be started and if so starts it
  * @param {string} user The user who is wanting to start Glimrealm.
  */
-async function checkAndStartGlimrealm(user: userName) {
+async function checkAndStartGlimrealm(user: string) {
     if (EventHandle.isEventEnabled("glimrealm")) {
         if (await permissionCheck(user, "canStartEvents", "start glimrealm")) {
             EventHandle.glimRealm.openGlimRealm(false);
@@ -522,7 +523,7 @@ async function checkAndStartGlimrealm(user: userName) {
  * Checks if a bankheist can be started and if so starts it
  * @param {string} user The user who is wanting to start a bankheist.
  */
-async function checkAndStartBankheist(user: userName) {
+async function checkAndStartBankheist(user: string) {
     if (EventHandle.isEventEnabled("bankheist")) {
         if (await permissionCheck(user, "canStartEvents", "start bankheist")) {
             EventHandle.bankHeist.startBankHeist(user, false);
@@ -536,7 +537,7 @@ async function checkAndStartBankheist(user: userName) {
  * Checks if duel can be started and if so starts it
  * @param {string} user The user who is wanting to start a duel.
  */
-async function checkAndStartDuel(user: userName, opponent: userName, wager: number) {
+async function checkAndStartDuel(user: string, opponent: string, wager: number) {
     if (EventHandle.isEventEnabled("duel")) {
         if (await permissionCheck(user, "canStartEvents", "start duel")) {
             EventHandle.duel.challengeUser(user, opponent, Number(wager));
@@ -549,7 +550,7 @@ async function checkAndStartDuel(user: userName, opponent: userName, wager: numb
 /**
  * Checks if Glimroyale can be started and if so starts it
  */
-async function checkAndStartGlimroyale(user: userName, wager: number) {
+async function checkAndStartGlimroyale(user: string, wager: number) {
     wager = Number(wager);
     if (EventHandle.isEventEnabled("glimroyale")) {
         if (await permissionCheck(user, "canStartEvents", "start glimroyale")) {
@@ -645,7 +646,7 @@ async function eightBall(user:string, message: string) {
 }
 
 
-function gamble(user: userName, message) {
+function gamble(user: string, message) {
     if (CacheStore.get("gambleEnabled", true, true)) {
         let splitMessage: string[] = message.split(" ");
         let amount: number = parseInt(splitMessage[1]);
@@ -664,7 +665,7 @@ function gamble(user: userName, message) {
  * @param {string} user The user who wanted to perform the action.
  * @param {string} attemptedAction The action they attempted to perform.
  */
-function invalidPerms(user:userName, attemptedAction:string) {
+function invalidPerms(user:string, attemptedAction:string) {
     ChatMessages.filterMessage(`${user} does not have permission to ${attemptedAction}.`, "glimboi");
 }
 
@@ -690,7 +691,7 @@ function targetCheck(target: any, message = "No target specified."): boolean {
  * @param {string} action The action the user is trying to do.
  * @param {string} friendlyAction The user freindy version of the action.
  */
-async function permissionCheck(user:userName, action: rankProperties, friendlyAction: string): Promise<boolean> {
+async function permissionCheck(user:string, action: rankProperties, friendlyAction: string): Promise<boolean> {
     user = user.toLowerCase();
     let hasPerms = await RankHandle.rankController(user, action, "string"); // get the rank check result
     if (hasPerms == false) { // They don't have permission

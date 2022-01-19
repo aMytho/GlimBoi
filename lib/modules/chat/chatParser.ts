@@ -1,5 +1,5 @@
 function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
-    let userChat: userName = chatMessage.user.username
+    let userChat: string = chatMessage.user.username
     let messageChat = chatMessage.message;
     let userID = Number(chatMessage.user.id);
     console.log(userChat + ": " + messageChat);
@@ -28,7 +28,8 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                     case "":
                     case "help":
                     case "info":
-                        CommandHandle.info()
+                        ChatMessages.filterMessage(`Glimboi command docs: https://glimboi.com/docs/intro/commands/`, "glimboi");
+                        break;
                     default:
                         break;
                 }

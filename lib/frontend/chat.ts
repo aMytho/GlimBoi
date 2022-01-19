@@ -1,4 +1,3 @@
-let isDev = false; // We assume they are on a production release.
 let ChatSettings:typeof import("../modules/chat/chatSettings");
 let ChatActions:typeof import("../modules/chat/chatActions");
 let ChatStats: typeof import("../modules/chat/chatStats");
@@ -123,7 +122,7 @@ async function joinChat(chat: string, isReconnect?: boolean) {
         //We have the ID, time to join the channel. At this point we assume the auth info is correct and we can finally get to their channel.
         currentChatConnected = chatToJoin;
         ChatHandle.checkAndJoinChat(token, response, isReconnect); // Joins the channel
-        successMessage("Chat connected!", "Please disconnect when you are finished. Happy Streaming!");
+        showToast(`Connected to ${chatToJoin}. Please disconnect when you are finished. Happy Streaming!`);
         currentChannelToRejoin = chat
         await addChannelAndDisplay(chatToJoin);
         let channelNameText = ""
@@ -226,7 +225,7 @@ function loadChatWindow() {
     // use jquery to select all a elements
     $('#chatContainer').on("click", ".copyLink", function (e) {
         clipboard.writeText(e.target.innerText);
-        successMessage("Copied!", "The link has been copied to your clipboard.");
+        showToast("The link has been copied to your clipboard.");
     });
 }
 
@@ -447,7 +446,7 @@ function adjustMessageState(id:number, state:messageState) {
     }
 }
 
-function adjustMessageStateByUsername(username:userName, state:messageState) {
+function adjustMessageStateByUsername(username:string, state:messageState) {
     for (let i = 0; i < globalChatMessages.length; i++) {
         if (globalChatMessages[i][0] == username) {
             console.log("We found a matching user message");

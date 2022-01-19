@@ -13,6 +13,7 @@
     let commandRank = (document.getElementById(`${mode}CommandRank`) as HTMLSelectElement).value;
     let commandRepeat = (document.getElementById(`${mode}CommandRepeat`) as HTMLSelectElement).value;
     let commandDelete = (document.getElementById(`${mode}CommandDelete`) as HTMLSelectElement).value;
+    let commandDisabled = (document.getElementById(`${mode}CommandDisabled`) as HTMLSelectElement).value;
 
     // First we check the command name.
     commandName = commandName.replace(new RegExp("^[!]+"), "").trim(); // Removes the ! if it exists
@@ -70,9 +71,13 @@
     // @ts-ignore
     if (commandDelete == "false") { commandDelete = false } else { commandDelete = true };
 
+    // Finally we check the disable switch
+    // @ts-ignore
+    if (commandDisabled == "false") { commandDisabled = false } else { commandDisabled = true };
+
     // Now we can assume the command is fully safe to add to the db.
     return {commandName: commandName, points: commandPoints, uses: commandUses, cooldown: commandCooldown,
-        rank: commandRank, repeat: commandRepeat, shouldDelete: commandDelete};
+        rank: commandRank, repeat: commandRepeat, shouldDelete: commandDelete, disabled: commandDisabled};
 }
 
 /**

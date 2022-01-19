@@ -16,6 +16,10 @@ async function checkCommand(data) {
         let commandExists = await CommandHandle.findCommand(command);
         if (commandExists !== null) {
             try {
+                if (commandExists.disabled == true) {
+                    showToast(`${commandExists.commandName} attempted to run but was disabled.`);
+                    return
+                }
                 let hasPerms = await permissionCheck(commandExists, data.user.username.toLowerCase());
                 if (hasPerms == "ACCEPTED") {
                     await runCommand({ message: cleaned, command: commandExists, user: data.user }); // Run the command passing the message, command, and the user.
@@ -45,7 +49,6 @@ async function checkCommand(data) {
 }
 
 /**
- * @async
  * @param {string} message The message that triggered the command
  * @param {object} command The command we are running
  * @param {string} user The user who activated the command.
@@ -115,7 +118,7 @@ async function runCommand({message, command, user}) {
  * @param {string} user The user who activated the command
  * @async
  */
-async function permissionCheck(command:CommandType, user:userName) {
+async function permissionCheck(command:CommandType, user:string) {
     if (command.cooldown && cooldownArray.includes(command.commandName)) {
         console.log(`Cooldown for ${command.commandName} is still active.`);
         return CacheStore.get("commandCooldownMessage", false) || `${command.commandName} is still on cooldown.`

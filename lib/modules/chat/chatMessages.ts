@@ -77,7 +77,7 @@ function glimboiMessage(data: message, logError: boolean = false) {
  * @param {boolean} isReload Is this reloading all the messages for the chat page, or a new message?
  * @param {number} messageID The ID of the message from glimesh chat
  */
-function logMessage(user:userName, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState, messageTokens) {
+function logMessage(user:string, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState, messageTokens) {
     let tokens = getTokens(messageTokens);
     try {
         let adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';

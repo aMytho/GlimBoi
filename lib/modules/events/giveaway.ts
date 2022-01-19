@@ -1,13 +1,13 @@
 // File handles giveaways (no reward, just picks a winner)
 
-let usersInGiveaway:userName[] = [];
+let usersInGiveaway:string[] = [];
 let giveawayTimer:NodeJS.Timeout = null;
 
 /**
  * Adds a user to the giveaway.
  * @param {string} user - The user to add.
  */
-function addToGiveaway(user:userName) {
+function addToGiveaway(user:string) {
     usersInGiveaway.push(user);
     // if quite mode is off, send a confirmation
     if (!CacheStore.get("giveawayQuiet", true, true)) {
@@ -27,7 +27,7 @@ function resetGiveaway() {
  * @param {string} user - The user to check.
  * @returns {boolean
  */
-function isInGiveaway(user:userName): boolean {
+function isInGiveaway(user:string): boolean {
     return usersInGiveaway.indexOf(user) > -1;
 }
 
@@ -35,7 +35,7 @@ function isInGiveaway(user:userName): boolean {
  * Adds a user to the giveaway if it is not already in it.
  * @param {string} user - The user who entered the giveaway.
  */
-function enterGiveaway(user:userName) {
+function enterGiveaway(user:string) {
     user = user.toLowerCase();
     if (!isInGiveaway(user)) {
         addToGiveaway(user);
@@ -49,7 +49,7 @@ function enterGiveaway(user:userName) {
  * @param {string} user - The user who started the giveaway.
  * @param {boolean} fromChat - Was this started from chat?
  */
-function startGiveaway(fromChat: boolean, user?:userName) {
+function startGiveaway(fromChat: boolean, user?:string) {
     if (EventHandle.isEventEnabled("giveaway")) {
         if (EventHandle.isEventActive("giveaway")) {
             if (fromChat) {
@@ -95,7 +95,7 @@ function startGiveaway(fromChat: boolean, user?:userName) {
  * @param {string} user - The user who entered the giveaway.
  * @returns {string}
  */
-function getEnteredMessage(user:userName): string {
+function getEnteredMessage(user:string): string {
     // possible messages with the user's name
     let possibleMessages = [
         `${user}, you have entered the giveaway!`,

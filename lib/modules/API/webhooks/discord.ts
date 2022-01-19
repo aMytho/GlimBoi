@@ -35,11 +35,4 @@ function checkIfEnabled(): boolean {
     }
 }
 
-/**
- * Sends a test message to discord
- */
-function testDiscordMessage() {
-    sendDiscordMessage("Test of Discord Webhook");
-}
-
-export {checkIfEnabled, sendDiscordMessage, testDiscordMessage}
+export {checkIfEnabled, sendDiscordMessage}

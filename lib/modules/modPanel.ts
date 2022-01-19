@@ -23,7 +23,6 @@ function loadFilter(updatedPath:string) {
  */
 function bannedWordsReset() {
     return new Promise(async resolve => {
-        console.log(dirName, __dirname);
         try {
             let data = await fs.readFile(`${dirName}../../resources/json/defaultBannedWords.json`, 'utf-8');
             // Removes all the entries from the database

@@ -309,24 +309,3 @@ function resetEventSettings(event: eventName) {
     CacheStore.setMultiple(migratedSettings);
     successMessage("Settings Reset", `${event} settings have been reset.`);
 }
-
-/*
-function addOptionToPoll() {
-    $('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption' style="background-color:#00ffff0f"></td></tr>`)
-}
-
-function removeOptionFromPoll(element: HTMLElement) {
-    if (true) {
-        element.parentElement.remove();
-
-    }
-
-}
-
-function tryToStartPoll() {
-    let pollData = document.getElementById("pollData") as HTMLTableElement;
-    let pollQuestion = pollData.children[1].firstElementChild.children[1].innerHTML;
-    console.log(pollQuestion, pollData);
-}
-
-*/

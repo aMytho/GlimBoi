@@ -19,7 +19,6 @@
         <!--custom scripts-->
         <script src="../build/frontend/electronNav.js"></script>
         <script src="../build/frontend/home.js"></script>
-        <script src="../build/frontend/html.js"></script>
         <script src="../build/frontend/users.js"></script>
         <script src="../build/frontend/ranks.js"></script>
         <script src="../build/frontend/commands.js"></script>
@@ -292,22 +291,12 @@
     </div>
   </div>
   <!-- Modal: Moderate -->
-
-<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+  <div aria-live="polite" aria-atomic="true">
     <!-- Position it -->
-    <div style="position: absolute; top: 0; right: 3%;">
-        <!-- Then put toasts within -->
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <strong class="mr-auto">Glimboi</strong>
-                <small class="text-muted"></small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body toast-danger" id="toastMessage">
-                If you see this, something isn't right.
-            </div>
-        </div>
+    <div style="position: absolute; bottom: 5%; right: 1%;z-index: 999;float: right;" id="toastContainer">
+
+
+
+
     </div>
-</div>
+  </div>

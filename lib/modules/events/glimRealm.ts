@@ -1,6 +1,6 @@
 // This file runs the glimrealm event.
 
-let glimrealmUsers:userName[] = [];
+let glimrealmUsers: string[] = [];
 let glimrealmStatus: glimRealmStatus = "ready";
 let glimrealmTimer: NodeJS.Timeout = null
 let glimrealmTimer2: NodeJS.Timeout = null
@@ -42,7 +42,7 @@ function getGlimrealmStatus(): glimRealmStatus {
  * @param {string} user The user to add
  * @param {number} points the points the user has
  */
-function addGlimRealmUser(user:userName, points: number) {
+function addGlimRealmUser(user:string, points: number) {
     if (glimrealmUsers.indexOf(user) == -1) {
         glimrealmUsers.push(user);
         glimDropRealm(user, {points: points});
@@ -56,7 +56,7 @@ function addGlimRealmUser(user:userName, points: number) {
  * Enters the world of the Glimdrops.
  * @param {string} user
  */
-function glimDropRealm(user:userName, data:{points:number}) {
+function glimDropRealm(user:string, data:{points:number}) {
     let result = glimChance()!; // get a random effect
     console.log(result);
     ChatMessages.filterMessage(result.message, "glimboi"); // send the message to chat

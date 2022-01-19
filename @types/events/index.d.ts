@@ -9,19 +9,19 @@ interface PollController {
     status: pollStatus
 }
 
-type pollResponse = {user:userName, vote: number}
+type pollResponse = {user:string, vote: number}
 type pollStatus = "ready" | "active" | "cooldown"
 type pollResult = {message: string, chosen: string}
 
 type glimRealmStatus = "ready" | "active" | "charging"
 
-type duel = {user: userName, opponent: userName, status: "pending" | "cancelled" | "active", points: number}
-type duelVictor = {winner: userName, pointsWon: number, loser: userName}
+type duel = {user: string, opponent: string, status: "pending" | "cancelled" | "active", points: number}
+type duelVictor = {winner: string, pointsWon: number, loser: string}
 
 type glimRoyaleStatus = "pending" | "active" | "cooldown"
-type glimRoyaleUser = {user: userName, HP: number}
+type glimRoyaleUser = {user: string, HP: number}
 type glimRoyaleWeapon = {name: string, id: number, stats: glimRoyaleWeaponStats}
-type glimroyaleTurn = {user: userName, message: string}
+type glimroyaleTurn = {user: string, message: string}
 interface glimRoyaleWeaponStats {
     damage: number,
     bonusHP: number,

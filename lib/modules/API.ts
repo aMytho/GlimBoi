@@ -2,7 +2,13 @@
 // Be aware that some non glimesh services may have rate limits in place.
 // If you fork this change the user agent from glimboi to your own project please :)
 
+/**
+ * Any API that isn't a websocket
+ */
 const Webhooks: typeof import("../modules/API/webhook") = require(appData[0] + "/modules/API/webhook.js");
+/**
+ * Websocket APIs
+ */
 const WebSockets: typeof import("../modules/API/websocket") = require(appData[0] + "/modules/API/websocket.js");
 
 let channelID = "";
@@ -173,7 +179,7 @@ async function deleteMessage(messageID: number) {
  * @param key "shortTimeoutUser" | "longTimeoutUser" | "deleteMessage" | "ban" | "unBan"
  * @returns
  */
-async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | userName> {
+async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise< GLimeshMutationError | string> {
     console.log("key is" + key);
     let token = AuthHandle.getToken();
     return new Promise(async resolve => {
@@ -213,30 +219,6 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise
 }
 
 /**
- * Checks if an access token is still valid
- * @returns {Promise}
- */
-async function getTokenStatus(token: accessToken) {
-
-}
-
-/**
- * @async
- * Requests random advice
- * @returns {Promise} Returns random advice. If fails returns- "Advice Failed :glimsad:"
- */
-async function getAdvice(): Promise<string> {
-    let response = await fetch("https://api.adviceslip.com/advice", { method: "GET" });
-    let advice = await response.json();
-    try {
-        console.log("Completed advice request " + advice.slip.advice + advice.slip.id);
-        return advice.slip.advice
-    } catch (e) {
-        return "Advice Failed :glimsad:"
-    }
-}
-
-/**
  * Returns the streamer ID (userID) of a streamer
  * @param channelId
  * @returns
@@ -248,23 +230,6 @@ async function getStreamerId(channelId: number) {
         return response.channel.streamer.id
     } else {
         return null
-    }
-}
-
-
-/**
- * @async
- * Requests a dad joke
- * @returns Returns a dad joke. If failed returns- "Joke Failed :glimsad:"
- */
-async function getDadJoke():Promise<string> {
-    let response = await fetch("https://icanhazdadjoke.com/", { method: "GET", headers: { 'User-Agent': `https://github.com/aMytho/GlimBoi Look at the readme file for contact info`, Accept: "application/json" } });
-    let dadJoke = await response.json();
-    try {
-        console.log("Completed joke request" + dadJoke);
-        return dadJoke.joke
-    } catch (e) {
-        return "Joke Failed :glimsad:"
     }
 }
 
@@ -302,31 +267,6 @@ function getStreamerName() {
     return streamer;
 }
 
-/**
- * Triggers a streamlabs alert. Thanks Streamlabs!
- * @param message
- * @param token
- */
-async function triggerAlert(message: string, token: string) {
-    try {
-        let querystring = {
-            access_token: token,
-            type: "follow",
-            message: message,
-            user_message: ""
-        }
-        let response = await fetch("https://www.streamlabs.com/api/v1.0/alerts", {
-            method: 'POST',
-            body: JSON.stringify(querystring),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        let data = await response.json();
-        console.log(data);
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-export { deleteMessage, getAdvice, getBotAccount, getChannelID, getDadJoke, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getTokenStatus, getUserID, getStreamerId, glimeshApiRequest, randomAnimalFact,
-sendMessage, triggerAlert, Webhooks, WebSockets};
+export { deleteMessage, getBotAccount, getChannelID, getID, getSocials, getStats,
+getStreamerName, getStreamWebhook, getUserID, getStreamerId, glimeshApiRequest, randomAnimalFact,
+sendMessage, Webhooks, WebSockets};

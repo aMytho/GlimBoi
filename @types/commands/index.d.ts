@@ -1,14 +1,54 @@
 interface CommandType {
+    /**
+     * Name of the command
+     */
     commandName: string;
+    /**
+     * The amount of times the command has been activated
+     */
     uses: number
+    /**
+     * The amount of points to run the command
+     */
     points: number;
+    /**
+     * How long the command must be on cooldown for
+     */
     cooldown: number;
+    /**
+     * The minimum rank to run the command
+     */
     rank: rankName;
+    /**
+     * Whether to repeat the command on a timer
+     */
     repeat: boolean;
+    /**
+     * Delete the command after it finishes running
+     */
     shouldDelete: boolean;
+    /**
+     * The actions of the command
+     */
     actions: ChatAction[];
-    message?: string
-    sound?: string
+    /**
+     * The message to send
+     * @deprecated Replaced by actions
+     */
+    message?: string;
+    /**
+     * Whether or not the command can be activated
+     */
+    disabled: boolean;
+    /**
+     * The sound to play
+     * @deprecated Replaced by actions
+     */
+    sound?: string;
+    /**
+     * The media to display
+     * @deprecated
+     */
     media?: string
 }
 
@@ -44,7 +84,8 @@ interface CommandContructor {
     /**
      * What the command does
      */
-    actions: any
+    actions: any;
+    disabled: boolean
 }
 
 interface RepeatableCommand extends CommandType {
@@ -80,7 +121,7 @@ interface ChatMessageType extends ChatActionType {
 }
 
 type BuildChatMessage = {message: string}
-type RunChatMessage = {activation: any, user: userName}
+type RunChatMessage = {activation: any, user: string}
 
 interface ApiRequestGetType extends ChatActionType {
     url:string

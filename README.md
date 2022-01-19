@@ -25,7 +25,7 @@ Windows can recieve automatic updates. Other platforms must manually update. You
 
 ## Info
 
-For docs, tutorials, and other info view the Glimboi [website](https://glimboi.com/docs/intro/introduction/)
+For docs, tutorials, and other info view the Glimboi [website](https://glimboi.com/docs/intro/introduction/).
 
 ## Overview
 
@@ -34,7 +34,7 @@ Run macro like scripts to create truly unique commands. Supports much more than 
 [![image](https://user-images.githubusercontent.com/58316242/145436403-48629e62-7b6f-4836-b5c5-347effa0900b.png)
 ](https://glimboi.com/docs/commands/commands/)
 
-### User Database and Curreny System
+### User Database and Currency System
 Store data on your users. Give them custom ranks and reward them with currency.
 [![image](https://user-images.githubusercontent.com/58316242/145437132-14701ecb-1912-4fcc-b4e2-f50c46764b26.png)
 ](https://glimboi.com/docs/users/users/)

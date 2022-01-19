@@ -1,13 +1,13 @@
 // This file handles raffles
 
-let usersInRaffle: userName[] = [];
+let usersInRaffle: string[] = [];
 let raffleTimer: NodeJS.Timeout = null;
 
 /**
  * Adds a user to the raffle if they are not already in it
  * @param {string} user The user to add
  */
-async function addUser(user: userName) {
+async function addUser(user: string) {
     if (usersInRaffle.indexOf(user) === -1) {
         // check to make sure they have enough points to enter the raffle
         let userExists = await UserHandle.findByUserName(user);
@@ -51,7 +51,7 @@ function getUsers(): string[] {
  * @returns {Promise<boolean>} True if the raffle was started, false if it was not
  * @async
  */
-async function startRaffle(user: userName, fromUI?: boolean): Promise<boolean> {
+async function startRaffle(user: string, fromUI?: boolean): Promise<boolean> {
     if (EventHandle.isEventEnabled("raffle")) {
         // check that a raffle is not already running
         if (EventHandle.isEventActive("raffle")) {
@@ -112,7 +112,7 @@ async function startRaffle(user: userName, fromUI?: boolean): Promise<boolean> {
  * @param {string} user The user who entered the raffle
  * @returns {string} The message to show
  */
-function getEnteredMessage(user: userName): string {
+function getEnteredMessage(user: string): string {
     // pick a random message
     let messages = [
         `${user} has joined the raffle.`,

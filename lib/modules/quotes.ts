@@ -10,15 +10,15 @@ class Quote implements QuoteType {
     quoteData: string;
     quoteID: number;
     date: string;
-    constructor(quoteName: quoteName, quoteData: quoteData) {
-        console.log(quoteName, quoteData)
+    constructor(quoteName: string, quoteData: string) {
+        console.log(quoteName, quoteData);
         this.quoteName = quoteName; //The person who said the auote
         this.quoteData = quoteData; // The quote itself
         this.quoteID = 1 //ID of the users quotes. We change this after the creation of the quote
         this.date = new Date().toTimeString(); //Tik toc
     }
-    async generateID(quoteCreator: UserType, onBehalfOf: userName) {
-        console.log("Generating ID");
+    async generateID(quoteCreator: UserType, onBehalfOf: string) {
+        console.log("Generating Quote ID");
         let totalQuotes = quoteCreator.quotes.length; // The total amount of quotes the user has
         if (totalQuotes > 0) {
             return Number(quoteCreator.quotes[totalQuotes - 1].quoteID) + 1; //Add 1 to the last quote ID
@@ -43,7 +43,7 @@ function updatePath(updatedPath: string) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-async function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: userName = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
+function addquote(quoteName: string, quoteData: string, onBehalfOf: string = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
     return new Promise(async resolve => {
         let userExists = await UserHandle.findByUserName(quoteName);
         if (userExists == "ADDUSER") {
@@ -52,6 +52,9 @@ async function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: 
                 return await addquote(quoteName, quoteData, onBehalfOf);
             } else {
                 document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created.";
+                setTimeout(() => {
+                    document.getElementById("errorMessageAddQuote")!.innerText = "";
+                }, 3500);
                 resolve("USERNOTEXIST")
             }
         } else {
@@ -76,37 +79,29 @@ async function addquote(quoteName: quoteName, quoteData: quoteData, onBehalfOf: 
  * Removes a quote
  * @param {string} quoteName The quote data
  */
-function removeQuote(id: quoteID, user: userName) {
-    try {
-        quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
-            console.log(`Quote ${id} was removed from ${user}`);
-        });
-    } catch (e) {
-        console.log(e);
-    }
+function removeQuote(id: number, user: string) {
+    quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
+        console.log(`Quote ${id} was removed from ${user}`);
+    });
 }
 
 /**
  * Removes all of the users quotes
  * @param {string} user The user who owns the quotes that will be deleted
  */
-function removeAllQuotes(user: userName) {
-    console.log(`Removeing all quotes by ${user}`)
-    try {
-        quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
-            console.log(numRemoved + " quotes were removed from " + user)
-        });
-    } catch (e) {
-        console.log(e);
-    }
+function removeAllQuotes(user: string) {
+    console.log(`Removing all quotes by ${user}`);
+    quotesDB.remove({ quoteName: user }, { multi: true }, function (err, numRemoved) {
+        console.log(`${numRemoved} quotes were removed from ${user}`);
+    });
 }
 
 /**
  * Returns all quotes as an array
  */
-async function getAll(): Promise<QuoteDB[]> {
+function getAll(): Promise<QuoteType[]> {
     return new Promise(resolve => {
-        quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
+        quotesDB.find({}, function (err: Error | null, docs: QuoteType[]) {
             console.log(docs);
             resolve(docs);
         })
@@ -116,11 +111,11 @@ async function getAll(): Promise<QuoteDB[]> {
 /**
  * Returns a random quote from the DB. Null if none exist
  */
-async function randomQuote(): Promise<null | { user: quoteName, data: quoteData }> {
+function randomQuote(): Promise<null | { user: string, data: string }> {
     return new Promise(resolve => {
-        quotesDB.find({}, function (err: Error | null, docs: QuoteDB[]) {
+        quotesDB.find({}, function (err: Error | null, docs: QuoteType[]) {
             if (docs.length == 0) {
-                resolve(null)
+                resolve(null);
             } else {
                 let randomQuoteIndex = Math.floor(Math.random() * docs.length);
                 console.log(docs[randomQuoteIndex].quoteName, docs[randomQuoteIndex].quoteData);
@@ -133,10 +128,10 @@ async function randomQuote(): Promise<null | { user: quoteName, data: quoteData 
 /**
  * Counts the amount of quotes in the DB
  */
-async function countQuotes(): Promise<number> {
+function countQuotes(): Promise<number> {
     return new Promise(resolve => {
         quotesDB.count({}, function (err: Error | null, count: number) {
-            resolve(count)
+            resolve(count);
         })
     })
 }

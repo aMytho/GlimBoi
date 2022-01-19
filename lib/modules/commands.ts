@@ -6,17 +6,8 @@ const ChatAction:typeof import("../modules/commands/commandActionHandler") = req
 const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js");
 
 /**
- * @class Default command
- * @param {string} commandName The name of your command. Lowercase please!
- * @param {string} commandData The command response.
- * @param {number} uses The amount of times the command has been used.
- * @param {number} points The amount of points the command costs to run.
- * @param {string} rank The minimum rank to use this command
- * @param {null} special Not yet used. Null for now
- * @param {boolean} repeat Should the command repeat?
- * @param {string} sound Play a sound
- * @param {string} media Display an image or video
- * @param {array} actions What the command will do once activated
+ * A command
+ * @class
  */
 class Command implements CommandType {
     commandName: string;
@@ -25,9 +16,10 @@ class Command implements CommandType {
     cooldown: number;
     rank: rankName;
     repeat: boolean;
-    shouldDelete: boolean
-    actions: ChatAction[]; //What the command will do once activated
-    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete}:CommandContructor) {
+    shouldDelete: boolean;
+    actions: ChatAction[];
+    disabled: boolean;
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete, disabled}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
         this.points = points; //Points required per command
@@ -36,6 +28,7 @@ class Command implements CommandType {
         this.repeat = repeat; // should this command be repeatable?
         this.shouldDelete = shouldDelete; // Should the command be deleted after use? (!cmd)
         this.actions = actions; // What the command will do once activated
+        this.disabled = disabled; // Can the commaand be activated?
     }
 }
 
@@ -48,21 +41,20 @@ function updatePath(updatedPath:string) {
 }
 
 /**
- * Creates a new command. Reloads the current commands after completion.
+ * Creates a new command.
  * @returns A command
  */
 function addCommand(commandData: CommandContructor) {
     let newCommand = new Command(commandData);
     console.log(newCommand);
-    try {
-        //inserts a document as a command. Uses the command made above.
-        commandsDB.insert(newCommand, function (err, doc) {
-            console.log('Inserted command', doc.commandName, ' to the commands DB');
-        });
-    } catch (e) {
-        console.log(e);
-        console.log("Failure to add Command. ^^^")
-    }
+    //inserts a document as a command.
+    commandsDB.insert(newCommand, function (err, doc) {
+        if (err) {
+            console.log(err);
+            return
+        }
+        console.log('Inserted command', doc.commandName, ' to the commands DB');
+    });
     return newCommand;
 }
 
@@ -79,10 +71,10 @@ function removeCommand(commandName: commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  */
-function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete }:CommandContructor) {
-    console.log(commandName, actions, cooldown, uses, points, rank, repeat)
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete, disabled }:CommandContructor) {
+    console.log(commandName, actions, cooldown, uses, points, rank, repeat, disabled)
     commandsDB.update({ commandName: commandName }, { $set: {
-        actions: actions, cooldown: Number(cooldown), uses: Number(uses),
+        actions: actions, cooldown: Number(cooldown), uses: Number(uses), disabled: disabled,
         points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete } }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
     });
@@ -110,7 +102,7 @@ function findCommand(command: commandName): Promise<null | CommandType> {
 /**
  * Returns every command in the database.
  */
-async function getAll(): Promise<CommandType[]> {
+function getAll(): Promise<CommandType[]> {
     return new Promise(resolve => {
         commandsDB.find({}, function (err: Error | null, docs: CommandType[]) {
             resolve(docs);
@@ -146,17 +138,10 @@ function addCommandCount(command: commandName) {
 }
 
 /**
- * Explains how to use commands in chat.
- */
-function info() {
-    ChatMessages.filterMessage(`Glimboi command docs -> https://glimboi.com/docs/intro/commands/`, "glimboi")
-}
-
-/**
  * Counts how many commands are in the database.
  * @returns
  */
-async function countCommands(): Promise<number> {
+function countCommands(): Promise<number> {
     return new Promise(resolve => {
         commandsDB.count({}, function (err, count) {
             resolve(count);
@@ -165,5 +150,5 @@ async function countCommands(): Promise<number> {
 }
 
 export { addCommand, addCommandCount, ChatAction, CommandRunner,
-countCommands, editCommand, findCommand, getAll, info,
+countCommands, editCommand, findCommand, getAll,
 randomRepeatCommand, removeCommand , updatePath};

@@ -2,7 +2,7 @@
 
 let stats: NodeJS.Timeout; // Queries for updated stats every 15 minutes
 let checkForUsers: NodeJS.Timeout; // An interval that checks to see who has been active in chat
-let currentUsers:userName[] = [] // Array of current users.
+let currentUsers:string[] = [] // Array of current users.
 let recentUserMessages = 0; //a count of user messages to compare against repeatable bot messages
 
 /**
@@ -72,7 +72,7 @@ function resetUserMessageCounter() {
  * Adds a user to the array of current users
  * @param {string} user
  */
-function addCurrentUser(user:userName) {
+function addCurrentUser(user:string) {
     currentUsers.push(user.toLowerCase())
 }
 

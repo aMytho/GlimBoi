@@ -30,7 +30,7 @@ let listofvariables: (string | CustomUserVaribles)[] = [
  * @param {object} data A bunch of revalant data
  * @param {string} data.message message
  */
-async function searchForVariables(data: {message:string, activation?:string, user?:userName}) {
+async function searchForVariables(data: {message:string, activation?:string, user?:string}) {
     for (let i = 0; i < listofvariables.length; i++) {// @ts-ignore
         let varIndex = data.message.indexOf(listofvariables[i].name || listofvariables[i])
         if (varIndex !== -1) {
@@ -76,11 +76,11 @@ async function replaceVariable({ variable, activation, user }) {
             //variableList[5] = user
             return null
         case "$advice":
-            let advice = await ApiHandle.getAdvice().catch(reason => advice = 'Advice Error');
-            return advice
+            let AdviceModule:typeof import("../API/webhooks/advice") = require(`${appData[0]}/modules/API/webhooks/advice.js`);
+            return await AdviceModule.getAdvice();
         case "$dadjoke":
-            let joke = await ApiHandle.getDadJoke().catch(reason => joke = 'Joke Error');
-            return joke
+            let JokeModule:typeof import("../API/webhooks/dadJoke") = require(`${appData[0]}/modules/API/webhooks/dadJoke.js`);
+            return await JokeModule.getDadJoke();
         case "$discord":
             let discord = await ApiHandle.getSocials("socialDiscord", ApiHandle.getStreamerName()).catch(reason => discord = 'Discord Error');
             return "https://discord.gg/" + discord

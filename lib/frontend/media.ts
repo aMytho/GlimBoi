@@ -1,41 +1,36 @@
 MediaHandle.updatePath(appData[1]);
 let MediaTable;
 
-function loadMediaTable() {
-    $(document).ready(async function () {
-        prepMediaModals()
-        MediaTable = $("#obsResources").DataTable({
-            data: await MediaHandle.getAll(), // returns all the commands
-            columns: [
-                {
-                    title: "Asset Name",
-                    data: "name",
-                },
-                {
-                    title: "Type",
-                    data: "type",
-                },
-                {
-                    title: "File Path",
-                    data: "path",
-                },
-            ],
-            pageLength: 25,
-            columnDefs: [
-            ]
-        });
-        $('#obsResources').on('click', 'tbody tr', async function () {
-            let data = MediaTable.row(this).data();
-            let mediaToBeEditied = await MediaHandle.getMediaByName(data.name);
-            const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
-            MediaUI.loadEditModal(mediaToBeEditied);
-            $('#editMediaModal').modal("show");
-        });
+async function loadMediaTable() {
+    prepMediaModals()
+    MediaTable = $("#obsResources").DataTable({
+        data: await MediaHandle.getAll(), // returns all the commands
+        columns: [
+            {
+                title: "Media Name",
+                data: "name",
+            },
+            {
+                title: "Type",
+                data: "type",
+            },
+            {
+                title: "File Path",
+                data: "path",
+            },
+        ],
+        pageLength: 25,
+    });
+    $('#obsResources').on('click', 'tbody tr', async function () {
+        let data = MediaTable.row(this).data();
+        let mediaToBeEditied = await MediaHandle.getMediaByName(data.name);
+        const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+        MediaUI.loadEditModal(mediaToBeEditied);
+        $('#editMediaModal').modal("show");
     });
 }
 
-async function removeMedia(media) {
-    media = media.trim().toLowerCase()
+async function removeMedia(media: string) {
     if (media.length == 0) {
         document.getElementById("RemoveMediaError").innerText = "You must enter a media name!"
         return
@@ -62,8 +57,14 @@ async function displayMedia(media, source) {
     if (content == null) {
         if (source == "audio") {
             document.getElementById("errorDisplayMedia2").innerText = "The content type was not valid. Please select an audio file.";
+            setTimeout(() => {
+                document.getElementById("errorDisplayMedia2").innerText = "";
+            }, 3500);
         } else {
             document.getElementById("errorDisplayMedia").innerText = "The content type was not valid. Please select a video, image, or GIF.";
+            setTimeout(() => {
+                document.getElementById("errorDisplayMedia").innerText = "";
+            }, 3500);
         }
     } else if (content.type.startsWith("image")) {
         Server.activateMedia(content, "imageGif");
@@ -74,16 +75,22 @@ async function displayMedia(media, source) {
     }
 }
 
-async function prepMediaModals() {
+function prepMediaModals() {
     $('#addMediaButton').on('click', function (e) {
         const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
         MediaUI.loadAddModal();
     })
     $('#removeMediaModal').on('hidden.bs.modal', function (e) {
-        document.getElementById("mediaRemoveModalContent").innerHTML = removeMediaModal();
+        (document.getElementById("mediaRemoveInput") as HTMLSelectElement).value = "";
+        document.getElementById("RemoveMediaError").innerText = "";
     })
     $('#playAudioModal').on('hidden.bs.modal', function (e) {
-        document.getElementById("audioBodyModal").innerHTML = audioResetModal()
+        (document.getElementById("playAudioModalSelect") as HTMLSelectElement).innerHTML = "";
+        // Add the default option
+        let defaultOption = document.createElement("option");
+        defaultOption.text = "Select audio";
+        defaultOption.value = null;
+        (document.getElementById("playAudioModalSelect") as HTMLSelectElement).add(defaultOption);
     }).on('shown.bs.modal', async function (e) {
         let selectElement = document.getElementById("playAudioModalSelect");
         let audioItems = await MediaHandle.getMediaByType("audio");
@@ -93,7 +100,12 @@ async function prepMediaModals() {
         }
     })
     $('#playImageModal').on('hidden.bs.modal', function (e) {
-        document.getElementById("displayImageModalBody").innerHTML = imageResetModal();
+        (document.getElementById("playImageModalSelect") as HTMLSelectElement).innerHTML = "";
+        // Add the default option
+        let defaultOption = document.createElement("option");
+        defaultOption.text = "Select an image, GIF, or video";
+        defaultOption.value = null;
+        (document.getElementById("playImageModalSelect") as HTMLSelectElement).add(defaultOption);
     }).on('shown.bs.modal', async function (e) {
         let selectElement = document.getElementById("playImageModalSelect");
         let imageItems = await MediaHandle.getMediaByType("image");
