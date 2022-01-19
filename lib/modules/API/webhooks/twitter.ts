@@ -42,7 +42,8 @@ async function sendTweet(message?: string) {
         })
 
         console.log(twitterRequest);
-        if (twitterRequest.status == 200) {
+
+        if (twitterRequest.status == 201) {
             console.log("Twitter request sent successfully");
         } else {
             console.log("Twitter request failed", twitterRequest);
