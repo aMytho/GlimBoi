@@ -184,7 +184,6 @@ function getBotName() {
 function postChat():void {
     // Load requirements for working chat
     ChatSettings = require(appData[0] + "/modules/chat/chatSettings.js");
-    ChatActions = require(appData[0] + "/modules/chat/chatActions.js");
     ChatStats = require(appData[0] + "/modules/chat/chatStats.js");
     ChatLogger = require(appData[0] + "/modules/chat/chatLogging.js");
     // Load the chat settings/stats

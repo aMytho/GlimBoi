@@ -1,5 +1,4 @@
 let ChatSettings:typeof import("../modules/chat/chatSettings");
-let ChatActions:typeof import("../modules/chat/chatActions");
 let ChatStats: typeof import("../modules/chat/chatStats");
 let ChatMessages: typeof import("../modules/chat/chatMessages") = require(appData[0] + "/modules/chat/chatMessages.js");
 let ChatLogger:typeof import("../modules/chat/chatLogging");

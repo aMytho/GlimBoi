@@ -1,3 +1,9 @@
+/**
+ * Handles messages and triggers the proper functions
+ */
+let ChatActions:typeof import("../../modules/chat/chatActions") = require(appData[0] + "/modules/chat/chatActions.js");
+
+
 function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
     let userChat: string = chatMessage.user.username
     let messageChat = chatMessage.message;

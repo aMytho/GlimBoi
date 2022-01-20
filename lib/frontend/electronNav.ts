@@ -64,7 +64,7 @@ window.onload = function() {
                 	contentEl.innerHTML = "";
                     // @ts-ignore
                 	contentEl.insertAdjacentHTML("beforeend", data);
-                	changeNavHighlight(id) //Changes the highlight
+                	changeNavHighlight(id); //Changes the highlight
                     switch (id) {
                         case "CommandLink": loadCommandTable(); currentPage = "commands"; break;
                         case "PointsLink": getPoints(); currentPage = "points"; break;
@@ -189,18 +189,6 @@ async function getDataDirectory() {
     }
 }
 getDataDirectory();
-
-
-function placeholder() {
-    let overlayStatusBar = document.getElementById("overlayStatus")!;
-        overlayStatusBar.title = "Overlay Active";
-        overlayStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);">Overlay: Active</span>`
-        overlayStatusBar.style.color = "rgb(17, 92, 33)"
-        let musicStatusBar = document.getElementById("musicStatus")!;
-        musicStatusBar.title = "Music Active";
-        musicStatusBar.innerHTML = `<span style="color:  rgb(17, 92, 33);"> Music: Active</span>`
-        musicStatusBar.style.color = "rgb(17, 92, 33)"
-}
 
 /**
  * Shows a message to the user in a small notification box.
