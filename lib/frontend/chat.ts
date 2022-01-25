@@ -466,7 +466,7 @@ function askForWebhookConfirmation(webhook:webhookType) {
         (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "twitter") {
         $("#twitterWebhook").modal('show');
-        (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "Check out $streamer on https://glimesh.tv/$streamer");
+        (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
     }
 }
 

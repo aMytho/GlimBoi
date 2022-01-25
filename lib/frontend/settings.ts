@@ -82,7 +82,7 @@ function showIntegrations() {
     if (CacheStore.get("twitterEnabled", false)) {
         document.getElementById("twitterEnabled")!.toggleAttribute("checked");
     }
-    (document.getElementById("twitterMessage") as HTMLInputElement)!.value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer");
+    (document.getElementById("twitterMessage") as HTMLInputElement)!.value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
     if (CacheStore.get("twitterConfirmation", true)) {
         document.getElementById("twitterConfirmation")!.toggleAttribute("checked");
     }
