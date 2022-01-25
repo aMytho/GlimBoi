@@ -196,28 +196,28 @@ function postChat():void {
         ApiHandle.WebSockets.OBSWebSocket.connect();
     }
     // Check for webhooks to send
-    if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentWebhooks == false) {
+    if (ApiHandle.Webhooks.DiscordWebhook.checkIfEnabled() && hasSentDiscordWebhook == false) {
         if (CacheStore.get("discordWebhookConfirmation", true)) {
             askForWebhookConfirmation("discord");
         } else {
             ApiHandle.Webhooks.DiscordWebhook.sendDiscordMessage();
-            hasSentWebhooks = true;
+            hasSentDiscordWebhook = true;
         }
     }
-    if (ApiHandle.Webhooks.GuildedWebhook.checkIfEnabled() && hasSentWebhooks == false) {
+    if (ApiHandle.Webhooks.GuildedWebhook.checkIfEnabled() && hasSentGuildedWebhook == false) {
         if (CacheStore.get("guildedWebhookConfirmation", true)) {
             askForWebhookConfirmation("guilded");
         } else {
             ApiHandle.Webhooks.GuildedWebhook.sendGuildedMessage();
-            hasSentWebhooks = true;
+            hasSentGuildedWebhook = true;
         }
     }
-    if (CacheStore.get("twitterEnabled", false) && hasSentWebhooks == false) {
+    if (CacheStore.get("twitterEnabled", false) && hasSentTwittwerWebhook == false) {
         if (CacheStore.get("twitterConfirmation", true)) {
             askForWebhookConfirmation("twitter");
         } else {
             ApiHandle.Webhooks.TwitterWebhook.sendTweet();
-            hasSentWebhooks = true;
+            hasSentTwittwerWebhook = true;
         }
     }
 

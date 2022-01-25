@@ -12,7 +12,9 @@ var contentBody;
 var contentMessageID;
 var globalChatMessages: storedChatMessage[];
 var currentChatConnected = null;
-let hasSentWebhooks = false;
+let hasSentGuildedWebhook = false;
+let hasSentDiscordWebhook = false;
+let hasSentTwittwerWebhook = false;
 
 ChatChannels.updatePath(appData[1]);
 

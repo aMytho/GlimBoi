@@ -12,7 +12,7 @@ async function sendDiscordMessage(message?:string) {
         body.append("content", discordMessage);
         await fetch(CacheStore.get("discordWebhookURL", ""), {method: "POST", body: body});
         console.log("Finished Discord webhook");
-        hasSentWebhooks = true;
+        hasSentDiscordWebhook = true;
     } else {
         return false
     }

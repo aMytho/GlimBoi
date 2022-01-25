@@ -21,7 +21,7 @@ async function sendGuildedMessage(message?:string) {
         let body = buildGuildedMessage([streamThumbnail, streamTitle, streamerName, guildedMessage]);
         await fetch(CacheStore.get("guildedWebhookURL", ""), {method: "POST", body: body, headers: { "Content-Type": "application/json" }});
         console.log("Finished Guilded webhook");
-        hasSentWebhooks = true;
+        hasSentGuildedWebhook = true;
     } else {
         return false
     }

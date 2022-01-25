@@ -2,8 +2,8 @@
  * For all your caching purposes
  */
 class DumbCacheStore {
-     path: string
-     cache: any
+    path: string
+    cache: any
     /**
      * Cache constructor
      */
@@ -27,7 +27,7 @@ class DumbCacheStore {
      * Sets multiple cache items
      * @param {}[] keys
      */
-    setMultiple(keys:{}[]) {
+    setMultiple(keys: {}[]) {
         let keysToSet = {};
         keys.forEach(key => {
             let keyToSet = Object.entries(key);
@@ -67,7 +67,7 @@ class DumbCacheStore {
             try {
                 await fs.writeFile(this.path, JSON.stringify({}));// @ts-ignore if it doesn't exist, create it
                 this.cache = JSON.parse(await fs.readFile(this.path));
-            } catch(e2) {
+            } catch (e2) {
                 this.cache = {}; // If something goes wrong, just return an empty object
             }
         } finally {
