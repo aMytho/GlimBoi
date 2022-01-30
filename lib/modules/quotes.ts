@@ -17,7 +17,7 @@ class Quote implements QuoteType {
         this.quoteID = 1 //ID of the users quotes. We change this after the creation of the quote
         this.date = new Date().toTimeString(); //Tik toc
     }
-    async generateID(quoteCreator: UserType, onBehalfOf: string) {
+    generateID(quoteCreator: UserType) {
         console.log("Generating Quote ID");
         let totalQuotes = quoteCreator.quotes.length; // The total amount of quotes the user has
         if (totalQuotes > 0) {
@@ -51,22 +51,15 @@ function addquote(quoteName: string, quoteData: string, onBehalfOf: string = "Gl
             if (newUser !== "INVALIDUSER") {
                 return await addquote(quoteName, quoteData, onBehalfOf);
             } else {
-                document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created.";
-                setTimeout(() => {
-                    document.getElementById("errorMessageAddQuote")!.innerText = "";
-                }, 3500);
-                resolve("USERNOTEXIST")
+                resolve("USERNOTEXIST");
             }
         } else {
             let newQuote = new Quote(quoteName, quoteData); //Create a new quote
-            newQuote.quoteID = await newQuote.generateID(userExists, onBehalfOf); //Generate the ID of the quote
+            newQuote.quoteID = newQuote.generateID(userExists); //Generate the ID of the quote
             console.log('Quote ID created.');
             quotesDB.insert(newQuote, function (err: Error | null, doc: any) { //Insert the quote into the DB
                 console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
                 UserHandle.addQuote(newQuote, doc._id).then(data => { //Add the quote ID to the users who owns it
-                    try {
-                        document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`
-                    } catch (e) {}
                     LogHandle.logEvent({ event: "Add Quote", users: [onBehalfOf, quoteName] }); //Log the event
                     resolve("QUOTEFINISHED");
                 })
