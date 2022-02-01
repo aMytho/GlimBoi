@@ -128,14 +128,25 @@ function removeUser(user: string, inModal: boolean, userWhoRemoves: string = "Gl
  * @param {string} quote
  * @param {number} id
  */
-function addQuote(quote: QuoteType, id: number): Promise<"USERQUOTEADDED"> {
-    return new Promise(resolve => {
-        quote.quoteName = quote.quoteName.toLowerCase()
-        usersDB.update({ userName: quote.quoteName }, { $push: { quotes: { quoteID: quote.quoteID, quoteData: quote.quoteData, dbID: id } } },
+function addQuote(username: string, quoteData: string, onBehalfOf: string = "Glimboi"): Promise<boolean> {
+    return new Promise(async resolve => {
+        username = username.toLowerCase();
+        let userExists = await findByUserName(username);
+        if (userExists == "ADDUSER") {
+            let newUser = await addUser(username, false, onBehalfOf);
+            if (newUser !== "INVALIDUSER") {
+                return await addQuote(username, quoteData, onBehalfOf);
+            } else {
+                resolve(false);
+                return
+            }
+        }
+        let newQuote = await QuoteHandle.addQuote(userExists, quoteData, onBehalfOf);
+        usersDB.update({ userName: newQuote.quoteName }, { $push: { quotes: { quoteID: newQuote.quoteID, quoteData: newQuote.quoteData, dbID: newQuote.quoteID } } },
             { multi: false, }, function (err: Error | null) {
-                console.log("Quote linked to " + quote.quoteName + ". Quote Complete.");
-                syncQuotes(quote.quoteName, quote, "add");
-                resolve("USERQUOTEADDED")
+                console.log(`Quote linked to ${newQuote.quoteName} Quote Complete.`);
+                syncQuotes(newQuote.quoteName, "add");
+                resolve(true)
             })
     })
 }
@@ -162,7 +173,7 @@ function removeQuoteByID(id: number, user: string): Promise<"NOQUOTEFOUND" | Use
                             { returnUpdatedDocs: true }, function (err: Error | null, numAffected: number, affectedDocuments: UserType) {
                                 console.log(affectedDocuments);
                                 QuoteHandle.removeQuote(id, user);
-                                syncQuotes(user, docs[0].quotes, "remove")
+                                syncQuotes(user, "remove")
                                 resolve(affectedDocuments);
                             })
                     }

@@ -62,15 +62,14 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
 function addQuote() { //Adds a quote to the db and table
     let quoteName = (document.getElementById("userQuoteInputU") as HTMLInputElement).value.trim().toLowerCase();
     let quoteData = (document.getElementById("userQuoteInputQ") as HTMLInputElement).value.trim().toLowerCase();
-    QuoteHandle.addquote(quoteName, quoteData).then(data => {
-        if (data == "USERNOTEXIST") {
+    UserHandle.addQuote(quoteName, quoteData).then(data => {
+        if (data) {
+            document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`;
+        } else {
             document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created.";
             setTimeout(() => {
                 document.getElementById("errorMessageAddQuote")!.innerText = "";
             }, 3500);
-        }
-        if (data == "QUOTEFINISHED") {
-            document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`;
         }
     })
 }
@@ -449,7 +448,7 @@ function prepUserModals() {
     })
 }
 
-function syncQuotes(user: UserType | string, quote, action) {
+function syncQuotes(user: UserType | string, action) {
     // removes it from the list as well as the user quote list.
     try {
         if (action == "remove" && typeof user !== "string") {

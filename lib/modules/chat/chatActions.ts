@@ -49,12 +49,12 @@ function randomQuoteChat() {
  * @param {string} user Who recorded the quote
  * @param {string} creator Who said the quote
  */
-async function addQuoteChat(user: string, data, creator: string) {
+async function addQuoteChat(user: string, data:string, creator: string) {
     if (await permissionCheck(user, "canAddQuotes", "add quotes")) {
-        console.log(creator, data.message);
+        console.log(creator, data);
         let trimMessage = 10 + creator.length + 2;
-        let quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage), user.toLowerCase());
-        if (quoteResult == "QUOTEFINISHED") {
+        let quoteResult = await UserHandle.addQuote(creator.toLowerCase(), data.substring(trimMessage), user.toLowerCase());
+        if (quoteResult) {
             ChatMessages.glimboiMessage(`Quote added.`);
         } else {
             ChatMessages.glimboiMessage(`That user does not exist.`);

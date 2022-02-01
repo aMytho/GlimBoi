@@ -362,8 +362,8 @@ function contextMenu(action: logEvent, duration: timeout) {
             }
         })
     } else if (action == "Add Quote") {
-        QuoteHandle.addquote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
-            if (data !== "QUOTEFINISHED") {
+        UserHandle.addQuote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
+            if (!data) {
                 errorMessage("Quote Error", "An error occured when creating the quote.")
             }
         })

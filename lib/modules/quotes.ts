@@ -43,28 +43,16 @@ function updatePath(updatedPath: string) {
  * @param {string} quoteName The user who said the quote
  * @param {string} quoteData The data of the quote. (message)
  */
-function addquote(quoteName: string, quoteData: string, onBehalfOf: string = "Glimboi"): Promise<"USERNOTEXIST" | "QUOTEFINISHED"> {
+function addQuote(user: UserType, quoteData: string, onBehalfOf: string = "Glimboi"): Promise<QuoteType> {
     return new Promise(async resolve => {
-        let userExists = await UserHandle.findByUserName(quoteName);
-        if (userExists == "ADDUSER") {
-            let newUser = await UserHandle.addUser(quoteName, false, onBehalfOf);
-            if (newUser !== "INVALIDUSER") {
-                return await addquote(quoteName, quoteData, onBehalfOf);
-            } else {
-                resolve("USERNOTEXIST");
-            }
-        } else {
-            let newQuote = new Quote(quoteName, quoteData); //Create a new quote
-            newQuote.quoteID = newQuote.generateID(userExists); //Generate the ID of the quote
-            console.log('Quote ID created.');
-            quotesDB.insert(newQuote, function (err: Error | null, doc: any) { //Insert the quote into the DB
-                console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
-                UserHandle.addQuote(newQuote, doc._id).then(data => { //Add the quote ID to the users who owns it
-                    LogHandle.logEvent({ event: "Add Quote", users: [onBehalfOf, quoteName] }); //Log the event
-                    resolve("QUOTEFINISHED");
-                })
-            });
-        }
+        let newQuote = new Quote(user.userName, quoteData); //Create a new quote
+        newQuote.quoteID = newQuote.generateID(user); //Generate the ID of the quote
+        console.log('Quote ID created.');
+        quotesDB.insert(newQuote, function (err: Error | null, doc: any) { //Insert the quote into the DB
+            console.log(`Inserted ${doc.quoteData} with ID ${doc._id} and quote ID ${doc.quoteID}`);
+            LogHandle.logEvent({ event: "Add Quote", users: [onBehalfOf, newQuote.quoteName] }); //Log the event
+            resolve(newQuote);
+        });
     })
 }
 
@@ -76,7 +64,7 @@ function removeQuote(id: number, user: string) {
     quotesDB.remove({ $and: [{ quoteID: id }, { quoteName: user }] }, {}, function (err, numRemoved) {
         console.log(`Quote ${id} was removed from ${user}`);
     });
-}
+} 
 
 /**
  * Removes all of the users quotes
@@ -129,4 +117,4 @@ function countQuotes(): Promise<number> {
     })
 }
 
-export { addquote, countQuotes, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath };
+export { addQuote, countQuotes, getAll, randomQuote, removeAllQuotes, removeQuote, updatePath };
