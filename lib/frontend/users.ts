@@ -59,9 +59,18 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
 
 
 function addQuote() { //Adds a quote to the db and table
-  	let quoteName = (document.getElementById("userQuoteInputU") as HTMLInputElement).value.trim().toLowerCase();
-  	let quoteData = (document.getElementById("userQuoteInputQ") as HTMLInputElement).value.trim().toLowerCase();
-  	QuoteHandle.addquote(quoteName, quoteData);
+    let quoteName = (document.getElementById("userQuoteInputU") as HTMLInputElement).value.trim().toLowerCase();
+    let quoteData = (document.getElementById("userQuoteInputQ") as HTMLInputElement).value.trim().toLowerCase();
+    UserHandle.addQuote(quoteName, quoteData).then(data => {
+        if (data) {
+            document.getElementById('errorMessageAddQuote')!.innerText = `Quote Created!`;
+        } else {
+            document.getElementById("errorMessageAddQuote")!.innerText = "The user does not exist on glimesh so the quote can't be created.";
+            setTimeout(() => {
+                document.getElementById("errorMessageAddQuote")!.innerText = "";
+            }, 3500);
+        }
+    })
 }
 
 function quoteSearch(user:string) {
@@ -441,43 +450,43 @@ function prepUserModals() {
     });
 }
 
-function syncQuotes(user:UserType | string, quote, action) {
+function syncQuotes(user: UserType | string, action) {
     // removes it from the list as well as the user quote list.
     try {
-      if (action == "remove" && typeof user !== "string") {
+        if (action == "remove" && typeof user !== "string") {
             makeList(user);
-      } else if (action == "add") {
+        } else if (action == "add") {
             console.log(user);
             let filteredData = userTable
-            .rows()
-            .indexes()
-            .filter(function (value, index) {
-              if (userTable.row(value).data().userName == user) {
-                    makeList(userTable.row(value).data());
-                    return;
-              }
-            });
-      }
+                .rows()
+                .indexes()
+                .filter(function (value, index) {
+                    if (userTable.row(value).data().userName == user) {
+                        makeList(userTable.row(value).data());
+                        return;
+                    }
+                });
+        }
     } catch (e) {
-      console.log(e);
+        console.log(e);
     }
 }
 
-function syncUsers(data:string | UserType, action: "add" | string) {
+function syncUsers(data: string | UserType, action: "add" | string) {
     try {
-      if (action == "add") {
+        if (action == "add") {
             addUserTable(data as UserType);
-      } else {
-            console.log("The user " + data + " will now be deleted from the table.");
+        } else {
+            console.log(`The user ${data} will now be deleted from the table.`);
             let filteredData = userTable
-            .rows()
-            .indexes()
-            .filter(function (value, index) {
-              return userTable.row(value).data().userName == data;
-            });
+                .rows()
+                .indexes()
+                .filter(function (value, index) {
+                    return userTable.row(value).data().userName == data;
+                });
             userTable.rows(filteredData).remove().draw(); //removes user and redraws the table
-      }
+        }
     } catch (e) {
-      console.log(e)
+        console.log(e)
     }
 }
