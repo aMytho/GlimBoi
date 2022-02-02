@@ -350,3 +350,13 @@ table.whiteText td {
 span {
     color: aliceblue;
 }
+
+#quoteListHolder ul {
+    font-size: 1.4rem;
+    max-height: 824px;
+    overflow-y: auto;
+}
+
+#modalQuoteView {
+    overflow-y: hidden !important;
+}

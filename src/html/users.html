@@ -10,14 +10,12 @@
         <div class="row">
             <div class="col-12 text-center">
                 <a class="btn btn-primary btn-group mt-2" data-toggle="modal" data-target="#modalQuoteAdd" onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
-                <a class="btn btn-info btn-group mt-2" onclick="loadAllQuotes()"> View All Quotes</a>
+                <a class="btn btn-info btn-group mt-2" onclick="loadAllQuotes()" data-toggle="modal" data-target="#modalQuoteView"> View All Quotes</a>
                 <a class="btn btn-danger btn-group mt-2" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove Quote</a>
             </div>
         </div>
 
       <table id="userTable" class="display table w-100"></table>
-
-      <div class="userList"></div>
     </div>
   </div>
 </div>
@@ -131,6 +129,27 @@
   </div>
 </div>
 <!-- Modal: remove user -->
+
+<!-- Modal: edit user -->
+<div class="modal fade" id="modalQuoteView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Viewing USER Quotes</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+            <div class="userList" id="quoteListHolder" style="font: 1.5rem;"></div>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal: modalCart -->
 
 <style>
 #userTable tr[class="even"] {

@@ -53,7 +53,6 @@ function loadAllQuotes() { //loads all quotes and displays them under the table.
         if (numberOfListItems == 0) {
             listElement.innerHTML = "No quotes were found.";
         }
-        window.scrollTo(0, document.body.scrollHeight)
   	})
 }
 
@@ -199,7 +198,7 @@ function makeList(user:UserType) { //Similir to above function, makes a list and
       	listItem = document.createElement('li');
 
       	// Add the item text
-      	listItem.innerHTML = `ID: ${user.quotes[i].quoteID} | ${user.quotes[i].quoteData}`
+      	listItem.innerHTML = `ID: ${user.quotes[i].quoteID} | ${user.quotes[i].quoteData}`;
 
       	// Add listItem to the listElement
       	listElement.appendChild(listItem);
@@ -207,7 +206,6 @@ function makeList(user:UserType) { //Similir to above function, makes a list and
       if (numberOfListItems == 0) {
         listElement.innerHTML = `No quotes found for specified user.`
       }
-    window.scrollTo(0, document.body.scrollHeight);
 }
 
 //This is the points section.
@@ -385,6 +383,7 @@ async function loadUserTable() {
         let user = await UserHandle.findByUserName(data.userName) as UserType;
         console.log('Building quote list with ' + user.userName)
         makeList(data);
+        $("#modalQuoteView").modal("show");
     })
     $('#userTable').on('click', ' tbody tr a', function (e) {
         e.stopPropagation();
@@ -437,6 +436,9 @@ function prepUserModals() {
     $('#modalUserEditing').on('hidden.bs.modal', function (e) {
         document.getElementById("modalUserEditing")!.innerHTML = ``
     })
+    $("#modalQuoteView").on('hidden.bs.modal', function (e) {
+        document.getElementById("quoteListHolder")!.innerHTML = ``
+    });
 }
 
 function syncQuotes(user:UserType | string, quote, action) {
