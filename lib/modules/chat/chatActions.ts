@@ -53,7 +53,7 @@ async function addQuoteChat(user: string, data, creator: string) {
     if (await permissionCheck(user, "canAddQuotes", "add quotes")) {
         console.log(creator, data.message);
         let trimMessage = 10 + creator.length + 2;
-        let quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.message.substring(trimMessage), user.toLowerCase());
+        let quoteResult = await QuoteHandle.addquote(creator.toLowerCase(), data.substring(trimMessage), user.toLowerCase());
         if (quoteResult == "QUOTEFINISHED") {
             ChatMessages.glimboiMessage(`Quote added.`);
         } else {

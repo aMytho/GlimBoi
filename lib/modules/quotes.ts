@@ -17,7 +17,7 @@ class Quote implements QuoteType {
         this.quoteID = 1 //ID of the users quotes. We change this after the creation of the quote
         this.date = new Date().toTimeString(); //Tik toc
     }
-    async generateID(quoteCreator: UserType, onBehalfOf: string) {
+    async generateID(quoteCreator: UserType) {
         console.log("Generating Quote ID");
         let totalQuotes = quoteCreator.quotes.length; // The total amount of quotes the user has
         if (totalQuotes > 0) {
@@ -59,7 +59,7 @@ function addquote(quoteName: string, quoteData: string, onBehalfOf: string = "Gl
             }
         } else {
             let newQuote = new Quote(quoteName, quoteData); //Create a new quote
-            newQuote.quoteID = await newQuote.generateID(userExists, onBehalfOf); //Generate the ID of the quote
+            newQuote.quoteID = await newQuote.generateID(userExists); //Generate the ID of the quote
             console.log('Quote ID created.');
             quotesDB.insert(newQuote, function (err: Error | null, doc: any) { //Insert the quote into the DB
                 console.log("Inserted", "'", doc.quoteData, "", "with ID", doc._id, "and quote ID", doc.quoteID);
