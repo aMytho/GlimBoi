@@ -72,9 +72,9 @@ async function replaceVariable({ variable, activation, user }) {
             let count = await CommandHandle.findCommand(activation.split(" ")[0])
             return count.uses
         case "$game":
-            //user = await ApiHandle.getUserID(user.username)
-            //variableList[5] = user
-            return null
+            let game = await ApiHandle.getSubCategory(ApiHandle.getStreamerName());
+            console.log(game);
+            return game
         case "$advice":
             let AdviceModule:typeof import("../API/webhooks/advice") = require(`${appData[0]}/modules/API/webhooks/advice.js`);
             return await AdviceModule.getAdvice();

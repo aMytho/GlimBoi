@@ -253,6 +253,21 @@ async function getSocials(social: "twitter" | string, channel:string): Promise<s
     }
 }
 
+async function getSubCategory(username: string) {
+    try {
+        let query = `query {channel(streamerUsername: "${username}") {subcategory {name}}}`;
+        let response = await glimeshQuery(query);
+        if (typeof response == "object" && response !== null) {
+            return response.channel.subcategory.name;
+        } else {
+            return "unknown";
+        }
+    } catch(e) {
+        return null
+    }
+}
+
+
 async function randomAnimalFact(animal: "dog" | "cat") {
     try {
         let animalFactData = await fetch(`https://some-random-api.ml/animal/${animal}`, { method: "GET" })
@@ -268,5 +283,5 @@ function getStreamerName() {
 }
 
 export { deleteMessage, getBotAccount, getChannelID, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getUserID, getStreamerId, glimeshApiRequest, randomAnimalFact,
+getStreamerName, getStreamWebhook, getUserID, getStreamerId, getSubCategory, glimeshApiRequest, randomAnimalFact,
 sendMessage, Webhooks, WebSockets};
