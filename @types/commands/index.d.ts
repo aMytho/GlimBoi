@@ -129,32 +129,6 @@ interface ApiRequestGetType extends ChatActionType {
     returns: any
 }
 
-type BuildApiRequestGet = {url:string, headers: any, returns: any}
-
-interface AudioType extends ChatActionType {
-    source: mediaName
-}
-
-type BuildAudio = {source:mediaName}
-
-interface ImageGifType extends ChatActionType {
-    source: mediaName
-}
-
-type BuildimageGif = {source: mediaName}
-
-interface VideoType extends ChatActionType {
-    source: mediaName
-}
-
-type BuildVideo = {source: mediaName}
-
-interface WaitType extends ChatActionType {
-    wait: number
-}
-
-type BuildWait = {wait:number}
-
 type BuildObsWebSocket = {
     requestType: string
     data: any
@@ -172,7 +146,7 @@ type CustomUserVaribles = {
     data: string | any;
 }
 
-type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "ImageGif" |
+type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "Follow" | "ImageGif" |
 "ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Twitter" | "Wait" | "WriteFile"
 type actionInfo = any[] | any
 type actionVariables = string[]

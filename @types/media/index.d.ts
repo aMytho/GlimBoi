@@ -1,11 +1,20 @@
 interface MediaType {
-    name: mediaName;
-    path: mediaPath;
-    type: mediaType;
+    /**
+     * The name of the media
+     */
+    name: string;
+    /**
+     * The file path to the media
+     */
+    path: string;
+    /**
+     * The type of media
+     */
+    type: string;
     /**
      * @deprecated
      */
-    position?: mediaPosition;
+    position?: string;
     /**
      * Coordinates from the top-left corner of the media.
      */
@@ -19,16 +28,6 @@ interface MediaType {
     center?: boolean;
 }
 
-/**
- * The name of the media
- */
-type mediaName = string
-/**
- * The path to the media
- */
-type mediaPath = string;
-type mediaType = string;
-type mediaPosition = string
 type mediaWSSName = "soundEffect" | "imageGif" | "video"
 
 /**

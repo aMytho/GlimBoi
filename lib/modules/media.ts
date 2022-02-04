@@ -85,7 +85,7 @@ function convertMedia({ name = "Default", path = "", type = "img/png", duration 
  * Removes media from the database
  * @param {string} media The name of the media
  */
-function removeMedia(media: mediaName) {
+function removeMedia(media: string) {
     media = media.toLowerCase()
     MediaDB.remove({ name: media }, {}, function (err, numRemoved) {
         console.log("Media removed");
@@ -97,7 +97,7 @@ function removeMedia(media: mediaName) {
  * @param {string} name The name to search for
  * @returns {object} Returns an object if found, else null
  */
-function getMediaByName(name: mediaName): Promise<MediaType> {
+function getMediaByName(name: string): Promise<MediaType> {
     name = name.toLowerCase();
     return new Promise(resolve => {
         MediaDB.find({ name: name }, function (err, docs: MediaType[]) {
@@ -115,7 +115,7 @@ function getMediaByName(name: mediaName): Promise<MediaType> {
  * Returns all the media that match the search term
  * @param type The type of media to search for
  */
-function getMediaByType(type: mediaType): Promise<MediaType[]> {
+function getMediaByType(type: string): Promise<MediaType[]> {
     return new Promise(resolve => {
         let mediaArray = [];
         MediaDB.find({}, function (err, docs: MediaType[]) {
