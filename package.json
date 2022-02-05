@@ -1,7 +1,7 @@
 {
   "name": "glimboi",
   "productName": "GlimBoi",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "A chatbot for Glimesh.tv",
   "main": "build/main.js",
   "repository": {
