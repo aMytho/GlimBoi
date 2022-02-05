@@ -64,9 +64,9 @@ async function getChannelID(channel: string, setMain?: boolean): Promise<number 
     let response = await glimeshQuery(query);
     console.log(response);
     if (typeof response == "object" && response !== null) {
-        channelID = response.channel.id;
         if (setMain) {
             streamer = response.channel.streamer.displayname;
+            channelID = response.channel.id;
         }
         return Number(response.channel.id);
     } else if (response == null) {
