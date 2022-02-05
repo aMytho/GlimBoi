@@ -277,17 +277,17 @@ async function getSubCategory(username: string) {
 async function followUser(channelID: number, unfollow: boolean, liveNotifications = false) {
     let query = "";
     if (unfollow) {
-        query = `mutation{unfollow(channelId: ${channelID}) {id, user {username}}}`;
+        query = `mutation{unfollow(channelId: ${channelID}) {id, streamer {username}}}`;
     } else {
-        query = `mutation{follow(channelId: ${channelID}, liveNotifications: ${liveNotifications}) {id, user {username}}}`;
+        query = `mutation{follow(channelId: ${channelID}, liveNotifications: ${liveNotifications}) {id, streamer {username}}}`;
     }
     let response = await glimeshQuery(query);
     console.log(response);
     if (typeof response == "object" && response !== null) {
         if (unfollow) { // @ts-ignore
-            showToast(`Unfollowed ${response.unfollow.user.username}`);
+            showToast(`Unfollowed ${response.unfollow.streamer.username}`);
         } else { // @ts-ignore
-            showToast(`Followed ${response.follow.user.username}`);
+            showToast(`Followed ${response.follow.streamer.username}`);
         }
         return response;
     } else if (response == null) {
