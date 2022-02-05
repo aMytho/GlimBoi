@@ -54,6 +54,7 @@
   "author": "Mytho",
   "license": "MIT",
   "dependencies": {
+    "@seald-io/nedb": "^2.2.1",
     "crypto-js": "^4.1.1",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.3.1",
@@ -62,7 +63,6 @@
     "esm": "^3.2.25",
     "jquery": "^3.6.0",
     "music-metadata": "^7.8.5",
-    "nedb": "^1.8.0",
     "ws": "^7.5.3"
   },
   "devDependencies": {
@@ -70,7 +70,6 @@
     "@types/crypto-js": "^4.0.2",
     "@types/datatables.net": "^1.10.19",
     "@types/jquery": "^3.5.5",
-    "@types/nedb": "^1.8.11",
     "@types/node": "^14.17.4",
     "@types/ws": "^7.4.7",
     "electron": "^13.5.2",

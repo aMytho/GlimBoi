@@ -1,3 +1,5 @@
+import Nedb from "@seald-io/nedb";
+
 const ModPowers: typeof import("../modules/moderation/modPowers") = require(appData[0] + "/modules/moderation/modPowers.js")
 
 let bannedWordsDB:Nedb

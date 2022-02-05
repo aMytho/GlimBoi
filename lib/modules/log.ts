@@ -1,5 +1,7 @@
 // This file handles the glimboi logging system. This is separate from chat logging (message only)
 
+import Nedb from "@seald-io/nedb";
+
 let loggingDB:Nedb;
 
 /**

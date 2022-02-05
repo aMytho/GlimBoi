@@ -3,7 +3,7 @@ const {clipboard, ipcRenderer, shell} = require("electron"); // @ts-ignore
 let appData:appDataType = ipcRenderer.sendSync("appDataRequest", null); //Ask main process for app data
 let isDev = appData[2];
 console.log(appData);
-const Datastore = require("nedb");
+const Datastore = require("@seald-io/nedb");
 const AuthHandle:AuthHandle = require(appData[0] + "/modules/auth.js");
 const UserHandle:UserHandle = require(appData[0] + "/modules/users.js");
 const QuoteHandle:QuoteHandle = require(appData[0] + "/modules/quotes.js");

@@ -1,3 +1,5 @@
+import Nedb from "@seald-io/nedb";
+
 // This file manages the rank system
 let rankDB:Nedb; //Controls the Rank DB
 let userRank = {rank: "user", rankTier: 1, canAddCommands: true, canEditCommands: false, canRemoveCommands: false,

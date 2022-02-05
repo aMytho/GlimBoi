@@ -1,3 +1,5 @@
+import Nedb from "@seald-io/nedb";
+
 let quotesDB:Nedb;
 
 /**
