@@ -10,7 +10,7 @@ function prepareActions(mode) {
     document.getElementById(`${mode}CommandButtonModal`)!.onclick = async function () {
         // First we check to make sure all the command settings are valid
         const commandValidator: typeof import("../commands/commandValidator") = require(appData[0] + "/frontend/commands/commandValidator.js");
-        let commandSettings = await commandValidator.validateSettings(mode)
+        let commandSettings = await commandValidator.validateSettings(mode);
         if (commandSettings) {
             console.log("All command settings for this command are valid.");
         } else {
@@ -26,7 +26,7 @@ function prepareActions(mode) {
         // Finally we build the actions and add them as a command
         let commandActions = [];
         tempCommandActions.forEach(element => {
-            let tempAction = new CommandHandle.ChatAction[`${element.type}`](element)
+            let tempAction = new CommandHandle.ChatAction[`${element.type}`](element);
             commandActions.push(tempAction);
         });
         // Now we add the actions to the settings. We send the settings to be added as a new command. Command complete!
@@ -48,6 +48,7 @@ function prepareActions(mode) {
     document.getElementById("CreateApiRequestGet")!.onclick = () => addActionToUI("ApiRequestGet", mode);
     document.getElementById("CreateAudio")!.onclick = () => addActionToUI("Audio", mode);
     document.getElementById("CreateBan")!.onclick = () => addActionToUI("Ban", mode);
+    document.getElementById("CreateFollow")!.onclick = () => addActionToUI("Follow", mode);
     document.getElementById("CreateImageGif")!.onclick = () => addActionToUI("ImageGif", mode);
     document.getElementById("CreateObsWebSocket")!.onclick = () => addActionToUI("ObsWebSocket", mode);
     document.getElementById("CreateReadFile")!.onclick = () => addActionToUI("ReadFile", mode);
@@ -118,6 +119,9 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
             break;
 
         case "Ban": await ActionCreator.buildBanUI(mode, data);
+            break;
+
+        case "Follow": await ActionCreator.buildFollowUI(mode, data);
             break;
 
         case "ImageGif": await ActionCreator.buildImageGifUI(mode, data);

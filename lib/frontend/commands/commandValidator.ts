@@ -203,7 +203,6 @@ async function determineActionAndCheck(action, mode:actionMode) {
             }
         case "Ban":
             try {
-                console.log(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText)
                 let possibleBan = action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim()
                 if (possibleBan.length == 0) {
                     throw "No target for ban was provided. Enter a name or a variable (ie. $user, $target)"
@@ -212,6 +211,22 @@ async function determineActionAndCheck(action, mode:actionMode) {
             } catch (e) {
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
+        case "Follow":
+            try {
+                let followOrUnfollow = action.children[1].children[0].firstElementChild.firstElementChild.value;
+                let liveNotifications = action.children[1].children[0].firstElementChild.firstElementChild.value;
+                let possibleFollower = action.children[1].children[2].firstElementChild.firstElementChild.innerText.trim();
+                liveNotifications = liveNotifications == "enabled" ? true : false;
+                followOrUnfollow = followOrUnfollow == "follow" ? true : false;
+                if (possibleFollower.length == 0) {
+                    throw "No target for follow was provided. Enter a name or a variable (ie. $user, $target)"
+                }
+                return {type: "Follow", follow: followOrUnfollow, target: possibleFollower, liveNotifications: liveNotifications}
+            } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode)
                 return false
             }
         case "ImageGif":

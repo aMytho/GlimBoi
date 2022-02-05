@@ -125,6 +125,17 @@ async function buildBanUI(mode:actionMode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
+async function buildFollowUI(mode: actionMode, commandInfo) {
+    let action = await getActionHTML("Follow");
+    if (commandInfo) {
+        console.log(action.children[1].children[0].firstElementChild.firstElementChild);
+        (action.children[1].children[2].firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.target;
+        (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.liveNotifications == true ? "enabled" : "disabled";
+        (action.children[1].children[0].firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.follow == true ? "follow" : "unFollow";
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
+
 async function buildImageGifUI(mode:actionMode, commandInfo) {
     let action = await getActionHTML("ImageGif");
     let imageGifSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild
@@ -243,6 +254,6 @@ async function getActionHTML(action: string) {
     return div;
 }
 
-export {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI, buildImageGifUI,
-    buildReadFileUI, buildObsWebSocketUI, buildPointsUI, buildTimeoutUI, buildTweetUI,
-    buildVideoUI, buildWaitUI, buildWriteFileUI}
+export {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI,buildFollowUI,
+    buildImageGifUI, buildReadFileUI, buildObsWebSocketUI, buildPointsUI, buildTimeoutUI,
+    buildTweetUI, buildVideoUI, buildWaitUI, buildWriteFileUI}

@@ -33,7 +33,7 @@ interface LogConstructor {
 }
 
 type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" |
-"Remove Points" | "Add Quote" | friendlyWarningAction | "New Follower"
+"Remove Points" | "Add Quote" | friendlyWarningAction | "New Follower" | "Follow User" | "Unfollow User"
 
 /**
  * Duration of the timeout

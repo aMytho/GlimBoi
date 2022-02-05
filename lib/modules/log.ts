@@ -66,6 +66,10 @@ class LoggingEvent implements LogType {
                 return `${this.time}: ${caused} added a new quote from ${affected}`
             case "New Follower":
                 return `${this.time}: ${caused} just followed the stream!`
+            case "Follow User":
+                return `${this.time}: ${caused} followed ${affected[0]}`
+            case "Unfollow User":
+                return `${this.time}: ${caused} unfollowed ${affected[0]}`
             default:
                 return "No event was sent to the Log Handler."
         }

@@ -60,7 +60,7 @@ class ApiRequestGet extends ChatAction {
     url:string
     headers:any
     returns: any
-    constructor({url, headers, returns}:BuildApiRequestGet) {
+    constructor({url, headers, returns}) {
         super("ApiRequestGet", ["url", "headers", "path"], returns );
         this.url = url;
         this.headers = headers;
@@ -84,8 +84,8 @@ class ApiRequestGet extends ChatAction {
  * @param {string} source The audio file to be played
  */
 class Audio extends ChatAction {
-    source: mediaName
-    constructor({source}:BuildAudio) {
+    source: string
+    constructor({source}) {
         super("Audio", "source", undefined);
         this.source = source;
     }
@@ -103,7 +103,7 @@ class Audio extends ChatAction {
  * Bans a user from the channel. Use with caution
  */
 class Ban extends ChatAction {
-    target: any
+    target: string;
     constructor({target}) {
         super("Ban", "target", undefined)
         this.target = target
@@ -120,12 +120,44 @@ class Ban extends ChatAction {
 }
 
 /**
+ * Follows or unfollows a user.
+ */
+class Follow extends ChatAction {
+    target: string;
+    follow: boolean;
+    liveNotifications: boolean;
+    constructor({target, follow, liveNotifications}) {
+        super("Follow", ["target", "follow", "liveNotifications"], undefined)
+        this.target = target;
+        this.follow = follow;
+        this.liveNotifications = liveNotifications;
+    }
+
+    async run({activation, user}) {
+        let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user})
+        let channelID = await ApiHandle.getChannelID(target);
+        if (channelID !== false) {
+            let result = await ApiHandle.followUser(channelID, this.follow, this.liveNotifications);
+            if (result) {
+                if (this.follow) {
+                    LogHandle.logEvent({event: "Follow User", users: [user.username, target]})
+                } else {
+                    LogHandle.logEvent({event: "Unfollow User", users: [user.username, target]})
+                }
+            }
+        } else {
+            showToast(`Follow CMD Action: Could not find channel ${target}`);
+        }
+    }
+}
+
+/**
  * Plays an image/gif in the overlay.
  * @param {string} source The image/gif to display
  */
 class ImageGif extends ChatAction {
-    source: mediaName
-    constructor({source}:BuildimageGif) {
+    source: string
+    constructor({source}) {
         super("ImageGif", "source", undefined);
         this.source = source;
     }
@@ -289,8 +321,8 @@ class Twitter extends ChatAction {
  * @param {string} source The video file we are playing
  */
 class Video extends ChatAction {
-    source: mediaName
-    constructor({source}:BuildVideo) {
+    source: string
+    constructor({source}) {
         super("Video", "source", undefined);
         this.source = source;
     }
@@ -310,8 +342,8 @@ class Video extends ChatAction {
  * @param {number} time How long should we wait?
  */
 class Wait extends ChatAction {
-     wait: number
-    constructor({wait}:WaitType) {
+    wait: number
+    constructor({wait}) {
         super("Wait", "wait", undefined)
         this.wait = Number(wait);
     }
@@ -345,5 +377,5 @@ class WriteFile extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, ImageGif, ObsWebSocket, Points, ReadFile,
-Timeout, Twitter, Video, Wait, WriteFile}
+export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, ObsWebSocket,
+Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}

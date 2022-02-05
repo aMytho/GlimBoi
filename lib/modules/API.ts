@@ -25,7 +25,8 @@ function getID() {
 function glimeshError(data:Glimesh.RootQueryType): Glimesh.RootQueryType["data"] | false | null {
     try {
         if (data.errors) {
-            if (data.errors[0].message == "You must be logged in to access the api") {
+            let errMessage = data.errors[0].message;
+            if (errMessage == "You must be logged in to access the api" || errMessage == "unauthorized") {
                 return null
             } else {
                 return false
@@ -267,6 +268,40 @@ async function getSubCategory(username: string) {
     }
 }
 
+/**
+ * Follows or unfollows a channel
+ * @param channelID The channel ID to follow or unfollow
+ * @param unfollow Is this an unfollow?
+ * @param liveNotifications Subscribe to live notifications?
+ */
+async function followUser(channelID: number, unfollow: boolean, liveNotifications = false) {
+    let query = "";
+    if (unfollow) {
+        query = `mutation{unfollow(channelId: ${channelID}) {id, user {username}}}`;
+    } else {
+        query = `mutation{follow(channelId: ${channelID}, liveNotifications: ${liveNotifications}) {id, user {username}}}`;
+    }
+    let response = await glimeshQuery(query);
+    console.log(response);
+    if (typeof response == "object" && response !== null) {
+        if (unfollow) { // @ts-ignore
+            showToast(`Unfollowed ${response.unfollow.user.username}`);
+        } else { // @ts-ignore
+            showToast(`Followed ${response.follow.user.username}`);
+        }
+        return response;
+    } else if (response == null) {
+        showToast("You must authorize the bot to be able to follow/unfollow a user");
+        return null;
+    } else if (response == false) {
+        if (unfollow) {
+            showToast("You are not following this user so you can't unfollow them.");
+        } else {
+            showToast("You are already following this user.");
+        }
+        return false
+    }
+}
 
 async function randomAnimalFact(animal: "dog" | "cat") {
     try {
@@ -282,6 +317,6 @@ function getStreamerName() {
     return streamer;
 }
 
-export { deleteMessage, getBotAccount, getChannelID, getID, getSocials, getStats,
+export { deleteMessage, followUser, getBotAccount, getChannelID, getID, getSocials, getStats,
 getStreamerName, getStreamWebhook, getUserID, getStreamerId, getSubCategory, glimeshApiRequest, randomAnimalFact,
 sendMessage, Webhooks, WebSockets};

@@ -1,7 +1,7 @@
 //This file handles connecting the users dev app to glimesh.tv
 const CLIENT_ID = "468920e4-d88f-46ee-bbf6-94bed88d8872";
 const REDIRECT_URL = "http://localhost:3000";
-const SCOPES = "chat public";
+const SCOPES = "chat public follow";
 let accessToken:accessToken = "";
 let hasAuthed = false;
 

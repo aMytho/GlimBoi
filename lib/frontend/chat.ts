@@ -349,49 +349,80 @@ function loadChatContextMenu(e: { path: any; pageY: number; pageX: number; }) {
 
 function contextMenu(action: logEvent, duration: timeout) {
     if (!contentMessageID) {
-        errorMessage("Message Error", "You cannot modify that message.");
+        errorMessage("Message Error", "You cannot interact with that message.");
         return;
     }
 
-    if (action == "Add User") {
-        UserHandle.addUser(contentTarget.toLowerCase(), false).then(data => {
-            if (data == "USEREXISTS") {
-                errorMessage("User Exists", "That user is already in the bot database.")
-            } else if (data == "INVALIDUSER") {
-                errorMessage("User Error", "Ensure that you are authenticated and selected a real user.")
-            }
-        })
-    } else if (action == "Add Quote") {
-        UserHandle.addQuote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
-            if (!data) {
-                errorMessage("Quote Error", "An error occured when creating the quote.")
-            }
-        })
-    } else if (action == "Short Timeout User" || action == "Long Timeout User") {
-        ModHandle.ModPowers.timeoutByUsername(contentTarget, duration).then(data => {
-            if (data !== null && typeof data !== "object") {
-                LogHandle.logEvent({event: "Short Timeout User" , users: ["Glimboi", data]})
-            }
-        })
-    } else if (action == "Delete Message") {
-        ModHandle.ModPowers.deleteMessage(contentMessageID).then(data => {
-            if (data !== null && typeof data !== "object") {
-                LogHandle.logEvent({event: "Delete Message" , users: ["Glimboi", data], data: {messageID: contentMessageID}})
-            }
-        })
-    } else if (action == "Ban User") {
-        ModHandle.ModPowers.banByUsername(contentTarget).then(data => {
-            if (data !== null && typeof data !== "object") {
-                LogHandle.logEvent({event: "Ban User" , users: ["Glimboi", data]})
-            }
-        })
-    } else if (action == "UnBan User") {
-        ModHandle.ModPowers.unBanByUsername(contentTarget).then(data => {
-            if (data !== null && typeof data !== "object") {
-                LogHandle.logEvent({event: "UnBan User" , users: ["Glimboi", data]})
-            }
-        })
+    switch (action) {
+        case "Add User":
+            UserHandle.addUser(contentTarget.toLowerCase(), false).then(data => {
+                if (data == "USEREXISTS") {
+                    errorMessage("User Exists", "That user is already in the bot database.")
+                } else if (data == "INVALIDUSER") {
+                    errorMessage("User Error", "Ensure that you are authenticated and selected a real user.")
+                }
+            });
+            break;
+        case "Add Quote":
+            UserHandle.addQuote(contentTarget.toLowerCase(), contentBody.trim()).then(data => {
+                if (!data) {
+                    errorMessage("Quote Error", "An error occured when creating the quote.")
+                }
+            });
+            break;
+        case "Short Timeout User":
+        case "Long Timeout User":
+            ModHandle.ModPowers.timeoutByUsername(contentTarget, duration).then(data => {
+                if (data !== null && typeof data !== "object") {
+                    LogHandle.logEvent({ event: "Short Timeout User", users: ["Glimboi", data] })
+                }
+            });
+            break;
+        case "Delete Message":
+            ModHandle.ModPowers.deleteMessage(contentMessageID).then(data => {
+                if (data !== null && typeof data !== "object") {
+                    LogHandle.logEvent({ event: "Delete Message", users: ["Glimboi", data], data: { messageID: contentMessageID } })
+                }
+            });
+            break;
+        case "Ban User":
+            ModHandle.ModPowers.banByUsername(contentTarget).then(data => {
+                if (data !== null && typeof data !== "object") {
+                    LogHandle.logEvent({ event: "Ban User", users: ["Glimboi", data] })
+                }
+            });
+            break;
+        case "UnBan User":
+            ModHandle.ModPowers.unBanByUsername(contentTarget).then(data => {
+                if (data !== null && typeof data !== "object") {
+                    LogHandle.logEvent({ event: "UnBan User", users: ["Glimboi", data] })
+                }
+            });
+            break;
+        case "Follow User":
+            ApiHandle.getChannelID(contentTarget).then(data => {
+                if (typeof data == "number") {
+                    ApiHandle.followUser(data, false, false).then(result => {
+                        if (result) {
+                            LogHandle.logEvent({ event: "Follow User", users: ["Glimboi", contentTarget] })
+                        }
+                    })
+                }
+            })
+            break;
+        case "Unfollow User":
+            ApiHandle.getChannelID(contentTarget).then(data => {
+                if (typeof data == "number") {
+                    ApiHandle.followUser(data, true).then(result => {
+                        if (result) {
+                            LogHandle.logEvent({ event: "Unfollow User", users: ["Glimboi", contentTarget] })
+                        }
+                    })
+                }
+            })
+            break;
     }
+
 }
 
 
