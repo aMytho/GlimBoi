@@ -8,9 +8,10 @@ let listofvariables: (string | CustomUserVaribles)[] = [
     "$target", // The word after the command. ex !so Mytho (Mytho would be the target)
     "$user", //The user who activated the command.
     "$time", // The current time.
-    "$watchtime", // unused.
+    "$watchtime", // How much watch time a user has.
+    "$rank", // The user's rank.
     "$cmdcount", // The amount of times a command has been used.
-    "$game", // unused
+    "$game", // The subcategory the streamer is in
     "$advice", // Random advice. View API.js
     "$dadjoke", // Random dad joke. View API.js
     "$discord", // discord invite URL
@@ -43,9 +44,9 @@ async function searchForVariables(data: {message:string, activation?:string, use
 
 /**
  *
- * @param {string} variable The command variable ex $user, $dadjoke, $target,etc
- * @param {string} activation What activated the command. so mytho and everything after it
- * @param {string} user The user who activated the command
+ * @param variable The command variable ex $user, $dadjoke, $target,etc
+ * @param activation What activated the command. so mytho and everything after it
+ * @param user The user who activated the command
  */
 async function replaceVariable({ variable, activation, user }) {
     //Checks the variablelist and replaces it with its new value.
@@ -57,16 +58,28 @@ async function replaceVariable({ variable, activation, user }) {
         case "$time": //Current time
             return new Date().toTimeString();
         case "$watchtime":
-            let watchTime = await UserHandle.findByUserName(user.username)
+            let watchTime = await UserHandle.findByUserName(user.username);
             if (watchTime == "ADDUSER") {
                 let newUser = await UserHandle.addUser(user.username, false);
-                if (newUser !== "INVALIDUSER") {// @ts-ignore
+                if (typeof newUser == "object") {
                     return newUser.watchTime;
                 } else {
                     return "No user found."
                 }
             } else {
                 return watchTime.watchTime
+            }
+        case "$rank":
+            let userExists = await UserHandle.findByUserName(user.username);
+            if (typeof userExists == "object") {
+                return userExists.role;
+            } else {
+                let newUser = await UserHandle.addUser(user.username, false);
+                if (typeof newUser == "object") {
+                    return newUser.role;
+                } else {
+                    return "$NOTFOUND"
+                }
             }
         case "$cmdcount":
             let count = await CommandHandle.findCommand(activation.split(" ")[0])
