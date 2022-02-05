@@ -248,7 +248,7 @@ async function getPoints() {
             continue;
         }
 
-        pointsTable.rows[i + 1].cells[0].innerHTML = i;
+        pointsTable.rows[i + 1].cells[0].innerHTML = i + 1;
         if (arrayOfPoints[i] !== undefined) {
             pointsTable.rows[i + 1].cells[1].innerHTML = arrayOfPoints[i][0];
             pointsTable.rows[i + 1].cells[2].innerHTML = arrayOfPoints[i][1];
