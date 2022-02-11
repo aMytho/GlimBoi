@@ -95,6 +95,14 @@ ipcMain.handle("getLogLocation", async (event) => {
     return fileSelection;
 })
 
+ipcMain.handle("backup", async (event) => {
+    let folderSelection = await dialog.showOpenDialog(win, {
+        title: "Select Backup Folder:", defaultPath: app.getPath("desktop"), buttonLabel: "Select",
+        properties: ['openDirectory']
+    });
+    return folderSelection;
+})
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

@@ -233,6 +233,62 @@
     </div>
 </div>
 <!-- Modal: open db -->
+
+<div class="modal fade" id="createBackup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Create Backup</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <p class="whiteText">You can manually create a backup of your bot data. You can use it as a traditional backup, use on other devices, or send to other users.</p>
+                    <p class="whiteText"><b>
+                        DO NOT transfer settings.json or refresh.txt to any other user. This contains sensitive information!
+                    </b>
+                    If you are a legacy user (pre v2.0.0) you may have extra auth files. Do not share them with any other user.</p>
+                    <p class="whiteText">Glibmoi automatically creates backups of your data. If you are looking for them try importing data instead.</p>
+                    <p class="errorMessage">If you don't fully understand anything listed above contact Mytho!</p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button class="btn btn-outline-success" onclick="">Create Backup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importBackup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Import Data</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <p class="whiteText">You can import data from a backup.</p>
+                    <p class="whiteText"><b>This will overwrite your current data. You should create a backup before importing new data.</b></p>
+                    <p class="whiteText">This will import all data that you have saved within Glimboi.</p>
+                    <p class="errorMessage">If you don't fully understand anything listed above contact Mytho!</p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button class="btn btn-outline-success" onclick="">Import Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .switch {
         position: relative;
