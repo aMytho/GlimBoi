@@ -115,6 +115,96 @@ function saveIntegrations() {
     successMessage("Settings Saved", " Your new settings have been applied and saved.")
 }
 
+function backupData() {
+    let selectedFiles = [
+        {
+            name: "bannedWordList",
+            copy: (document.getElementById("backupModeration") as HTMLInputElement).checked
+        },
+        {
+            name: "commands",
+            copy: (document.getElementById("backupCommands") as HTMLInputElement).checked
+        },
+        {
+            name: "logging",
+            copy: (document.getElementById("backupLogging") as HTMLInputElement).checked
+        },
+        {
+            name: "obs",
+            copy: (document.getElementById("backupMedia") as HTMLInputElement).checked
+        },
+        {
+            name: "quotes",
+            copy: (document.getElementById("backupQuotes") as HTMLInputElement).checked
+        },
+        {
+            name: "ranks",
+            copy: (document.getElementById("backupRanks") as HTMLInputElement).checked
+        },
+        {
+            name: "users",
+            copy: (document.getElementById("backupUsers") as HTMLInputElement).checked
+        },
+    ];
+    let fileSelected = false;
+    for (const key in selectedFiles) {
+        if (selectedFiles[key].copy) {
+            fileSelected = true;
+        }
+    }
+    if (fileSelected === false) {
+        errorMessage("No files selected", "You must select at least one file to backup.")
+        return;
+    }
+    let {exportBackup} = require(appData[0] + "/modules/files/backup.js");
+    exportBackup(selectedFiles);
+}
+
+function importData() {
+    let selectedFiles = [
+        {
+            name: "bannedWordList",
+            copy: (document.getElementById("importModeration") as HTMLInputElement).checked
+        },
+        {
+            name: "commands",
+            copy: (document.getElementById("importCommands") as HTMLInputElement).checked
+        },
+        {
+            name: "logging",
+            copy: (document.getElementById("importLogging") as HTMLInputElement).checked
+        },
+        {
+            name: "obs",
+            copy: (document.getElementById("importMedia") as HTMLInputElement).checked
+        },
+        {
+            name: "quotes",
+            copy: (document.getElementById("importQuotes") as HTMLInputElement).checked
+        },
+        {
+            name: "ranks",
+            copy: (document.getElementById("importRanks") as HTMLInputElement).checked
+        },
+        {
+            name: "users",
+            copy: (document.getElementById("importUsers") as HTMLInputElement).checked
+        },
+    ];
+    let fileSelected = false;
+    for (const key in selectedFiles) {
+        if (selectedFiles[key].copy) {
+            fileSelected = true;
+        }
+    }
+    if (fileSelected === false) {
+        errorMessage("No files selected", "You must select at least one file to import.")
+        return;
+    }
+    let {importBackup} = require(appData[0] + "/modules/files/backup.js");
+    importBackup(selectedFiles);
+}
+
 //applies the settings. This is ran at launch after the file is read. Once finished the bot is fully ready
 function updateSettings() {
     if (ChatSettings !== undefined) {

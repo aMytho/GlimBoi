@@ -3,7 +3,7 @@ const {clipboard, ipcRenderer, shell} = require("electron"); // @ts-ignore
 let appData:appDataType = ipcRenderer.sendSync("appDataRequest", null); //Ask main process for app data
 let isDev = appData[2];
 console.log(appData);
-const Datastore = require("nedb");
+const Datastore = require("@seald-io/nedb");
 const AuthHandle:AuthHandle = require(appData[0] + "/modules/auth.js");
 const UserHandle:UserHandle = require(appData[0] + "/modules/users.js");
 const QuoteHandle:QuoteHandle = require(appData[0] + "/modules/quotes.js");
@@ -31,19 +31,19 @@ function changeNavHighlight(highlight:string) { //Removes the old and highlights
 
 window.onload = function() {
   	document.getElementById("close")!.addEventListener("click", function(e) { //Closes the App.
-    	ipcRenderer.send("windowSize", "close");
+    	ipcRenderer.send("window", "close");
   	});
 
   	document.getElementById("maximize")!.addEventListener("click", function(e) { //Maximizes the App.
-    	ipcRenderer.send("windowSize", "maximize");
+    	ipcRenderer.send("window", "maximize");
   	});
 
   	document.getElementById("minimize")!.addEventListener("click", function(e) { //Minimizes the App.
-    	ipcRenderer.send("windowSize", "minimize");
+    	ipcRenderer.send("window", "minimize");
   	});
 
   	document.getElementById("refresh")!.addEventListener("click", function(e) { //Refreshes the App.
-    	ipcRenderer.send("windowSize", "refresh");
+    	ipcRenderer.send("window", "refresh");
   	});
 
   	// Get all the navigation links to an array

@@ -65,7 +65,7 @@ ipcMain.on("appDataRequest", (event) => {
     event.returnValue = [__dirname, app.getPath("userData"), isDev]
 })
 
-ipcMain.on("windowSize", (event, arg: "close" | "maximize" | "minimize" | "refresh") => {
+ipcMain.on("window", async (event, arg: "close" | "import" | "maximize" | "minimize" | "refresh", path?: string, files?: { name: string, copy: boolean }[]) => {
     switch (arg) {
         case "close":
             win.close();
@@ -83,8 +83,28 @@ ipcMain.on("windowSize", (event, arg: "close" | "maximize" | "minimize" | "refre
             win.reload();
             console.log("Reloading Window");
             break;
+        case "import":
+            console.log("Importing new data, closing window");
+            let { copyFile } = require("fs");
+            // do file stuff
+            for (let file of files) {
+                try {
+                    await copyFile(`${path}/${file.name}.db`, `${app.getPath("userData")}/data/${file.name}.db`, 0, () => {});
+                } catch (e) {
+                    console.error(e);
+                    dialog.showMessageBoxSync(null, {
+                        message: "Error importing data file. Please restart Glimboi.",
+                        type: "error",
+                        title: "Error",
+                    })
+                    app.quit();
+                    break;
+                }
+            }
+            dialog.showMessageBoxSync(null, {message: "Data imported successfully!", type: "info", title: "Success"});
+            win.reload();
     }
-})
+});
 
 
 ipcMain.handle("getLogLocation", async (event) => {
@@ -95,17 +115,28 @@ ipcMain.handle("getLogLocation", async (event) => {
     return fileSelection;
 })
 
+ipcMain.handle("backup", async (event) => {
+    let folderSelection = await dialog.showOpenDialog(win, {
+        title: "Select Backup Folder:", defaultPath: app.getPath("desktop"), buttonLabel: "Select",
+        properties: ['openDirectory']
+    });
+    if (folderSelection.canceled) {
+        return null
+    }
+    return folderSelection;
+})
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
     } else {
-        console.log("Closed")
+        console.log("Closed");
     }
 })
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow()
+        createWindow();
     }
 })

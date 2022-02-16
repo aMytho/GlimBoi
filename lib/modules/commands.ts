@@ -1,5 +1,7 @@
 // This file manages commands
 
+import Nedb from "@seald-io/nedb";
+
 let commandsDB:Nedb; //Database of commands.
 
 const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js");

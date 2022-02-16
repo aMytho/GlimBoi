@@ -1,3 +1,5 @@
+import Nedb from "@seald-io/nedb";
+
 // This file handles all obs actions
 let MediaDB:Nedb;
 

@@ -1,5 +1,7 @@
 //Controls the User DB
 
+import Nedb from "@seald-io/nedb";
+
 let usersDB:Nedb;
 
 /**

@@ -1,71 +1,17 @@
+import Nedb from "@seald-io/nedb";
+
+import {UserRank} from "./ranks/defaultRank"
+import {ModRank} from "./ranks/modRank";
+import {StreamerRank} from "./ranks/streamerRank";
+
+const RANK_DEFAULTS = {
+    user: new UserRank(),
+    Mod: new ModRank(),
+    Streamer: new StreamerRank()
+}
+
 // This file manages the rank system
 let rankDB:Nedb; //Controls the Rank DB
-let userRank = {rank: "user", rankTier: 1, canAddCommands: true, canEditCommands: false, canRemoveCommands: false,
-canAddPoints: false, canEditPoints: false, canRemovePoints: false, canAddQuotes: true, canEditQuotes: false,
-canRemoveQuotes: false, canAddUsers: true, canEditUsers: false, canRemoveUsers: false, canControlMusic: false,
-canDeleteMessages: false, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
-canStartEvents: true};
-let modRank = {rank: "Mod", rankTier: 2, canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
-canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: false,
-canRemoveQuotes: true, canAddUsers: true, canEditUsers: false, canRemoveUsers: true, canControlMusic: true,
-canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: false, canUnBanUsers: false, modImmunity: false,
-canStartEvents: true};
-let streamerRank = {rank: "Streamer", rankTier: 3, canAddCommands: true, canEditCommands: true, canRemoveCommands: true,
-canAddPoints: true, canEditPoints: true, canRemovePoints: true, canAddQuotes: true, canEditQuotes: true,
-canRemoveQuotes: true, canAddUsers: true, canEditUsers: true, canRemoveUsers: true, canControlMusic: true,
-canDeleteMessages: true, canTimeoutUsers: false, canBanUsers: true, canUnBanUsers: true, modImmunity: true,
-canStartEvents: true};
-
-
-/**
- * A new Rank
- */
-class Rank implements RankType {
-    rank:rankName
-    rankTier:number;
-    canAddCommands: boolean;
-    canEditCommands: boolean;
-    canRemoveCommands: boolean;
-    canAddPoints: boolean;
-    canEditPoints: boolean;
-    canRemovePoints: boolean;
-    canAddUsers: boolean;
-    canEditUsers: boolean;
-    canRemoveUsers: boolean;
-    canAddQuotes: boolean;
-    canEditQuotes: boolean;
-    canRemoveQuotes: boolean;
-    canControlMusic: boolean;
-    canDeleteMessages: boolean;
-    canTimeoutUsers: boolean;
-    canBanUsers: boolean;
-    canUnBanUsers: boolean;
-    modImmunity: boolean;
-    canStartEvents: boolean;
-    constructor(rank:rankName) {
-        this.rank = rank;
-        this.rankTier = 1;
-        this.canAddCommands = false;
-        this.canEditCommands = false;
-        this.canRemoveCommands = false;
-        this.canAddPoints = false;
-        this.canEditPoints = false;
-        this.canRemovePoints = false;
-        this.canAddUsers = false;
-        this.canEditUsers = false;
-        this.canRemoveUsers = false;
-        this.canAddQuotes = false;
-        this.canEditQuotes = false;
-        this.canRemoveQuotes = false;
-        this.canControlMusic = false;
-        this.canDeleteMessages= false;
-        this.canTimeoutUsers = false;
-        this.canBanUsers = false;
-        this.canUnBanUsers = false;
-        this.modImmunity = false;
-        this.canStartEvents = false;
-    }
-}
 
 /**
  * Sends the rank db to the right location.
@@ -89,8 +35,8 @@ function getAll(checkNew?: boolean): Promise<RankType[]> {
                     resolve(docs);
                 }
             } else { // No ranks exist, insert the default ranks
-                rankDB.insert([userRank, modRank, streamerRank], function (err, newDocs) {
-                    console.log("Created default ranks")
+                rankDB.insert([RANK_DEFAULTS.user, RANK_DEFAULTS.Mod, RANK_DEFAULTS.Streamer], function (err, newDocs) {
+                    console.log("Created default ranks");
                     resolve(newDocs);
                 });
             }
@@ -102,7 +48,7 @@ function checkRankProperties(docs: RankType[]) {
     return new Promise(resolve => {
         docs.forEach(rank => { // If new properties exist add them to the ranks.
             let isChanged = false;
-            for (const key in userRank) {
+            for (const key in RANK_DEFAULTS.user) {
                 if (rank[key] === undefined) {
                     if (key == "rankTier") {
                         switch(rank.rank) {
@@ -121,7 +67,7 @@ function checkRankProperties(docs: RankType[]) {
                         };
                         isChanged = true;
                     } else {
-                        rank[key] = userRank[key];
+                        rank[key] = RANK_DEFAULTS.user[key];
                         isChanged = true;
                     }
                 }
@@ -143,13 +89,14 @@ function checkRankProperties(docs: RankType[]) {
 function createRank(rank:rankName) {
     return new Promise(async resolve => {
         if (await getRankPerms(rank) == null) {
-            console.log("Creating " + rank);
-            let rankData = new Rank(rank);
-            rankDB.insert([rankData], function (err, newDocs) {
+            console.log(`Creating ${rank}`);
+            let newRank = new UserRank();
+            newRank.rank = rank;
+            rankDB.insert([newRank], function (err, newDocs) {
                 resolve("RANKADDED");
             });
         } else {
-            resolve("RANKEXISTS")
+            resolve("RANKEXISTS");
         }
     })
 }
@@ -162,10 +109,10 @@ function removeRank(rank: rankName): Promise<"NORANKFOUND" | "RANKREMOVED" | "IN
     return new Promise(resolve => {
         if (rank !== "user" && rank !== "Mod" && rank !== "Streamer") {
             rankDB.remove({ rank: rank }, {}, function (err, numRemoved) {
-                console.log("Removed " + numRemoved + " ranks");
                 if (numRemoved == 0) {
                     resolve("NORANKFOUND");
                 } else {
+                    console.log(`"Removed rank ${rank}`);
                     resolve("RANKREMOVED");
                 }
             });
@@ -192,7 +139,7 @@ function editRank(rank:RankType) {
  */
 function addRankProperty(rank:rankName, property:rankProperties) {
     rankDB.update({rank: rank}, { $set: { [`${property}`]: false}}, {}, function (err, numReplaced) {
-        console.log(property + " was added to" + rank)
+        console.log(`${property} was added to ${rank}`)
     })
 }
 
