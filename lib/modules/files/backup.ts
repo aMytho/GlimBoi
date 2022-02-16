@@ -1,23 +1,23 @@
 import { IpcRenderer } from "electron";
 
-async function exportBackup() {
+async function exportBackup(selectedFiles: { name: string, copy: boolean }[]) {
     try {
         let location = await getBackupLocation();
         if (location) {
-            let entries = await fs.readdir(location, { withFileTypes: true });
-            for (let entry of entries) {
-                let srcPath = `${appData[1]}/data/${entry.name}`;
-                let destPath = `${location}/${entry.name}`;
-                fs.copyFile(srcPath, destPath);
-            }
+            selectedFiles.forEach(file => {
+                if (file.copy) {
+                    fs.copyFile(`${appData[1]}/data/${file.name}.db`, `${location}/${file.name}.db`);
+                }
+            });
             console.log("Backup Complete");
+            successMessage("Backup Complete", `Your backup has been created at ${location}.`);
         } else {
             errorMessage("Backup Error", "No folder was selected. No backup was created.");
         }
     } catch (e) {
         console.log(e);
         errorMessage("Backup Error",
-            "Ensure the directory selected is valid. Ensure no files will be overwritten when the backup is complete.")
+            "Ensure the directory selected is valid. Ensure no files will be overwritten when the backup is complete.");
     }
 }
 
@@ -33,4 +33,30 @@ function getBackupLocation(): Promise<null | string> {
     })
 }
 
-export { exportBackup, getBackupLocation }
+async function importBackup(selectedFiles: { name: string, copy: boolean }[]) {
+    try {
+        let location = await getBackupLocation();
+        if (location) {
+            // Check that every file selected exists
+            for (let i = 0; i < selectedFiles.length; i++) {
+                if (selectedFiles[i].copy) {
+                    try {
+                        await fs.access(`${location}/${selectedFiles[i].name}.db`);
+                    } catch(e) {
+                        errorMessage("Import Error", `The file ${selectedFiles[i].name}.db does not exist in the selected folder.`);
+                        return;
+                    }
+                }
+            }
+            (ipcRenderer as IpcRenderer).send("window", "import", location, selectedFiles.filter(file => file.copy));
+        } else {
+            errorMessage("Backup Error", "No folder was selected. No data was imported.");
+        }
+    } catch(e) {
+        console.log(e);
+        errorMessage("Import Error",
+        "Ensure the directory has the selected files.");
+    }
+}
+
+export { exportBackup, getBackupLocation, importBackup }

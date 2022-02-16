@@ -65,7 +65,7 @@ ipcMain.on("appDataRequest", (event) => {
     event.returnValue = [__dirname, app.getPath("userData"), isDev]
 })
 
-ipcMain.on("window", (event, arg: "close" | "import" | "maximize" | "minimize" | "refresh", path?:string) => {
+ipcMain.on("window", async (event, arg: "close" | "import" | "maximize" | "minimize" | "refresh", path?: string, files?: { name: string, copy: boolean }[]) => {
     switch (arg) {
         case "close":
             win.close();
@@ -84,14 +84,27 @@ ipcMain.on("window", (event, arg: "close" | "import" | "maximize" | "minimize" |
             console.log("Reloading Window");
             break;
         case "import":
-            win.close();
             console.log("Importing new data, closing window");
-            let {copyFile} = require("fs");
+            let { copyFile } = require("fs");
             // do file stuff
-            createWindow();
-            // restart
+            for (let file of files) {
+                try {
+                    await copyFile(`${path}/${file.name}.db`, `${app.getPath("userData")}/data/${file.name}.db`, 0, () => {});
+                } catch (e) {
+                    console.error(e);
+                    dialog.showMessageBoxSync(null, {
+                        message: "Error importing data file. Please restart Glimboi.",
+                        type: "error",
+                        title: "Error",
+                    })
+                    app.quit();
+                    break;
+                }
+            }
+            dialog.showMessageBoxSync(null, {message: "Data imported successfully!", type: "info", title: "Success"});
+            win.reload();
     }
-})
+});
 
 
 ipcMain.handle("getLogLocation", async (event) => {

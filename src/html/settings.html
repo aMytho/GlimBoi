@@ -83,6 +83,7 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-sm-5 col-12 whiteText ml-2">
+                                <hr>
                                 <h3>Twitter</h3>
                                 <p>Tweet when you join a channel. <b>Does not affect command tweets.</b></p>
                                 <div class="niceSwitch">
@@ -93,9 +94,12 @@
                                     <p>Disabled / Enabled</p>
                                 </div>
                                 <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span></p>
-                                <p>An access token is required to use the Twitter API. Generating one will open an URL in your default browser.
-                                    You <b>must</b> be signed in to approve the app. You can copy the link from the address bar into another browser if you prefer.
+                                        onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span>
+                                </p>
+                                <p>An access token is required to use the Twitter API. Generating one will open an URL
+                                    in your default browser.
+                                    You <b>must</b> be signed in to approve the app. You can copy the link from the
+                                    address bar into another browser if you prefer.
                                 </p>
                                 <p>Default Message</p>
                                 <input class="icon-input settingsInput" type="text" placeholder="Default Message"
@@ -111,9 +115,10 @@
                                 </div>
                                 <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
                                     add stream specific details (what you're doing that stream)</p>
-                                <b>To fully disable Twitter integration you need to revoke Glimboi from the allowed apps list
+                                <b>To fully disable Twitter integration you need to revoke Glimboi from the allowed apps
+                                    list
                                     <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                    onclick="loadLink('twitter.com/settings/connected_apps')">here</span>.
+                                        onclick="loadLink('twitter.com/settings/connected_apps')">here</span>.
                                 </b>
                             </div>
                             <div class="col-12 col-sm-1 whiteText"></div>
@@ -196,9 +201,11 @@
                     <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
                     <a class="btn btn-danger mx-2 float-right" href="#" data-toggle="modal" data-target="#openDB">Edit
                         Database</a>
-                    <a class="btn btn-success mx-2 float-right" href="#" data-toggle="modal" data-target="#createBackup">Create
+                    <a class="btn btn-success mx-2 float-right" href="#" data-toggle="modal"
+                        data-target="#createBackup">Create
                         Backup</a>
-                    <a class="btn btn-info mx-2 float-right" href="#" data-toggle="modal" data-target="#importBackup">Import
+                    <a class="btn btn-info mx-2 float-right" href="#" data-toggle="modal"
+                        data-target="#importBackup">Import
                         Backup</a>
                 </div>
             </div>
@@ -222,7 +229,8 @@
                         only edit these files if you know what you are doing.</p>
                     <p class="whiteText">The file names must remain the same. This is a NeDB (MongoDB) database. You
                         should research it before editing these files.</p>
-                    <p class="errorMessage">Copy the files in the folder before editing them. There is no way to reverse
+                    <p class="errorMessage">Backup the files in the folder before editing them. There is no way to
+                        reverse
                         these changes once made.</p>
                 </div>
             </div>
@@ -237,8 +245,8 @@
 </div>
 <!-- Modal: open db -->
 
-<div class="modal fade" id="createBackup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-    style="overflow-wrap: break-word;">
+<div class="modal fade" id="createBackup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
         <div class="modal-content glimPanel whiteText">
             <!--Header-->
@@ -248,26 +256,75 @@
             <!--Body-->
             <div class="modal-body">
                 <div class="icon-input-container">
-                    <p class="whiteText">You can manually create a backup of your bot data. You can use it as a traditional backup, use on other devices, or send to other users.</p>
-                    <p class="whiteText"><b>
-                        DO NOT transfer settings.json or refresh.txt to any other user. This contains sensitive information!
-                    </b>
-                    If you are a legacy user (pre v2.0.0) you may have extra auth files. Do not share them with any other user.</p>
-                    <p class="whiteText">Glibmoi automatically creates backups of your data. If you are looking for them try importing data instead.</p>
+                    <p class="whiteText">You can manually create a backup of your bot data. You can use it as a
+                        traditional backup, use on other devices, or send to other users. <b>This will overrwrite any
+                            backups in the location chosen.</b></p>
+                    <p class="whiteText">Glimboi automatically creates backups of your data. If you are looking for them
+                        try importing data instead.</p>
                     <p class="errorMessage">If you don't fully understand anything listed above contact Mytho!</p>
+                    <!--Create 4 checkboxes-->
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupCommands">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Commands</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupUsers">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Users</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupRanks">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Ranks</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupQuotes">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Quotes</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupModeration">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Banned Words</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupMedia">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Media (files not included)</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="backupLogging">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Logs</p>
+                    </div>
                 </div>
             </div>
             <!--Footer-->
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button class="btn btn-outline-success" onclick="">Create Backup</button>
+                <button class="btn btn-outline-success" onclick="backupData()">Create Backup</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="importBackup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-    style="overflow-wrap: break-word;">
+<div class="modal fade" id="importBackup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
         <div class="modal-content glimPanel whiteText">
             <!--Header-->
@@ -278,15 +335,66 @@
             <div class="modal-body">
                 <div class="icon-input-container">
                     <p class="whiteText">You can import data from a backup.</p>
-                    <p class="whiteText"><b>This will overwrite your current data. You should create a backup before importing new data.</b></p>
+                    <p class="whiteText"><b>This will overwrite your current data. You should create a backup before
+                            importing new data.</b></p>
                     <p class="whiteText">This will import all data that you have saved within Glimboi.</p>
                     <p class="errorMessage">If you don't fully understand anything listed above contact Mytho!</p>
+
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importCommands">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Commands</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importUsers">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Users</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importRanks">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Ranks</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importQuotes">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Quotes</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importModeration">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Banned Words</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importMedia">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Media (files not included)</p>
+                    </div>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="importLogging">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Logs</p>
+                    </div>
                 </div>
             </div>
             <!--Footer-->
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button class="btn btn-outline-success" onclick="">Import Data</button>
+                <button class="btn btn-outline-success" onclick="importData()">Import Data</button>
             </div>
         </div>
     </div>
