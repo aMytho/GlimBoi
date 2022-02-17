@@ -101,7 +101,7 @@ ipcMain.on("window", async (event, arg: "close" | "import" | "maximize" | "minim
                     break;
                 }
             }
-            dialog.showMessageBoxSync(null, {message: "Data imported successfully!", type: "info", title: "Success"});
+            dialog.showMessageBoxSync(null, {message: "Data imported successfully! Glimboi will now restart.", type: "info", title: "Success"});
             win.reload();
     }
 });
