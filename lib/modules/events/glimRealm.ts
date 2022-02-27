@@ -107,7 +107,7 @@ function openGlimRealm(fromUI?: boolean) {
  * Returns a random glimdrop event.
  */
 function glimChance() {
-    let glimrealmNumber = Math.floor(Math.random()*37);
+    let glimrealmNumber = Math.floor(Math.random()*38);
     switch (glimrealmNumber) {
         case 0: return {message: "The Glimdrops are hiding. No adjustment in points.", result: 0, type: "add"}
         case 1: return {message: ":glimwow: got his Glimesh T-shirt! You gained 100 points.", result: 100, type: "add"}
@@ -147,6 +147,7 @@ function glimChance() {
         case 34: return {message: ":glimdog: ran away! You lost 100 points", result: 100, type: "sub"}
         case 35: return {message: "You went for a ride with :glimcar:! You gained 150 points", result: 150, type: "add"}
         case 36: return {message: "You went for a ride with :glimcar: and got lost! You lost 100 points", result: 100, type: "sub"}
+        case 37: return {message: "You celebrate a birthday with :glimbday:. You gained 300 points!", result: 300, type: "add"}
     }
 }
 
