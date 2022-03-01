@@ -401,7 +401,7 @@ function contextMenu(action: logEvent, duration: timeout) {
             });
             break;
         case "Follow User":
-            ApiHandle.getChannelID(contentTarget).then(data => {
+            ApiHandle.getUserID(contentTarget).then(data => {
                 if (typeof data == "number") {
                     ApiHandle.followUser(data, false, false).then(result => {
                         if (result) {
@@ -412,7 +412,7 @@ function contextMenu(action: logEvent, duration: timeout) {
             })
             break;
         case "Unfollow User":
-            ApiHandle.getChannelID(contentTarget).then(data => {
+            ApiHandle.getUserID(contentTarget).then(data => {
                 if (typeof data == "number") {
                     ApiHandle.followUser(data, true).then(result => {
                         if (result) {

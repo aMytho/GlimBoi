@@ -277,9 +277,9 @@ async function getSubCategory(username: string) {
 async function followUser(channelID: number, unfollow: boolean, liveNotifications = false) {
     let query = "";
     if (unfollow) {
-        query = `mutation{unfollow(channelId: ${channelID}) {id, streamer {username}}}`;
+        query = `mutation{unfollow(streamerId: ${channelID}) {id, streamer {username}}}`;
     } else {
-        query = `mutation{follow(channelId: ${channelID}, liveNotifications: ${liveNotifications}) {id, streamer {username}}}`;
+        query = `mutation{follow(streamerId: ${channelID}, liveNotifications: ${liveNotifications}) {id, streamer {username}}}`;
     }
     let response = await glimeshQuery(query);
     console.log(response);

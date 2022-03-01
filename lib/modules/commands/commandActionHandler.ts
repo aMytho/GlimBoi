@@ -135,9 +135,9 @@ class Follow extends ChatAction {
 
     async run({activation, user}) {
         let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user});
-        let channelID = await ApiHandle.getChannelID(target);
-        if (channelID !== false) {
-            let result = await ApiHandle.followUser(channelID, !this.follow, this.liveNotifications);
+        let streamerID = await ApiHandle.getUserID(target);
+        if (streamerID !== false && streamerID !== "INVALID") {
+            let result = await ApiHandle.followUser(streamerID, !this.follow, this.liveNotifications);
             if (result) {
                 if (this.follow) {
                     LogHandle.logEvent({event: "Follow User", users: [user.username, target]})
