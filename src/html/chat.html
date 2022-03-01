@@ -207,6 +207,29 @@
     </div>
 </div>
 
+
+<!-- Modal: Matrix Webhook-->
+<div class="modal fade" id="matrixWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content glimPanel whiteText" id="matrixWebhookModal">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100">Matrix Live Notification</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="The message to send to matrix" id="matrixWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+          <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
+        </div>
+        <!--Footer-->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.MatrixWebhook.sendMessage(document.getElementById('matrixWebhookMessage').value);$('#matrixWebhook').modal('hide')">Send</button>
+        </div>
+      </div>
+    </div>
+</div>
+
 </div>
 
 <div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">

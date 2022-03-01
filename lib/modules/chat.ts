@@ -220,6 +220,14 @@ function postChat():void {
             hasSentTwittwerWebhook = true;
         }
     }
+    if (CacheStore.get("matrixEnabled", false) && hasSentMatrixWebhook == false) {
+        if (CacheStore.get("matrixConfirmation", true)) {
+            askForWebhookConfirmation("matrix");
+        } else {
+            ApiHandle.Webhooks.MatrixWebhook.sendMessage();
+            hasSentMatrixWebhook = true;
+        }
+    }
 
 
     // Gets the name of the bot. Used to determine who is speaking (cooldown stuff)

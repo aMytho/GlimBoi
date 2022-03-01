@@ -15,6 +15,7 @@ var currentChatConnected = null;
 let hasSentGuildedWebhook = false;
 let hasSentDiscordWebhook = false;
 let hasSentTwittwerWebhook = false;
+let hasSentMatrixWebhook = false;
 
 ChatChannels.updatePath(appData[1]);
 
@@ -498,6 +499,9 @@ function askForWebhookConfirmation(webhook:webhookType) {
     } else if (webhook == "twitter") {
         $("#twitterWebhook").modal('show');
         (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
+    } else if (webhook == "matrix") {
+        $("#matrixWebhook").modal('show');
+        (document.getElementById("matrixWebhookMessage") as HTMLInputElement).value = CacheStore.get("matrixMessage", "https://glimesh.tv/$streamer?follow_host=false");
     }
 }
 
