@@ -19,9 +19,8 @@ async function sendMessage(message?: string, room?: string) {
             })
         });
 
-        console.log(request.status);
         if (request.status == 200) {
-            console.log("matrix message sent successfully");
+            console.log("Matrix message sent successfully");
             showToast(`Matrix message sent successfully! Message: ${message}`)
         } else {
             console.log("Message failed", request);
