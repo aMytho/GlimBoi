@@ -86,6 +86,18 @@ function showIntegrations() {
     if (CacheStore.get("twitterConfirmation", true)) {
         document.getElementById("twitterConfirmation")!.toggleAttribute("checked");
     }
+
+    // Matrix - - -
+    if (CacheStore.get("matrixEnabled", false)) {
+        document.getElementById("matrixEnabled")!.toggleAttribute("checked");
+    }
+    (document.getElementById("matrixToken") as HTMLInputElement)!.value = CacheStore.get("matrixToken", "");
+    (document.getElementById("matrixMessage") as HTMLInputElement)!.value = CacheStore.get("matrixMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
+    (document.getElementById("matrixRoom") as HTMLInputElement)!.value = CacheStore.get("matrixRoom", "");
+    if (CacheStore.get("matrixConfirmation", true)) {
+        document.getElementById("matrixConfirmation")!.toggleAttribute("checked");
+    }
+
 }
 
 // saves the settings.
@@ -110,6 +122,11 @@ function saveIntegrations() {
         {twitterConfirmation: (document.getElementById("twitterConfirmation") as HTMLInputElement)!.checked},
         {twitterEnabled: (document.getElementById("twitterEnabled") as HTMLInputElement)!.checked},
         {twitterMessage: (document.getElementById("twitterMessage") as HTMLInputElement)!.value},
+        {matrixConfirmation: (document.getElementById("matrixConfirmation") as HTMLInputElement)!.checked},
+        {matrixEnabled: (document.getElementById("matrixEnabled") as HTMLInputElement)!.checked},
+        {matrixToken: (document.getElementById("matrixToken") as HTMLInputElement)!.value},
+        {matrixMessage: (document.getElementById("matrixMessage") as HTMLInputElement)!.value},
+        {matrixRoom: (document.getElementById("matrixRoom") as HTMLInputElement)!.value},
     ]);
     updateSettings()
     successMessage("Settings Saved", " Your new settings have been applied and saved.")

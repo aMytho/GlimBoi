@@ -47,7 +47,7 @@ type PKCEInfo = {
 /**
  * String representing the type of webhook.
  */
-type webhookType = "discord" | "guilded" | "twitter"
+type webhookType = "discord" | "guilded" | "matrix" | "twitter"
 
 type glimeshRequest = "userID" | "channelID"
 

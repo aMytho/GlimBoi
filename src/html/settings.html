@@ -122,6 +122,44 @@
                                 </b>
                             </div>
                             <div class="col-12 col-sm-1 whiteText"></div>
+                            <!--Matrix-->
+                            <div class="col-sm-5 col-12 whiteText ml-2">
+                                <hr>
+                                <h3>Matrix</h3>
+                                <p>Send a message when you join a channel. <b>Does not affect command messages.</b></p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="matrixEnabled">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>Access Token</p>
+                                <p>An access token is required to use the Matrix API. You can view your token from the
+                                    element web panel.
+                                </p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Access Token"
+                                    id="matrixToken"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                                <p>Default Message</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                                    id="matrixMessage"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                                <p>Default Room (Internal Room ID) Ex. !KieCrZCMdQEJTCAspJ:matrix.org</p>
+                                <input class="icon-input settingsInput" type="text" placeholder="Default Room"
+                                    id="matrixRoom"
+                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                                <p></p>
+                                <div class="niceSwitch">
+                                    <label class="switch">
+                                        <input type="checkbox" id="matrixConfirmation">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <p>Disabled / Enabled</p>
+                                </div>
+                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                                    add stream specific details (what you're doing that stream)</p>
+                            </div>
                         </div>
                     </div>
                     <div id="obsTab" class="tab-pane fade-in">
@@ -225,9 +263,11 @@
             <!--Body-->
             <div class="modal-body">
                 <div class="icon-input-container">
-                    <p class="whiteText">You can manually edit the bot files if the Glimboi is having problems. You should
+                    <p class="whiteText">You can manually edit the bot files if the Glimboi is having problems. You
+                        should
                         only edit these files if you know what you are doing.</p>
-                    <p class="whiteText">The file names must remain the same. The data is stored in a NeDB (MongoDB) database. You
+                    <p class="whiteText">The file names must remain the same. The data is stored in a NeDB (MongoDB)
+                        database. You
                         should research it before editing these files.</p>
                     <p class="errorMessage">Backup the files in the folder before editing them. There is no way to
                         reverse these changes once made.</p>
