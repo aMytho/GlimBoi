@@ -247,6 +247,22 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
             }
+        case "Matrix":
+            try {
+                let possibleMessage = strip(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim());
+                let possibleRoom = strip(action.children[1].children[1].firstElementChild.firstElementChild.innerText.trim());
+                if (possibleMessage.length == 0) {
+                    throw "No message was provided."
+                }
+                if (possibleRoom.length == 0) {
+                    throw "No room was provided."
+                }
+                return {type: "Matrix", message: possibleMessage, room: possibleRoom};
+            } catch (e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
         case "ObsWebSocket":
             try {
                 const obsValaditor: typeof import("../commands/obs/validator") = require(appData[0] + "/frontend/commands/obs/validator.js");
@@ -311,7 +327,6 @@ async function determineActionAndCheck(action, mode:actionMode) {
         }
         case "Timeout":
             try {
-                console.log(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText)
                 let possibleTimeout = action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim()
                 if (possibleTimeout.length == 0) {
                     throw "No target for timeout was provided. Enter a name or a variable (ie. $user, $target)"

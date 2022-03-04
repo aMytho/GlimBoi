@@ -1,0 +1,39 @@
+<div class="topnav">
+    <h3 class="active">Matrix</h3>
+    <div class="float-right" style="padding:12px 14px">
+        <i class="fas fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
+        <i class="fas fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
+        <i class="far fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
+    </div>
+</div>
+<div class="actionBody mt-2">
+    <div class="actionMain text-center row">
+        <div class="col-6">
+            <span class="textarea" role="textbox" contenteditable id="targetMessage"
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+        </div>
+        <div class="col-6">
+            <h6 class="text-center">Enter a message. $variables supported</h6>
+        </div>
+    </div>
+    <div class="actionMain text-center row">
+        <div class="col-6">
+            <span class="textarea" role="textbox" contenteditable id="targetRoom"
+                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+        </div>
+        <div class="col-6">
+            <h6 class="text-center">Enter the room to send the message to. Use the room ID.</h6>
+        </div>
+    </div>
+</div>
+<style>
+    #targetMessage[contenteditable]:empty::before {
+        content: "Message $variables supported";
+        color: gray;
+    }
+
+    #targetRoom[contenteditable]:empty::before {
+        content: "Room ID.";
+        color: gray;
+    }
+</style>

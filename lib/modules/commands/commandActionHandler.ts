@@ -172,6 +172,25 @@ class ImageGif extends ChatAction {
 }
 
 /**
+ * Send a message to the matrix network.
+ */
+class Matrix extends ChatAction {
+    message: string
+    room: string
+    constructor({message, room}) {
+        super("Matrix", ["message", "room"], undefined)
+        this.message = message;
+        this.room = room;
+    }
+
+    async run({activation, user}) {
+        let message = await ActionResources.searchForVariables({message: this.message, user: user, activation: activation});
+        ApiHandle.Webhooks.MatrixWebhook.sendMessage(message, this.room);
+        return
+    }
+}
+
+/**
  * Trigger an action in OBS.
  */
 class ObsWebSocket extends ChatAction {
@@ -377,5 +396,5 @@ class WriteFile extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, ObsWebSocket,
-Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}
+export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, Matrix,
+ObsWebSocket, Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}
