@@ -3,7 +3,7 @@
 let host:import("ws").Server;
 
 /**
- * Starts the server. Pulls the address and port fromt the cache.
+ * Starts the server. Pulls the address and port from the cache.
  */
 function startServer() {
     // make sure the server isn't already running
