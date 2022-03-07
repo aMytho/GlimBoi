@@ -27,8 +27,8 @@ async function checkForScreenShots() {
 async function checkForMediaOverlay() {
     try {
         let mediaVersion: mediaOverlayVersion = CacheStore.get("mediaVersion", 2, true);
-        // Need an upgrade to 2
-        if (mediaVersion <= 2) {
+        // Need an upgrade to 3
+        if (mediaVersion <= 3) {
             console.log("Upgrading media overlay");
             let defaultFile = await fs.readFile(appData[0] + "/frontend/templates/connection.js");
             let defaultFileData = defaultFile.toString();
@@ -41,7 +41,7 @@ async function checkForMediaOverlay() {
                 throw "error with new line replacement in media file";
             }
             fs.writeFile(appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/js/connection.js"), defaultFileData);
-            CacheStore.set("mediaVersion", 3);
+            CacheStore.set("mediaVersion", 4); // Always 1 more than the max version. Should probably change that.
         } else {
             console.log("Media overlay is up to date");
         }

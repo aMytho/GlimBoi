@@ -12,7 +12,7 @@ function connect() {
             if (message.action !== undefined) {
                 if (message.action == "soundEffect") {
                     console.log("Playing sound effect");
-                    let sfx = new Audio(message.data.path);
+                    let sfx = new Audio(`http://absolute/${message.data.path}`);
                     sfx.volume = message.data.volume / 10;
                     sfx.playbackRate = message.data.speed;
                     if (message.data.duration !== undefined) {
@@ -33,7 +33,7 @@ function connect() {
                 else if (message.action == "imageGif") {
                     console.log("Displaying Image");
                     let newImage = document.createElement("img");
-                    newImage.src = message.data.path;
+                    newImage.src = `http://absolute/${message.data.path}`;
                     if (message.data.height !== 0) {
                         newImage.style.height = `${message.data.height}px`;
                     }
@@ -68,7 +68,7 @@ function connect() {
                 else if (message.action == "video") {
                     console.log("Displaying Video");
                     let newVid = document.createElement("video");
-                    newVid.src = message.data.path;
+                    newVid.src = `http://absolute/${message.data.path}`;
                     if (message.data.height !== 0) {
                         newVid.style.height = `${message.data.height}px`;
                     }

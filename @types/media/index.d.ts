@@ -31,6 +31,6 @@ interface MediaType {
 type mediaWSSName = "soundEffect" | "imageGif" | "video"
 
 /**
- * Version of the media overlay. 2 is the latest version.
+ * Version of the media overlay. 3 is the latest version.
  */
-type mediaOverlayVersion = 1 | 2
+type mediaOverlayVersion = 1 | 2 | 3
