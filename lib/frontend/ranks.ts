@@ -67,6 +67,7 @@ function saveRankSettings(rank:rankName) {
         canControlMusic: (document.getElementById("controlMusicRank") as HTMLInputElement).checked,
         modImmunity: (document.getElementById("modImmunityRank") as HTMLInputElement).checked,
         canStartEvents: (document.getElementById("startEventsRank") as HTMLInputElement).checked,
+        canEndEvents: (document.getElementById("endEventsRank") as HTMLInputElement).checked
     }
     console.log(updatedRank);
     RankHandle.editRank(updatedRank);
@@ -94,6 +95,7 @@ async function displayRank(rank: rankName) {
         (document.getElementById("controlMusicRank") as HTMLInputElement)!.checked = rankExists.canControlMusic;
         (document.getElementById("modImmunityRank") as HTMLInputElement)!.checked = rankExists.modImmunity;
         (document.getElementById("startEventsRank") as HTMLInputElement)!.checked = rankExists.canStartEvents;
+        (document.getElementById("endEventsRank") as HTMLInputElement)!.checked = rankExists.canEndEvents;
         document.getElementById("saveRankSettings")!.classList.remove("disabled")
     }
 }

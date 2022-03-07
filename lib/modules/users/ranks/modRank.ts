@@ -20,5 +20,6 @@ export class ModRank extends UserRank {
         this.canEditQuotes = true;
         this.canRemoveQuotes = true;
         this.canControlMusic = true;
+        this.canEndEvents = true;
     }
 }

@@ -65,11 +65,23 @@ function checkRankProperties(docs: RankType[]) {
                                 rank.rankTier = 1;
                                 break;
                         };
-                        isChanged = true;
                     } else {
-                        rank[key] = RANK_DEFAULTS.user[key];
-                        isChanged = true;
+                        switch(rank.rank) {
+                            case "Streamer":
+                                rank[key] = RANK_DEFAULTS.Streamer[key];
+                                break;
+                            case "Mod":
+                                rank[key] = RANK_DEFAULTS.Mod[key];
+                                break;
+                            case "user":
+                                rank[key] = RANK_DEFAULTS.user[key];
+                                break;
+                            default:
+                                rank[key] = RANK_DEFAULTS.user[key];
+                                break;
+                        }
                     }
+                    isChanged = true;
                 }
             }
             if (isChanged) {

@@ -98,8 +98,9 @@ interface RankType {
     canControlMusic: boolean;
     modImmunity: boolean;
     canStartEvents: boolean;
+    canEndEvents: boolean;
 }
 
 type rankName = "user" | "Mod" | "Streamer" | string
 type rankProperties = "canAddCommands"| "canEditCommands" | "canRemoveCommands" | "canAddPoints" | "canEditPoints" | "canRemovePoints" | "canAddUsers" | "canEditUsers" |
-"canRemoveUsers" | "canAddQuotes" | "canEditQuotes" | "canRemoveQuotes" | "canControlMusic" | "modImmunity" | "canStartEvents"
+"canRemoveUsers" | "canAddQuotes" | "canEditQuotes" | "canRemoveQuotes" | "canControlMusic" | "modImmunity" | "canStartEvents" | "canEndEvents"

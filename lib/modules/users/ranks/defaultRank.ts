@@ -19,6 +19,7 @@ export class UserRank {
     canControlMusic: boolean;
     modImmunity: boolean;
     canStartEvents: boolean;
+    canEndEvents: boolean;
 
     constructor() {
         this.rank = "user";
@@ -38,5 +39,6 @@ export class UserRank {
         this.canControlMusic = false;
         this.modImmunity = false;
         this.canStartEvents = true;
+        this.canEndEvents = false;
     }
 }
