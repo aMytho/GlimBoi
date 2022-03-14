@@ -20,7 +20,7 @@ async function canJoinQueue(user: string, override: boolean): Promise<boolean> {
             return true;
         } else {
             // Check points and rank restrictions
-            if (EventHandle.helper.compareUserPoints(userExists, CacheStore.get("queuePoints", 100), false)) {
+            if (await EventHandle.helper.compareUserPoints(userExists, CacheStore.get("queuePoints", 100), false)) {
                 let queueRank = await RankHandle.getRankPerms(CacheStore.get("queueRank", "Everyone"));
                 let userRank = await RankHandle.getRankPerms((userExists as UserType).role);
                 if (CacheStore.get("queueRank", "Everyone") == "Everyone") {
@@ -97,16 +97,18 @@ function endQueue() {
     EventHandle.removeEvent("queue");
     usersInQueue = [];
     ChatMessages.glimboiMessage("The queue has been ended.");
-    resetQueueUI();
+    if (currentPage == "events") {
+        try {
+            resetQueueUI();
+        } catch(e) {}
+    }
 }
 
 function alterUI(user:string, action: "add" | "remove") {
     if (currentPage == "events") {
         try {
             addOrRemoveQueueUserUI(user, action);
-        } catch(e) {
-            console.log(e);
-        }
+        } catch(e) {}
     }
 }
 
