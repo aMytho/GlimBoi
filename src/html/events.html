@@ -7,46 +7,46 @@
                         role="tab" aria-controls="pills-home" aria-selected="true">Info</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-profile-tab" data-toggle="pill" href="#eventsRaffleTab" role="tab"
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsRaffleTab" role="tab"
                         aria-controls="pills-profile" aria-selected="false" onclick="loadRaffleUI()">Raffle</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-profile-tab" data-toggle="pill" href="#eventsGiveawayTab"
-                        role="tab" aria-controls="pills-profile" aria-selected="false"
-                        onclick="loadGiveawayUI()">Giveaway</a>
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsGiveawayTab" role="tab"
+                        aria-controls="pills-profile" aria-selected="false" onclick="loadGiveawayUI()">Giveaway</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsPollTab" role="tab"
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsPollTab" role="tab"
                         aria-controls="pills-contact" aria-selected="false" onclick="loadPollUI()">Poll</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsGlimrealmTab"
-                        role="tab" aria-controls="pills-contact" aria-selected="false"
-                        onclick="loadGlimrealmUI()">Glimrealm</a>
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsGlimrealmTab" role="tab"
+                        aria-controls="pills-contact" aria-selected="false" onclick="loadGlimrealmUI()">Glimrealm</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsBankheistTab"
-                        role="tab" aria-controls="pills-contact" aria-selected="false"
-                        onclick="loadBankheistUI()">Bankheist</a>
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsBankheistTab" role="tab"
+                        aria-controls="pills-contact" aria-selected="false" onclick="loadBankheistUI()">Bankheist</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsGlimroyaleTab"
-                        role="tab" aria-controls="pills-contact" aria-selected="false"
-                        onclick="loadGlimroyaleUI()">GlimRoyale</a>
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsGlimroyaleTab" role="tab"
+                        aria-controls="pills-contact" aria-selected="false" onclick="loadGlimroyaleUI()">GlimRoyale</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsDuelTab" role="tab"
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsDuelTab" role="tab"
                         aria-controls="pills-contact" aria-selected="false" onclick="loadDuelUI()">Duel</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsEightBallTab"
-                        role="tab" aria-controls="pills-contact" aria-selected="false"
-                        onclick="loadEightBallUI()">8Ball</a>
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsEightBallTab" role="tab"
+                        aria-controls="pills-contact" aria-selected="false" onclick="loadEightBallUI()">8Ball</a>
                 </li>
                 <li class="nav-item mx-2" role="presentation">
-                    <a class="btn btn-info" id="pills-contact-tab" data-toggle="pill" href="#eventsGambleTab" role="tab"
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsGambleTab" role="tab"
                         aria-controls="pills-contact" aria-selected="false" onclick="loadGambleUI()">Gamble</a>
                 </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <a class="btn btn-info" data-toggle="pill" href="#eventsQueueTab" role="tab"
+                        aria-controls="pills-contact" aria-selected="false" onclick="loadQueueUI()">Queue</a>
+                </li>
+
             </ul>
             <div class="card-body whiteText">
                 <div class="tab-content" id="eventsTab">
@@ -71,7 +71,7 @@
                                     </li>
                                     <li>
                                         <p>Questions? Join our <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                                onclick="loadLink('discord.com/invite/NZeqEjhHKf')">discord</span>!</p>
+                                                onclick="loadLink('discord.com/invite/NZeqEjhHKf')">Discord</span>!</p>
                                     </li>
                                 </ul>
                             </div>
@@ -747,6 +747,123 @@
                         </div>
 
                     </div>
+                    <div class="tab-pane fade show" id="eventsQueueTab" role="tabpanel"
+                        aria-labelledby="pills-home-tab">
+                        <!-- raffle buttons to start, view people in raffle, and end the raffle-->
+                        <div class="row">
+                            <div class="col-lg-12 col-12 text-center">
+                                <a class="btn btn-primary" href="#" onclick="startQueueFromUI()">Start Queue</a>
+                                <a class="btn btn-success" href="#" onclick="$('#modalQueueAdd').modal('show');">Add User</a>
+                                <a class="btn btn-warning" href="#" onclick="$('#modalQueueRemove').modal('show');">Remove User</a>
+                                <a class="btn btn-info" href="#" onclick="EventHandle.queue.progressQueue()">Progress Queue</a>
+                                <a class="btn btn-danger" href="#" onclick="stopQueueFromUI()">End Queue</a>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4 col-12">
+                                <h3 class="text-center">Queue Settings</h3>
+                                <!-- table with 3 rows for settings-->
+                                <table class="table table-striped whiteText">
+                                    <tr>
+                                        <td>Setting</td>
+                                        <td>Value</td>
+                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td>Cost of Entry</td>
+                                            <td>
+                                                <input type="text" class="settingInput input-number" id="queueCost"
+                                                    placeholder="The amount of points to enter the queue." value="0">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Minimum Rank</td>
+                                            <td>
+                                                <select class="settingSelect" id="queueRank">
+                                                    <option value="Everyone">Everyone (Default)</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Progression Rank</td>
+                                            <td>
+                                                <select class="settingSelect" id="queueProgression">
+                                                    <option value="Everyone">Everyone (Default)</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Quiet Mode</td>
+                                            <td>
+                                                <select class="settingSelect" id="queueQuiet">
+                                                    <option value="false">No</option>
+                                                    <option value="true">Yes</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Enabled</td>
+                                            <td>
+                                                <select class="settingSelect" id="queueEnabled">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center">
+                                    <a class="btn btn-danger" onclick="resetEventSettings('queue')">Reset</a>
+                                    <a class="btn btn-info" onclick="saveEventSettings('queue')">Save</a>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-4 col-12">
+                                <div class="text-center" style="min-height: 300px">
+                                    <h3>Users in Queue</h3>
+                                    <p>Users will appear below.</p>
+                                    <ul class="list-group eventUserList" id="queueUserList">
+                                    </ul>
+                                    <h4 id="queueWinner"></h4>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-4 col-12">
+                                <div class="text-center" style="min-height: 300px">
+                                    <h3>Queue</h3>
+                                    <p>An organized method for user actions. Ex. Joining a game</p>
+                                    <p>The queue can be started on this page or by typing !queue in chat. Users type
+                                        !join to enter the queue. You can also add users with !queue add USER</p>
+                                    <p>The results will be updated live on this page. Commands below.</p>
+                                    <p>
+                                        !queue : Starts the queue.
+                                    </p>
+                                    <p>
+                                        !queue stop : Stops the queue.
+                                    </p>
+                                    <p>
+                                        !queue reset : Resets the queue.
+                                    </p>
+                                    <p>
+                                        !queue add USER : Adds a user to the queue.
+                                    </p>
+                                    <p>
+                                        !queue remove USER : Removes a user from the queue.
+                                    </p>
+                                    <p>
+                                        !queue progress : Progresses the queue.
+                                    </p>
+                                    <p>
+                                        !queue next : Returns the next user in the queue.
+                                    </p>
+                                    <p>
+                                        !queue length : Returns the length of the queue.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
                 <h4 class="text-center">Events are still in beta, please report any issues you may have.</h4>
@@ -825,6 +942,50 @@
                 <button type="button" class="btn btn-outline-success"
                     onclick="EventHandle.poll.checkPollStatus(null, document.getElementById('pollQuestion').innerText, true)">Start
                     Poll</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalQueueAdd" tabindex="-1" role="dialog" aria-labelledby="success modal"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Add a User</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <input type="text" class="form-control" placeholder="User" id="queueAdd"
+                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-success" data-dismiss="modal" onclick="addToQueueUI()">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalQueueRemove" tabindex="-1" role="dialog" aria-labelledby="success modal"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Remove a User</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <input type="text" class="form-control" placeholder="User" id="queueRemove"
+                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="removeFromQueueUI()">Remove</button>
             </div>
         </div>
     </div>

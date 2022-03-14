@@ -3,7 +3,6 @@
  */
 let ChatActions:typeof import("../../modules/chat/chatActions") = require(appData[0] + "/modules/chat/chatActions.js");
 
-
 function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
     let userChat: string = chatMessage.user.username
     let messageChat = chatMessage.message;
@@ -131,6 +130,45 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                         break;
                 }
                 break;
+            case "!queue":
+                switch (message[1]) {
+                    case "":
+                    case " ":
+                    case null:
+                    case undefined:
+                        ChatActions.checkAndStartQueue(userChat);
+                        break;
+                    case "view":
+                    case "next":
+                    case "n":
+                        ChatActions.queueController("next");
+                        break;
+                    case "end":
+                    case "e":
+                    case "stop":
+                        ChatActions.queueController("end");
+                        break;
+                    case "length":
+                    case "l":
+                        ChatActions.queueController("all");
+                        break;
+                    case "progress":
+                    case "p":
+                        ChatActions.progressQueue(userChat);
+                        break;
+                    case "add":
+                    case "a":
+                        ChatActions.addOrRemoveQueue(userChat, "add",  message[2]);
+                    break;
+                    case "remove":
+                    case "r":
+                    case "d":
+                        ChatActions.addOrRemoveQueue(userChat, "remove",  message[2]);
+                    break;
+                    default:
+                        break;
+                }
+                break;
             case "!rank": ChatActions.getRank(userChat.toLowerCase());
                 break;
             case "!song": ChatActions.getSong();
@@ -165,10 +203,6 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                         case "toggle":
                             ChatActions.toggleShuffle(userChat)
                             break;
-                        //case "queue":
-                        //case "list":
-                        //ChatMessages.glimboiMessage("Feature coming soon");
-                        //break;
                         default: ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
                             break;
                     }
@@ -194,6 +228,5 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
         ChatStats.increaseUserMessageCounter();
     }
 }
-
 
 export { handleGlimeshMessage }

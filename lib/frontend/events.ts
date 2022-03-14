@@ -14,7 +14,6 @@ function loadEvents() {
 }
 
 
-
 function loadRaffleUI() {
     viewingEvent = "raffle";
     let raffleReward = CacheStore.get(`rafflePoints`, 777, false);
@@ -174,6 +173,121 @@ function loadGambleUI() {
     (document.getElementById("gambleWinRate") as HTMLSelectElement).value = String(gambleWinRate);
 }
 
+async function loadQueueUI() {
+    viewingEvent = "queue";
+    let queueEnabled = CacheStore.get("queueEnabled", true, false);
+    let queueQuiet = CacheStore.get("queueQuiet", false, false);
+    let queuePoints = CacheStore.get("queuePoints", 100);
+    let queueRank = CacheStore.get("queueRank", "Everyone");
+    let queueProgression = CacheStore.get("queueController", "Everyone");
+
+    let selectRank = document.getElementById("queueRank");
+    let queueProgressionRank = document.getElementById("queueProgression");
+    let options = await RankHandle.getAll();
+    for (let i = 0; i < options.length; i++) {
+        let opt = options[i].rank;
+        if (queueRank == opt) {
+            selectRank.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
+        } else {
+            selectRank.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+
+    for (let i = 0; i < options.length; i++) {
+        let opt = options[i].rank;
+        if (queueRank == opt) {
+            queueProgressionRank.innerHTML += "<option value=\"" + opt + "\" selected>" + opt + " (current)" + "</option>";
+        } else {
+            queueProgressionRank.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
+        }
+    }
+
+    let users = EventHandle.queue.getUsersInQueue();
+    for (let i = 0; i < users.length; i++) {
+        let user = users[i];
+        addOrRemoveQueueUserUI(user, "add")
+    }
+
+    (document.getElementById("queueEnabled") as HTMLInputElement).value = queueEnabled;
+    (document.getElementById("queueQuiet") as HTMLInputElement).value = queueQuiet;
+    (document.getElementById("queueCost") as HTMLInputElement).value = queuePoints.toString();
+    (document.getElementById("queueRank") as HTMLSelectElement).value = queueRank;
+    (document.getElementById("queueProgression") as HTMLSelectElement).value = queueProgression;
+}
+
+function startQueueFromUI() {
+    let queueStarted = EventHandle.queue.startQueue();
+    if (queueStarted) {
+        successMessage("Queue Started", "Queue has been started.");
+    } else {
+        errorMessage("Queue Failed", "Queue failed to start. Ensure it is enabled, not already running, and are connected to chat.");
+    }
+}
+
+function stopQueueFromUI() {
+    EventHandle.queue.endQueue();
+    successMessage("Queue Stopped", "Queue has been stopped.");
+}
+
+function addOrRemoveQueueUserUI(user: string, action: "add" | "remove") {
+    if (action == "add") {
+        let element = document.createElement("li");
+        element.innerText = user;
+        element.classList.add("list-group-item");
+        document.getElementById("queueUserList").appendChild(element);
+    } else {
+        // Loop through queueUserList. Check its children. If the name matches, remove it.
+        let queueUserList = document.getElementById("queueUserList");
+        for (let i = 0; i < queueUserList.children.length; i++) {
+            if ((queueUserList.children[i] as HTMLLIElement).innerText == user) {
+                queueUserList.children[i].remove();
+            }
+        }
+    }
+}
+
+async function checkQueueUser(user:string) {
+    let userExists = await UserHandle.findByUserName(user);
+    if (userExists) {
+        return true;
+    } else {
+        let userAdded = await UserHandle.addUser(user, false);
+        if (typeof userAdded == "string") {
+            return false
+        } else {
+            return true;
+        }
+    }
+}
+
+async function addToQueueUI() {
+    let user = (document.getElementById("queueAdd") as HTMLInputElement).value;
+    let userExists = await checkQueueUser(user);
+    if (userExists && EventHandle.queue.getUsersInQueue().indexOf(user) == -1 && ChatHandle.isConnected()) {
+        EventHandle.queue.addToQueue(user);
+        //addOrRemoveQueueUserUI(user, "add");
+        successMessage("User Added", "User has been added to queue.");
+    } else {
+        errorMessage(
+        "User Failed", "User failed to be added to queue. Ensure you are connected to chat and the user is not already in a queue.");
+    }
+}
+
+function removeFromQueueUI() {
+    let user = (document.getElementById("queueRemove") as HTMLInputElement).value;
+    if (EventHandle.queue.getUsersInQueue().indexOf(user) != -1) {
+        EventHandle.queue.removeFromQueue(user);
+        //addOrRemoveQueueUserUI(user, "remove");
+        successMessage("User Removed", "User has been removed from queue.");
+    } else {
+        errorMessage("User Failed", "The user is not in the queue.");
+    }
+}
+
+function resetQueueUI() {
+    document.getElementById("queueUserList").innerHTML = "";
+}
+
 function saveEventSettings(event: eventName) {
     let migratedSettings: any[] = [
         { [`${event}Enabled`]: ((document.getElementById(`${event}Enabled`) as HTMLInputElement).value.trim() === "true") },
@@ -234,6 +348,15 @@ function saveEventSettings(event: eventName) {
                 {raffleDuration: Number((document.getElementById(`raffleDuration`) as HTMLInputElement).value.trim()) * 60000},
                 {raffleCost: Number((document.getElementById(`raffleCost`) as HTMLInputElement).value.trim())},
                 {rafflePoints: Number((document.getElementById(`raffleReward`) as HTMLInputElement).value.trim())}
+            );
+            break;
+        case "queue":
+            migratedSettings.push(
+                {queueEnabled: ((document.getElementById(`queueEnabled`) as HTMLSelectElement).value.trim() === "true")},
+                {queueQuiet: ((document.getElementById(`queueQuiet`) as HTMLSelectElement).value.trim() === "true")},
+                {queuePoints: Number((document.getElementById(`queueCost`) as HTMLInputElement).value.trim())},
+                {queueRank: (document.getElementById(`queueRank`) as HTMLSelectElement).value.trim()},
+                {queueController: (document.getElementById(`queueController`) as HTMLSelectElement).value.trim()}
             );
             break;
         default:
@@ -301,6 +424,15 @@ function resetEventSettings(event: eventName) {
             (document.getElementById("raffleReward") as HTMLInputElement).value = String(777);
             (document.getElementById("raffleCost") as HTMLInputElement).value = String(50);
             break;
+        case "queue":
+            migratedSettings.push(
+                { queueEnabled: true }, { queueQuiet: false }, { queuePoints: 50 }, { queueRank: "Everyone" }, { queueController: "Everyone" }
+            );
+            (document.getElementById("queueEnabled") as HTMLSelectElement).value = String(true);
+            (document.getElementById("queueQuiet") as HTMLSelectElement).value = String(false);
+            (document.getElementById("queueCost") as HTMLInputElement).value = String(50);
+            (document.getElementById("queueRank") as HTMLSelectElement).value = "Everyone";
+            (document.getElementById("queueProgression") as HTMLSelectElement).value = "Everyone"
         default:
             break;
     }
