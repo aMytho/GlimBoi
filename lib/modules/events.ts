@@ -2,24 +2,24 @@
 
 let arrayOfEvents:eventName[] = [];
 
-const helper: typeof import("../modules/events/helpers/helper") = require(appData[0] + "/modules/events/helpers/helper.js")
+const helper: typeof import("./events/helpers/helper") = require(appData[0] + "/modules/events/helpers/helper.js")
 
 /**
  * Bankheist Controller
  */
-const bankHeist: typeof import("../modules/events/bankHeist") = require(appData[0] + "/modules/events/bankHeist.js");
+const bankHeist: typeof import("./events/bankHeist") = require(appData[0] + "/modules/events/bankHeist.js");
 /**
  * Poll Controller
  */
-const poll: typeof import("../modules/events/poll") = require(appData[0] + "/modules/events/poll.js");
+const poll: typeof import("./events/poll") = require(appData[0] + "/modules/events/poll.js");
 /**
  * Duel Controller
  */
-const duel: typeof import("../modules/events/duel") = require(appData[0] + "/modules/events/duel.js");
+const duel: typeof import("./events/duel") = require(appData[0] + "/modules/events/duel.js");
 /**
  * Glimrealm controller
  */
-const glimRealm: typeof import("../modules/events/glimRealm") = require(appData[0] + "/modules/events/glimRealm.js");
+const glimRealm: typeof import("./events/glimRealm") = require(appData[0] + "/modules/events/glimRealm.js");
 /**
  * Raffle controller
  */
@@ -27,16 +27,19 @@ const raffle: typeof import("../modules/events/raffle") = require(appData[0] + "
 /**
  * Giveaway controller
  */
-const giveaway: typeof import("../modules/events/giveaway") = require(appData[0] + "/modules/events/giveaway.js");
+const giveaway: typeof import("./events/giveaway") = require(appData[0] + "/modules/events/giveaway.js");
 /**
  * Glimroyale controller
  */
-const glimroyale: typeof import("../modules/events/glimRoyale") = require(appData[0] + "/modules/events/glimRoyale.js");
+const glimroyale: typeof import("./events/glimRoyale") = require(appData[0] + "/modules/events/glimRoyale.js");
 /**
  * Gamble Controller
  */
-const gamble:typeof import("../modules/events/gamble") = require(appData[0] + "/modules/events/gamble.js");
-
+const gamble:typeof import("./events/gamble") = require(appData[0] + "/modules/events/gamble.js");
+/**
+ * Queue Controller
+ */
+const queue: typeof import("./events/queue") = require(appData[0] + "/modules/events/queue.js");
 
 /**
  * Event Handler. Inputs the event and does the required action with the other paramaters. This allows multiple events to be run at the same time.
@@ -112,6 +115,13 @@ async function handleEvent(event:eventName, user:string, message: string) {
                 }
             }
             break;
+            case "queue":
+                if (message.startsWith('!join')) {
+                    if (await queue.canJoinQueue(user, false)) {
+                        queue.addToQueue(user);
+                    }
+                }
+            break;
         default:
         break;
     }
@@ -130,7 +140,7 @@ function addEvent(event:eventName) {
  * Returns current events
  * @returns {array}
  */
-function getCurrentEvents(): Array<any> {
+function getCurrentEvents(): Array<eventName> {
     return arrayOfEvents
 }
 
@@ -159,4 +169,4 @@ function isEventActive(event:eventName) {
 }
 
 export {addEvent, bankHeist, duel, gamble, getCurrentEvents, giveaway, glimRealm, glimroyale,
-handleEvent, helper,isEventActive, isEventEnabled, poll, raffle, removeEvent}
+handleEvent, helper, isEventActive, isEventEnabled, poll, queue, raffle, removeEvent}

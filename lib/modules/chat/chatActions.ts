@@ -34,13 +34,13 @@ async function modifyUserFromChat(user: string, target: string, attemptedAction:
  * Returns a random quote and sends it to chat.
  */
 function randomQuoteChat() {
-  	QuoteHandle.randomQuote().then(data => {
-    	if (data == null) {
-      		ChatMessages.glimboiMessage(`No quotes exist.`)
-    	} else {
-      		ChatMessages.filterMessage(`@${data.user} - ${data.data}`, "glimboi")
-    	}
-  	})
+    QuoteHandle.randomQuote().then(data => {
+        if (data == null) {
+            ChatMessages.glimboiMessage(`No quotes exist.`)
+        } else {
+            ChatMessages.filterMessage(`@${data.user} - ${data.data}`, "glimboi")
+        }
+    })
 }
 
 /**
@@ -49,7 +49,7 @@ function randomQuoteChat() {
  * @param {string} user Who recorded the quote
  * @param {string} creator Who said the quote
  */
-async function addQuoteChat(user: string, data:string, creator: string) {
+async function addQuoteChat(user: string, data: string, creator: string) {
     if (await permissionCheck(user, "canAddQuotes", "add quotes")) {
         console.log(creator, data);
         let trimMessage = 10 + creator.length + 2;
@@ -139,14 +139,15 @@ async function addCommand(user: string, command: commandName, commandData: strin
             console.log(command + " already exists.");
             ChatMessages.filterMessage(command + " already exists", "glimboi");
         } else {
-            let newCMD = CommandHandle.addCommand({ commandName: command, uses: 0, points: 0, cooldown: 0,
+            let newCMD = CommandHandle.addCommand({
+                commandName: command, uses: 0, points: 0, cooldown: 0,
                 rank: "Everyone", repeat: false, shouldDelete: false, disabled: false,
                 actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
             });
             ChatMessages.filterMessage(command + " added!", "glimboi");
             try {
                 addCommandTable({ commandName: command, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions })
-            } catch (e) {}
+            } catch (e) { }
         }
     }
 }
@@ -189,7 +190,7 @@ async function getRank(user: string) {
  * @param {number} amount
  * @returns {boolean} True or false
  */
-function checkAmount(amount:number | any): boolean {
+function checkAmount(amount: number | any): boolean {
     return !isNaN(amount);
 }
 
@@ -199,7 +200,7 @@ function checkAmount(amount:number | any): boolean {
  * @param {user} target The target user who will be affected
  * @param {number} count The amount of points to add
  */
-async function addPointsChat(user: string, target: string, count:string | number | undefined) {
+async function addPointsChat(user: string, target: string, count: string | number | undefined) {
     if (await permissionCheck(user, "canAddPoints", "add points")) {
         if (!targetCheck(target, "The target was not included. !points add Mytho 100")) return;
         if (checkAmount(count) == true) {
@@ -270,7 +271,7 @@ async function removePointsChat(user: string, target: string, count: number | st
  * @param {string} target The user who is getting a new point value
  * @param {number} count The amount of points that will be set
  */
-async function editPointsChat(user:string, target:string, count:number | string | undefined) {
+async function editPointsChat(user: string, target: string, count: number | string | undefined) {
     if (await permissionCheck(user, "canEditPoints", "edit points")) {
         if (!targetCheck(target, "The user was not included. !points set Mytho 100")) return;
         if (checkAmount(count) == true) {
@@ -384,7 +385,7 @@ function getSong() {
  * @param {string} user The user who asked for or set the next song
  * @param {string} action Whether we are getting or setting the next song
  */
-async function nextSong(user:string, action) {
+async function nextSong(user: string, action) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (action == "set") {
             if (musicPlaylist[currentSongIndex]) {
@@ -611,7 +612,7 @@ async function checkPoll(user: string, message: string | undefined) {
  * @param message The message which should contain the command and question
  * @returns
  */
-async function eightBall(user:string, message: string) {
+async function eightBall(user: string, message: string) {
     if (CacheStore.get("eightBallEnabled", true, true)) {
         if (message.trim().length <= 6) {
             return ChatMessages.filterMessage("You must specify a question to get a response. !8ball question?", "glimboi");
@@ -660,12 +661,110 @@ function gamble(user: string, message) {
     }
 }
 
+async function checkAndStartQueue(user: string) {
+    if (EventHandle.isEventEnabled("queue")) {
+        if (await permissionCheck(user, "canStartEvents", "start queue")) {
+            EventHandle.queue.startQueue(user);
+        }
+    } else {
+        ChatMessages.filterMessage("Queue is not enabled.", "glimboi");
+    }
+}
+
+async function queueController(request: "next" | "end" | "all", user?: string) {
+    if (request == "next") {
+        let nextUser = EventHandle.queue.getUsersInQueue()[0];
+        if (nextUser) {
+            ChatMessages.filterMessage(`The next user is ${nextUser}.`, "glimboi");
+        } else {
+            ChatMessages.filterMessage("There are no users in the queue.", "glimboi");
+        }
+    } else if (request == "end") {
+        if (await permissionCheck(user, "canEndEvents", "end queue")) {
+            EventHandle.queue.endQueue();
+        }
+    } else {
+        let queueUsers = EventHandle.queue.getUsersInQueue();
+        if (queueUsers.length > 0) {
+            ChatMessages.filterMessage(`The queue is currently ${queueUsers.length} users long.`, "glimboi");
+        } else {
+            ChatMessages.filterMessage("There are no users in the queue.", "glimboi");
+        }
+    }
+}
+
+async function progressQueue(user: string) {
+    if (EventHandle.isEventEnabled("queue")) {
+        // Creates the user in case they don't exist. The permission has nothing to do with it.
+        if (!(await checkTarget(user, true)).user) return false;
+        let userData = await UserHandle.findByUserName(user);
+        if (userData) {
+            let requiredRankName = CacheStore.get("queueController", "Everyone");
+            if (requiredRankName == "Everyone") {
+                EventHandle.queue.progressQueue();
+            } else {
+                let [requiredRank, userRank] = await Promise.all([
+                    RankHandle.getRankPerms(requiredRankName),
+                    RankHandle.getRankPerms((userData as UserType).role)
+                ]);
+                if (requiredRank != null && userRank != null) {
+                    if (userRank.rankTier >= requiredRank.rankTier) {
+                        EventHandle.queue.progressQueue();
+                    } else {
+                        ChatMessages.glimboiMessage(`${user}, you do not have the required rank to progress the queue.`);
+                    }
+                }
+            }
+        }
+    } else {
+        ChatMessages.filterMessage("Queue is not enabled.", "glimboi");
+    }
+}
+
+async function addOrRemoveQueue(user:string, action: "add" | "remove", target:string) {
+    if (EventHandle.isEventEnabled("queue")) {
+        let userData = await checkTarget(user, true);
+        if (userData.user) {
+            let userRank = await RankHandle.getRankPerms((userData.user as UserType).role);
+            let requiredRankName = CacheStore.get("queueController", "Everyone");
+            if (requiredRankName != "Everyone") {
+                let requiredRank = await RankHandle.getRankPerms(requiredRankName);
+                if (!userRank || !requiredRank || userRank.rankTier < requiredRank.rankTier) {
+                    ChatMessages.filterMessage(`${user}, you do not have the required rank to add or remove users from the queue.`, "glimboi");
+                    return
+                }
+            }
+        } else {
+            return
+        }
+        if (action == "add") {
+            let pontentialUser = await checkTarget(target, true);
+            if (pontentialUser.user && EventHandle.queue.getUsersInQueue().indexOf(pontentialUser.user.userName.toLowerCase()) == -1) {
+                EventHandle.queue.addToQueue(target);
+            } else {
+                ChatMessages.filterMessage(`Invalid target. Ensure they are not already in the queue.`, "glimboi");
+            }
+        } else if (action == "remove") {
+            let pontentialUser = await checkTarget(target, true);
+            if (pontentialUser.user) {
+                EventHandle.queue.removeFromQueue(target);
+            } else {
+                ChatMessages.filterMessage(`Invalid target`, "glimboi");
+            }
+        } else {
+            ChatMessages.filterMessage("Incorrect syntax. Try !queue add or !queue remove", "glimboi");
+        }
+    } else {
+        ChatMessages.filterMessage("Queue is not enabled.", "glimboi");
+    }
+}
+
 /**
  * Sends a message to the user that they do not have permission to perform the action.
  * @param {string} user The user who wanted to perform the action.
  * @param {string} attemptedAction The action they attempted to perform.
  */
-function invalidPerms(user:string, attemptedAction:string) {
+function invalidPerms(user: string, attemptedAction: string) {
     ChatMessages.filterMessage(`${user} does not have permission to ${attemptedAction}.`, "glimboi");
 }
 
@@ -691,7 +790,7 @@ function targetCheck(target: any, message = "No target specified."): boolean {
  * @param {string} action The action the user is trying to do.
  * @param {string} friendlyAction The user freindy version of the action.
  */
-async function permissionCheck(user:string, action: rankProperties, friendlyAction: string): Promise<boolean> {
+async function permissionCheck(user: string, action: rankProperties, friendlyAction: string): Promise<boolean> {
     user = user.toLowerCase();
     let hasPerms = await RankHandle.rankController(user, action, "string"); // get the rank check result
     if (hasPerms == false) { // They don't have permission
@@ -709,29 +808,29 @@ async function permissionCheck(user:string, action: rankProperties, friendlyActi
     }
 }
 
-async function checkTarget(user:string, addUser: boolean): Promise<{alreadyExists: boolean, user: UserType | null | false}> {
+async function checkTarget(user: string, addUser: boolean): Promise<{ alreadyExists: boolean, user: UserType | null | false }> {
     let userExists = await UserHandle.findByUserName(user);
     if (userExists == "ADDUSER") {
         if (addUser) {
             let newUser = await UserHandle.addUser(user, false, user);
             if (newUser !== "INVALIDUSER") {
-                return {alreadyExists: false, user: newUser as UserType}
+                return { alreadyExists: false, user: newUser as UserType }
             } else {
                 ChatMessages.filterMessage(`${user} does not exist on Glimesh.`, "glimboi");
-                return {alreadyExists: false, user: null}
+                return { alreadyExists: false, user: null }
             }
         } else {
             ChatMessages.filterMessage(`${user} has not been added to Glimboi.`, "glimboi");
-            return {alreadyExists: false, user: false}
+            return { alreadyExists: false, user: false }
         }
     } else {
-        return {alreadyExists: true, user: userExists}
+        return { alreadyExists: true, user: userExists }
     }
 }
 
 export {
-    addCommand, addPointsChat, addQuoteChat, commandList, checkAndStartBankheist, checkAndStartDuel, checkAndStartGiveaway,
-    checkAndStartGlimrealm, checkAndStartGlimroyale, checkAndStartRaffle, checkPoll, delQuoteChat,
+    addCommand, addOrRemoveQueue, addPointsChat, addQuoteChat, commandList, checkAndStartBankheist, checkAndStartDuel, checkAndStartGiveaway,
+    checkAndStartGlimrealm, checkAndStartGlimroyale, checkAndStartQueue, checkAndStartRaffle, checkPoll, delQuoteChat,
     editPointsChat, eightBall, gamble, getOwnPointsChat, getPointsChat, getRank, getSong, getTopPoints, modifyUserFromChat, nextSong, playPause,
-    previousSong, randomQuoteChat, removeCommand, removePointsChat, replaySong, toggleShuffle
+    previousSong, progressQueue, queueController, randomQuoteChat, removeCommand, removePointsChat, replaySong, toggleShuffle
 }
