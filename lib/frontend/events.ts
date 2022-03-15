@@ -158,7 +158,7 @@ function loadGiveawayUI() {
 }
 
 function loadEightBallUI() {
-    viewingEvent = "eightball"
+    viewingEvent = "eightBall";
     let eightBallEnabled = CacheStore.get("eightBallEnabled", true, false);
     (document.getElementById("eightBallEnabled") as HTMLSelectElement).value = String(eightBallEnabled);
 }
@@ -300,7 +300,6 @@ function saveEventSettings(event: eventName) {
                 {gambleWinRate: Number((document.getElementById(`gambleWinRate`) as HTMLInputElement).value.trim())}
             );
             break;
-            // @ts-ignore
         case "eightBall":
             migratedSettings.push(
                 {eightBallEnabled: ((document.getElementById(`eightBallEnabled`) as HTMLSelectElement).value.trim() === "true")}
@@ -387,7 +386,7 @@ function resetEventSettings(event: eventName) {
             (document.getElementById("giveawayQuiet") as HTMLInputElement).value = String(false);
             (document.getElementById("giveawayDuration") as HTMLInputElement).value = String(1);
             break;
-        case "eightball":
+        case "eightBall":
             // Only has enabled property, nothing to do here
             break;
         case "gamble":

@@ -39,7 +39,6 @@ async function addUser(user: string) {
 
 /**
  * Returns the users who are in the raffle
- * @returns {string[]} The users who are in the raffle
  */
 function getUsers(): string[] {
     return usersInRaffle;
@@ -48,8 +47,6 @@ function getUsers(): string[] {
 /**
  * Starts the raffle
  * @param {string} user The user who is starting the raffle. If started from UI should be Glimboi
- * @returns {Promise<boolean>} True if the raffle was started, false if it was not
- * @async
  */
 async function startRaffle(user: string, fromUI?: boolean): Promise<boolean> {
     if (EventHandle.isEventEnabled("raffle")) {
@@ -110,7 +107,6 @@ async function startRaffle(user: string, fromUI?: boolean): Promise<boolean> {
 /**
  * Returns a message to show that the user entered the raffle successfully
  * @param {string} user The user who entered the raffle
- * @returns {string} The message to show
  */
 function getEnteredMessage(user: string): string {
     // pick a random message
@@ -125,7 +121,6 @@ function getEnteredMessage(user: string): string {
 
 /**
  * Stops the raffle
- * @returns {boolean} True if the raffle was stopped, false if it was not
  */
 function stopRaffle(): boolean {
     if (raffleTimer) {
