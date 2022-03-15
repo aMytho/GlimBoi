@@ -19,6 +19,7 @@ const fs:typeof import("fs").promises = require("fs").promises;
 const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
 const LogHandle:LogHandle = require(appData[0] + "/modules/log.js");
 const Server:Server = require(appData[0] + "/modules/server.js");
+const Util:Util = require(appData[0] + "/modules/util/util.js");
 const mm = require("music-metadata");
 let currentPage:pageState = "home"
 
@@ -184,7 +185,7 @@ async function getDataDirectory() {
         try {
             await fs.mkdir(appData[1] + '/data/');
         } catch (e) {
-            errorMessage("Error creating/reading data directory. You can try reloading. If the issue persists contact us on twitter or discord.")
+            errorMessage("Error creating/reading data directory. You can try reloading.",  "If the issue persists contact us on twitter or discord.")
         }
     }
 }
