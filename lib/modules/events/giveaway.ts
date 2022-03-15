@@ -25,7 +25,6 @@ function resetGiveaway() {
 /**
  * Checks if a user entered the giveaway.
  * @param {string} user - The user to check.
- * @returns {boolean
  */
 function isInGiveaway(user:string): boolean {
     return usersInGiveaway.indexOf(user) > -1;
@@ -50,7 +49,7 @@ function enterGiveaway(user:string) {
  * @param {boolean} fromChat - Was this started from chat?
  */
 function startGiveaway(fromChat: boolean, user?:string) {
-    if (EventHandle.isEventEnabled("giveaway")) {
+    if (Util.isEventEnabled("giveaway", "The giveaway is not enabled.")) {
         if (EventHandle.isEventActive("giveaway")) {
             if (fromChat) {
                 ChatMessages.filterMessage(`${user}, there is already a giveaway in progress`, "glimboi");
@@ -81,19 +80,15 @@ function startGiveaway(fromChat: boolean, user?:string) {
             ChatMessages.filterMessage(`The winner is: ${winner}!`, "glimboi");
         }, CacheStore.get("giveawayDuration", 60000, true));
     } else {
-        if (fromChat) {
-            ChatMessages.filterMessage(`The giveaway is not enabled`, "glimboi");
-        } else {
+        if (!fromChat) {
             errorMessage("Giveaway Error", `The giveaway is not enabled`);
         }
     }
-
 }
 
 /**
  * Returns a message with the users name to show that they have entered the giveaway.
  * @param {string} user - The user who entered the giveaway.
- * @returns {string}
  */
 function getEnteredMessage(user:string): string {
     // possible messages with the user's name
@@ -121,6 +116,4 @@ function stopGiveaway(fromUI?: boolean): void {
     }
 }
 
-
-// export the functions
 export {enterGiveaway, startGiveaway, stopGiveaway};

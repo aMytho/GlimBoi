@@ -188,7 +188,6 @@ async function getRank(user: string) {
 /**
  * Checks if a number is valid
  * @param {number} amount
- * @returns {boolean} True or false
  */
 function checkAmount(amount: number | any): boolean {
     return !isNaN(amount);
@@ -483,12 +482,10 @@ async function playPause(user: string, action) {
  * @param {string} user The user who is wanting to start a giveaway.
  */
 async function checkAndStartGiveaway(user: string) {
-    if (EventHandle.isEventEnabled("giveaway")) {
+    if (!Util.isEventEnabled("giveaway", "Giveaway is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start giveaways")) {
             EventHandle.giveaway.startGiveaway(true, user);
         }
-    } else {
-        ChatMessages.filterMessage("Giveaway is not enabled.", "glimboi");
     }
 }
 
@@ -497,12 +494,10 @@ async function checkAndStartGiveaway(user: string) {
  * @param {string} user The user who is wanting to start a raffle.
  */
 async function checkAndStartRaffle(user: string) {
-    if (EventHandle.isEventEnabled("raffle")) {
+    if (Util.isEventEnabled("raffle", "Raffle is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start raffles")) {
             EventHandle.raffle.startRaffle(user, true);
         }
-    } else {
-        ChatMessages.filterMessage("Raffle is not enabled.", "glimboi");
     }
 }
 
@@ -511,12 +506,10 @@ async function checkAndStartRaffle(user: string) {
  * @param {string} user The user who is wanting to start Glimrealm.
  */
 async function checkAndStartGlimrealm(user: string) {
-    if (EventHandle.isEventEnabled("glimrealm")) {
+    if (Util.isEventEnabled("glimrealm", "Glimrealm is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start glimrealm")) {
             EventHandle.glimRealm.openGlimRealm(false);
         }
-    } else {
-        ChatMessages.filterMessage("Glimrealm is not enabled.", "glimboi");
     }
 }
 
@@ -525,12 +518,10 @@ async function checkAndStartGlimrealm(user: string) {
  * @param {string} user The user who is wanting to start a bankheist.
  */
 async function checkAndStartBankheist(user: string) {
-    if (EventHandle.isEventEnabled("bankheist")) {
+    if (Util.isEventEnabled("bankheist", "Bankheist is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start bankheist")) {
             EventHandle.bankHeist.startBankHeist(user, false);
         }
-    } else {
-        ChatMessages.filterMessage("Bankheist is not enabled.", "glimboi");
     }
 }
 
@@ -539,12 +530,10 @@ async function checkAndStartBankheist(user: string) {
  * @param {string} user The user who is wanting to start a duel.
  */
 async function checkAndStartDuel(user: string, opponent: string, wager: number) {
-    if (EventHandle.isEventEnabled("duel")) {
+    if (Util.isEventEnabled("duel", "Duel is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start duel")) {
             EventHandle.duel.challengeUser(user, opponent, Number(wager));
         }
-    } else {
-        ChatMessages.filterMessage("Duel is not enabled.", "glimboi");
     }
 }
 
@@ -553,7 +542,7 @@ async function checkAndStartDuel(user: string, opponent: string, wager: number) 
  */
 async function checkAndStartGlimroyale(user: string, wager: number) {
     wager = Number(wager);
-    if (EventHandle.isEventEnabled("glimroyale")) {
+    if (Util.isEventEnabled("glimroyale", "Glimroyale is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start glimroyale")) {
             if (typeof wager == "number" && isNaN(wager) == false) {
                 let glimroyaleUser = await UserHandle.findByUserName(user);
@@ -566,14 +555,12 @@ async function checkAndStartGlimroyale(user: string, wager: number) {
                 ChatMessages.filterMessage("Wager must be a number.", "glimboi");
             }
         }
-    } else {
-        ChatMessages.filterMessage("Glimroyale is not enabled.", "glimboi");
     }
 }
 
 
 async function checkPoll(user: string, message: string | undefined) {
-    if (EventHandle.isEventEnabled("poll")) {
+    if (Util.isEventEnabled("poll", "Poll is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start polls")) {
             console.log(user, message);
             if (message && message.length > 0) {
@@ -601,8 +588,6 @@ async function checkPoll(user: string, message: string | undefined) {
                 ChatMessages.filterMessage("Incorrect syntax. Try !poll question? option1 | option2 | etc. Make sure to end the question with?", "glimboi");
             }
         }
-    } else {
-        ChatMessages.filterMessage("Poll is not enabled.", "glimboi");
     }
 }
 
@@ -610,10 +595,9 @@ async function checkPoll(user: string, message: string | undefined) {
  * Asks the 8ball for an answer.
  * @param user The username of the user
  * @param message The message which should contain the command and question
- * @returns
  */
 async function eightBall(user: string, message: string) {
-    if (CacheStore.get("eightBallEnabled", true, true)) {
+    if (Util.isEventEnabled("eightBall", "Eightball is not enabled.")) {
         if (message.trim().length <= 6) {
             return ChatMessages.filterMessage("You must specify a question to get a response. !8ball question?", "glimboi");
         }
@@ -641,14 +625,12 @@ async function eightBall(user: string, message: string) {
         ];
         let responseNumber = Math.round(Math.random() * possibleResponses.length);
         ChatMessages.filterMessage(possibleResponses[responseNumber], "glimboi");
-    } else {
-        ChatMessages.filterMessage(`@${user}, 8ball is not enabled.`, "glimboi");
     }
 }
 
 
 function gamble(user: string, message) {
-    if (CacheStore.get("gambleEnabled", true, true)) {
+    if (Util.isEventEnabled("gamble", "Gamble is not enabled.")) {
         let splitMessage: string[] = message.split(" ");
         let amount: number = parseInt(splitMessage[1]);
         if (isNaN(amount) || amount <= 0) {
@@ -656,18 +638,14 @@ function gamble(user: string, message) {
         } else {
             EventHandle.gamble.gamble(user, amount);
         }
-    } else {
-        ChatMessages.filterMessage(`${user}, Gamble is not enabled`, "glimboi");
     }
 }
 
 async function checkAndStartQueue(user: string) {
-    if (EventHandle.isEventEnabled("queue")) {
+    if (Util.isEventEnabled("queue", "Queue is not enabled.")) {
         if (await permissionCheck(user, "canStartEvents", "start queue")) {
             EventHandle.queue.startQueue(user);
         }
-    } else {
-        ChatMessages.filterMessage("Queue is not enabled.", "glimboi");
     }
 }
 
@@ -694,7 +672,7 @@ async function queueController(request: "next" | "end" | "all", user?: string) {
 }
 
 async function progressQueue(user: string) {
-    if (EventHandle.isEventEnabled("queue")) {
+    if (Util.isEventEnabled("queue", "Queue is not enabled.")) {
         // Creates the user in case they don't exist. The permission has nothing to do with it.
         if (!(await checkTarget(user, true)).user) return false;
         let userData = await UserHandle.findByUserName(user);
@@ -703,34 +681,23 @@ async function progressQueue(user: string) {
             if (requiredRankName == "Everyone") {
                 EventHandle.queue.progressQueue();
             } else {
-                let [requiredRank, userRank] = await Promise.all([
-                    RankHandle.getRankPerms(requiredRankName),
-                    RankHandle.getRankPerms((userData as UserType).role)
-                ]);
-                if (requiredRank != null && userRank != null) {
-                    if (userRank.rankTier >= requiredRank.rankTier) {
-                        EventHandle.queue.progressQueue();
-                    } else {
-                        ChatMessages.glimboiMessage(`${user}, you do not have the required rank to progress the queue.`);
-                    }
+                if (Util.compareRanks((userData as UserType).role, requiredRankName,
+                `${user}, you do not have the required rank to progress the queue.`)) {
+                    EventHandle.queue.progressQueue();
                 }
             }
         }
-    } else {
-        ChatMessages.filterMessage("Queue is not enabled.", "glimboi");
     }
 }
 
 async function addOrRemoveQueue(user:string, action: "add" | "remove", target:string) {
-    if (EventHandle.isEventEnabled("queue")) {
+    if (Util.isEventEnabled("queue", "Queue is not enabled.")) {
         let userData = await checkTarget(user, true);
         if (userData.user) {
-            let userRank = await RankHandle.getRankPerms((userData.user as UserType).role);
             let requiredRankName = CacheStore.get("queueController", "Everyone");
             if (requiredRankName != "Everyone") {
-                let requiredRank = await RankHandle.getRankPerms(requiredRankName);
-                if (!userRank || !requiredRank || userRank.rankTier < requiredRank.rankTier) {
-                    ChatMessages.filterMessage(`${user}, you do not have the required rank to add or remove users from the queue.`, "glimboi");
+                if (!Util.compareRanks((userData.user as UserType).role, requiredRankName,
+                `${user}, you do not have the required rank to add or remove users from the queue.`)) {
                     return
                 }
             }
@@ -754,8 +721,6 @@ async function addOrRemoveQueue(user:string, action: "add" | "remove", target:st
         } else {
             ChatMessages.filterMessage("Incorrect syntax. Try !queue add or !queue remove", "glimboi");
         }
-    } else {
-        ChatMessages.filterMessage("Queue is not enabled.", "glimboi");
     }
 }
 
@@ -772,7 +737,6 @@ function invalidPerms(user: string, attemptedAction: string) {
  * Checks to see if a target exists. If not sends a message to chat about it
  * @param target
  * @param message
- * @returns
  */
 function targetCheck(target: any, message = "No target specified."): boolean {
     if (target && target.length > 0) {

@@ -2,8 +2,6 @@
 
 let arrayOfEvents:eventName[] = [];
 
-const helper: typeof import("./events/helpers/helper") = require(appData[0] + "/modules/events/helpers/helper.js")
-
 /**
  * Bankheist Controller
  */
@@ -104,7 +102,7 @@ async function handleEvent(event:eventName, user:string, message: string) {
                         handleEvent(event, newUser.userName, message);
                     }
                 } else {
-                    if (helper.compareUserPoints(potentialUser, glimroyale.getWager(), true)) {
+                    if (Util.compareUserPoints(potentialUser, glimroyale.getWager(), true)) {
                         let joined = glimroyale.joinBattle(potentialUser.userName);
                         if (!joined) {
                             ChatMessages.filterMessage(`@${user}, You have already joined the Glimroyale`, "glimboi");
@@ -169,4 +167,4 @@ function isEventActive(event:eventName) {
 }
 
 export {addEvent, bankHeist, duel, gamble, getCurrentEvents, giveaway, glimRealm, glimroyale,
-handleEvent, helper, isEventActive, isEventEnabled, poll, queue, raffle, removeEvent}
+handleEvent, isEventActive, isEventEnabled, poll, queue, raffle, removeEvent}

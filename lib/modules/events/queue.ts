@@ -20,7 +20,7 @@ async function canJoinQueue(user: string, override: boolean): Promise<boolean> {
             return true;
         } else {
             // Check points and rank restrictions
-            if (await EventHandle.helper.compareUserPoints(userExists, CacheStore.get("queuePoints", 100), false)) {
+            if (await Util.compareUserPoints(userExists, CacheStore.get("queuePoints", 100), false)) {
                 let queueRank = await RankHandle.getRankPerms(CacheStore.get("queueRank", "Everyone"));
                 let userRank = await RankHandle.getRankPerms((userExists as UserType).role);
                 if (CacheStore.get("queueRank", "Everyone") == "Everyone") {

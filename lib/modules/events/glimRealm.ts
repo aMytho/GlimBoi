@@ -87,8 +87,7 @@ function openGlimRealm(fromUI?: boolean) {
             errorMessage("Glimrealm Error", "Glimrealm is still on cooldown.")
         }
     } else if (portalStatus == "ready") {
-        if (!EventHandle.isEventEnabled("glimrealm")) {
-            ChatMessages.filterMessage("The portal to the Glimrealm is not enabled :glimcry: ...", "glimboi");
+        if (!Util.isEventEnabled("glimrealm", "The portal to the Glimrealm is not enabled :glimcry:")) {
             if (fromUI) {
                 errorMessage("Glimrealm Error", "The portal to the Glimrealm is not enabled. ...");
             }
@@ -169,6 +168,5 @@ function stopGlimrealm(manual: boolean) {
         ChatMessages.filterMessage("Glimrealm has been stopped" ,"glimboi");
     }
 }
-
 
 export {addGlimRealmUser, glimDropRealm, getGlimrealmStatus, openGlimRealm, startGlimrealm, stopGlimrealm}
