@@ -10,7 +10,7 @@ function unlockBot() {
         let navItems = [...mainNav.children];
         // Remove the diable class from all navbar items
         navItems.forEach(item => {
-            item.firstElementChild!.classList.remove("disabled");
+            //item.firstElementChild!.classList.remove("disabled");
         });
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")

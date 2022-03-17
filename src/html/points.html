@@ -1,143 +1,114 @@
-<div class="card-deck m-3">
-    <div class="card col-12 col-lg-3 glimPanel">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-4 whiteText text-nowrap">
-                    <h3>Starting</h3>
-                </div>
-                <div class="col-8 whiteText">
-                    <h4 class="text-right" id="StartingPoints">100</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4 whiteText text-nowrap">
-                    <h3>Rate</h3>
-                </div>
-                <div class="col-8 whiteText">
-                    <h4 class="text-right" id="EarningPoints">100</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4 whiteText text-nowrap">
-                    <h3>Total</h3>
-                </div>
-                <div class="col-8 whiteText">
-                    <h4 class="text-right" id="TotalPoints">100</h4>
-                </div>
-            </div>
-            <div class="row mt-1">
-                <div class="col-12 whiteText">
-                    <h3 class="text-center">Initial Value</h3>
-                    <p>The amount of points a new user starts with.</p>
-                    <form>
-                        <div class="form-group">
-                            <label for="rateValueSlider">Starting Amount</label>
-                            <input type="range" class="form-control-range" id="pointValue" min="0" max="500"
-                                oninput="document.getElementById('pointValueOutput').innerText = this.value">
-                            <p id="pointValueOutput">100</p>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 whiteText">
-                    <h3 class="text-center">Rate</h3>
-                    <p>The amount of points earned per 15 minutes.</p>
-                    <form>
-                        <div class="form-group">
-                            <label for="rateValueSlider">Rate</label>
-                            <input type="range" class="form-control-range" id="pointRate" min="0" max="100"
-                                oninput="document.getElementById('rateValueOutput').innerText = this.value">
-                            <p id="rateValueOutput">100</p>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 whiteText">
-                    <h3 class="text-center">Name</h3>
-                    <p>The name of your currency.</p>
-                    <input class="icon-input aInput" type="text" placeholder="Name" id="pointsNewName"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: 0px;">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <a class="btn btn-info btn-block" onclick="getPoints()">Refresh Leaderboard</a>
-                </div>
-                <div class="col-6 ">
-                    <a class="btn btn-info btn-block" onclick="saveUserPointSettings()">Save</a>
-                </div>
-            </div>
+<div class="m-4 grid grid-cols-1 md:grid-cols-3 gap-x-4">
+    <div class="card-body glimPanel rounded-xl col-span-1 p-4 whiteText">
+        <div class="flow-root">
+            <h3 class="float-left text-lg font-semibold">Starting</h3>
+            <h4 class="float-right text-lg font-semibold" id="StartingPoints">100</h4>
+        </div>
+        <div class="flow-root mt-2">
+            <h3 class="float-left text-lg font-semibold">Rate</h3>
+            <h4 class="float-right text-lg font-semibold" id="EarningPoints">100</h4>
+        </div>
+        <div class="flow-root mt-2">
+            <h3 class="float-left text-lg font-semibold">Total</h3>
+            <h4 class="float-right text-lg font-semibold" id="TotalPoints">100</h4>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-center text-xl font-semibold">Initial Value</h3>
+            <p>The amount of points a new user starts with.</p>
+            <form class="mt-2">
+                <label for="rateValueSlider">Starting Amount</label>
+                <input type="range" class="w-full " id="pointValue" min="0" max="500"
+                    oninput="document.getElementById('pointValueOutput').innerText = this.value">
+                <p id="pointValueOutput">100</p>
+            </form>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-center text-xl font-semibold">Rate</h3>
+            <p>The amount of points earned per 15 minutes.</p>
+            <form class="mt-2">
+                <label for="rateValueSlider">Rate</label>
+                <input type="range" class="w-full" id="pointRate" min="0" max="100"
+                    oninput="document.getElementById('rateValueOutput').innerText = this.value">
+                <p id="rateValueOutput">100</p>
+            </form>
+        </div>
+        <div class="mt-2">
+            <h3 class="text-center text-xl font-semibold">Name</h3>
+            <p>The name of your currency.</p>
+            <input class="w-full rounded-md" type="text" placeholder="Name" id="pointsNewName"
+                style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: 0px;">
+        </div>
+        <div class="mt-3 flex justify-center">
+            <a class="btn-info" onclick="getPoints()">Refresh Leaderboard</a>
+            <a class="btn-info" onclick="saveUserPointSettings()">Save</a>
         </div>
     </div>
 
-    <div class="card col-12 col-lg-9 glimPanel">
-        <div class="card-body">
-            <h3 class="whiteText text-center" id="pointName">Points Leaderboard</h3>
-            <table class="table whiteText" id="pointsTable">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">User</th>
-                        <th scope="col">Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td id="firstUser">Default</td>
-                        <td id="firstTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td id="secondUser">Default</td>
-                        <td id="secondTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td id="thirdUser">Default</td>
-                        <td id="thirdTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td id="fourthUser">Default</td>
-                        <td id="fourthTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td id="fifthUser">Default</td>
-                        <td id="fifthTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">6</th>
-                        <td id="sixthUser">Default</td>
-                        <td id="sixthTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">7</th>
-                        <td id="seventhUser">Default</td>
-                        <td id="seventhTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">8</th>
-                        <td id="eighthUser">Default</td>
-                        <td id="eighthTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">9</th>
-                        <td id="ninthUser">Default</td>
-                        <td id="ninthTeam">User</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">10</th>
-                        <td id="tenthUser">Default</td>
-                        <td id="tenthTeam">User</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="card-body glimPanel p-4 rounded-xl col-span-2 sm:mt-4 md:mt-0">
+        <h3 class="whiteText text-center text-2xl font-bold" id="pointName">Points Leaderboard</h3>
+        <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl " style="background-color: #14365b;" id="pointsTable">
+            <thead>
+                <tr>
+                    <th class="p-3 cyanBorder border-1 border-b-0 border-x-0 text-xl" scope="col">#</th>
+                    <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl" scope="col">User</th>
+                    <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl" scope="col">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" scope="row">1</th>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" id="firstUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" id="firstTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">2</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="secondUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="secondTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">3</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="thirdUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="thirdTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">4</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="fourthUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="fourthTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">5</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="fifthUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="fifthTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0"scope="row">6</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0"id="sixthUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0"id="sixthTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">7</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="seventhUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="seventhTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">8</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="eighthUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="eighthTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">9</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="ninthUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="ninthTeam">User</td>
+                </tr>
+                <tr>
+                    <th class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" scope="row">10</th>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="tenthUser">Default</td>
+                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0" id="tenthTeam">User</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+
 </div>
 
 
