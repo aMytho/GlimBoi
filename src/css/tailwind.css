@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn-info {
+    @apply text-white bg-cyan-500 hover:bg-cyan-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
+    font-size: 1.2rem;
+}
+
+html,
+body {
+    background-color: #060818 !important; /*Same as Glimesh.tv */
+    overflow-x: hidden; /*prevents a vertical scollbar*/
+}
+.glimPanel {
+    background-color: #14193d !important; /*Color of most panels*/
+}
+.glimNav {
+    background-color: #151033 !important; /*Nav bar*/
+}
+.glimNavItem {
+    -webkit-app-region: no-drag; /*Allow the links to be clickable and not draggable. */
+}
+.whiteText {
+    color: aliceblue;
+}
+.dropdown-item:focus,
+.dropdown-item:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #1672ce !important;
+}
+.dropdown-menu {
+    background-color: #1b2e4b !important;
+}
+
+#navContainer a:hover {
+    background-color: #1b2e4b !important;
+}
+
+.border-1 {
+    border-top-width: 1px;
+}
+
+.cyanBorder {
+    border-top-color: #006e80;
+}
