@@ -79,6 +79,9 @@ window.onload = function() {
                         case "ChatLink": loadChatWindow(); currentPage = "chat"; break;
                         case "GlimBoiHeader": loadBotStats(); unlockRequestToken(); currentPage = "home"; break;
                     }
+                    let ev = document.createEvent("Event");
+                    ev.initEvent("DOMContentLoaded", true, true);
+                    window.document.dispatchEvent(ev);
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
         	}

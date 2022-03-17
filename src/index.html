@@ -1,204 +1,224 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>GlimBoi</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-        <!-- jQuery library -->
-        <script>window.$ = window.jQuery = require('jquery'); let dirName = __dirname
-        </script>
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <!-- Popper JS -->
-        <script src="../build/frontend/popper.js"></script>
-        <!-- Latest compiled JavaScript -->
-        <script src="../build/frontend/bootstrap/bootstrap.min.js"></script>
-        <link href="css/css/all.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="css/dataTables.css">
-        <script src="../build/frontend/dataTables/dataTables.js"></script>
-        <!--custom scripts-->
-        <script src="../build/frontend/electronNav.js"></script>
-        <script src="../build/frontend/home.js"></script>
-        <script src="../build/frontend/users.js"></script>
-        <script src="../build/frontend/ranks.js"></script>
-        <script src="../build/frontend/commands.js"></script>
-        <script src="../build/frontend/media.js"></script>
-        <script src="../build/frontend/chat.js"></script>
-        <script src="../build/frontend/events.js"></script>
-        <script src="../build/frontend/music.js"></script>
-        <script src="../build/frontend/modPanel.js"></script>
-        <script src="../build/frontend/settings.js"></script>
-    </head>
-    <body>
-        <div class="" style="width: 100%; background-color: #14193d;color:transparent;-webkit-app-region: drag">Have a nice day :)
-            <i id="maximize" class="fa fa-window-maximize mx-1 mt-1" style="color: skyblue; float: right; -webkit-app-region: no-drag"></i>
-            <i id="minimize" class="fa fa-window-minimize mx-1 mt-1" style="color: skyblue; float: right;-webkit-app-region: no-drag"></i>
-            <i id="refresh" class="fas fa-sync mx-1 mt-1" style="color: skyblue; float: right; -webkit-app-region: no-drag"></i></div>
-        <nav class="navbar navbar-expand-md navbar-dark glimNav" style="padding-bottom: 5px;" >
 
-            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-                <ul class="navbar-nav mr-auto" id="mainNavBar">
-                    <li class="nav-item glimNavItem" id="Commands">
-                        <a class="nav-link disabled" href="../src/html/commands.html" id="CommandLink">Commands</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="Quotes">
-                        <a class="nav-link disabled" href="../src/html/points.html" id="PointsLink">Points</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="Events">
-                        <a class="nav-link disabled" href="../src/html/events.html" id="EventsLink">Events</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="DB">
-                        <a class="nav-link disabled" href="../src/html/users.html" id="UsersLink">Users</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="Ranks">
-                        <a class="nav-link disabled" href="../src/html/ranks.html" id="RanksLink">Ranks</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="OBS">
-                        <a class="nav-link disabled" href="../src/html/media.html" id="OBSLink">Media</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="Music">
-                        <a class="nav-link disabled" href="../src/html/music.html" id="MusicLink">Music Player</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="ModPanel">
-                        <a class="nav-link disabled" href="../src/html/modPanel.html" id="ModPanelLink">Moderation</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="Settings">
-                        <a class="nav-link disabled" href="../src/html/settings.html" id="SettingsLink">Integrations</a>
-                    </li>
-                    <li class="nav-item glimNavItem" id="Chat">
-                        <a class="nav-link disabled" href="../src/html/chat.html" id="ChatLink">Chat</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="mx-auto order-0">
-                <a class="navbar-brand mx-auto nav-link glimNavItem active" href="../src/html/homepage.html" style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
-            </div>
-            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color:#b2dbff">
-                            Status
-                        </a>
-                        <div class="dropdown-menu mt-0" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item navbarAlt" href="#">
-                                <p>Chat: <span id="navChatStatus" style="color:red">None</span></p>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item navbarAlt" href="#" style="margin: 0px;">
-                                <p id="version"></p>
-                                <span class="badge badge-pill badge-success" style="position: relative;left: 20%;">Production</span>
-                            </a>
-                        </div>
-                    </li>
-                    <li class="nav-item glimNavItem" id="musicNavIcon" style="display: none;">
-                        <audio id="musicAudio">
-                            <source src="#" type="audio/mp3">
-                            Your browser does not support the audio element.
-                          </audio>
-                    </li>
-                    <li class="nav-item glimNavItem">
-                        <a class="nav-link" href="#" id="close">Exit</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <!--End of Navbar-->
+<head>
+    <meta charset="UTF-8">
+    <title>GlimBoi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="css/tailwind.css">
+    <!-- jQuery library -->
+    <script>window.$ = window.jQuery = require('jquery'); let dirName = __dirname
+    </script>
+    <!-- Popper JS -->
+    <script src="../build/frontend/popper.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="../build/frontend/bootstrap/bootstrap.min.js"></script>
+    <link href="css/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/dataTables.css">
+    <script src="../build/frontend/dataTables/dataTables.js"></script>
 
+    <script src="../node_modules/flowbite/dist/flowbite.js"></script>
 
-        <!-- Layout for home page -->
-        <div class="pane h-100">
-            <div class="card-body mt-3 ml-3 mr-3 glimPanel whiteText">
+    <!--custom scripts-->
+    <script src="../build/frontend/electronNav.js"></script>
+    <script src="../build/frontend/home.js"></script>
+    <script src="../build/frontend/users.js"></script>
+    <script src="../build/frontend/ranks.js"></script>
+    <script src="../build/frontend/commands.js"></script>
+    <script src="../build/frontend/media.js"></script>
+    <script src="../build/frontend/chat.js"></script>
+    <script src="../build/frontend/events.js"></script>
+    <script src="../build/frontend/music.js"></script>
+    <script src="../build/frontend/modPanel.js"></script>
+    <script src="../build/frontend/settings.js"></script>
+</head>
 
-                <div class="row">
-                    <div class="col-md-6 col-12">
-                        <div class="introaaa">
-                            <h4>Welcome to <span style="color:turquoise">GlimBoi</span></h4>
-                        </div>
-                        <p>To get started select "Authorize." Log in with the account you want the bot to speak as. Glimboi should request a token, but if you can't join a chat you should request one yourself.</p>
-                        <p>After that Glimboi will automatically request a token on startup. It may take 5-10 seconds to do so. If you can't get something to work let me know!</p>
-                        <p>The bot may get disconnected, but it should rejoin after 5-10 seconds. You can toggle the message on the chat page. It will look like nothing is happening, but it is reconnecting on the background.</p>
-                        <div class="row">
-                            <div class="col">
-                                <button class="btn btn-info btn-block" type="submit" id="authButton2" onclick="loadLink('glimboi.com/docs')">Documentation</button>
-                            </div>
-                            <div class="col">
-                                <button class="btn btn-info btn-block" type="submit" id="authButton3" onclick="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
-                            </div>
-                            <div class="col">
-                                <button class="btn btn-info btn-block" type="submit" id="authButton4" onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
-                            </div>
-                            <div class="col">
-                                <button class="btn btn-info btn-block" type="submit" id="authButton6" onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
-                            </div>
-                        </div>
+<body>
+    <div class="" style="width: 100%; background-color: #14193d;color:transparent;-webkit-app-region: drag">Have a nice
+        day :)
+        <i id="maximize" class="fa fa-window-maximize mx-1 mt-1"
+            style="color: skyblue; float: right; -webkit-app-region: no-drag"></i>
+        <i id="minimize" class="fa fa-window-minimize mx-1 mt-1"
+            style="color: skyblue; float: right;-webkit-app-region: no-drag"></i>
+        <i id="refresh" class="fas fa-sync mx-1 mt-1"
+            style="color: skyblue; float: right; -webkit-app-region: no-drag"></i>
+    </div>
+    <!-- Tailwind nav -->
+    <nav class="glimNav">
+        <div class="max-w-7xl pr-2 sm:pr-6 lg:pr-8">
+            <div class="relative flex items-center h-16" id="mainNavBar">
+                <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="block lg:hidden h-8 w-auto"
+                            src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow">
+                        <img class="hidden lg:block h-8 w-auto"
+                            src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                            alt="Workflow">
                     </div>
-                    <div class="col-md-6 col-12">
-                        <button class="btn btn-info btn-block mt-2" type="submit" id="saveAuth" onclick="AuthHandle.requestUserAuthorization()">Authorize</button>
-                        <button class="btn btn-info btn-block" type="submit" id="joinChannelBOT" disabled onclick="AuthHandle.requestToken(true);">Request Token</button>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div id="chart" class="mt-2">
-                                    <h3 class="text-center">Bot Information</h3>
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Collection</th>
-                                                <th scope="col">Count</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody style="color: aliceblue;">
-                                            <tr>
-                                                <td>
-                                                    Commands
-                                                </td>
-                                                <td>
-                                                    <span id="commandCount">0</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Users
-                                                </td>
-                                                <td>
-                                                    <span id="userCount">0</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Points
-                                                </td>
-                                                <td>
-                                                    <span id="pointCount">0</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Quotes
-                                                </td>
-                                                <td>
-                                                    <span id="quoteCount">0</span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                    <div class="sm:block sm:ml-6">
+                        <div class="flex space-x-4" id="navContainer">
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/commands.html" id="CommandLink">Commands</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/points.html" id="PointsLink">Points</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/events.html" id="EventsLink">Events</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/users.html" id="UsersLink">Users</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/ranks.html" id="RanksLink">Ranks</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/media.html" id="OBSLink">Media</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/music.html" id="MusicLink">Music Player</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/modPanel.html" id="ModPanelLink">Moderation</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/settings.html" id="SettingsLink">Integrations</a>
+                            <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/chat.html" id="ChatLink">Chat</a>
+                            </div>
+                    </div>
+                </div>
+                <div class="items-center justify-center">
+                    <a class="nav-link glimNavItem active font-bold text-xl" href="../src/html/homepage.html"style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 float-right">
+                    <button type="button" class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                      <span class="sr-only">View notifications</span>
+                      <!-- Heroicon name: outline/bell -->
+                      <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                      </svg>
+                    </button>
+
+                    <!-- Profile dropdown -->
+                    <div class="ml-3 relative">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color:#b2dbff">Status</a>
+                      <div class="hidden whiteText dropdown-menu origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                        <!-- Active: "bg-gray-100", Not Active: "" -->
+                        <a class="dropdown-item navbarAlt block px-4 py-2 text-sm" href="#">
+                            <p>Chat: <span id="navChatStatus" style="color:red">None</span></p>
+                        </a>
+                        <a class="dropdown-item navbarAlt block px-4 py-2 text-sm border-t-2 border-emerald-50" href="#" style="margin: 0px;">
+                            <p id="version"></p>
+                            <span class="badge badge-pill badge-success"
+                                style="position: relative;left: 20%;">Production</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                <div class="nav-item glimNavItem">
+                    <a class="nav-link glimNavItem active text" href="#" id="close">Exit</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+                    aria-current="page">Dashboard</a>
+
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Team</a>
+
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Projects</a>
+
+                <a href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Calendar</a>
+            </div>
+        </div>
+    </nav>
+    <!--End of Navbar-->
+
+
+    <!-- Layout for home page -->
+    <div class="pane h-100">
+        <div class="card-body mt-3 mb-6 ml-3 mr-3 px-8 pb-8 rounded-xl glimPanel whiteText">
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <h4 class="text-2xl font-bold mt-3">Welcome to <span style="color:turquoise">GlimBoi</span></h4>
+                    <p class="mt-6 text-xl">To get started select "Authorize." Log in with the account you want the bot to speak as. Glimboi
+                        should request a token, but if you can't join a chat you should request one yourself.</p>
+                    <p class="mt-6 text-xl">After that Glimboi will automatically request a token on startup. It may take 5-10 seconds to do
+                        so. If you can't get something to work let me know!</p>
+                    <p class="mt-6 text-xl">The bot may get disconnected, but it should rejoin after 5-10 seconds. You can toggle the message
+                        on the chat page. It will look like nothing is happening, but it is reconnecting on the
+                        background.</p>
+                    <div class="grid grid-cols-4 gap-1 mt-4" >
+                        <button class="btn-info" type="submit" id="authButton2" onclick="loadLink('glimboi.com/docs')">Documentation</button>
+                        <button class="btn-info" type="submit" id="authButton3"
+                            onclick="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
+                        <button class="btn-info" type="submit" id="authButton4"
+                            onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
+                        <button class="btn-info" type="submit" id="authButton6"
+                            onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-info mt-2 w-full" type="submit" id="saveAuth"
+                        onclick="AuthHandle.requestUserAuthorization()">Authorize</button>
+                    <button class="btn-info mt-2 w-full" type="submit" id="joinChannelBOT" disabled
+                        onclick="AuthHandle.requestToken(true);">Request Token</button>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div id="chart" class="mt-2">
+                                <h3 class="text-center text-2xl font-bold">Bot Information</h3>
+                                <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl " style="background-color: #14365b;">
+                                    <thead>
+                                        <tr>
+                                            <th class="p-3 cyanBorder border-1 border-b-0 border-x-0 text-xl text-left" scope="col">Collection</th>
+                                            <th class="p-3 cyanBorder border-1 border-b-0 border-x-0 text-xl text-left" scope="col">Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="color: aliceblue;">
+                                        <tr>
+                                            <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                                Commands
+                                            </td>
+                                            <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                                <span id="commandCount">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                                Users
+                                            </td>
+                                            <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                                <span id="userCount">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                                Points
+                                            </td>
+                                            <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                                <span id="pointCount">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                                Quotes
+                                            </td>
+                                            <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                                <span id="quoteCount">0</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="notification" class="hidden glimPanel">
-            <p id="message" class="whiteText"></p>
-            <button id="close-button" onClick="closeNotification()" class="hidden btn btn-outline-primary">
-                Close
-            </button>
-            <button id="restart-button" onClick="restartApp()" class="hidden btn btn-outline-success">
-                Restart
-            </button>
-        </div>
-        <style>
-            #notification {
+    </div>
+    <div id="notification" class="hidden glimPanel">
+        <p id="message" class="whiteText"></p>
+        <button id="close-button" onClick="closeNotification()" class="hidden btn btn-outline-primary">
+            Close
+        </button>
+        <button id="restart-button" onClick="restartApp()" class="hidden btn btn-outline-success">
+            Restart
+        </button>
+    </div>
+    <style>
+        #notification {
             position: fixed;
             bottom: 20px;
             left: 20px;
@@ -207,27 +227,30 @@
             border-radius: 5px;
             background-color: white;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            }
-            .hidden {
-                display: none;
-            }
-        </style>
-        <script>
-            //Creates the chart. Only build the first time. Also checks for updates
-            async function startEverything() {
-                checkForUpdate();
-                loadBotStats();
-                await startAuthProcess();
-                unlockRequestToken();
-            }
-            startEverything();
-        </script>
-    </body>
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        //Creates the chart. Only build the first time. Also checks for updates
+        async function startEverything() {
+            checkForUpdate();
+            loadBotStats();
+            await startAuthProcess();
+            unlockRequestToken();
+        }
+        startEverything();
+    </script>
+</body>
+
 </html>
 
 
 <!-- Modal: Error Message -->
-<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="error modal" aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="error modal" aria-hidden="true"
+    style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
         <div class="modal-content glimPanel whiteText" id="errorModal">
             <!--Header-->
@@ -249,49 +272,52 @@
 <!-- Modal: Error Message -->
 
 <!-- Modal: Success Message -->
-<div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true" style="overflow-wrap: break-word;">
-  	<div class="modal-dialog" role="document">
-     	<div class="modal-content glimPanel whiteText" id="successModal">
-        	<!--Header-->
-        	<div class="modal-header text-center">
-           		<h4 class="modal-title w-100" id="myModalSuccess">Info</h4>
-        	</div>
-        	<!--Body-->
-        	<div class="modal-body" id="modalSuccessBody">
-        		<p id="successMessageText"></p>
-        		<p id="successMessageSolution"></p>
-        	</div>
-        	<!--Footer-->
-        	<div class="modal-footer">
-           		<p id="otherMessageAdd"></p>
-           		<button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        	</div>
-     	</div>
-  	</div>
+<div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
+    style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="successModal">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100" id="myModalSuccess">Info</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body" id="modalSuccessBody">
+                <p id="successMessageText"></p>
+                <p id="successMessageSolution"></p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <p id="otherMessageAdd"></p>
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Modal: Success Message -->
 
 <!-- Modal: Moderate? -->
-<div class="modal fade" id="reconnectModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="reconnectModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true"
+    style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText">
-        <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Reconnecting</h4>
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Reconnecting</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <p id="chatMessageSolution" class="mt-2">Attempting to reconnect in 5 seconds...</p>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
+                    onclick="clearTimeout(reconnectDelay)">Cancel</button>
+            </div>
         </div>
-        <!--Body-->
-        <div class="modal-body">
-          <p id="chatMessageSolution" class="mt-2">Attempting to reconnect in 5 seconds...</p>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="clearTimeout(reconnectDelay)">Cancel</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <!-- Modal: Moderate -->
-  <div aria-live="polite" aria-atomic="true">
+</div>
+<!-- Modal: Moderate -->
+<div aria-live="polite" aria-atomic="true">
     <!-- Position it -->
     <div style="position: absolute; bottom: 5%; right: 1%;z-index: 999;float: right;" id="toastContainer">
 
@@ -299,4 +325,5 @@
 
 
     </div>
-  </div>
+</div>
+
