@@ -30,6 +30,7 @@ async function loadCommandTable() {
             },
         ],
         columnDefs: [{
+            className: "border-t-teal-50",
             targets: 1,
             data: "message",
             render: function (data, type, row, meta) {
