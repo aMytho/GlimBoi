@@ -1,35 +1,34 @@
-<div class="card-deck row m-3 whiteText">
-  <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatChannelsDM">
-    <div class="card-body px-0 pl-1">
-      <button onclick="$('#newChatModal').modal('show');" class="btn btn-success" style="position: absolute;right: 5px;bottom: 5px;">Add new </button>
-      <a class="btn btn-info" onclick="reconnectMessage = true;this.remove();" style="position: absolute;bottom: 1px;left: 30%;">Click to Enable Reconnect Messages</a>
-
-      <button type="button" class="btn btn-primary" data-placement="right" data-toggle="tooltip" style="position: absolute;left: 5px;bottom: 5px;" title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
-        <i class="fas fa-question-circle"></i>
-      </button>
-
-      <h3 class="whiteText text-center">Recent Channel Connections</h3>
+<div class="m-4 p-4 whiteText grid grid-cols-1 md:grid-cols-2 gap-2">
+  <div class="glimPanel mx-2 rounded-xl p-2 px-4" id="chatChannelsDM">
+    <div class="px-0 pl-1">
+      <h3 class="whiteText font-bold text-2xl text-clip text-center">Recent Channel Connections</h3>
       <div id="chatConnections"><div class="pinned"></div><div class="scroller">Loading...</div></div>
+
+      <div class="flow-root relative my-4">
+        <button type="button" class="btn-primary float-left" data-placement="right" data-toggle="tooltip"
+        title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
+            <i class="fas fa-question-circle"></i>
+          </button>
+        <button class="btn-success float-right" onclick="$('#newChatModal').modal('show');">Add new </button>
+        <a class="btn-info float-right" onclick="reconnectMessage = true;this.remove();">Click to Enable Reconnect Messages</a>
+      </div>
     </div>
   </div>
-  <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatControls">
+
+  <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatControls">
     <div class="card-body">
-      <h3 class="whiteText text-center">Chat Settings</h3>
-      <div class="row">
-        <h4 id="channelConnectedName" class="col-12 whiteText text-center py-3 my-3 border border-white border-left-0 border-right-0 text-danger">
+      <h3 class="whiteText font-bold text-2xl text-clip text-center">Chat Settings</h3>
+        <h4 id="channelConnectedName" class="whiteText text-center py-3 my-3 border border-white border-x-0">
           Not Connected
         </h4>
-      </div>
-      <div class="row mt-2">
-        <div class="col whiteText">
-           <h3>Health Reminder</h3>
+      <div class="mt-4 grid grid-cols-2">
+        <div class="whiteText">
+           <h3 class="text-warning text-xl font-bold">Health Reminder</h3>
            <p>Get reminders to stretch, drink water, and take a break.</p>
-           <div class="row">
-              <div class="col-11">
                  <form>
-                    <div class="form-group mt-n1">
+                    <div class="form-group mt-2">
                        <label for="sel1">Reminder:</label>
-                       <select class="form-control" id="healthReminder" style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                       <select class="form-control rounded-md" id="healthReminder" style="background-color: #1b2e4b;color: aquamarine;border-color: aqua;">
                           <option value="0">Disabled (default)</option>
                           <option value="30">30 minutes</option>
                           <option value="60">60 minutes</option>
@@ -37,11 +36,9 @@
                        </select>
                     </div>
                  </form>
-              </div>
-           </div>
         </div>
-        <div class="col whiteText">
-           <h3>Log Messages</h3>
+        <div class="whiteText">
+           <h3 class="text-warning text-xl font-bold">Log Messages</h3>
            <p>Logs chat messages to a text file.</p>
            <div class="row">
               <div class="col-2">
@@ -54,20 +51,16 @@
                  <p class="text-left">Disabled / Enabled</p>
               </div>
            </div>
-           <div class="row">
-               <a class="btn btn-info" onclick="viewOrChangeChatSettings('change');successMessage('Settings Saved', 'Chat settings have been saved.')">Save</a>
-           </div>
         </div>
+     </div>
+     <div class="text-center mt-4 mb-2">
+        <a class="btn-info" onclick="viewOrChangeChatSettings('change');successMessage('Settings Saved', 'Chat settings have been saved.')">Save</a>
      </div>
     </div>
   </div>
-</div>
 
-<div class="card-deck row m-3 mt-0 whiteText">
-  <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatBoxDM">
-    <div class="card-body">
-      <div class="col-12 message_section">
-        <div class="row">
+  <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatBoxDM">
+      <div class="message_section w-full">
           <!--top of the chat-->
           <div class="new_message_head glimPanel whiteText">
             <div class="pull-left">
@@ -102,21 +95,20 @@
               <p class="mt-2">Right click a message to view additional options.</p>
             </div>
           </div>
-        </div>
       </div>
-    </div>
+
   </div>
-  <div class="card glimPanel col-lg-6 col-12 mx-1" id="chatActionsDM">
-    <div class="card-body">
-      <h3 class="whiteText text-center">GlimBoi Logs</h3>
+
+  <div class="glimPanel rounded-xl mx-2" id="chatActionsDM">
+      <h3 class="whiteText font-bold text-2xl text-clip text-center">GlimBoi Logs</h3>
       <p class="whiteText text-center">_______________</p>
       <h5 class="whiteText text-center">Recent logs will be listed below.</h5>
         <div id="actions" style="overflow: auto; max-height: 400px;">
 
         </div>
-    </div>
   </div>
 </div>
+
 
 <!-- Modal: add new chat? -->
 <div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">

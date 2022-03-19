@@ -286,13 +286,13 @@ function displayChannels(channels) {
 
     	if (channel.channel.toLowerCase() === 'glimboi') {
       		channelNameText = 'GlimBoi (TEST)';
-      		channelNameHTML = '<span class="text-warning"><b>GlimBoi (TEST)</b></span>';
+      		channelNameHTML = '<span class="text-warning text-xl font-bold"><b>GlimBoi (TEST)</b></span>';
     	}
 
     	$(currentlyConnected ? '#chatConnections .pinned' : '#chatConnections .scroller').append(`
-      		<div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        		<h4 class="col whiteText channelName p-0 mb-1" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
-        		<div class="d-flex btn-group mb-1" role="group">
+      		<div class="mx-0 channel-listing flow-root" data-channel="${channel.channel}" data-channelid="${channel._id}">
+        		<h4 class="float-left whiteText channelName p-0 mb-1 font-bold text-xl" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
+        		<div class="float-right d-flex mb-1" role="group">
           			<button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon fas fa-sync-alt" onclick="autoJoinChatButtons(this)"></button>
           			<button data-action="join" class="btn btn-success" ${disableJoin} onclick="joinChatButtons(this)">Join</button>
           			<button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(true)">Leave</button>
