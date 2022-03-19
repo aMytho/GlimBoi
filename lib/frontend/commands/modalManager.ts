@@ -92,6 +92,7 @@ async function loadModalAdd() {
     }
     prepareActions("add");
     addActionToUI("ChatMessage", "add");
+    loadFlowbite();
 }
 
 async function loadModalEdit(command) {
@@ -100,6 +101,7 @@ async function loadModalEdit(command) {
     await insertEditData(command);
     prepareModals("edit");
     prepareActions("edit");
+    loadFlowbite();
 }
 
 /**

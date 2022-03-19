@@ -79,9 +79,7 @@ window.onload = function() {
                         case "ChatLink": loadChatWindow(); currentPage = "chat"; break;
                         case "GlimBoiHeader": loadBotStats(); unlockRequestToken(); currentPage = "home"; break;
                     }
-                    let ev = document.createEvent("Event");
-                    ev.initEvent("DOMContentLoaded", true, true);
-                    window.document.dispatchEvent(ev);
+                    loadFlowbite();
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
         	}
@@ -168,7 +166,7 @@ function loadLink(link: string) {
 function errorMessage(errorType: string, errorMessage: string) {
     document.getElementById("errorMessageText")!.innerHTML = errorType;
     document.getElementById("errorMessageSolution")!.innerHTML = errorMessage;
-    $('#modalError').modal("show")
+    toggleModal("modalError");
 }
 
 
@@ -176,7 +174,7 @@ function errorMessage(errorType: string, errorMessage: string) {
 function successMessage(messageType: string, message: string) {
     document.getElementById("successMessageText")!.innerHTML = messageType;
     document.getElementById("successMessageSolution")!.innerHTML = message;
-    $('#modalSuccess').modal("show");
+    toggleModal("modalSuccess");
 }
 
 async function getDataDirectory() {
@@ -224,4 +222,10 @@ async function showToast(message: string) {
             counter--;
         }
     }, 1000);
+}
+
+function loadFlowbite() {
+    let ev = document.createEvent("Event");
+    ev.initEvent("DOMContentLoaded", true, true);
+    window.document.dispatchEvent(ev);
 }
