@@ -1,258 +1,252 @@
-<div class="row justify-content-md-center pt-3">
-    <div class="col-12 mx-auto">
-        <div class="card glimPanel mx-auto" style="width: 18rem;width: 97%;">
-            <div class="card-body">
-                <ul class="nav nav-tabs" id="settingsTab">
-
-                    <li class="mx-2">
-                        <h2 data-toggle="tab" href="#webhooksTab" style="cursor:pointer" class="active whiteText">
-                            Going-Live
-                        </h2>
-                    </li>
-                    <li class="mx-2">
-                        <h2 data-toggle="tab" href="#obsTab" style="cursor:pointer" class="whiteText">OBS WebSocket</h2>
-                    </li>
-                    <li class="mx-2">
-                        <h2 data-toggle="tab" href="#followTab" style="cursor:pointer" class="whiteText">Follow Scripts
-                        </h2>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div id="webhooksTab" class="tab-pane fade-in active">
-                        <div class="row mt-2">
-                            <div class="col-sm-5 col-12 whiteText ml-2">
-                                <h3>Discord</h3>
-                                <p>Send a message to your server when you join a channel.</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="discordWebhookEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>Webhook URI</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Discord Webhook URI"
-                                    id="discordWebhookURL"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                                <p>Default Message</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
-                                    id="discordWebhookMessage"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>Confirm before send?</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="discordWebhookConfirmation">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                                    add stream specific details (what you're doing that stream)</p>
-                            </div>
-                            <div class="col-12 col-sm-1 whiteText"></div>
-                            <!--NOW ON GUILDED-->
-                            <div class="col-sm-5 col-12 whiteText">
-                                <h3>Guilded</h3>
-                                <p>Send a message to your guild when you join a channel.</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="guildedWebhookEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>Webhook URI</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Guilded Webhook URI"
-                                    id="guildedWebhookURL"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 80%;">
-                                <p>Default Message</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
-                                    id="guildedWebhookMessage"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>Confirm before send?</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="guildedWebhookConfirmation">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                                    add stream specific details (what you're doing that stream)</p>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-sm-5 col-12 whiteText ml-2">
-                                <hr>
-                                <h3>Twitter</h3>
-                                <p>Tweet when you join a channel. <b>Does not affect command tweets.</b></p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="twitterEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                        onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span>
-                                </p>
-                                <p>An access token is required to use the Twitter API. Generating one will open an URL
-                                    in your default browser.
-                                    You <b>must</b> be signed in to approve the app. You can copy the link from the
-                                    address bar into another browser if you prefer.
-                                </p>
-                                <p>Default Message</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
-                                    id="twitterMessage"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>Confirm before send?</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="twitterConfirmation">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                                    add stream specific details (what you're doing that stream)</p>
-                                <b>To fully disable Twitter integration you need to revoke Glimboi from the allowed apps
-                                    list
-                                    <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                        onclick="loadLink('twitter.com/settings/connected_apps')">here</span>.
-                                </b>
-                            </div>
-                            <div class="col-12 col-sm-1 whiteText"></div>
-                            <!--Matrix-->
-                            <div class="col-sm-5 col-12 whiteText ml-2">
-                                <hr>
-                                <h3>Matrix</h3>
-                                <p>Send a message when you join a channel. <b>Does not affect command messages.</b></p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="matrixEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                    onclick="loadLink('app.element.io')">View</span></p>
-                                <p>An access token is required to use the Matrix API. You can view your token from the
-                                    element web panel.
-                                </p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Access Token"
-                                    id="matrixToken"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>Default Message</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Default Message"
-                                    id="matrixMessage"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p>Default Room (Internal <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                                    onclick="loadLink('glimboi.com/docs/integrations/goinglive/#matrix')">Room ID</span>.) Ex. !KieCrZCMdQEJTCAspJ:matrix.org</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="Default Room"
-                                    id="matrixRoom"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
-                                <p></p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="matrixConfirmation">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                                    add stream specific details (what you're doing that stream)</p>
-                            </div>
-                        </div>
+<div class="glimPanel m-4 p-4">
+    <ul class="mb-3 flex flex-wrap justify-center" data-tabs-toggle="#settingTabs" role="tablist" id="settingTabNav">
+        <li class="mx-2" role="presentation">
+            <button class="btn-info inline-block py-4 px-4 whiteText cursor-pointer" id="liveSettingsTab"
+                data-tabs-target="#liveSettings" type="button" role="tab" aria-controls="liveSettings"
+                aria-selected="true">
+                Going-Live
+            </button>
+        </li>
+        <li class="mx-2" role="presentation">
+            <button class="btn-info inline-block py-4 px-4 whiteText cursor-pointer" id="obsSettingsTab"
+                data-tabs-target="#obsSettings" type="button" role="tab" aria-controls="obsSettings"
+                aria-selected="true">OBS WebSocket</button>
+        </li>
+        <li class="mx-2" role="presentation">
+            <button class="btn-info inline-block py-4 px-4 whiteText cursor-pointer" id="followSettingsTab"
+                data-tabs-target="#followSettings" type="button" role="tab" aria-controls="followSettings"
+                aria-selected="true">Follow Scripts
+            </button>
+        </li>
+    </ul>
+    <div id="settingTabs">
+        <div id="liveSettings" role="tabpanel" aria-labelledby="liveSettingsTab">
+            <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!--DISCORD-->
+                <div class="whiteText ml-2">
+                    <h3 class="whiteText font-bold text-2xl">Discord</h3>
+                    <p>Send a message to your server when you join a channel.</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="discordWebhookEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
                     </div>
-                    <div id="obsTab" class="tab-pane fade-in">
-                        <div class="row mt-2">
-                            <div class="col-sm-5 col-12 whiteText ml-2">
-                                <h3>OBS WebSocket</h3>
-                                <p>Interact with OBS from Glimboi.</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="obsEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>WebSocket Password</p>
-                                <p>A password is optional with OBS webscokets. If you are on a public internet
-                                    connection you should add a password.</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="OBS websocket password"
-                                    id="obsPassword"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                            </div>
-                            <div class="col-12 col-sm-1 whiteText"></div>
-                            <div class="col-sm-5 col-12 whiteText ml-2">
-                                <h3>WebSocket URL</h3>
-                                <p>The URL to connect to. If OBS and Glimboi are on the same device it is likely
-                                    "localhost" (the default)</p>
-                                <input class="icon-input settingsInput" type="text" placeholder="OBS websocket URL"
-                                    id="obsUrl"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                            </div>
-                        </div>
+                    <p>Webhook URI</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Discord Webhook URI"
+                        id="discordWebhookURL"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                    <p>Default Message</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                        id="discordWebhookMessage"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                    <p>Confirm before send?</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="discordWebhookConfirmation">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
                     </div>
-                    <div id="followTab" class="tab-pane fade-in">
-                        <div class="row mt-2">
-                            <div class="col-sm-5 col-12 whiteText ml-2">
-                                <h3>Follow Message</h3>
-                                <p>Send a message when someone follows.</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="followMessageEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>Enter the message to send. You can add $follower to be replaced with the followers
-                                    name.</p>
-                                <input class="icon-input settingsInput" type="text"
-                                    placeholder="Thanks for the follow $follower !" id="followMessage"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                            </div>
-                            <div class="col-12 col-sm-1 whiteText"></div>
-                            <div class="col-sm-5 col-12 whiteText ml-2 hidden">
-                                <h3>Streamlabs Alerts</h3>
-                                <p>Play a Streamlabs alert on follow. Requires an existing account.</p>
-                                <div class="niceSwitch">
-                                    <label class="switch">
-                                        <input type="checkbox" id="streamlabsEnabled">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <p>Disabled / Enabled</p>
-                                </div>
-                                <p>Click <span onclick="loadLink('calm-citadel-14699.herokuapp.com/authorize')"
-                                        style="color:rgb(251, 133, 251);cursor: pointer;">here</span> to get a token.
-                                </p>
-                                <p>Enter your generated Streamlabs token. Keep Private!</p>
-                                <input class="icon-input settingsInput" type="text"
-                                    placeholder="Streamlabs Token (keep private!)" id="streamlabsKey"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                                <p>Message to show in the alert. Use $follower for the name of the follower.</p>
-                                <input class="icon-input settingsInput" type="text"
-                                    placeholder="Thanks for the follow $user " id="streamlabsMessage"
-                                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
-                            </div>
-                        </div>
+                    <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                        add stream specific details (what you're doing that stream)</p>
+                </div>
+                <!--GUILDED-->
+                <div class="whiteText ml-2">
+                    <h3 class="whiteText font-bold text-2xl">Guilded</h3>
+                    <p>Send a message to your guild when you join a channel.</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="guildedWebhookEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
                     </div>
-                    <hr style="border-color: aliceblue;" class="mt-2">
-                    <a class="btn btn-info" href="#" onclick="saveIntegrations()">Save</a>
-                    <a class="btn btn-danger mx-2 float-right" href="#" data-toggle="modal" data-target="#openDB">Edit
-                        Database</a>
-                    <a class="btn btn-success mx-2 float-right" href="#" data-toggle="modal"
-                        data-target="#createBackup">Create
-                        Backup</a>
-                    <a class="btn btn-info mx-2 float-right" href="#" data-toggle="modal"
-                        data-target="#importBackup">Import
-                        Backup</a>
+                    <p>Webhook URI</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Guilded Webhook URI"
+                        id="guildedWebhookURL"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 80%;">
+                    <p>Default Message</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                        id="guildedWebhookMessage"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                    <p>Confirm before send?</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="guildedWebhookConfirmation">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                        add stream specific details (what you're doing that stream)</p>
+                </div>
+                <!--TWITTER-->
+                <div class="whiteText ml-2">
+                    <hr>
+                    <h3 class="whiteText font-bold text-2xl">Twitter</h3>
+                    <p>Tweet when you join a channel. <b>Does not affect command tweets.</b></p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="twitterEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                            onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span>
+                    </p>
+                    <p>An access token is required to use the Twitter API. Generating one will open an URL
+                        in your default browser.
+                        You <b>must</b> be signed in to approve the app. You can copy the link from the
+                        address bar into another browser if you prefer.
+                    </p>
+                    <p>Default Message</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                        id="twitterMessage"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                    <p>Confirm before send?</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="twitterConfirmation">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                        add stream specific details (what you're doing that stream)</p>
+                    <b>To fully disable Twitter integration you need to revoke Glimboi from the allowed apps
+                        list
+                        <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                            onclick="loadLink('twitter.com/settings/connected_apps')">here</span>.
+                    </b>
+                </div>
+                <!--MATRIX-->
+                <div class="whiteText ml-2">
+                    <hr>
+                    <h3 class="whiteText font-bold text-2xl">Matrix</h3>
+                    <p>Send a message when you join a channel. <b>Does not affect command messages.</b></p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="matrixEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                            onclick="loadLink('app.element.io')">View</span></p>
+                    <p>An access token is required to use the Matrix API. You can view your token from the
+                        element web panel.
+                    </p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Access Token" id="matrixToken"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                    <p>Default Message</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Default Message" id="matrixMessage"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                    <p>Default Room (Internal <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                            onclick="loadLink('glimboi.com/docs/integrations/goinglive/#matrix')">Room ID</span>.) Ex.
+                        !KieCrZCMdQEJTCAspJ:matrix.org</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Default Room" id="matrixRoom"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                    <p></p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="matrixConfirmation">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                        add stream specific details (what you're doing that stream)</p>
                 </div>
             </div>
         </div>
+        <div class="hidden" id="obsSettings" role="tabpanel" aria-labelledby="obsSettingsTab">
+            <div class="row mt-2">
+                <div class="col-sm-5 col-12 whiteText ml-2">
+                    <h3 class="whiteText font-bold text-2xl">OBS WebSocket</h3>
+                    <p>Interact with OBS from Glimboi.</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="obsEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>WebSocket Password</p>
+                    <p>A password is optional with OBS webscokets. If you are on a public internet
+                        connection you should add a password.</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="OBS websocket password"
+                        id="obsPassword"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                </div>
+                <div class="col-12 col-sm-1 whiteText"></div>
+                <div class="col-sm-5 col-12 whiteText ml-2">
+                    <h3>WebSocket URL</h3>
+                    <p>The URL to connect to. If OBS and Glimboi are on the same device it is likely
+                        "localhost" (the default)</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="OBS websocket URL" id="obsUrl"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                </div>
+            </div>
+        </div>
+        <div class="hidden" id="followSettings" role="tabpanel" aria-labelledby="followSettingsTab">
+            <div class="row mt-2">
+                <div class="col-sm-5 col-12 whiteText ml-2">
+                    <h3 class="whiteText font-bold text-2xl">Follow Message</h3>
+                    <p>Send a message when someone follows.</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="followMessageEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>Enter the message to send. You can add $follower to be replaced with the followers
+                        name.</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Thanks for the follow $follower !"
+                        id="followMessage"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                </div>
+                <div class="col-12 col-sm-1 whiteText"></div>
+                <div class="col-sm-5 col-12 whiteText ml-2 hidden">
+                    <h3>Streamlabs Alerts</h3>
+                    <p>Play a Streamlabs alert on follow. Requires an existing account.</p>
+                    <div class="niceSwitch">
+                        <label class="switch">
+                            <input type="checkbox" id="streamlabsEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Disabled / Enabled</p>
+                    </div>
+                    <p>Click <span onclick="loadLink('calm-citadel-14699.herokuapp.com/authorize')"
+                            style="color:rgb(251, 133, 251);cursor: pointer;">here</span> to get a token.
+                    </p>
+                    <p>Enter your generated Streamlabs token. Keep Private!</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Streamlabs Token (keep private!)"
+                        id="streamlabsKey"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                    <p>Message to show in the alert. Use $follower for the name of the follower.</p>
+                    <input class="icon-input settingsInput" type="text" placeholder="Thanks for the follow $user "
+                        id="streamlabsMessage"
+                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                </div>
+            </div>
+        </div>
+        <hr style="border-color: aliceblue;" class="mt-2">
+    </div>
+    <div class="flex flex-row-reverse mt-4">
+        <a class="btn-info mx-2" href="#" onclick="saveIntegrations()">Save</a>
+        <a class="btn-danger mx-2" href="#" data-toggle="modal" data-target="#openDB">Edit
+            Database</a>
+        <a class="btn-success mx-2" href="#" data-toggle="modal" data-target="#createBackup">Create
+            Backup</a>
+        <a class="btn-info mx-2" href="#" data-toggle="modal" data-target="#importBackup">Import
+            Backup</a>
     </div>
 </div>
-</div>
+
 <!-- Modal: open db -->
 <div class="modal fade" id="openDB" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
     style="overflow-wrap: break-word;">
