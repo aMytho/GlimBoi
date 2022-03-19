@@ -1,5 +1,5 @@
-<div class="card-deck row m-3">
-    <div class="card col-12 col-lg-9 glimPanel">
+<div class="m-4 p-4 grid grid-cols-1 md:grid-cols-3 gap-x-4">
+    <div class="glimPanel rounded-xl col-span-2 p-4">
         <div class="card-body">
             <main class="player whiteText" style="margin: 0;box-sizing: border-box;">
                 <img id="artForMusic" src="../resources/img/music.png" class="art">
@@ -47,51 +47,42 @@
                     <i class="fas fa-volume-up fa-lg" aria-hidden="true" aria-hidden="true"
                         onclick="volume=0.99;CacheStore.set('musicVolume', volume);document.getElementById('musicVolumeSlider').value = volume;document.getElementById('musicAudio').volume = volume"></i>
                 </div>
-                <hr style="border-color: aliceblue;width: 70%;">
-                <div class="mx-auto d-grid gap-2 col-6 text-center">
-                    <button class="btn btn-info mx-auto" type="button" onclick="loadPreviousFolder()">Load Previous
+                <hr class="mt-2" style="border-color: aliceblue;">
+                <div class="text-center mt-3">
+                    <button class="btn-info" type="button" onclick="loadPreviousFolder()">Load Previous
                         Playlist</button>
-                    <button class="btn btn-info mx-auto" type="button" data-toggle="modal" data-target="#musicOverlay"
+                    <button class="btn-info" type="button" data-toggle="modal" data-target="#musicOverlay"
                         onclick="Server.startServer()">Overlay</button>
-                    <button class="btn btn-info mx-auto" type="button" data-toggle="modal" data-target="#musicNowPlaying"
+                    <button class="btn-info" type="button" data-toggle="modal" data-target="#musicNowPlaying"
                         >Now-Playing</button>
-                    <button class="btn btn-info mx-auto" type="button" data-toggle="modal"
+                    <button class="btn-info" type="button" data-toggle="modal"
                         data-target="#musicSettings">Music Settings</button>
                 </div>
             </main>
         </div>
     </div>
 
-    <div class="card col-12 col-lg-3 glimPanel">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-6 text-center">
-                    <a class="btn btn-success btn-inline" href="#" data-toggle="modal"
+    <div class="glimPanel rounded-xl col-span-1 p-4">
+            <div class="grid grid-cols-2">
+                <div class="text-center">
+                    <a class="btn btn-success" href="#" data-toggle="modal"
                         data-target="#musicFolderSelection">Select Folder</a>
                 </div>
-                <div class="col-6">
+                <div class="text-center">
                     <div class="btn-group-vertical mx-auto justify-content-md-center">
-                        <a class="btn btn-success btn-inline" href="#" data-toggle="modal"
+                        <a class="btn btn-success" href="#" data-toggle="modal"
                             data-target="#musicSongSelection">Select Song</a>
                     </div>
                 </div>
-                <p class="whiteText mx-auto">___________________</p>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="player h-100 w-100 mini-scroll"
+            <p class="whiteText text-center mt-2">___________________</p>
+                    <div class="player h-full w-full mini-scroll mt-4"
                         style="margin:0 !important; overflow:auto;max-height: 1px;">
-                        <div class="row">
-                            <div class="col-12">
                                 <div class="playlist" id="musicPlaylist">
                                 </div>
 
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 
