@@ -1,229 +1,220 @@
-<div class="card-deck row m-3">
-    <div class="card col-12 col-lg-9 glimPanel">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4 col-12">
-                    <h4 class="text-center whiteText">Warnings</h4>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group mt-n1">
-                                <label for="sel" class="whiteText">1 Warning:</label>
-                                <select class="form-control" id="warning1"
-                                    style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="none" selected="">Do Nothing (Default)</option>
-                                    <option value="deleteMessage">Delete Message</option>
-                                    <option value="shortTimeout">Short Timeout</option>
-                                    <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban" style="color:red">Ban User</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group mt-n1">
-                                <label for="sel" class="whiteText">2 Warnings:</label>
-                                <select class="form-control" id="warning2"
-                                    style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="none" selected="">Do Nothing (Default)</option>
-                                    <option value="deleteMessage">Delete Message</option>
-                                    <option value="shortTimeout">Short Timeout</option>
-                                    <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban" style="color:red">Ban User</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group mt-n1">
-                                <label for="sel" class="whiteText">3 Warnings:</label>
-                                <select class="form-control" id="warning3"
-                                    style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="none" selected="">Do Nothing (Default)</option>
-                                    <option value="deleteMessage">Delete Message</option>
-                                    <option value="shortTimeout">Short Timeout</option>
-                                    <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban" style="color:red">Ban User</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group mt-n1">
-                                <label for="sel" class="whiteText">3+ Warnings:</label>
-                                <select class="form-control" id="warningMore"
-                                    style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
-                                    <option value="none" selected="">Do Nothing (Default)</option>
-                                    <option value="deleteMessage">Delete Message</option>
-                                    <option value="shortTimeout">Short Timeout</option>
-                                    <option value="longTimeout">Long Timeout</option>
-                                    <option value="ban" style="color:red">Ban User</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="btn btn-block btn-info mt-2 btn-inline" href="#" onclick="successMessage('Warnings Saved', 'Your new settings have been applied and saved.');saveWarnings()">Save</a>
+<div class="m-4 p-4 grid grid-cols-1 md:grid-cols-3 gap-x-4">
+    <div class="relative glimPanel rounded-xl col-span-2 sm:mt-4 md:mt-0 p-4">
+        <div class="relative grid grid-cols-1 md:grid-cols-3 gap-x-2">
+            <div class="relative">
+                <h4 class="text-center whiteText font-bold text-2xl">Warnings</h4>
+                <div class="mt-2">
+                    <label for="sel" class="whiteText">1 Warning: </label>
+                    <select class="form-control rounded-md ml-3" id="warning1"
+                        style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                        <option value="none" selected="">Do Nothing (Default)</option>
+                        <option value="deleteMessage">Delete Message</option>
+                        <option value="shortTimeout">Short Timeout</option>
+                        <option value="longTimeout">Long Timeout</option>
+                        <option value="ban" style="color:red">Ban User</option>
+                    </select>
                 </div>
-                <div class="col-md-4 col-12">
-                    <h4 class="text-center whiteText">Banned Words</h4>
-                    <div class="row">
-                        <div class="col-6">
-                            <h6 class="whiteText">Current List</h6>
-                            <ul id="bannedWordListElement" class="bannedWordList blurredList whiteText" onclick="this.classList.remove('blurredList');this.title = ''" title="Banned Words (Click to view)">
-                            </ul>
-                        </div>
-                        <div class="col-6">
-                            <a class="btn btn-info btn-group mt-2 btn-inline" href="#" onclick="loadLink('github.com/MauriceButler/badwords/blob/master/array.js')">View Default</a>
-                            <a class="btn btn-info mt-2 btn-inline" href="#" onclick="successMessage('Filters are never perfect. Eventually, something will get through. This is not a replacement for a mod.', 'This filter is very strict for most users. You will probably want adjust it for your stream. It is disabled by default')">Info</a>
-                        </div>
-                    </div>
+                <div class="mt-2">
+                    <label for="sel" class="whiteText">2 Warnings:</label>
+                    <select class="form-control rounded-md ml-2" id="warning2"
+                        style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                        <option value="none" selected="">Do Nothing (Default)</option>
+                        <option value="deleteMessage">Delete Message</option>
+                        <option value="shortTimeout">Short Timeout</option>
+                        <option value="longTimeout">Long Timeout</option>
+                        <option value="ban" style="color:red">Ban User</option>
+                    </select>
+
                 </div>
-                <div class="col-md-4 col-12">
-                    <h4 class="text-center whiteText">Controls</h4>
-                    <div class="row ml-1 text-center">
-                        <div class="col-12">
-                            <a class="btn btn-primary btn-group mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalWordAdd">Add Words</a>
-                            <a class="btn btn-danger btn-group mt-2 btn-inline" href="#" data-toggle="modal" data-target="#modalWordRemove">Remove Words</a>
-                            <a class="btn btn-warning btn-group mt-2 btn-inline" href="#" data-toggle="modal" data-target="#resetFilterModal">Reset</a>
-                        </div>
+                <div class="mt-2">
+                    <label for="sel" class="whiteText">3 Warnings:</label>
+                    <select class="form-control rounded-md ml-2" id="warning3"
+                        style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                        <option value="none" selected="">Do Nothing (Default)</option>
+                        <option value="deleteMessage">Delete Message</option>
+                        <option value="shortTimeout">Short Timeout</option>
+                        <option value="longTimeout">Long Timeout</option>
+                        <option value="ban" style="color:red">Ban User</option>
+                    </select>
+                </div>
+                <div class="mt-2">
+                    <label for="sel" class="whiteText">3+ Warnings:</label>
+                    <select class="form-control rounded-md ml-1" id="warningMore"
+                        style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                        <option value="none" selected="">Do Nothing (Default)</option>
+                        <option value="deleteMessage">Delete Message</option>
+                        <option value="shortTimeout">Short Timeout</option>
+                        <option value="longTimeout">Long Timeout</option>
+                        <option value="ban" style="color:red">Ban User</option>
+                    </select>
+
+                </div>
+                <a class="btn-info mt-2 mx-1 mr-8 absolute inset-x-0 bottom-0" href="#"
+                    onclick="successMessage('Warnings Saved', 'Your new settings have been applied and saved.');saveWarnings()">Save</a>
+            </div>
+            <div class="">
+                <h4 class="text-center whiteText font-bold text-2xl">Banned Words</h4>
+                <div class="grid grid-cols-2">
+                    <div>
+                        <h6 class="text-center whiteText font-bold text-xl">Current List</h6>
+                        <ul id="bannedWordListElement" class="bannedWordList blurredList whiteText"
+                            onclick="this.classList.remove('blurredList');this.title = ''"
+                            title="Banned Words (Click to view)">
+                        </ul>
                     </div>
-                    <div class="row ml-1 mt-1 text-center">
-                        <div class="col-12">
-                            <a class="btn btn-info btn-block mt-2 btn-inline" href="#" data-toggle="modal" data-target="#toggleFilter">Toggle Filter</a>
-                        </div>
+                    <div class="flex flex-col mt-2">
+                        <a class="btn-info mx-8 " href="#"
+                            onclick="loadLink('github.com/MauriceButler/badwords/blob/master/array.js')">View
+                            Default</a>
+                        <a class="btn-info mx-8" href="#"
+                            onclick="successMessage('Filters are never perfect. Eventually, something will get through. This is not a replacement for a mod.', 'This filter is very strict for most users. You will probably want adjust it for your stream. It is disabled by default')">Info</a>
                     </div>
                 </div>
             </div>
-            <div class="row mt-auto">
-                <p class="whiteText ml-1">Note that custom words override the default list.</p>
-                <p class="whiteText ml-1">By default the filter is disabled. This means the bot will not scan for banned words. </p>
+            <div class="">
+                <h4 class="text-center whiteText font-bold text-2xl">Controls</h4>
+                <div class="ml-2 flex flex-col">
+                        <a class=" btn-primary mt-2" href="#" data-toggle="modal"
+                            data-target="#modalWordAdd">Add Words</a>
+                        <a class=" btn-danger mt-2" href="#" data-toggle="modal"
+                            data-target="#modalWordRemove">Remove Words</a>
+                        <a class=" btn-warning mt-2" href="#" data-toggle="modal"
+                            data-target="#resetFilterModal">Reset</a>
+                        <a class="btn btn-info btn-block mt-2 btn-inline" href="#" data-toggle="modal"
+                            data-target="#toggleFilter">Toggle Filter</a>
+                </div>
             </div>
+        </div>
+        <div class="ml-2 mb-2 absolute inset-x-0 bottom-0">
+            <p class="whiteText">Note that custom words override the default list.</p>
+            <p class="whiteText">By default the filter is disabled. This means the bot
+                will not scan for banned words. </p>
         </div>
     </div>
 
-    <div class="card col-12 col-lg-3 glimPanel">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h3 class="whiteText">Mod History</h3>
-                </div>
+    <div class="glimPanel rounded-xl col-span-1 p-4">
+        <h3 class="text-center whiteText font-bold text-2xl">Mod History</h3>
 
-                <p class="whiteText mx-auto">___________________</p>
-            </div>
+        <hr class="w-full mx-2 mt-1" style="color: aliceblue;">
+        <div class="player h-100 w-100 mini-scroll mt-2"
+            style="margin:0 !important; margin-top: 1rem !important; overflow:auto;max-height: 1px;border:1px solid #ff7f7f">
             <div class="row">
                 <div class="col-12">
-                    <div class="player h-100 w-100 mini-scroll"
-                        style="margin:0 !important; overflow:auto;max-height: 1px;border:1px solid #ff7f7f">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="playlist" id="musicPlaylist">
+                    <div class="playlist" id="musicPlaylist">
 
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<div class="modal fade" id="modalWordAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="addWordModal">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100" id="myModalLabel">Add Banned Words</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <input class="icon-input" type="text" placeholder="Enter words here" id="wordAddInput">
+                    <p class="mt-2">Enter the banned words to add. You can separate multiple words with spaces. 1 word
+                        per trigger (ie. "What's Twitch?" would have 2 triggers, not 1 phrase)</p>
+                    <p id="addWordErrorMessage" class="errorMessage"></p>
+                    <p id="addWordSuccessMessage" class="successMessage"></p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <p id="errorMessageAdd"></p>
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button class="btn btn-outline-primary"
+                    onclick="addBannedWords(document.getElementById('wordAddInput').value)">Add</button>
             </div>
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="modalWordAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+<div class="modal fade" id="modalWordRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="addWordModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100" id="myModalLabel">Add Banned Words</h4>
+        <div class="modal-content glimPanel whiteText" id="removeWordModal">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Remove Banned Words</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <input class="icon-input" type="text" placeholder="Enter words here" id="wordRemoveInput">
+                    <p class="mt-2">Enter the banned words to remove. You can separate multiple words with space. 1 word
+                        per trigger (ie. "What's Twitch?" would remove 2 words, not 1 phrase)</p>
+                    <p id="removeWordErrorMessage" class="errorMessage"></p>
+                    <p id="removeWordSuccessMessage" class="successMessage"></p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <p id="errorMessageAdd"></p>
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button class="btn btn-outline-danger"
+                    onclick="removeBannedWords(document.getElementById('wordRemoveInput').value)">Remove</button>
+            </div>
         </div>
-        <!--Body-->
-        <div class="modal-body">
-          <div class="icon-input-container">
-            <input class="icon-input" type="text" placeholder="Enter words here" id="wordAddInput">
-            <p class="mt-2">Enter the banned words to add. You can separate multiple words with spaces. 1 word per trigger (ie. "What's Twitch?" would have 2 triggers, not 1 phrase)</p>
-            <p id="addWordErrorMessage" class="errorMessage"></p>
-            <p id="addWordSuccessMessage" class="successMessage"></p>
-          </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <p id="errorMessageAdd"></p>
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-outline-primary" onclick="addBannedWords(document.getElementById('wordAddInput').value)">Add</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="modal fade" id="modalWordRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+</div>
+<div class="modal fade" id="toggleFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="removeWordModal">
-        <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Remove Banned Words</h4>
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Toggle Filter</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <p>Filter Status: <span id="filterStatusTextModal" style="color: #ff7f7f;">Disabled</span></p>
+                    <p class="mt-1">Disabling the filter will prevent the bot from scanning messages for banned words.
+                    </p>
+                    <p class="mt-1">Enabling the filter will cause the bot to follow the warnings that are set.</p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal"
+                    onclick="toggleFilter(!CacheStore.get('modFilterEnabled', false))">Toggle</button>
+            </div>
         </div>
-        <!--Body-->
-        <div class="modal-body">
-          <div class="icon-input-container">
-            <input class="icon-input" type="text" placeholder="Enter words here" id="wordRemoveInput">
-            <p class="mt-2">Enter the banned words to remove. You can separate multiple words with space. 1 word per trigger (ie. "What's Twitch?" would remove 2 words, not 1 phrase)</p>
-            <p id="removeWordErrorMessage" class="errorMessage"></p>
-            <p id="removeWordSuccessMessage" class="successMessage"></p>
-          </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <p id="errorMessageAdd"></p>
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-outline-danger" onclick="removeBannedWords(document.getElementById('wordRemoveInput').value)">Remove</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="modal fade" id="toggleFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
+</div>
+<div class="modal fade" id="resetFilterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText">
-        <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Toggle Filter</h4>
+        <div class="modal-content glimPanel whiteText">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Reset Filter</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="icon-input-container">
+                    <p>Resetting the filter will clear all of your added/removed words. It will be reset to its default
+                        state. This is irreversible.</p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
+                    onclick="ModHandle.bannedWordsReset().then(data => {displayBannedWords()})">Reset</button>
+            </div>
         </div>
-        <!--Body-->
-        <div class="modal-body">
-          <div class="icon-input-container">
-            <p>Filter Status: <span id="filterStatusTextModal" style="color: #ff7f7f;">Disabled</span></p>
-            <p class="mt-1">Disabling the filter will prevent the bot from scanning messages for banned words.</p>
-            <p class="mt-1">Enabling the filter will cause the bot to follow the warnings that are set.</p>
-          </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-info" data-dismiss="modal" onclick="toggleFilter(!CacheStore.get('modFilterEnabled', false))">Toggle</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="modal fade" id="resetFilterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText">
-        <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Reset Filter</h4>
-        </div>
-        <!--Body-->
-        <div class="modal-body">
-          <div class="icon-input-container">
-            <p>Resetting the filter will clear all of your added/removed words. It will be reset to its default state. This is irreversible.</p>
-          </div>
-        </div>
-        <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="ModHandle.bannedWordsReset().then(data => {displayBannedWords()})">Reset</button>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 
 <style>
     .player {
@@ -494,12 +485,14 @@
     .slider.round:before {
         border-radius: 50%;
     }
-    .bannedWordList{
+
+    .bannedWordList {
         position: relative;
-        height:100%;
-        overflow-y:scroll;
+        height: 100%;
+        overflow-y: scroll;
         max-height: 18rem;
     }
+
     .blurredList {
         -webkit-filter: blur(10px);
         filter: blur(10px);
