@@ -20,16 +20,16 @@
         </li>
     </ul>
     <div class="text-center">
-        <a class="btn-info" href="#" data-toggle="modal" data-target="#modalCart">Add Command</a>
-        <a class="btn-info mt-2 " href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
-        <a class="btn-info mt-2 " href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
+        <a class="btn-primary" id="addCommandButtonModal" href="#" data-modal-toggle="modalCart">Add Command</a>
+        <a class="btn-success mt-2 " href="#" data-toggle="modal" data-target="#modalEditCommand">Edit Commands</a>
+        <a class="btn-danger mt-2 " href="#" data-toggle="modal" data-target="#modalDelete">Remove Command</a>
     </div>
     <div class="card-body">
         <div id="commandTabs" class="mt-4">
-            <div class="" id="userCommands" role="tabpanel" aria-labelledby="userCommandsTab">
+            <div id="userCommands" role="tabpanel" aria-labelledby="userCommandsTab">
                 <h5 class="whiteText text-center font-bold text-xl">Below lists all of the commands that you have made. You can
                     add some here, or add them from chat. (Check Glimboi Commands)</h5>
-                <table id="example" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2"></table>
+                <table id="example" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"></table>
             </div>
             <div class="hidden" id="glimboiCommands" role="tabpanel" aria-labelledby="glimboiCommandsTab">
                 <h5 class="whiteText text-center text-xl font-bold">Glimboi commands are default system commands. They are
@@ -329,8 +329,7 @@
                         <p class="text-lg text-blue-400 mt-1">The amount of non bot messages for the next repeatable message to go through.</p>
                         <form class="mt-4">
                             <label for="sel1">Cooldown:</label>
-                            <select class="form-control w-80 rounded-md" id="repeatProtect"
-                                style="background-color: #1b2e4b;color: aquamarine;border:none !important;">
+                            <select class="w-80" id="repeatProtect">
                                 <option id="rp15">15 (default)</option>
                                 <option id="rp5">5 (not recommended)</option>
                                 <option id="rp30">30</option>
@@ -344,7 +343,7 @@
                         </p>
                         <form class="mt-4">
                             <label for="initialValueSlider">Initial</label>
-                            <input type="range" class="form-control-range w-80" id="repeatDelaySlider" min="5" max="60" step="5">
+                            <input type="range" class="w-80" id="repeatDelaySlider" min="5" max="60" step="5">
                             <p id="repeatDelayValue"></p>
                         </form>
                     </div>
@@ -352,8 +351,7 @@
                         <h3 class="text-3xl font-semibold text-gray-100">Cooldown Message</h3>
                         <p class="text-lg text-blue-400 mt-1">The message sent to chat when a cooldown is tripped.</p>
                         <form class="mt-4">
-                            <input class="icon-input settingsInput rounded-md" type="text" placeholder="Cooldown Message" id="cooldownMessage"
-                                style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                            <input class="w-10/12 mt-auto" type="text" placeholder="Cooldown Message" id="cooldownMessage">
                         </form>
                     </div>
                 </div>
@@ -367,10 +365,9 @@
 
 
 <!-- Modal: Add Command -->
-<div class="modal fade" id="modalCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="height: 90%;width: 90%;max-width: none;">
-        <div class="modal-content glimPanel whiteText h-100" id="commandContent">
+<div class="hidden fixed top-0 left-0 right-0 bottom-0 m-12 z-50" id="modalCart" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="" style="height: 90%;width: 90%;max-width: none;">
+        <div class="glimPanel whiteText h-full w-full p-4 absolute flex flex-col" id="commandContent">
 
         </div>
     </div>
@@ -391,7 +388,7 @@
                 <!--Body-->
                 <div class="modal-body">
                     <div class="icon-input-container">
-                        <input class="icon-input" type="text" placeholder="Command Name" id="commandEditInput">
+                        <input type="text" placeholder="Command Name" id="commandEditInput">
                         <p id="editCommandMessage" class="errorMessage"></p>
                     </div>
                 </div>
@@ -419,7 +416,7 @@
             <!--Body-->
             <div class="modal-body">
                 <div class="icon-input-container">
-                    <input class="icon-input" type="text" placeholder="Command Name" id="commandRemoveInput">
+                    <input type="text" placeholder="Command Name" id="commandRemoveInput">
                     <p id="removeCommandMessage" class="errorMessage"></p>
                 </div>
             </div>
@@ -436,36 +433,65 @@
 <!-- Modal: modalCart -->
 
 <style>
+    #example {
+        background-color: #14365b;
+        color: aliceblue !important;
+    }
     #example tr[class="even"] {
         cursor: pointer;
+        background-color: #1b4776;
     }
 
     #example tr[class="odd"] {
         cursor: pointer;
+        background-color: #14365b;
     }
 
-    .active {
-        border-color: #17a2b8 !important;
+    #example td {
+        border-top-color: #006e80;
+        border-top-width: 1px;
     }
 
-    .draggable {
-        cursor: move;
-        margin-bottom: 1rem;
-        user-select: none;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        height: 4rem;
-        width: 16rem;
-        border: 1px solid #cbd5e0;
+    #example tr:hover {
+        background-color: #3169a5;
     }
-
-    /*
-#modalCart {
-    display: flex;
-    align-items: center;
-}
-*/
 </style>
 
 <div id="tailwindCSS" class="border-t-teal-50 hidden"></div>
+
+<!-- Modal toggle -->
+<button class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" data-modal-toggle="defaultModal">
+    Toggle modal
+  </button>
+
+  <!-- Main modal -->
+  <div id="defaultModal" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+      <div class="relative px-4 w-full max-w-2xl h-full md:h-auto">
+          <!-- Modal content -->
+          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              <!-- Modal header -->
+              <div class="flex justify-between items-start p-5 rounded-t border-b dark:border-gray-600">
+                  <h3 class="text-xl font-semibold text-gray-900 lg:text-2xl dark:text-white">
+                      Terms of Service
+                  </h3>
+                  <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                  </button>
+              </div>
+              <!-- Modal body -->
+              <div class="p-6 space-y-6">
+                  <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                      With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
+                  </p>
+                  <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                      The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
+                  </p>
+              </div>
+              <!-- Modal footer -->
+              <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                  <button data-modal-toggle="defaultModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I accept</button>
+                  <button data-modal-toggle="defaultModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600">Decline</button>
+              </div>
+          </div>
+      </div>
+  </div>

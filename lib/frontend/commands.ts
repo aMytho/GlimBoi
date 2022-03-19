@@ -149,11 +149,9 @@ function moveAction(element:HTMLElement, direction: "up" | "down") {
  * Runs on cmd page load. Adds filters and other things for the modals
  */
 function commandModalPrep() {
-    const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`)
-    $('#modalCart').on('show.bs.modal', function (e) {// @ts-ignore
-        if (e.relatedTarget) {
-            CommandUI.loadModalAdd();
-        }
+    const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
+    document.getElementById("addCommandButtonModal").addEventListener("click", () => {
+        CommandUI.loadModalAdd();
     });
     $('#modalEditCommand').on('hidden.bs.modal', function (e) {
         (document.getElementById("commandEditInput") as HTMLInputElement).value = "";
