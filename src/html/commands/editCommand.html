@@ -1,127 +1,162 @@
 <!--Header-->
-<div class="modal-header text-center">
-    <h4 class="modal-title w-100">Edit a Command</h4>
+<div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+    <h4 class="text-center whiteText font-bold text-2xl w-full">Edit a Command</h4>
 </div>
 <!--Body-->
-<div class="modal-body" id="commandeditModalBody"
-    style="display: flex; justify-content: center; padding: 4rem 0;overflow: auto;">
-    <div id="mySidenavR" class="sidenavR">
-        <a href="javascript:void(0)" class="closebtn"
-            onclick="document.getElementById('mySidenavR').style.width = '0';">×</a>
-        <h4 class="text-center">Command Settings</h4>
-        <table class="table table-hover mx-1">
-            <thead>
-                <tr>
-                    <th>Setting</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr hidden class="hidden">
-                    <td data-toggle="tooltip" data-placement="top" title="The name of the command">Name</td>
-                    <td><input type="text" class="settingInput" id="editCommandName"
-                            placeholder="Command name with or without !" /></td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
-                    <td><input type="text" class="settingInput" id="editCommandPoints"
-                            placeholder="Points required to use command" value="0" /></td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
-                    <td><input type="text" class="settingInput" id="editCommandUses" placeholder="Command Uses"
-                            value="0" /></td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Sets a cooldown">Cooldown (minutes)</td>
-                    <td><input type="text" class="settingInput" id="editCommandCooldown"
-                            placeholder="Command Cooldown (Minutes)" value="0" /></td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Restrict a command to a specific rank tier">Rank
-                    </td>
-                    <td>
-                        <select id="editCommandRank" class="settingSelect">
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
-                    <td>
-                        <select id="editCommandRepeat" class="settingSelect">
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Delete the trigger when finished">Remove Trigger</td>
-                    <td>
-                        <select id="editCommandDelete" class="settingSelect">
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td data-toggle="tooltip" data-placement="top" title="Can the command be activated?">Disabled</td>
-                    <td>
-                        <select id="editCommandDisabled" class="settingSelect">
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="mt-3">
-            <h5 class="text-center">Any errors will appear below</h5>
-            <ul id="editCommandErrors">
-
-            </ul>
-        </div>
-    </div>
+<div class="relative flex flex-grow justify-center p-16 overflow-auto" id="commandeditModalBody">
     <span id="editOpenMenu" style="font-size:30px;cursor:pointer;position: absolute;top: 10px;right: 10px;"
         onclick="document.getElementById('mySidenavR').style.width = '50%';">☰</span>
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
+    <div class="container grid grid-cols-2 gap-4">
+            <div>
                 <h4>Add actions to begin!</h4>
                 <div id="editCommandList">
                 </div>
             </div>
-            <div class="col-6">
-                <h5></h5>
-            </div>
-        </div>
-    </div>
+            <div>
+                <div id="mySidenavR" class="h-full overflow-x-hidden pt-14 absolute right-0 top-0 duration-500 w-0" style="background-color: #1b2e4b;">
+                    <a href="javascript:void(0)" class="closebtn"
+                        onclick="document.getElementById('mySidenavR').style.width = '0';">×</a>
+                    <h4 class="text-center whiteText font-bold text-xl">Command Settings</h4>
+                    <table class="table whiteText mt-2 mx-2 w-full border-collapse border-slate-200 bc rounded-xl sidenavR" style="background-color: #14365b;">
+                        <thead>
+                            <tr>
+                                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Setting</th>
+                                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr hidden class="hidden">
+                                <td data-toggle="tooltip" data-placement="top" title="The name of the command">Name</td>
+                                <td><input type="text" class="settingInput" id="editCommandName"
+                                        placeholder="Command name with or without !" /></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="text" class="settingInput" id="editCommandPoints"
+                                        placeholder="Points required to use command" value="0" /></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="text" class="settingInput" id="editCommandUses" placeholder="Command Uses"
+                                        value="0" /></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Sets a cooldown">Cooldown (minutes)</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="text" class="settingInput" id="editCommandCooldown"
+                                        placeholder="Command Cooldown (Minutes)" value="0" /></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Restrict a command to a specific rank tier">Rank
+                                </td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                    <select id="editCommandRank" class="settingSelect">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Add to Repeat List">Repeat</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                    <select id="editCommandRepeat" class="settingSelect">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Delete the trigger when finished">Remove Trigger</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                    <select id="editCommandDelete" class="settingSelect">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Can the command be activated?">Disabled</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                    <select id="editCommandDisabled" class="settingSelect">
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-3">
+                        <h5 class="text-center">Any errors will appear below</h5>
+                        <ul id="editCommandErrors">
 
+                        </ul>
+                    </div>
+                </div>
+            </div>
+    </div>
 </div>
+
 <!--Footer-->
-<div class="modal-footer">
+<div class="relative bottom-0 mr-8 w-full border-t-2 border-blue-300 border-solid py-2">
     <p id="errorMessageedit"></p>
-    <div class="dropleft">
-        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle-second="tooltip"
-            data-toggle="dropdown" data-placement="top" title="Add Action">+</button>
-        <div class="dropdown-menu mb-5" style="background-color: #0056b3 !important;">
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateChatMessage">Chat
-                Message</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateApiRequestGet">API Request
-                (GET)</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateAudio">Audio (Sound
-                Effect)</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateBan">Ban User</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateFollow">Follow</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateImageGif">Image/GIF</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateMatrix">Matrix</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateObsWebSocket">ObsWebSocket</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreatePoints">Give/Take Points</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateReadFile">Read File</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateTimeout">Timeout User</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateTweet">Tweet</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateVideo">Video</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateWait">Wait</a>
-            <a class="dropdown-item " href="#" style="color: aliceblue !important;" id="CreateWriteFile">Write File</a>
+    <div class="dropleft flex float-right mr-4">
+        <button id="dropdownButton" type="button" class="btn-primary" data-dropdown-toggle="dropdown"
+            title="Add Action">+</button>
+        <div id="dropdown" class="hidden py-2 z-10 w-44 text-base list-none rounded-xl whitespace-nowrap"
+            style="background-color: #0056b3 !important;z-index: 51">
+            <ul class="py-1" aria-labelledby="dropdownButton">
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateChatMessage">Chat
+                        Message</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateApiRequestGet">API
+                        Request
+                        (GET)</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateAudio">Audio (Sound
+                        Effect)</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateBan">Ban User</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateFollow">Follow</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateImageGif">Image/GIF</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateMatrix">Matrix</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;"
+                        id="CreateObsWebSocket">ObsWebSocket</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreatePoints">Give/Take
+                        Points</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateReadFile">Read File</a>
+
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateTimeout">Timeout
+                        User</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateTweet">Tweet</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateVideo">Video</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateWait">Wait</a>
+                </li>
+                <li>
+                    <a class="py-1 px-6" href="#" style="color: aliceblue !important;" id="CreateWriteFile">Write
+                        File</a>
+                </li>
+            </ul>
         </div>
-        <button type="button" class="btn btn-outline-info" data-toggle-second="tooltip" data-placement="top"
+        <button type="button" class="btn-info" data-toggle-second="tooltip" data-placement="top"
             title="Learn about action scripts" onclick="loadLink('glimboi.com/docs/intro/commands/')">Info</button>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal" data-toggle-second="tooltip"
+        <button type="button" class="btn-warning" data-dismiss="modal" data-toggle-second="tooltip"
             data-placement="top" title="Close">Close</button>
-        <button class="btn btn-outline-primary" data-toggle-second="tooltip" data-placement="top" title="Edit Command"
+        <button class="btn-primary" data-toggle-second="tooltip" data-placement="top" title="Edit Command"
             id="editCommandButtonModal">Save</button>
     </div>
 
@@ -137,19 +172,6 @@
 
     .actionMain {
         margin-bottom: 0.2rem
-    }
-
-    .sidenavR {
-        background-color: #1b2e4b;
-        height: 100%;
-        overflow-x: hidden;
-        padding-top: 60px;
-        position: absolute;
-        right: 0;
-        top: 0;
-        transition: .5s;
-        width: 0;
-        z-index: 1;
     }
 
     .sidenav a,
