@@ -5,6 +5,59 @@
 .btn-info {
     @apply text-white bg-cyan-500 hover:bg-cyan-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
     font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.btn-primary {
+    @apply font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.btn-success {
+    @apply font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-danger {
+    @apply font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #bd2130;
+    border-color: #b21f2d;
+}
+
+.btn-warning {
+    @apply font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
 }
 
 html,
@@ -13,7 +66,8 @@ body {
     overflow-x: hidden; /*prevents a vertical scollbar*/
 }
 .glimPanel {
-    background-color: #14193d !important; /*Color of most panels*/
+    background: rgb(20,25,61);
+    background: radial-gradient(circle, rgba(20,25,61,1) 0%, rgba(20,25,61,1) 31%, rgba(27,46,75,1) 86%);
 }
 .glimNav {
     background-color: #151033 !important; /*Nav bar*/
@@ -44,4 +98,40 @@ body {
 
 .cyanBorder {
     border-top-color: #006e80;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f100;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(106, 158, 189);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(43, 101, 177);
+}
+
+select, input {
+    @apply rounded-md;
+    color: aquamarine !important;
+    border-color: aqua !important;
+    background-color: #1b2e4b !important;
+}
+
+@keyframes border-pulsate-err {
+    0%   { border-color: rgb(209, 17, 0); }
+    50% { border-color: rgba(0, 255, 255, 0); }
+    100%   { border-color: rgb(209, 17, 0); }
+}
+
+.red-pulse {
+    display: block;
+    margin: 3px auto;
+    border: 3px solid rgb(209, 17, 0);
+    animation: border-pulsate-err 2s infinite;
 }
