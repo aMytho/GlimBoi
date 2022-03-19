@@ -35,8 +35,7 @@
         <div class="mt-2">
             <h3 class="text-center text-xl font-semibold">Name</h3>
             <p>The name of your currency.</p>
-            <input class="w-full rounded-md" type="text" placeholder="Name" id="pointsNewName"
-                style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: 0px;">
+            <input class="w-full rounded-md mt-auto" type="text" placeholder="Name" id="pointsNewName">
         </div>
         <div class="mt-3 flex justify-center">
             <a class="btn-info" onclick="getPoints()">Refresh Leaderboard</a>
@@ -49,7 +48,7 @@
         <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl " style="background-color: #14365b;" id="pointsTable">
             <thead>
                 <tr>
-                    <th class="p-3 cyanBorder border-1 border-b-0 border-x-0 text-xl" scope="col">#</th>
+                    <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl" scope="col">#</th>
                     <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl" scope="col">User</th>
                     <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl" scope="col">Points</th>
                 </tr>
@@ -109,34 +108,4 @@
         </table>
     </div>
 
-</div>
-
-
-<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="adduserModal">
-            <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100" id="myModalLabel4">Info</h4>
-            </div>
-            <!--Body-->
-            <div class="modal-body">
-                <h4 class="text-center">Points</h4>
-                <p>Points are a currency your viewers can earn once they have been added to the DB. You can change
-                    "points" to anything you wish. Your viewers can use these points on games and other activities. </p>
-                <h4 class="text-center">Earning Points</h4>
-                <p>Users earn points every 15 minutes they are in your stream. This value can be adjusted on the points
-                    tab. You can also earn points by playing games.</p>
-                <p>Although there is not a point limit I would recomend keeping the points earned per minute low. It
-                    saves resources and can prevent visual bugs.</p>
-                <h4 class="text-center">Mods</h4>
-                <p>Mods can bestow and remove viewers points. They can also set the amount earned in chat.</p>
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
