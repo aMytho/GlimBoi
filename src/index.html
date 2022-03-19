@@ -46,16 +46,9 @@
     </div>
     <!-- Tailwind nav -->
     <nav class="glimNav">
-        <div class="max-w-7xl pr-2 sm:pr-6 lg:pr-8">
+        <div class="pr-2 sm:pr-6 lg:pr-8">
             <div class="relative flex items-center h-16" id="mainNavBar">
                 <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                    <div class="flex-shrink-0 flex items-center">
-                        <img class="block lg:hidden h-8 w-auto"
-                            src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow">
-                        <img class="hidden lg:block h-8 w-auto"
-                            src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                            alt="Workflow">
-                    </div>
                     <div class="sm:block sm:ml-6">
                         <div class="flex space-x-4" id="navContainer">
                             <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/commands.html" id="CommandLink">Commands</a>
@@ -74,33 +67,26 @@
                 <div class="items-center justify-center">
                     <a class="nav-link glimNavItem active font-bold text-xl" href="../src/html/homepage.html"style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
                 </div>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 float-right">
-                    <button type="button" class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                      <span class="sr-only">View notifications</span>
-                      <!-- Heroicon name: outline/bell -->
-                      <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                      </svg>
-                    </button>
-
-                    <!-- Profile dropdown -->
-                    <div class="ml-3 relative">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color:#b2dbff">Status</a>
-                      <div class="hidden whiteText dropdown-menu origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                        <!-- Active: "bg-gray-100", Not Active: "" -->
-                        <a class="dropdown-item navbarAlt block px-4 py-2 text-sm" href="#">
-                            <p>Chat: <span id="navChatStatus" style="color:red">None</span></p>
+                <div class="flex nav-item glimNavItem justify-center ml-8">
+                    <div class="glimNavItem text whiteText group">
+                        <a class="nav-link glimNavItem text whiteText inline-flex items-center" href="#" style="color: #b2dbff;">Status
+                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </a>
-                        <a class="dropdown-item navbarAlt block px-4 py-2 text-sm border-t-2 border-emerald-50" href="#" style="margin: 0px;">
-                            <p id="version"></p>
-                            <span class="badge badge-pill badge-success"
-                                style="position: relative;left: 20%;">Production</span>
-                        </a>
-                      </div>
+                        <!-- Status dropdown -->
+                        <div class="cursor-default hidden group-hover:flex ml-3 absolute" id="statusDropdown">
+                            <div class="whiteText mt-2 w-48 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none mr-64"
+                                aria-orientation="vertical" style="background-color: #14365b">
+                                <a class="navbarAlt block px-4 py-2 text-sm" href="#">
+                                    <p>Chat: <span id="navChatStatus" style="color:red">None</span></p>
+                                </a>
+                                <a class="navbarAlt block px-4 py-2 text-sm border-t-2 border-emerald-50 m-0" href="#">
+                                    <p id="version"></p>
+                                    <span class="badge badge-pill badge-success" style="position: relative;left: 20%;">Production</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                <div class="nav-item glimNavItem">
-                    <a class="nav-link glimNavItem active text" href="#" id="close">Exit</a>
+                    <a class="nav-link glimNavItem active whiteText ml-4" href="#" id="close">Exit</a>
                 </div>
             </div>
         </div>
@@ -130,7 +116,7 @@
     <div class="pane h-100">
         <div class="card-body mt-3 mb-6 ml-3 mr-3 px-8 pb-8 rounded-xl glimPanel whiteText">
 
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
                     <h4 class="text-2xl font-bold mt-3">Welcome to <span style="color:turquoise">GlimBoi</span></h4>
                     <p class="mt-6 text-xl">To get started select "Authorize." Log in with the account you want the bot to speak as. Glimboi
@@ -247,24 +233,51 @@
 
 </html>
 
+<!-- Main modal -->
+<div id="modalError" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center h-modal md:h-full md:inset-0">
+    <div class="relative px-4 w-full max-w-2xl h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex justify-between items-start p-5 rounded-t border-b dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 lg:text-2xl dark:text-white" id="myModalError">
+                    Terms of Service
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400" id="errorMessageSolution">
+                    With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
+                </p>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+                <button data-modal-toggle="defaultModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I accept</button>
+                <button data-modal-toggle="defaultModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600">Decline</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal: Error Message -->
-<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="error modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="errorModal">
+<div class="hidden fixed top-0 left-0 right-0 bottom-0 m-12 z-50" id="modalError" aria-hidden="true">
+    <div class="w-3/12 h-1/4" role="document">
+        <div class="glimPanel whiteText" id="errorModal">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100" id="myModalError">Error</h4>
+            <div class="whiteText text-center text-2xl font-bold w-full">
+                <h4 id="myModalError">Error</h4>
             </div>
             <!--Body-->
-            <div class="modal-body" id="modalErrorBody">
+            <div id="modalErrorBody">
                 <p id="errorMessageText"></p>
                 <p id="errorMessageSolution"></p>
             </div>
             <!--Footer-->
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn-warning" data-modal-target="modalError">Close</button>
             </div>
         </div>
     </div>
