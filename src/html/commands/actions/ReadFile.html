@@ -1,27 +1,27 @@
 <div class="topnav">
     <h3 class="active">Read File</h3>
     <div class="float-right" style="padding:12px 14px">
-        <i class="fas fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
-        <i class="fas fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
-        <i class="far fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
+        <i class="fas mx-2 fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
+        <i class="fas mx-2 fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
+        <i class="far mx-2 fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
     </div>
 </div>
-<div class="actionBody mt-2">
-    <div class="actionMain text-center row">
-        <div class="col-6">
-            <input type="file" class="ml-2" style="margin-left: 1rem;">
+<div class="actionBody mt-4">
+    <div class="actionMain text-center grid grid-cols-1 md:grid-cols-2">
+        <div>
+            <input type="file" class="ml-4">
             <p style="display: none;"></p>
         </div>
-        <div class="col-6">
+        <div>
             <p>Reads a file and saves the result to a variable.</p>
         </div>
     </div>
-    <div class="actionMain text-center row mt-2">
-        <div class="col-6">
-            <span class="textarea" role="textbox" contenteditable id="allFilesVariableTextInput"
-            style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+    <div class="actionMain text-center grid grid-cols-1 md:grid-cols-2 mt-2 gap-x-4">
+        <div>
+            <span class="textarea ml-4 w-full" role="textbox" contenteditable id="allFilesVariableTextInput"
+            style="background-color: #1b2e4b;color:aquamarine;"></span>
         </div>
-        <div class="col-6">
+        <div>
             <p>Enter the name of the variable to use the request data later.</p>
         </div>
     </div>
