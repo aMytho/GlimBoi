@@ -1,23 +1,22 @@
-<div class="card-deck m-3">
-  <div class="col-lg-12 col-12 p-0">
-    <div class="card mx-1 glimPanel mt-lg-0 mt-4 whiteText p-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <a class="btn btn-primary btn-group mt-2" href="#" data-toggle="modal" data-target="#modalUserAdd">Add Users</a>
-                <a class="btn btn-success btn-group mt-2" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit Users</a>
-            </div>
+<div class="mt-4 m-4">
+    <div class="mx-2 glimPanel roundex-xl mt-4 whiteText p-3">
+        <div class="text-center w-full">
+            <a class="btn-primary mt-2" href="#" data-toggle="modal" data-target="#modalUserAdd">Add
+                Users</a>
+            <a class="btn-success mt-2" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit
+                Users</a>
         </div>
-        <div class="row">
-            <div class="col-12 text-center">
-                <a class="btn btn-primary btn-group mt-2" data-toggle="modal" data-target="#modalQuoteAdd" onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
-                <a class="btn btn-info btn-group mt-2" onclick="loadAllQuotes()" data-toggle="modal" data-target="#modalQuoteView"> View All Quotes</a>
-                <a class="btn btn-danger btn-group mt-2" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove Quote</a>
-            </div>
+        <div class="text-center w-full mt-8">
+            <a class="btn-primary btn-group mt-2" data-toggle="modal" data-target="#modalQuoteAdd"
+                onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
+            <a class="btn-info mt-2" onclick="loadAllQuotes()" data-toggle="modal"
+                data-target="#modalQuoteView"> View All Quotes</a>
+            <a class="btn-danger mt-2" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove
+                Quote</a>
         </div>
 
-      <table id="userTable" class="display table w-100"></table>
+      <table id="userTable" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"></table>
     </div>
-  </div>
 </div>
 
 
@@ -152,14 +151,32 @@
   <!-- Modal: modalCart -->
 
 <style>
-#userTable tr[class="even"] {
-    cursor: pointer;
-}
-#userTable tr[class="odd"] {
-    cursor: pointer;
-}
-.notClickable {
-    opacity: 0.5;
-    cursor: not-allowed
-}
+    .notClickable {
+        opacity: 0.5;
+        cursor: not-allowed
+    }
+
+    #userTable {
+        background-color: #14365b;
+        color: aliceblue !important;
+    }
+
+    #userTable tr[class="even"] {
+        cursor: pointer;
+        background-color: #1b4776;
+    }
+
+    #userTable tr[class="odd"] {
+        cursor: pointer;
+        background-color: #14365b;
+    }
+
+    #userTable td {
+        border-top-color: #006e80;
+        border-top-width: 1px;
+    }
+
+    #userTable tr:hover {
+        background-color: #3169a5;
+    }
 </style>
