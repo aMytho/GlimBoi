@@ -144,3 +144,7 @@ select, input {
 .dataTables_wrapper #example_previous, .dataTables_wrapper #userTable_previous, .dataTables_wrapper #obsResources_previous {
     color: aliceblue;
 }
+
+.dataTables_filter {
+    margin-bottom: 0.5rem;
+}
