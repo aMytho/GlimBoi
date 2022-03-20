@@ -19,7 +19,7 @@
             </button>
         </li>
     </ul>
-    <div id="settingTabs">
+    <div id="settingTabs" class="prose lg:prose-base prose-h3:text-lg max-w-none">
         <div id="liveSettings" role="tabpanel" aria-labelledby="liveSettingsTab">
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!--DISCORD-->
@@ -36,11 +36,11 @@
                     <p>Webhook URI</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Discord Webhook URI"
                         id="discordWebhookURL"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                     <p>Default Message</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Default Message"
                         id="discordWebhookMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
                     <p>Confirm before send?</p>
                     <div class="niceSwitch">
                         <label class="switch">
@@ -66,11 +66,11 @@
                     <p>Webhook URI</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Guilded Webhook URI"
                         id="guildedWebhookURL"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 80%;">
                     <p>Default Message</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Default Message"
                         id="guildedWebhookMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
                     <p>Confirm before send?</p>
                     <div class="niceSwitch">
                         <label class="switch">
@@ -105,7 +105,7 @@
                     <p>Default Message</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Default Message"
                         id="twitterMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
                     <p>Confirm before send?</p>
                     <div class="niceSwitch">
                         <label class="switch">
@@ -140,15 +140,15 @@
                         element web panel.
                     </p>
                     <input class="icon-input settingsInput" type="text" placeholder="Access Token" id="matrixToken"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
                     <p>Default Message</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Default Message" id="matrixMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
                     <p>Default Room (Internal <span style="color:rgb(251, 133, 251);cursor: pointer;"
                             onclick="loadLink('glimboi.com/docs/integrations/goinglive/#matrix')">Room ID</span>.) Ex.
                         !KieCrZCMdQEJTCAspJ:matrix.org</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Default Room" id="matrixRoom"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width: 95%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
                     <p></p>
                     <div class="niceSwitch">
                         <label class="switch">
@@ -179,15 +179,15 @@
                         connection you should add a password.</p>
                     <input class="icon-input settingsInput" type="text" placeholder="OBS websocket password"
                         id="obsPassword"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                 </div>
                 <div class="col-12 col-sm-1 whiteText"></div>
                 <div class="col-sm-5 col-12 whiteText ml-2">
-                    <h3>WebSocket URL</h3>
+                    <p>WebSocket URL</p>
                     <p>The URL to connect to. If OBS and Glimboi are on the same device it is likely
                         "localhost" (the default)</p>
                     <input class="icon-input settingsInput" type="text" placeholder="OBS websocket URL" id="obsUrl"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                 </div>
             </div>
         </div>
@@ -207,7 +207,7 @@
                         name.</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Thanks for the follow $follower !"
                         id="followMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                 </div>
                 <div class="col-12 col-sm-1 whiteText"></div>
                 <div class="col-sm-5 col-12 whiteText ml-2 hidden">
@@ -226,11 +226,11 @@
                     <p>Enter your generated Streamlabs token. Keep Private!</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Streamlabs Token (keep private!)"
                         id="streamlabsKey"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                     <p>Message to show in the alert. Use $follower for the name of the follower.</p>
                     <input class="icon-input settingsInput" type="text" placeholder="Thanks for the follow $user "
                         id="streamlabsMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;border: 0px;margin-top: auto;width:80%;">
+                        style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                 </div>
             </div>
         </div>
@@ -514,5 +514,11 @@
 
     .niceSwitch p {
         margin-left: 5rem;
+    }
+    input {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        margin-bottom: 0.7rem;
+        margin-top: 0.7rem;
     }
 </style>

@@ -67,6 +67,7 @@
     "ws": "^7.5.3"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.2",
     "@types/bootstrap": "^5.0.16",
     "@types/crypto-js": "^4.0.2",
     "@types/datatables.net": "^1.10.19",
