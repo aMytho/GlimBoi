@@ -852,10 +852,6 @@ input[type=file]::file-selector-button:hover {
   grid-column: span 5 / span 5;
 }
 
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
-
 .float-right {
   float: right;
 }
@@ -874,10 +870,6 @@ input[type=file]::file-selector-button:hover {
 
 .m-4 {
   margin: 1rem;
-}
-
-.m-3 {
-  margin: 0.75rem;
 }
 
 .mx-1 {
@@ -913,11 +905,6 @@ input[type=file]::file-selector-button:hover {
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-}
-
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
 }
 
 .mt-1 {
@@ -1102,10 +1089,6 @@ input[type=file]::file-selector-button:hover {
 
 .w-11\/12 {
   width: 91.666667%;
-}
-
-.w-8\/12 {
-  width: 66.666667%;
 }
 
 .max-w-2xl {
@@ -1951,6 +1934,15 @@ select, input {
   border: 3px solid rgb(209, 17, 0);
   -webkit-animation: border-pulsate-err 2s infinite;
           animation: border-pulsate-err 2s infinite;
+}
+
+.dataTables_wrapper label,
+.dataTables_wrapper select,
+.dataTables_wrapper input,
+.dataTables_wrapper #example_info, .dataTables_wrapper #userTable_info, .dataTables_wrapper #obsResources_info,
+.dataTables_wrapper #example_next, .dataTables_wrapper #userTable_next, .dataTables_wrapper #obsResources_next,
+.dataTables_wrapper #example_previous, .dataTables_wrapper #userTable_previous, .dataTables_wrapper #obsResources_previous {
+  color: aliceblue;
 }
 
 .hover\:bg-gray-700:hover {
