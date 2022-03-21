@@ -1,21 +1,22 @@
-<div class="mt-4 m-4">
-    <div class="mx-2 glimPanel roundex-xl mt-4 whiteText p-3">
-        <div class="text-center w-full">
-            <a class="btn-primary mt-2" href="#" data-toggle="modal" data-target="#modalUserAdd">Add
+<div class="mt-2 m-4">
+    <div class="mx-2 glimPanel roundex-xl mt-4 whiteText p-3 pt-8">
+        <div class="flex flex-wrap flex-row justify-center">
+            <a class="btn-primary" href="#" data-toggle="modal" data-target="#modalUserAdd">Add
                 Users</a>
-            <a class="btn-success mt-2" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit
+            <a class="btn-success" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit
                 Users</a>
         </div>
-        <div class="text-center w-full mt-8">
-            <a class="btn-primary btn-group mt-2" data-toggle="modal" data-target="#modalQuoteAdd"
+        <div class="flex flex-wrap flex-row justify-center">
+            <a class="btn-primary" data-toggle="modal" data-target="#modalQuoteAdd"
                 onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
-            <a class="btn-info mt-2" onclick="loadAllQuotes()" data-toggle="modal"
+            <a class="btn-info" onclick="loadAllQuotes()" data-toggle="modal"
                 data-target="#modalQuoteView"> View All Quotes</a>
-            <a class="btn-danger mt-2" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove
+            <a class="btn-danger" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove
                 Quote</a>
         </div>
 
-      <table id="userTable" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"></table>
+      <table id="userTable" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
+      style="width: 100% !important;"></table>
     </div>
 </div>
 

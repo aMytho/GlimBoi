@@ -626,6 +626,23 @@ input[type=file]::file-selector-button:hover {
   background: #4B5563;
 }
 
+.tooltip-arrow,.tooltip-arrow:before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+}
+
+.tooltip-arrow {
+  visibility: hidden;
+}
+
+.tooltip-arrow:before {
+  content: "";
+  visibility: visible;
+  transform: rotate(45deg);
+}
+
 [data-tooltip-style^='light'] + .tooltip > .tooltip-arrow:before {
   border-style: solid;
   border-color: #E5E7EB;
@@ -1300,9 +1317,9 @@ input[type=file]::file-selector-button:hover {
   margin-bottom: 0.75rem;
 }
 
-.mx-8 {
-  margin-left: 2rem;
-  margin-right: 2rem;
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .mx-auto {
@@ -1401,6 +1418,10 @@ input[type=file]::file-selector-button:hover {
 
 .mb-1 {
   margin-bottom: 0.25rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .block {
@@ -1555,6 +1576,10 @@ input[type=file]::file-selector-button:hover {
   resize: both;
 }
 
+.list-disc {
+  list-style-type: disc;
+}
+
 .list-none {
   list-style-type: none;
 }
@@ -1573,6 +1598,10 @@ input[type=file]::file-selector-button:hover {
 
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-row-reverse {
@@ -1676,6 +1705,10 @@ input[type=file]::file-selector-button:hover {
 
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.break-all {
+  word-break: break-all;
 }
 
 .rounded-md {
@@ -1927,6 +1960,10 @@ input[type=file]::file-selector-button:hover {
   padding-top: 3.5rem;
 }
 
+.pt-8 {
+  padding-top: 2rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2045,6 +2082,12 @@ input[type=file]::file-selector-button:hover {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .outline {
   outline-style: solid;
 }
@@ -2087,8 +2130,18 @@ input[type=file]::file-selector-button:hover {
   transition-duration: 150ms;
 }
 
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-500 {
   transition-duration: 500ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
 }
 
 .btn-info {
@@ -2420,6 +2473,20 @@ select, input {
   line-height: 1.75rem;
 }
 
+.prose-p\:my-0 :is(:where(p):not(:where([class~="not-prose"] *))) {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.prose-a\:no-underline :is(:where(a):not(:where([class~="not-prose"] *))) {
+  -webkit-text-decoration-line: none;
+          text-decoration-line: none;
+}
+
+.prose-hr\:mb-0 :is(:where(hr):not(:where([class~="not-prose"] *))) {
+  margin-bottom: 0px;
+}
+
 .dark .dark\:border-gray-600 {
   --tw-border-opacity: 1;
   border-color: rgb(75 85 99 / var(--tw-border-opacity));
@@ -2497,12 +2564,20 @@ select, input {
     margin-top: 1rem;
   }
 
+  .sm\:mt-2 {
+    margin-top: 0.5rem;
+  }
+
   .sm\:block {
     display: block;
   }
 
   .sm\:hidden {
     display: none;
+  }
+
+  .sm\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .sm\:items-stretch {
@@ -2760,6 +2835,18 @@ select, input {
 
   .lg\:prose-base > :where(:last-child):not(:where([class~="not-prose"] *)) {
     margin-bottom: 0;
+  }
+
+  .lg\:mt-0 {
+    margin-top: 0px;
+  }
+
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lg\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .lg\:pr-8 {

@@ -1,7 +1,7 @@
-<div class="m-4 p-4 grid grid-cols-1 md:grid-cols-3 gap-x-4">
-    <div class="relative glimPanel rounded-xl col-span-2 sm:mt-4 md:mt-0 p-4">
-        <div class="relative grid grid-cols-1 md:grid-cols-3 gap-x-2">
-            <div class="relative">
+<div class="m-4 mt-2 p-4 pt-2 grid grid-cols-1 lg:grid-cols-3 gap-x-4">
+    <div class="relative glimPanel rounded-xl col-span-2 mt-2 lg:mt-0 p-4">
+        <div class="relative grid grid-cols-1 lg:grid-cols-3 gap-x-2">
+            <div class="relative flex flex-col">
                 <h4 class="text-center whiteText font-bold text-2xl">Warnings</h4>
                 <div class="mt-2">
                     <label for="sel" class="whiteText">1 Warning: </label>
@@ -49,24 +49,24 @@
                     </select>
 
                 </div>
-                <a class="btn-info mt-2 mx-1 mr-8 absolute inset-x-0 bottom-0" href="#"
+                <a class="btn-info mt-2 mx-1 mr-8" href="#"
                     onclick="successMessage('Warnings Saved', 'Your new settings have been applied and saved.');saveWarnings()">Save</a>
             </div>
             <div class="">
                 <h4 class="text-center whiteText font-bold text-2xl">Banned Words</h4>
-                <div class="grid grid-cols-2">
+                <div class="grid grid-cols-1">
                     <div>
                         <h6 class="text-center whiteText font-bold text-xl">Current List</h6>
-                        <ul id="bannedWordListElement" class="bannedWordList blurredList whiteText"
+                        <ul id="bannedWordListElement" class="bannedWordList blurredList whiteText grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 list-disc px-8 gap-x-2 break-all"
                             onclick="this.classList.remove('blurredList');this.title = ''"
                             title="Banned Words (Click to view)">
                         </ul>
                     </div>
-                    <div class="flex flex-col mt-2">
-                        <a class="btn-info mx-8 " href="#"
+                    <div class="flex flex-col mt-2 mx-4">
+                        <a class="btn-info" href="#"
                             onclick="loadLink('github.com/MauriceButler/badwords/blob/master/array.js')">View
                             Default</a>
-                        <a class="btn-info mx-8" href="#"
+                        <a class="btn-info" href="#"
                             onclick="successMessage('Filters are never perfect. Eventually, something will get through. This is not a replacement for a mod.', 'This filter is very strict for most users. You will probably want adjust it for your stream. It is disabled by default')">Info</a>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <div class="glimPanel rounded-xl col-span-1 p-4">
+    <div class="glimPanel rounded-xl col-span-1 p-4 mt-2 lg:mt-0">
         <h3 class="text-center whiteText font-bold text-2xl">Mod History</h3>
 
         <hr class="w-full mx-2 mt-1" style="color: aliceblue;">

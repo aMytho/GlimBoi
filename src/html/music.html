@@ -1,5 +1,5 @@
-<div class="m-4 p-4 grid grid-cols-1 md:grid-cols-3 gap-x-4">
-    <div class="glimPanel rounded-xl col-span-2 p-4">
+<div class="m-4 mt-2 p-4 pt-2 grid grid-cols-1 lg:grid-cols-3 gap-x-4 prose prose-a:no-underline prose-p:my-0 prose-hr:mb-0 max-w-none ">
+    <div class="glimPanel rounded-xl col-span-2 p-4 mt-2 lg:mt-0">
         <div class="card-body">
             <main class="player whiteText" style="margin: 0;box-sizing: border-box;">
                 <img id="artForMusic" src="../resources/img/music.png" class="art">
@@ -18,26 +18,49 @@
                 </div><!--  progress  -->
                 <ul class="buttons">
                     <a class="button button-sm" onclick="toggleShuffleRepeat(this, !shuffleEnabled, 'Shuffle')"
-                        data-toggle="tooltip" data-placement="top" title="Shuffle Disabled" id="shuffleButton">
+                    data-tooltip-target="shuffleTooltip" data-tooltip-placement="top" id="shuffleButton">
                         <i class="fas fa-random fa-md" aria-hidden="true"></i>
                         <span class="sr-only">Shuffle</span>
+                        <div id="shuffleTooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                            Choose songs at random
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </a>
-                    <a class="button button-md" onclick="nextOrPrevious('backward')">
+                    <a class="button button-md" onclick="nextOrPrevious('backward')"
+                    data-tooltip-target="previousTooltip" data-tooltip-placement="top">
                         <i class="fas fa-step-backward" aria-hidden="true"></i>
                         <span class="sr-only">Previous Music</span>
+                        <div id="previousTooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                            Play the previous song
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </a>
-                    <a class="button button-lg" onclick="toggleMusic()">
+                    <a class="button button-lg" onclick="toggleMusic()"
+                    data-tooltip-target="pauseTooltip" data-tooltip-placement="top">
                         <i class="fas fa-pause fa-lg" aria-hidden="true" aria-hidden="true" id="playPauseIcon"></i>
                         <span class="sr-only">Pause</span>
+                        <div id="pauseTooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                            Play/pause the music
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </a>
-                    <a class="button button-md" onclick="nextOrPrevious('foward')">
+                    <a class="button button-md" onclick="nextOrPrevious('foward')"
+                    data-tooltip-target="nextTooltip" data-tooltip-placement="top">
                         <i class="fas fa-step-forward"></i>
                         <span class="sr-only">Next Music</span>
+                        <div id="nextTooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                            Play the next song
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </a>
                     <a class="button button-sm" onclick="toggleShuffleRepeat(this, !repeatEnabled, 'Repeat')"
-                        data-toggle="tooltip" data-placement="top" title="Repeat Disabled" id="repeatButton">
+                    data-tooltip-target="repeatTooltip" data-tooltip-placement="top" id="repeatButton">
                         <i class="fas fa-circle-notch fa-md" aria-hidden="true"></i>
                         <span class="sr-only">Repeat Song</span>
+                        <div id="repeatTooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+                            Repeat the current song
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </a>
                 </ul>
                 <div class="text-center">
@@ -53,35 +76,27 @@
                         Playlist</button>
                     <button class="btn-info" type="button" data-toggle="modal" data-target="#musicOverlay"
                         onclick="Server.startServer()">Overlay</button>
-                    <button class="btn-info" type="button" data-toggle="modal" data-target="#musicNowPlaying"
-                        >Now-Playing</button>
                     <button class="btn-info" type="button" data-toggle="modal"
-                        data-target="#musicSettings">Music Settings</button>
+                        data-target="#musicNowPlaying">Now-Playing</button>
+                    <button class="btn-info" type="button" data-toggle="modal" data-target="#musicSettings">Music
+                        Settings</button>
                 </div>
             </main>
         </div>
     </div>
 
-    <div class="glimPanel rounded-xl col-span-1 p-4">
-            <div class="grid grid-cols-2">
-                <div class="text-center">
-                    <a class="btn btn-success" href="#" data-toggle="modal"
-                        data-target="#musicFolderSelection">Select Folder</a>
-                </div>
-                <div class="text-center">
-                    <div class="btn-group-vertical mx-auto justify-content-md-center">
-                        <a class="btn btn-success" href="#" data-toggle="modal"
-                            data-target="#musicSongSelection">Select Song</a>
-                    </div>
-                </div>
+    <div class="glimPanel rounded-xl col-span-1 p-4 pt-8 mt-2 lg:mt-0">
+        <div class="flex flex-row justify-center">
+            <a class="btn btn-success" href="#" data-toggle="modal" data-target="#musicFolderSelection">Select
+                Folder</a>
+            <a class="btn btn-success" href="#" data-toggle="modal" data-target="#musicSongSelection">Select Song</a>
+        </div>
+        <p class="whiteText text-center mt-2">___________________</p>
+        <div class="player h-full w-full mini-scroll mt-4" style="margin:0 !important; overflow:auto;max-height: 1px;">
+            <div class="playlist" id="musicPlaylist">
             </div>
-            <p class="whiteText text-center mt-2">___________________</p>
-                    <div class="player h-full w-full mini-scroll mt-4"
-                        style="margin:0 !important; overflow:auto;max-height: 1px;">
-                                <div class="playlist" id="musicPlaylist">
-                                </div>
 
-                    </div>
+        </div>
 
     </div>
 </div>

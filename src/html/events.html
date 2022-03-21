@@ -546,7 +546,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="text-center mt-6">
+                        <div class="flex flex-row flex-wrap justify-center mt-6">
                             <a class="btn-danger" onclick="resetEventSettings('glimroyale')">Reset</a>
                             <a class="btn-info" onclick="saveEventSettings('glimroyale')">Save</a>
                         </div>
@@ -763,7 +763,7 @@
             </div>
             <div class="hidden" id="queueEvents" role="tabpanel" aria-labelledby="queueEventsTab">
                 <!-- raffle buttons to start, view people in raffle, and end the raffle-->
-                <div class="text-center">
+                <div class="flex flex-row flex-wrap justify-center">
                     <a class="btn-primary" href="#" onclick="startQueueFromUI()">Start Queue</a>
                     <a class="btn-success" href="#" onclick="$('#modalQueueAdd').modal('show');">Add User</a>
                     <a class="btn-warning" href="#" onclick="$('#modalQueueRemove').modal('show');">Remove

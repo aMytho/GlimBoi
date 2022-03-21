@@ -1,23 +1,23 @@
-<div class="mt-4 m-4">
-    <div class="glimPanel rounded-xl whiteTex overflow-auto p-4 w-full">
-        <div class="text-center">
-            <a class="btn-primary mt-2" href="#" data-toggle="modal" data-target="#addMediaModal"
+<div class="m-4">
+    <div class="glimPanel rounded-xl whiteTex overflow-auto p-4 pt-8 w-full">
+        <div class="flex flex-row flex-wrap justify-center">
+            <a class="btn-primary" href="#" data-toggle="modal" data-target="#addMediaModal"
                 id="addMediaButton">Add Media</a>
-            <a class="btn-danger mt-2" href="#" data-toggle="modal" data-target="#removeMediaModal">Remove Media</a>
+            <a class="btn-danger" href="#" data-toggle="modal" data-target="#removeMediaModal">Remove Media</a>
         </div>
-        <div class="text-center mt-8">
-            <a class="btn-info mt-2" href="#" data-toggle="modal" data-target="#showMediaModal"
+        <div class="flex flex-row mt-2 justify-center flex-wrap">
+            <a class="btn-info" href="#" data-toggle="modal" data-target="#showMediaModal"
                 onclick="Server.startServer()">Launch Overlay</a>
-            <a class="btn-info mt-2" href="#" data-toggle="modal" data-target="#playAudioModal">Play Audio</a>
-            <a class="btn-info mt-2" href="#" data-toggle="modal" data-target="#playImageModal">Display Media</a>
-            <a class="btn-info mt-2" href="#" data-toggle="modal" data-target="#overlayInfo">Overlay Info</a>
-            <a class="btn-info mt-2" href="#" data-toggle="modal" data-target="#mediaSettings"
+            <a class="btn-info" href="#" data-toggle="modal" data-target="#playAudioModal">Play Audio</a>
+            <a class="btn-info" href="#" data-toggle="modal" data-target="#playImageModal">Display Media</a>
+            <a class="btn-info" href="#" data-toggle="modal" data-target="#overlayInfo">Overlay Info</a>
+            <a class="btn-info" href="#" data-toggle="modal" data-target="#mediaSettings"
                 onclick="showMediaSettings()">Overlay Settings</a>
         </div>
         <h5 class="whiteText text-center mt-2 font-bold text-2xl">Add media to use it in command effects. The overlay
-            must be active in
-            OBS or a browser to display/hear the media.</h5>
-        <table id="obsResources" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl">
+            must be active in OBS or a browser to display/hear the media.</h5>
+        <table id="obsResources" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
+        style="width: 100% !important;">
         </table>
     </div>
 </div>
