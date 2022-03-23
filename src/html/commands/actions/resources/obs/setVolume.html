@@ -1,31 +1,27 @@
-<div class="col-12">
-    <div class="row">
-        <div class="col-6">
-            <span class="textarea sceneSwitch" role="textbox" contenteditable
-                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 20px;"></span>
-        </div>
-        <div class="col-6">
-            <p>Enter the source to modify. $variables supported</p>
-        </div>
-        <style>
-            .sceneSwitch[contenteditable]:empty::before {
-                content: "Enter the source to modify. Caps matter." !important;
-                color: gray;
-            }
-        </style>
+<div class="actionMain text-center col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+    <div>
+        <span class="textarea sceneSwitch ml-4 w-full" role="textbox" contenteditable
+            style="background-color: #1b2e4b;color:aquamarine;"></span>
     </div>
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label for="volume">Volume</label>
-                <input id="volume" type="range" min="-100" max="0" step="0.5"
-                oninput="this.parentElement.children[2].innerText = this.value" class="settingInput ml-2">
-                <p class="text-center">-50</p><!-- Volume Label -->
-            </div>
+    <div>
+        <p>Enter the source to modify. $variables supported</p>
+    </div>
+    <style>
+        .sceneSwitch[contenteditable]:empty::before {
+            content: "Enter the source to modify. Caps matter." !important;
+            color: gray;
+        }
+    </style>
+    <div>
+        <div>
+            <label for="volume">Volume</label>
+            <input id="volume" type="range" min="-100" max="0" step="0.5"
+                oninput="this.parentElement.children[2].innerText = this.value" class="settingInput ml-4">
+            <p class="text-center">-50</p><!-- Volume Label -->
         </div>
-        <div class="col-6">
-            <p>Select your desired volume.</p>
-            <p>Due to a bug the slider may not update. The label is always accurate.</p>
-        </div>
+    </div>
+    <div>
+        <p class="ml-4">Select your desired volume.</p>
+        <p class="ml-4">Due to a bug the slider may not update. The label is always accurate.
     </div>
 </div>
