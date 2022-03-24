@@ -3,7 +3,7 @@ module.exports = {
     "./src/index.html",
     "./src/html/**/*.html",
     "./lib/*",
-    "./node_modules/flowbite/dist/flowbite.js"
+    "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     extend: {},
