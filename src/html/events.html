@@ -765,9 +765,8 @@
                 <!-- raffle buttons to start, view people in raffle, and end the raffle-->
                 <div class="flex flex-row flex-wrap justify-center">
                     <a class="btn-primary" href="#" onclick="startQueueFromUI()">Start Queue</a>
-                    <a class="btn-success" href="#" onclick="$('#modalQueueAdd').modal('show');">Add User</a>
-                    <a class="btn-warning" href="#" onclick="$('#modalQueueRemove').modal('show');">Remove
-                        User</a>
+                    <a class="btn-success" href="#" id="activateQueueUserAdd">Add User</a>
+                    <a class="btn-warning" href="#" id="activateQueueUserRemove">Remove User</a>
                     <a class="btn-info" href="#" onclick="EventHandle.queue.progressQueue()">Progress Queue</a>
                     <a class="btn-danger" href="#" onclick="stopQueueFromUI()">End Queue</a>
                 </div>
@@ -918,7 +917,7 @@
 </style>
 
 <!-- Modal: Poll -->
-<div class="modal fade" id="modalPoll" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
+<div class="modal fade hidden" id="modalPoll" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
     style="overflow-wrap: break-word;">
     <div class="modal-dialog" role="document">
         <div class="modal-content glimPanel whiteText" id="pollList">
@@ -964,47 +963,61 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalQueueAdd" tabindex="-1" role="dialog" aria-labelledby="success modal"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+     id="modalQueueAdd" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Add a User</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Add a User</h4>
             </div>
             <!--Body-->
-            <div class="modal-body">
-                <input type="text" class="form-control" placeholder="User" id="queueAdd"
-                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
-            </div>
+            <form class="px-6 pb-4 mt-8" action="#">
+                <div class="flex justify-between">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="text" placeholder="User" id="queueAdd">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="remember" id="queueAdd" class="font-medium">Enter the user to add.</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-success" data-dismiss="modal"
-                    onclick="addToQueueUI()">Add</button>
+            <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-success" onclick="addToQueueUI()">Add</button>
+                <button id="closeEventsQueueAddModal" type="button" class="btn-warning">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalQueueRemove" tabindex="-1" role="dialog" aria-labelledby="success modal"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="modalQueueRemove" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Remove a User</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Remove a User</h4>
             </div>
             <!--Body-->
-            <div class="modal-body">
-                <input type="text" class="form-control" placeholder="User" id="queueRemove"
-                    style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
-            </div>
+            <form class="px-6 pb-4 mt-8" action="#">
+                <div class="flex justify-between">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="text" placeholder="User" id="queueRemove">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="remember" id="queueRemove" class="font-medium">Enter the user to remove.</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
-                    onclick="removeFromQueueUI()">Remove</button>
+            <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-danger" onclick="removeFromQueueUI()">Remove</button>
+                <button type="button" class="btn-warning" id="closeEventsQueueRemoveModal">Close</button>
             </div>
         </div>
     </div>
