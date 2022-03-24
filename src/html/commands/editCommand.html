@@ -32,17 +32,17 @@
                             </tr>
                             <tr>
                                 <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
-                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="text" class="settingInput" id="editCommandPoints"
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="number" class="settingInput" id="editCommandPoints"
                                         placeholder="Points required to use command" value="0" /></td>
                             </tr>
                             <tr>
                                 <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Sets a counter">Uses</td>
-                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="text" class="settingInput" id="editCommandUses" placeholder="Command Uses"
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="number" class="settingInput" id="editCommandUses" placeholder="Command Uses"
                                         value="0" /></td>
                             </tr>
                             <tr>
                                 <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="Sets a cooldown">Cooldown (minutes)</td>
-                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="text" class="settingInput" id="editCommandCooldown"
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0"><input type="number" class="settingInput" id="editCommandCooldown"
                                         placeholder="Command Cooldown (Minutes)" value="0" /></td>
                             </tr>
                             <tr>
@@ -152,11 +152,10 @@
                 </li>
             </ul>
         </div>
-        <button type="button" class="btn-info" data-toggle-second="tooltip" data-placement="top"
+        <button type="button" class="btn-info"
             title="Learn about action scripts" onclick="loadLink('glimboi.com/docs/intro/commands/')">Info</button>
-        <button type="button" class="btn-warning" data-dismiss="modal" data-toggle-second="tooltip"
-            data-placement="top" title="Close">Close</button>
-        <button class="btn-primary" data-toggle-second="tooltip" data-placement="top" title="Edit Command"
+        <button type="button" class="btn-warning" title="Close" id="editCloseModal">Close</button>
+        <button class="btn-primary" title="Edit Command"
             id="editCommandButtonModal">Save</button>
     </div>
 
