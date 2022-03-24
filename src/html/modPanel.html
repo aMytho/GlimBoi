@@ -1,5 +1,5 @@
 <div class="m-4 mt-2 p-4 pt-2 grid grid-cols-1 lg:grid-cols-3 gap-x-4">
-    <div class="relative glimPanel rounded-xl col-span-2 mt-2 lg:mt-0 p-4">
+    <div class="relative glimPanel rounded-xl col-span-2 mt-2 lg:mt-0 p-4 flex flex-col">
         <div class="relative grid grid-cols-1 lg:grid-cols-3 gap-x-2">
             <div class="relative flex flex-col">
                 <h4 class="text-center whiteText font-bold text-2xl">Warnings</h4>
@@ -74,21 +74,17 @@
             <div class="">
                 <h4 class="text-center whiteText font-bold text-2xl">Controls</h4>
                 <div class="ml-2 flex flex-col">
-                        <a class=" btn-primary mt-2" href="#" data-toggle="modal"
-                            data-target="#modalWordAdd">Add Words</a>
-                        <a class=" btn-danger mt-2" href="#" data-toggle="modal"
-                            data-target="#modalWordRemove">Remove Words</a>
-                        <a class=" btn-warning mt-2" href="#" data-toggle="modal"
-                            data-target="#resetFilterModal">Reset</a>
-                        <a class="btn btn-info btn-block mt-2 btn-inline" href="#" data-toggle="modal"
-                            data-target="#toggleFilter">Toggle Filter</a>
+                    <a class="btn-primary mt-2" href="#" id="activateWordAddModal">Add Words</a>
+                    <a class="btn-danger mt-2" href="#" id="activateWordRemoveModal">Remove Words</a>
+                    <a class="btn-warning mt-2" href="#" data-modal-toggle="resetFilterModal">Reset</a>
+                    <a class="btn-info mt-2" href="#" id="activateToggleFilter" data-modal-toggle="toggleFilter">Toggle Filter</a>
                 </div>
             </div>
         </div>
-        <div class="ml-2 mb-2 absolute inset-x-0 bottom-0">
+        <div class="ml-2 mb-2 mt-auto">
             <p class="whiteText">Note that custom words override the default list.</p>
             <p class="whiteText">By default the filter is disabled. This means the bot
-                will not scan for banned words. </p>
+                will not scan for banned words.</p>
         </div>
     </div>
 
@@ -109,73 +105,95 @@
     </div>
     </div>
 
-<div class="modal fade" id="modalWordAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="addWordModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="modalWordAdd" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-xl h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText" id="addWordModal">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100" id="myModalLabel">Add Banned Words</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Add Banned Words</h4>
             </div>
             <!--Body-->
-            <div class="modal-body">
-                <div class="icon-input-container">
-                    <input class="icon-input" type="text" placeholder="Enter words here" id="wordAddInput">
-                    <p class="mt-2">Enter the banned words to add. You can separate multiple words with spaces. 1 word
-                        per trigger (ie. "What's Twitch?" would have 2 triggers, not 1 phrase)</p>
-                    <p id="addWordErrorMessage" class="errorMessage"></p>
-                    <p id="addWordSuccessMessage" class="successMessage"></p>
+            <div class="px-6 pb-4 mt-8">
+                <form class="px-6 pb-4 mt-8" action="#">
+                    <div class="flex justify-between">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input type="text" placeholder="Enter words here" id="wordAddInput">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="remember" id="wordAddInput" class="font-medium">Enter any amount of words
+                                    separated with spaces.</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="mt-2 font-semibold text-xl">Enter the banned words to add. 1 word
+                    per trigger (ie. "What's Twitch?" would have 2 triggers, not 1 phrase).</p>
+                <div class="px-6 pb-4 mt-4">
+                    <p id="addWordErrorMessage" class="errorMessage text-lg mt-2"></p>
+                    <p id="addWordSuccessMessage" class="successMessage text-lg mt-2"></p>
                 </div>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <p id="errorMessageAdd"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button class="btn btn-outline-primary"
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button id="closeWordAddModal" type="button" class="btn btn-warning">Close</button>
+                <button class="btn-primary"
                     onclick="addBannedWords(document.getElementById('wordAddInput').value)">Add</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="modalWordRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="removeWordModal">
-            <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Remove Banned Words</h4>
-            </div>
-            <!--Body-->
-            <div class="modal-body">
-                <div class="icon-input-container">
-                    <input class="icon-input" type="text" placeholder="Enter words here" id="wordRemoveInput">
-                    <p class="mt-2">Enter the banned words to remove. You can separate multiple words with space. 1 word
-                        per trigger (ie. "What's Twitch?" would remove 2 words, not 1 phrase)</p>
-                    <p id="removeWordErrorMessage" class="errorMessage"></p>
-                    <p id="removeWordSuccessMessage" class="successMessage"></p>
-                </div>
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
                 <p id="errorMessageAdd"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button class="btn btn-outline-danger"
-                    onclick="removeBannedWords(document.getElementById('wordRemoveInput').value)">Remove</button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="toggleFilter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="modalWordRemove" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-xl h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText" id="removeWordModal">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Toggle Filter</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Remove Banned Words</h4>
             </div>
             <!--Body-->
-            <div class="modal-body">
-                <div class="icon-input-container">
+            <form class="px-6 pb-4 mt-8" action="#">
+                <div class="flex justify-between">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="text" placeholder="Enter words here" id="wordRemoveInput">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="remember" id="wordRemoveInput" class="font-medium">Enter any amount of words
+                                separated with spaces.</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <p class="mt-2 font-semibold text-xl">Enter the banned words to remove. 1 word
+                per trigger (ie. "What's Twitch?" would remove 2 words, not 1 phrase)</p>
+            <p id="removeWordErrorMessage" class="errorMessage text-lg mt-2"></p>
+            <p id="removeWordSuccessMessage" class="successMessage text-lg mt-2"></p>
+
+            <!--Footer-->
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" id="closeWordRemoveModal" class="btn-warning">Close</button>
+                <button class="btn-danger" onclick="removeBannedWords(document.getElementById('wordRemoveInput').value)">Remove</button>
+                <p id="errorMessageAdd"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="toggleFilter" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Toggle Filter</h4>
+            </div>
+            <!--Body-->
+            <div class="px-6 pb-4 mt-8">
+                <div class="prose prose-base whiteText">
                     <p>Filter Status: <span id="filterStatusTextModal" style="color: #ff7f7f;">Disabled</span></p>
                     <p class="mt-1">Disabling the filter will prevent the bot from scanning messages for banned words.
                     </p>
@@ -183,33 +201,33 @@
                 </div>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-info" data-dismiss="modal"
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="mb-0 btn-warning" data-modal-toggle="toggleFilter">Close</button>
+                <button type="button" class="mb-0 btn-info" data-modal-toggle="toggleFilter"
                     onclick="toggleFilter(!CacheStore.get('modFilterEnabled', false))">Toggle</button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="resetFilterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="resetFilterModal" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Reset Filter</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Reset Filter</h4>
             </div>
             <!--Body-->
-            <div class="modal-body">
-                <div class="icon-input-container">
+            <div class="px-6 pb-4 mt-8">
+                <div class="prose prose-base whiteText">
                     <p>Resetting the filter will clear all of your added/removed words. It will be reset to its default
-                        state. This is irreversible.</p>
+                        state. <b>This is irreversible.</b></p>
                 </div>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="mb-0 btn-warning" data-modal-toggle="resetFilterModal">Close</button>
+                <button type="button" class="mb-0 btn-danger" data-modal-toggle="resetFilterModal"
                     onclick="ModHandle.bannedWordsReset().then(data => {displayBannedWords()})">Reset</button>
             </div>
         </div>
