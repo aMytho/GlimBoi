@@ -38,9 +38,3 @@ declare var dirName:string
  * The first value has the app path, the second shows the path to the user data folder
  */
 type appDataType = [string, string, boolean]
-/**
- * Toggles a modal
- * @param target The modal to toggle
- * @param showModal Optional. True to show, hide to false. Default toggle current selection
- */
-declare function toggleModal(target:string, showModal?: boolean);
