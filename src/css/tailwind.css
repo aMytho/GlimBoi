@@ -148,3 +148,23 @@ select, input {
 .dataTables_filter {
     margin-bottom: 0.5rem;
 }
+
+.chat-img img {
+    height: 34px;
+    width: 34px;
+}
+
+.admin_chat p {
+    background: #651c1c none repeat scroll 0 0;
+}
+.admin_chat .chat-body1 img {
+    background: #651c1c none repeat scroll 0 0;
+}
+.chat_area .admin_chat .chat-body1 {
+    margin-left: 0;
+}
+
+* :disabled {
+    cursor: not-allowed;
+    filter: brightness(0.5);
+}

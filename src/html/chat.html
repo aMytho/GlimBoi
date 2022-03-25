@@ -1,19 +1,31 @@
 <div class="m-4 mt-2 p-4 pt-2 whiteText grid grid-cols-1 md:grid-cols-2 gap-2">
-  <div class="glimPanel mx-2 rounded-xl p-2 px-4" id="chatChannelsDM">
-    <div class="px-0 pl-1">
-      <h3 class="whiteText font-bold text-2xl text-clip text-center">Recent Channel Connections</h3>
-      <div id="chatConnections"><div class="pinned"></div><div class="scroller">Loading...</div></div>
+    <div class="glimPanel mx-2 rounded-xl p-2 px-4" id="chatChannelsDM">
+        <div class="px-0 pl-1 flex flex-col h-full">
+            <h3 class="whiteText font-bold text-2xl text-clip text-center">Recent Channel Connections</h3>
+            <div id="chatConnections">
+                <div class="pinned"></div>
+                <div class="scroller">Loading...</div>
+            </div>
 
-      <div class="flow-root relative my-4">
-        <button type="button" class="btn-primary float-left" data-placement="right" data-toggle="tooltip"
-        title="When you connect to a channel it will appear here. Channels are sorted by time last connected, in descending order.">
-            <i class="fas fa-question-circle"></i>
-          </button>
-        <button class="btn-success float-right" onclick="$('#newChatModal').modal('show');">Add new </button>
-        <a class="btn-info float-right" onclick="reconnectMessage = true;this.remove();">Click to Enable Reconnect Messages</a>
-      </div>
+            <div class="flow-root mt-auto">
+                <button type="button" class="btn-primary float-left" data-tooltip-target="chatJoinTooltip"
+                    data-tooltip-placement="top">
+                    <div id="chatJoinTooltip" role="tooltip"
+                        class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900shadow-sm opacity-0 transition-opacity duration-300 tooltip">
+                        <div class="text-sm">
+                            <p>When you connect to a channel it will appear here. Channels are sorted by time last
+                                connected, in descending order.</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-question-circle"></i>
+                </button>
+                <button class="btn-success float-right"
+                data-modal-toggle="newChatModal">Add new </button>
+                <a class="btn-info float-right" onclick="reconnectMessage = true;this.remove();">Click to Enable
+                    Reconnect Messages</a>
+            </div>
+        </div>
     </div>
-  </div>
 
   <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatControls">
     <div class="card-body">
@@ -60,7 +72,7 @@
   </div>
 
   <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatBoxDM">
-      <div class="message_section w-full">
+      <div class="message_section w-full flex flex-col border border-solid border-slate-600">
           <!--top of the chat-->
           <div class="new_message_head glimPanel whiteText">
             <div class="pull-left">
@@ -71,15 +83,18 @@
             </div>
           </div>
           <!--chat-->
-          <div class="chat_area" id="chatContainer">
-            <ul class="list-unstyled chatList" id="chatList">
-
+          <div class="flex flex-col h-80 my-2 overflow-auto" id="chatContainer">
+            <div contentLocation="1" class="p-2 flex flex-row gap-3 items-center admin_chat rounded-md" oncontextmenu="loadChatContextMenu(event)">
+                <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-10 w-10 rounded-2xl" style="border-radius: 50%;">
+                <p name='mytho' class="py-4 px-2">Mytho: Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
+              </div>
+            <ul class="list-unstyled chatList hidden" id="chatList">
               <li class="left clearfix admin_chat" name='mytho'>
-                <div contentLocation="1" class="chat-body1 clearfix testing" oncontextmenu="loadChatContextMenu(event)">
-                  <span class="chat-img1 pull-left" name='mytho'>
-                    <img src="../resources/img/Mytho.png" alt="User Avatar" class="rounded-circle">
+                <div contentLocation="1" class="p-2flow-root admin_chat" oncontextmenu="loadChatContextMenu(event)">
+                  <span class="float-left" name='mytho'>
+                    <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-8 w-8 rounded-2xl">
                   </span>
-                  <p name='mytho'><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
+                  <p name='mytho' class="float-right py-4 px-2"><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
                   <!--<div class="whiteText pull-left">09:40PM</div> -->
                 </div>
               </li>
@@ -87,16 +102,15 @@
             </ul>
           </div>
           <!--chat_area-->
-          <div class="message_write">
-            <textarea class="form-control" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
+          <div class="mt-auto mx-4">
+            <textarea class="w-full" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
             <div class="clearfix"></div>
-            <div class="chat_bottom">
-              <a href="#" class="pull-right btn btn-success" id="sendMessage" onclick="sendMessageInBox()">Send</a>
-              <p class="mt-2">Right click a message to view additional options.</p>
+            <div class="flex flex-row items-center">
+              <a href="#" class="btn-success" id="sendMessage" onclick="sendMessageInBox()">Send</a>
+              <p>Right click a message to view additional options.</p>
             </div>
           </div>
       </div>
-
   </div>
 
   <div class="glimPanel rounded-xl mx-2" id="chatActionsDM">
@@ -111,21 +125,23 @@
 
 
 <!-- Modal: add new chat? -->
-<div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="chatModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="newChatModal" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-lg h-full md:h-auto whiteText">
+      <div class="relative glimPanel rounded-lg shadow p-4">
         <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Add New Chat</h4>
+        <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+            <h4 class="text-center whiteText font-bold text-2xl w-full">Add New Chat</h4>
         </div>
         <!--Body-->
-        <div class="modal-body" id="modalChatBody">
-          <input type="text" class="form-control" placeholder="Channel" id="newChatName" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+        <div class="prose prose-base whiteText mt-2">
+          <input type="text" class="border-0" placeholder="Channel" id="newChatName" style="background-color: #1b2e4b;color: aquamarine;">
+          <p>Enter the name of the channel to join. This is the chat you want the bot to be in, <b>not the bot name!</b></p>
         </div>
         <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" id="triggerNewChatAdd">Add</button>
+        <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+            <button type="button" class="btn-primary" data-modal-toggle="newChatModal" id="triggerNewChatAdd">Add</button>
+            <button type="button" class="btn-warning" data-modal-toggle="newChatModal">Close</button>
         </div>
       </div>
     </div>
