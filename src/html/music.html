@@ -74,12 +74,10 @@
                 <div class="text-center mt-3">
                     <button class="btn-info" type="button" onclick="loadPreviousFolder()">Load Previous
                         Playlist</button>
-                    <button class="btn-info" type="button" data-toggle="modal" data-target="#musicOverlay"
+                    <button class="btn-info" type="button" data-modal-toggle="musicOverlay"
                         onclick="Server.startServer()">Overlay</button>
-                    <button class="btn-info" type="button" data-toggle="modal"
-                        data-target="#musicNowPlaying">Now-Playing</button>
-                    <button class="btn-info" type="button" data-toggle="modal" data-target="#musicSettings">Music
-                        Settings</button>
+                    <button class="btn-info" type="button" data-modal-toggle="musicNowPlaying">Now-Playing</button>
+                    <button class="btn-info" type="button" data-modal-toggle="musicSettings">Music Settings</button>
                 </div>
             </main>
         </div>
@@ -87,168 +85,165 @@
 
     <div class="glimPanel rounded-xl col-span-1 p-4 pt-8 mt-2 lg:mt-0">
         <div class="flex flex-row justify-center">
-            <a class="btn btn-success" href="#" data-toggle="modal" data-target="#musicFolderSelection">Select
+            <a class="btn btn-success" href="#" data-modal-toggle="musicFolderSelection">Select
                 Folder</a>
-            <a class="btn btn-success" href="#" data-toggle="modal" data-target="#musicSongSelection">Select Song</a>
+            <a class="btn btn-success" href="#" data-modal-toggle="musicSongSelection">Select Song</a>
         </div>
         <p class="whiteText text-center mt-2">___________________</p>
         <div class="player h-full w-full mini-scroll mt-4" style="margin:0 !important; overflow:auto;max-height: 1px;">
             <div class="playlist" id="musicPlaylist">
             </div>
-
         </div>
-
     </div>
 </div>
-
-
-<div class="modal fade" id="musicFolderSelection" tabindex="-1" role="dialog" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="musicFolderSelection" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Music Selection</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Music Selection</h4>
             </div>
             <!--Body-->
-            <div class="modal-body" id="modalMusicBody">
-                <p class="mt-2">Select a folder to play music from. The bot will play files at the top level and work
+            <div class="prose prose-base whiteText" id="modalMusicBody">
+                <p class="my-2">Select a folder to play music from. The bot will play files at the top level and work
                     its way down. Only select a folder with music in it. Most formats are supported.</p>
                 <input type="file" id="musicFolderUpload" webkitdirectory accept="audio/*" title="Upload Folder">
             </div>
             <!--Footer-->
-            <div class="modal-footer">
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
                 <p></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary"
+                <button type="button" class="btn-primary"
                     onclick="loadSongs(document.getElementById('musicFolderUpload').files)"
-                    data-dismiss="modal">Select</button>
+                    data-modal-toggle="musicFolderSelection">Select</button>
+                <button type="button" class="btn-warning" data-modal-toggle="musicFolderSelection">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="modal fade" id="musicSongSelection" tabindex="-1" role="dialog" aria-labelledby="chat modal"
-    aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="musicSongSelection" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Play Song</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Play Song</h4>
             </div>
             <!--Body-->
-            <div class="modal-body" id="modalChatBody">
-                <input type="file" id="musicFileUpload" accept="audio/*" title="Select Song">
+            <div class="prose prose-base whiteText" id="modalChatBody">
+                <input class="mt-3" type="file" id="musicFileUpload" accept="audio/*" title="Select Song">
                 <p class="mt-2">Choose a song to play. This will remove your queue.</p>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <p id="moderateMessage"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary"
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-primary"
                     onclick="loadSongs(document.getElementById('musicFileUpload').files)"
-                    data-dismiss="modal">Send</button>
+                    data-modal-toggle="musicSongSelection">Send</button>
+                <button type="button" class="btn-warning" data-modal-toggle="musicSongSelection">Close</button>
+                <p id="moderateMessage"></p>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="modal fade" id="musicNowPlaying" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="musicNowPlaying" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Music Overlay Launched</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Music Overlay Launched</h4>
             </div>
             <!--Body-->
-            <div class="modal-body whiteText">
-                <p>The now playing file will autoupdate as songs as are played. It must be enabled in the music settings.</p>
+            <div class="prose prose-base whiteText">
+                <p class="mt-2">The now playing file will autoupdate as songs as are played. It must be enabled in the
+                    music settings.</p>
                 <p class="mt-2" id="musicNowPlayingPath" style="color: aquamarine;"></p>
-                <p class="mt-2">Add the file into your streaming software of choice. You can use it however you wish.</p>
+                <p class="mt-2">Add the file into your streaming software of choice. You can use it however you wish.
+                </p>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" data-modal-toggle="musicNowPlaying">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="musicOverlay" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="musicOverlay" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Music Overlay Launched</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Music Overlay Launched</h4>
             </div>
             <!--Body-->
-            <div class="modal-body whiteText">
-                <p>The Music overlay has launched. Copy the following link and paste it in a browser source.</p>
-                <p class="mt-2" id="pathOfMusicOverlay" style="color: aquamarine;"></p>
+            <div class="prose prose-base whiteText">
+                <p class="mt-2">The Music overlay has launched. Copy the following link and paste it in a browser
+                    source.</p>
+                <p class="mt-2 font-bold" id="pathOfMusicOverlay" style="color: aquamarine;"></p>
                 <p class="mt-2">The music overlay will start automatically when you join a chat. This button is only for
                     testing purposes. If you encounter any issues with the overlay be sure to let us know! Usually a
                     simple restart fixes it.</p>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" data-modal-toggle="musicOverlay">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="musicSettings" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="mediaRemoveModalContent">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="musicSettings" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-lg h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Music Settings</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Music Settings</h4>
             </div>
             <!--Body-->
-            <div class="modal-body whiteText">
-                <div class="row mt-2">
-                    <div class="col whiteText">
-                        <h3>Chat Attribution</h3>
+            <div class="prose prose-base whiteText">
+                <div class="flex flex-row justify-evenly gap-4 mt-2 whiteText">
+                    <div>
+                        <h3 class="whiteText">Chat Attribution</h3>
                         <p>Send the song name and artist to chat when a song plays.</p>
-                        <div class="row">
-                            <div class="col-1">
-                                <label class="switch">
-                                    <input type="checkbox" id="attributionMusicEnabled">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                            <div class="col-11">
-                                <p class="text-left">Disabled / Enabled</p>
-                            </div>
+                        <div class="niceSwitch mt-2">
+                            <label class="switch">
+                                <input type="checkbox" id="attributionMusicEnabled">
+                                <span class="slider round"></span>
+                            </label>
+                            <p class="mx-0 mb-0 my-0">Disabled / Enabled</p>
                         </div>
                     </div>
-                    <div class="col whiteText">
-                        <h3>Write to File</h3>
+                    <div>
+                        <h3 class="whiteText">Write to File</h3>
                         <p>Send the song name and artist to a text file. Can be displayed in OBS with custom styling.
                         </p>
-                        <div class="row">
-                            <div class="col-1">
-                                <label class="switch">
-                                    <input type="checkbox" id="fileMusicEnabled">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                            <div class="col-11">
-                                <p class="text-left">Disabled / Enabled</p>
-                            </div>
+                        <div class="niceSwitch mt-2">
+                            <label class="switch">
+                                <input type="checkbox" id="fileMusicEnabled">
+                                <span class="slider round"></span>
+                            </label>
+                            <p class="mx-0 mb-0 my-0">Disabled / Enabled</p>
                         </div>
                     </div>
                 </div>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-success" data-dismiss="modal" onclick="viewOrChangeMusicSettings('change')">Save</button>
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-success" onclick="viewOrChangeMusicSettings('change')"
+                    data-modal-toggle="musicSettings">Save</button>
+                <button type="button" class="btn-warning" data-modal-toggle="musicSettings">Close</button>
             </div>
         </div>
     </div>
