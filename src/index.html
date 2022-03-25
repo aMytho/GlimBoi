@@ -126,13 +126,13 @@
                     <p class="mt-6 text-xl">The bot may get disconnected, but it should rejoin after 5-10 seconds. You can toggle the message
                         on the chat page. It will look like nothing is happening, but it is reconnecting on the
                         background.</p>
-                    <div class="grid grid-cols-4 gap-1 mt-4" >
-                        <button class="btn-info" type="submit" id="authButton2" onclick="loadLink('glimboi.com/docs')">Documentation</button>
-                        <button class="btn-info" type="submit" id="authButton3"
+                    <div class="flex flex-row flex-wrap gap-1 mt-4" >
+                        <button class="btn-info grow" type="submit" id="authButton2" onclick="loadLink('glimboi.com/docs')">Documentation</button>
+                        <button class="btn-info grow" type="submit" id="authButton3"
                             onclick="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
-                        <button class="btn-info" type="submit" id="authButton4"
+                        <button class="btn-info grow" type="submit" id="authButton4"
                             onclick="loadLink('docs.google.com/forms/d/e/1FAIpQLScfCSuRgQwVqji0d5QKNUVIfQNiL64Q-dBEWseiXy0W_rSEcA/viewform?usp=sf_link')">Feedback</button>
-                        <button class="btn-info" type="submit" id="authButton6"
+                        <button class="btn-info grow" type="submit" id="authButton6"
                             onclick="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
                     </div>
                 </div>
@@ -258,23 +258,23 @@
 <!-- Modal: Error Message -->
 
 <!-- Modal: Success Message -->
-<div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="success modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText" id="successModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+     id="modalSuccess" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-xl h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText" id="successModal">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100" id="myModalSuccess">Info</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full" id="myModalSuccess">Info</h4>
             </div>
             <!--Body-->
-            <div class="modal-body" id="modalSuccessBody">
+            <div class="prose prose-base" id="modalSuccessBody">
                 <p id="successMessageText"></p>
                 <p id="successMessageSolution"></p>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" id="closeSuccessModal">Close</button>
                 <p id="otherMessageAdd"></p>
-                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
