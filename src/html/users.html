@@ -1,98 +1,94 @@
 <div class="mt-2 m-4">
-    <div class="mx-2 glimPanel roundex-xl mt-4 whiteText p-3 pt-8">
-        <div class="flex flex-wrap flex-row justify-center">
-            <a class="btn-primary" href="#" data-toggle="modal" data-target="#modalUserAdd">Add
-                Users</a>
-            <a class="btn-success" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit
-                Users</a>
-        </div>
-        <div class="flex flex-wrap flex-row justify-center">
-            <a class="btn-primary" data-toggle="modal" data-target="#modalQuoteAdd"
-                onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
-            <a class="btn-info" onclick="loadAllQuotes()" data-toggle="modal"
-                data-target="#modalQuoteView"> View All Quotes</a>
-            <a class="btn-danger" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove
-                Quote</a>
-        </div>
-
-      <table id="userTable" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
-      style="width: 100% !important;"></table>
+  <div class="mx-2 glimPanel roundex-xl mt-4 whiteText p-3 pt-8">
+    <div class="flex flex-wrap flex-row justify-center">
+      <a class="btn-primary" href="#" id="activateUserAddModal">Add
+        Users</a>
+      <a class="btn-success" href="#" data-toggle="modal" data-target="#modalUserEdit">Edit
+        Users</a>
     </div>
+    <div class="flex flex-wrap flex-row justify-center">
+      <a class="btn-primary" data-toggle="modal" data-target="#modalQuoteAdd"
+        onclick="document.getElementById('errorMessageAddQuote').innerText = ``"> Add Quote</a>
+      <a class="btn-info" onclick="loadAllQuotes()" data-toggle="modal" data-target="#modalQuoteView"> View All
+        Quotes</a>
+      <a class="btn-danger" href="#" data-toggle="modal" data-target="#modalQuoteRemove">Remove
+        Quote</a>
+    </div>
+
+    <table id="userTable" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
+      style="width: 100% !important;"></table>
+  </div>
 </div>
 
 
-<div class="modal fade" id="modalUserAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="adduserModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+  id="modalUserAdd" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="relative max-w-md h-full md:h-auto whiteText">
+    <div class="relative glimPanel rounded-lg shadow p-4">
       <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalLabel">Add a User</h4>
+      <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+        <h4 class="text-center whiteText font-bold text-2xl w-full">Add a User</h4>
       </div>
       <!--Body-->
-      <div class="modal-body">
-        <div class="icon-input-container">
-          <input class="icon-input" type="text" placeholder="Enter the User" id="userAddInput">
-          <p id="addUserMessage" class="errorMessage"></p>
-        </div>
+      <div class="prose prose-base whiteText text-center">
+        <input type="text" placeholder="Enter the User" id="userAddInput" class="mt-2">
+        <p id="addUserMessage" class="errorMessage"></p>
       </div>
       <!--Footer-->
-      <div class="modal-footer">
-        <p id="errorMessageAdd"></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-primary" onclick="searchAndAddUser()" id="addUserFinish">Add</button>
+      <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+        <button class="btn-primary" onclick="searchAndAddUser()" id="addUserFinish">Add</button>
+        <button type="button" class="btn-warning" id="closeUserAddModal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="modalQuoteAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="addQuoteModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+  id="modalQuoteAdd" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="relative max-w-md h-full md:h-auto whiteText">
+    <div class="relative glimPanel rounded-lg shadow p-4" id="addQuoteModal">
       <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalLabel3">Add a Quote</h4>
+      <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+        <h4 class="text-center whiteText font-bold text-2xl w-full">Add a Quote</h4>
       </div>
       <!--Body-->
-      <div class="modal-body">
-        <div class="icon-input-container">
-          <input class="icon-input" type="text" placeholder="Enter the User" id="userQuoteInputU">
-          <input class="icon-input" type="text" placeholder="Enter the Quote" id="userQuoteInputQ">
+      <div class="prose prose-base whiteText text-center">
+          <input class="mt-2" type="text" placeholder="Enter the User" id="userQuoteInputU">
+          <input class="mt-2" type="text" placeholder="Enter the Quote" id="userQuoteInputQ">
           <p>If the user does not yet exist it will be created.</p>
           <p id="addQuoteMessage" class="errorMessage"></p>
           <p id="addQuoteMessageSuccess" class="successMessage"></p>
-        </div>
       </div>
       <!--Footer-->
-      <div class="modal-footer">
+      <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
         <p id="errorMessageAddQuote"></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-primary" onclick="addQuote()" id="addQuoteFinish">Add</button>
+        <button type="button" class="btn-warning" data-dismiss="modal">Close</button>
+        <button class="btn-primary" onclick="addQuote()" id="addQuoteFinish">Add</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Modal: edit user -->
-<div class="modal fade" id="modalUserEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="editUserModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+  id="modalUserEdit" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="relative max-w-md h-full md:h-auto whiteText">
+    <div class="relative glimPanel rounded-lg shadow p-4" id="editUserModal">
       <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100">Edit User</h4>
+      <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+        <h4 class="text-center whiteText font-bold text-2xl w-full">Edit User</h4>
       </div>
       <!--Body-->
-      <div class="modal-body" id="modalEditBody">
-        <div class="icon-input-container">
-          <input class="icon-input" type="text" placeholder="Username" id="userEditSearch">
+      <div class="prose prose-base whiteText">
+          <input type="text" placeholder="Username" id="userEditSearch">
           <p id="editUserMessage" class="errorMessage"></p>
-        </div>
         <p class="whiteText">Search for a user here or select one from the table.</p>
       </div>
       <!--Footer-->
-      <div class="modal-footer">
+      <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
         <p id="errorUserEdit"></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-success" onclick="userSearch(document.getElementById('userEditSearch').value, true)" id="userEditSearchButton">Search</button>
+        <button type="button" class="btn-warning" data-dismiss="modal">Close</button>
+        <button class="btn-success" onclick="userSearch(document.getElementById('userEditSearch').value, true)" id="userEditSearchButton">Search</button>
       </div>
     </div>
   </div>
@@ -104,52 +100,52 @@
 </div>
 <!-- Modal: modalCart -->
 
-<!-- Modal: remove user -->
-<div class="modal fade" id="modalQuoteRemove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content glimPanel whiteText" id="removeQuoteModal">
+<!-- Modal: remove quote -->
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+  id="modalQuoteRemove" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+  <div class="relative max-w-md h-full md:h-auto whiteText">
+    <div class="relative glimPanel rounded-lg shadow p-4" id="removeQuoteModal">
       <!--Header-->
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100">Remove Quote</h4>
+      <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+        <h4 class="text-center whiteText font-bold text-2xl w-full">Remove Quote</h4>
       </div>
       <!--Body-->
-      <div class="modal-body" id="modalRemoveQuote">
-        <div class="icon-input-container">
-          <input class="icon-input" type="text" placeholder="Username" id="userQuoteSearch">
-          <p id="editQuoteError" class="errorMessage"></p>
-        </div>
+      <div class="prose prose-base whiteText">
+        <input type="text" placeholder="Username" id="userQuoteSearch">
+        <p id="editQuoteError" class="errorMessage"></p>
       </div>
       <!--Footer-->
-      <div class="modal-footer">
+      <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
         <p id="errorQuoteExit"></p>
-        <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-danger" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
+        <button type="button" class="btn-warning" data-dismiss="modal">Close</button>
+        <button class="btn-danger" onclick="quoteSearch(document.getElementById('userQuoteSearch').value)" id="userRemoveQuoteSearch">Search</button>
       </div>
     </div>
   </div>
 </div>
-<!-- Modal: remove user -->
+<!-- Modal: quote remove -->
 
-<!-- Modal: edit user -->
-<div class="modal fade" id="modalQuoteView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="">
+<!-- Modal: view quotes -->
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+  id="modalQuoteView" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+      <div class="relative glimPanel rounded-lg shadow p-4">
         <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Viewing USER Quotes</h4>
+        <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+          <h4 class="text-center whiteText font-bold text-2xl w-full">Viewing USER Quotes</h4>
         </div>
         <!--Body-->
-        <div class="modal-body">
+        <div class="prose prose-base whiteText">
             <div class="userList" id="quoteListHolder" style="font: 1.5rem;"></div>
         </div>
         <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+        <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+          <button type="button" class="btn-warning" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
-  <!-- Modal: modalCart -->
+  <!-- Modal: view quote -->
 
 <style>
     .notClickable {

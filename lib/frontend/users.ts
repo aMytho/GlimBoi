@@ -3,6 +3,8 @@ QuoteHandle.updatePath(appData[1]);
 RankHandle.updatePath(appData[1]);
 
 let userTable; //physical table showing user data
+let UserAddModal:Modal, UserEditModal:Modal, UserEditingModal: Modal,
+QuoteAddModal:Modal, QuoteViewModal:Modal, QuoteRemoveModal:Modal
 
 function loadUsers() {
     loadUserTable();
@@ -153,16 +155,16 @@ function searchAndAddUser() {
             document.getElementById("addUserMessage")!.innerHTML = "That user already exists."
             setTimeout(() => {
                 resetAddUserBox();
-            }, 4000);
+            }, 5000);
         } else if (data == "INVALIDUSER") {
             console.log("The user cannot be created because the user doesn't exist on glimesh.");
             document.getElementById("addUserMessage")!.innerHTML = "The user does not exist on Glimesh. Ensure the username is correct."
             setTimeout(() => {
                 resetAddUserBox();
-            }, 4000);
+            }, 5000);
         } else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             console.log("Showing the streamer the user");
-            $("#modalUserAdd").modal("hide");
+            UserAddModal.hide();
             successMessage("User added!", `${data.userName} has been added to Glimboi.`);
             addUserTable(data);
         }
@@ -426,28 +428,32 @@ function addUserTable(data: UserType) {
  * Prepares the modals for resetting thier info on close.
  */
 function prepUserModals() {
-    $('#modalUserEdit').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userEditSearch") as HTMLInputElement).value = "";
-    })
-    $('#modalUserAdd').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userAddInput") as HTMLInputElement).value = "";
-    })
-    $('#modalUserRemove').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userremoveInput") as HTMLInputElement).value = "";
-    })
-    $('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userQuoteSearch") as HTMLInputElement).value = "";
+    UserAddModal = new Modal(document.getElementById("modalUserAdd"), {
+        onHide: () => (document.getElementById("userAddInput") as HTMLInputElement).value = ""
     });
-    $('#modalQuoteAdd').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userQuoteInputU") as HTMLInputElement).value = "";
-        (document.getElementById("userQuoteInputQ") as HTMLInputElement).value = "";
-    })
-    $('#modalUserEditing').on('hidden.bs.modal', function (e) {
-        document.getElementById("modalUserEditing")!.innerHTML = ``
-    })
-    $("#modalQuoteView").on('hidden.bs.modal', function (e) {
-        document.getElementById("quoteListHolder")!.innerHTML = ``
+    UserEditModal = new Modal(document.getElementById("modalUserEdit"), {
+        onHide: () => (document.getElementById("userEditSearch") as HTMLInputElement).value = ""
     });
+    UserEditModal = new Modal(document.getElementById("modalUserEditing"), {
+        onHide: () => document.getElementById("modalUserEditing")!.innerHTML = ``
+    });
+
+    QuoteAddModal = new Modal(document.getElementById("modalQuoteAdd"), {
+        onHide: () => {
+            (document.getElementById("userQuoteInputU") as HTMLInputElement).value = "";
+            (document.getElementById("userQuoteInputQ") as HTMLInputElement).value = "";
+        }
+    });
+    QuoteViewModal = new Modal(document.getElementById("modalQuoteView"), {
+        onHide: () => document.getElementById("quoteListHolder")!.innerHTML = ``
+    });
+    QuoteRemoveModal = new Modal(document.getElementById("modalQuoteRemove"), {
+        onHide: () => (document.getElementById("userQuoteSearch") as HTMLInputElement).value = ""
+    });
+    
+    document.getElementById("activateUserAddModal").addEventListener("click", () => UserAddModal.show());
+    document.getElementById("closeUserAddModal").addEventListener("click", () => UserAddModal.hide());
+    
 }
 
 function syncQuotes(user: UserType | string, action) {
