@@ -16,6 +16,7 @@ let hasSentGuildedWebhook = false;
 let hasSentDiscordWebhook = false;
 let hasSentTwittwerWebhook = false;
 let hasSentMatrixWebhook = false;
+let ChatGuildedModal: Modal, ChatDiscordModal: Modal, ChatTwitterModal: Modal, ChatMatrixModal: Modal;
 
 ChatChannels.updatePath(appData[1]);
 
@@ -229,6 +230,16 @@ function loadChatWindow() {
         clipboard.writeText(e.target.innerText);
         showToast("The link has been copied to your clipboard.");
     });
+
+    ChatDiscordModal = new Modal(document.getElementById("discordWebhook"), {});
+    ChatGuildedModal = new Modal(document.getElementById("guildedWebhook"), {});
+    ChatTwitterModal = new Modal(document.getElementById("twitterWebhook"), {});
+    ChatMatrixModal = new Modal(document.getElementById("matrixWebhook"), {});
+
+    document.getElementById("closeDiscordModal").addEventListener("click", () => ChatDiscordModal.hide());
+    document.getElementById("closeGuildedModal").addEventListener("click", () => ChatGuildedModal.hide());
+    document.getElementById("closeTwitterModal").addEventListener("click", () => ChatTwitterModal.hide());
+    document.getElementById("closeMatrixModal").addEventListener("click", () => ChatMatrixModal.hide());
 }
 
 /**
@@ -439,16 +450,16 @@ function addAction(action: LogType) {
 function reconnect() {
     console.log("We were disconnected from chat, attempting to rejoin in 5 seconds.");
     setTimeout(() => {
-        $('#modalError').modal('hide');
-        $('#reconnectModal').modal('toggle');
+        let ReconnectModal = new Modal(document.getElementById("reconnectModal"), {});
+        ReconnectModal.show();
         reconnectDelay = setTimeout(async () => {
             try {
                 console.log("Rejoined chat. Hopefully..........")
-                $('#reconnectModal').modal('hide');
+                ReconnectModal.hide();
                 joinChat(currentChannelToRejoin, true);
             } catch (e) {
                 errorMessage("Failed to rejoin Glimesh chat", "Wait a few minutes and request another token.");
-                $('#reconnectModal').modal('hide');
+                ReconnectModal.hide();
             }
         }, 5000);
     }, 3000);
@@ -491,16 +502,16 @@ function adjustMessageStateByUsername(username:string, state:messageState) {
 
 function askForWebhookConfirmation(webhook:webhookType) {
     if (webhook == "discord") {
-        $("#discordWebhook").modal('show');
+        ChatDiscordModal.show();
         (document.getElementById("discordWebhookMessage") as HTMLInputElement).value = CacheStore.get("discordWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "guilded") {
-        $("#guildedWebhook").modal('show');
+        ChatGuildedModal.show();
         (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "twitter") {
-        $("#twitterWebhook").modal('show');
+        ChatTwitterModal.show();
         (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
     } else if (webhook == "matrix") {
-        $("#matrixWebhook").modal('show');
+        ChatMatrixModal.show();
         (document.getElementById("matrixWebhookMessage") as HTMLInputElement).value = CacheStore.get("matrixMessage", "https://glimesh.tv/$streamer?follow_host=false");
     }
 }

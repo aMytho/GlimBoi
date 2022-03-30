@@ -236,21 +236,22 @@
 
 
 <!-- Modal: Error Message -->
-<div class="hidden fixed top-0 left-0 right-0 bottom-0 m-12 z-50" id="modalError" aria-hidden="true">
-    <div class="w-3/12 h-1/4" role="document">
-        <div class="glimPanel whiteText" id="errorModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="modalError" aria-hidden="true">
+    <div class="w-3/12 h-1/4 relative max-w-md md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
             <!--Header-->
-            <div class="whiteText text-center text-2xl font-bold w-full">
-                <h4 id="myModalError">Error</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 id="myModalError" class="text-center whiteText font-bold text-2xl w-full">Error</h4>
             </div>
             <!--Body-->
-            <div id="modalErrorBody">
+            <div id="modalErrorBody" class="prose prose-base whiteText px-6 pb-4 mt-8">
                 <p id="errorMessageText"></p>
                 <p id="errorMessageSolution"></p>
             </div>
             <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn-warning" data-modal-target="modalError">Close</button>
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" id="closeErrorModal">Close</button>
             </div>
         </div>
     </div>
@@ -261,13 +262,13 @@
 <div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
      id="modalSuccess" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
     <div class="relative max-w-xl h-full md:h-auto whiteText">
-        <div class="rounded-lg shadow p-4 relative glimPanel whiteText" id="successModal">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
             <!--Header-->
             <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
                 <h4 class="text-center whiteText font-bold text-2xl w-full" id="myModalSuccess">Info</h4>
             </div>
             <!--Body-->
-            <div class="prose prose-base" id="modalSuccessBody">
+            <div class="prose prose-base whiteText px-6 pb-4 mt-8" id="modalSuccessBody">
                 <p id="successMessageText"></p>
                 <p id="successMessageSolution"></p>
             </div>
@@ -281,28 +282,30 @@
 </div>
 <!-- Modal: Success Message -->
 
-<!-- Modal: Moderate? -->
-<div class="modal fade" id="reconnectModal" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true"
-    style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content glimPanel whiteText">
+<!-- Modal: Reconnecting -->
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="reconnectModal" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-xl h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
             <!--Header-->
-            <div class="modal-header text-center">
-                <h4 class="modal-title w-100">Reconnecting</h4>
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Reconnecting</h4>
             </div>
             <!--Body-->
-            <div class="modal-body">
-                <p id="chatMessageSolution" class="mt-2">Attempting to reconnect in 5 seconds...</p>
+            <div class="prose prose-base whiteText px-6 pb-4 mt-8">
+                <p id="chatMessageSolution">Attempting to reconnect in 5 seconds...</p>
             </div>
             <!--Footer-->
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
+                <button type="button" class="btn-danger"
                     onclick="clearTimeout(reconnectDelay)">Cancel</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal: Moderate -->
+<!-- Modal: Reconnecting -->
+
+<!--Toasts-->
 <div aria-live="polite" aria-atomic="true">
     <!-- Position it -->
     <div id="toastContainer" class="flex flex-col gap-5 absolute right-5 bottom-5 z-50">

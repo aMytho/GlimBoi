@@ -25,6 +25,8 @@ let currentPage:pageState = "home"
 
 var globalChatMessages:storedChatMessage[] = [];
 
+let SuccessModal:Modal, ErrorModal:Modal;
+
 function changeNavHighlight(highlight:string) { //Removes the old and highlights the new
   	document.getElementsByClassName("active")[0].classList.remove("active");
   	document.getElementById(highlight)!.classList.add("active");
@@ -166,6 +168,13 @@ function loadLink(link: string) {
 function errorMessage(errorType: string, errorMessage: string) {
     document.getElementById("errorMessageText")!.innerHTML = errorType;
     document.getElementById("errorMessageSolution")!.innerHTML = errorMessage;
+    ErrorModal = new Modal(document.getElementById("modalError"), {});
+    ErrorModal.show();
+
+    document.getElementById("closeErrorModal").addEventListener("click", () => {
+        ErrorModal.hide();
+        document.getElementById("closeErrorModal")!.removeEventListener("click", () => {});
+    });
 }
 
 
@@ -173,6 +182,14 @@ function errorMessage(errorType: string, errorMessage: string) {
 function successMessage(messageType: string, message: string) {
     document.getElementById("successMessageText")!.innerHTML = messageType;
     document.getElementById("successMessageSolution")!.innerHTML = message;
+    SuccessModal = new Modal(document.getElementById("modalSuccess"), {});
+    SuccessModal.show();
+
+    document.getElementById("closeSuccessModal").addEventListener("click", () => {
+        SuccessModal.hide();
+        document.getElementById("closeSuccessModal")!.removeEventListener("click", () => {});
+    });
+
 }
 
 async function getDataDirectory() {
