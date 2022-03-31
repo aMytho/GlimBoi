@@ -47,8 +47,8 @@
     <!-- Tailwind nav -->
     <nav class="glimNav">
         <div class="pr-2 sm:pr-6 lg:pr-8">
-            <div class="relative flex items-center h-16" id="mainNavBar">
-                <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+            <div class="relative hidden lg:!flex items-center h-16" id="mainNavBar">
+                <div class="hidden lg:!flex sm:visible flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                     <div class="sm:block sm:ml-6">
                         <div class="flex space-x-4" id="navContainer">
                             <a class="nav-link disabled text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="../src/html/commands.html" id="CommandLink">Commands</a>
@@ -64,16 +64,16 @@
                             </div>
                     </div>
                 </div>
-                <div class="items-center justify-center">
+                <div class="hidden xl:!flex items-center justify-center">
                     <a class="nav-link glimNavItem active font-bold text-xl" href="../src/html/homepage.html"style="color: turquoise;" id="GlimBoiHeader">GlimBoi</a>
                 </div>
-                <div class="flex nav-item glimNavItem justify-center ml-8">
+                <div class="hidden xl:!flex nav-item glimNavItem justify-center ml-8">
                     <div class="glimNavItem text whiteText group">
-                        <a class="nav-link glimNavItem text whiteText inline-flex items-center" href="#" style="color: #b2dbff;">Status
+                        <a class="nav-link glimNavItem text whiteText items-center sm:hidden xl:inline-flex" href="#" style="color: #b2dbff;">Status
                             <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </a>
                         <!-- Status dropdown -->
-                        <div class="cursor-default hidden group-hover:flex ml-3 absolute" id="statusDropdown">
+                        <div class="cursor-default sm:hidden group-hover:flex ml-3 absolute" id="statusDropdown">
                             <div class="whiteText mt-2 w-48 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none mr-64"
                                 aria-orientation="vertical" style="background-color: #14365b">
                                 <a class="navbarAlt block px-4 py-2 text-sm" href="#">
@@ -86,28 +86,12 @@
                             </div>
                         </div>
                     </div>
-                    <a class="nav-link glimNavItem active whiteText ml-4" href="#" id="close">Exit</a>
+                    <a class="nav-link glimNavItem active whiteText ml-4 hidden xl:block" href="#" id="close">Exit</a>
                 </div>
+
             </div>
         </div>
 
-        <!-- Mobile menu, show/hide based on menu state. -->
-        <div class="sm:hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
-                    aria-current="page">Dashboard</a>
-
-                <a href="#"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Team</a>
-
-                <a href="#"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Projects</a>
-
-                <a href="#"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Calendar</a>
-            </div>
-        </div>
     </nav>
     <!--End of Navbar-->
 
