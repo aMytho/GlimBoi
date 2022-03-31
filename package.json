@@ -45,7 +45,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc --watch",
     "start": "electron build/main.js",
-    "build": "tsc --project tsconfig.production.json && node scripts/copyDependencies.js && npx tailwindcss -c ./tailwind.config.js -w -o ./src/output.css -i ./src/styles.css",
+    "build": "tsc --project tsconfig.production.json && npx tailwindcss -c ./tailwind.config.js -w -o ./src/output.css -i ./src/styles.css",
     "build:exe": "electron-builder build  --win --publish never",
     "build:linux": "electron-builder build --linux --publish never",
     "deploy": "electron-builder build  --win --publish always",
