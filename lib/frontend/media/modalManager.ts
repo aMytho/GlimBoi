@@ -73,8 +73,6 @@ function prepareModals(mode, modal: Modal) {
 
 
 function prepareMedia(mode, modal: Modal) {
-    // Activates all bootstrap tooltips
-    $('[data-toggle-second="tooltip"]').tooltip();
     // Adds media
     document.getElementById(`${mode}MediaButtonModal`)!.onclick = async function () {
         // First we check to make sure all the command settings are valid

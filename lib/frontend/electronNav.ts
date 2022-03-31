@@ -82,8 +82,6 @@ window.onload = function() {
                         case "GlimBoiHeader": loadBotStats(); unlockRequestToken(); currentPage = "home"; break;
                     }
                     loadFlowbite();
-                	// Make sure tooltips are triggered so they work
-                	$('[data-toggle=tooltip]').tooltip();
         	}
     	})
 	})
@@ -154,8 +152,6 @@ $(document).on('keypress','input, textarea', function (event) {
 
     event.preventDefault();
 });
-
-$('[data-toggle=tooltip]').tooltip();
 
 /**
  * Opens a link in the users default browser

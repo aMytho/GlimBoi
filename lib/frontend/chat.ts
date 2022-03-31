@@ -160,7 +160,6 @@ $(document).on('click', '#triggerNewChatAdd', async function (event) {
             "Please make sure that the channel exists. Check your spelling. Enter the channel you want to JOIN, not your bot account.");
         } else {
             addChannelAndDisplay(chatToJoin).then(function () {
-                $('#newChatModal').modal('hide')
                 $('#newChatName').val('');
             });
         }
@@ -237,9 +236,13 @@ function loadChatWindow() {
     ChatMatrixModal = new Modal(document.getElementById("matrixWebhook"), {});
 
     document.getElementById("closeDiscordModal").addEventListener("click", () => ChatDiscordModal.hide());
+    document.getElementById("closeDiscordModal2").addEventListener("click", () => ChatDiscordModal.hide());
     document.getElementById("closeGuildedModal").addEventListener("click", () => ChatGuildedModal.hide());
+    document.getElementById("closeGuildedModal2").addEventListener("click", () => ChatGuildedModal.hide());
     document.getElementById("closeTwitterModal").addEventListener("click", () => ChatTwitterModal.hide());
+    document.getElementById("closeTwitterModal2").addEventListener("click", () => ChatTwitterModal.hide());
     document.getElementById("closeMatrixModal").addEventListener("click", () => ChatMatrixModal.hide());
+    document.getElementById("closeMatrixModal2").addEventListener("click", () => ChatMatrixModal.hide());
 }
 
 /**

@@ -46,8 +46,6 @@ function loadMusicProgram() {
         updateInfo(musicPlaylist[currentSongIndex], false);
     }
 
-
-    $('[data-toggle="tooltip"]').tooltip()
     if (shuffleEnabled) {
         document.getElementById("shuffleButton")!.setAttribute("data-original-title", "Shuffle Enabled")
     }

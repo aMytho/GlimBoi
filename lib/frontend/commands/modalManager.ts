@@ -3,9 +3,6 @@
 const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js");
 
 function prepareActions(mode, modal: Modal) {
-   // Activates all bootstrap tooltips
-    $('[data-toggle-second="tooltip"]').tooltip()
-
     // Adds a command
     document.getElementById(`${mode}CommandButtonModal`)!.onclick = async function () {
         // First we check to make sure all the command settings are valid
