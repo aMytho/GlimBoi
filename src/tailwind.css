@@ -163,6 +163,12 @@ select, input {
 .chat_area .admin_chat .chat-body1 {
     margin-left: 0;
 }
+.chat-body1 p {
+    background: #29374c none repeat scroll 0 0;
+    padding: 10px;
+    color: aliceblue;
+    margin-left: 10px;
+}
 
 * :disabled {
     cursor: not-allowed;
