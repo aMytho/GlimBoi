@@ -114,10 +114,10 @@
   </div>
 
   <div class="glimPanel rounded-xl mx-2" id="chatActionsDM">
-      <h3 class="whiteText font-bold text-2xl text-clip text-center">GlimBoi Logs</h3>
-      <p class="whiteText text-center">_______________</p>
+      <h3 class="whiteText font-bold text-2xl text-clip text-center mb-0">GlimBoi Logs</h3>
+      <p class="whiteText text-center mt-0">_______________</p>
       <h5 class="whiteText text-center">Recent logs will be listed below.</h5>
-        <div id="actions" style="overflow: auto; max-height: 400px;">
+        <div id="actions" class="m-5 prose prose-base text-center whiteText max-w-none" style="overflow: auto; max-height: 450px;">
 
         </div>
   </div>
@@ -134,8 +134,8 @@
             <h4 class="text-center whiteText font-bold text-2xl w-full">Add New Chat</h4>
         </div>
         <!--Body-->
-        <div class="prose prose-base whiteText mt-2">
-          <input type="text" class="border-0" placeholder="Channel" id="newChatName" style="background-color: #1b2e4b;color: aquamarine;">
+        <div class="prose prose-base whiteText text-center">
+          <input type="text" class="border-0 mt-4" placeholder="Channel" id="newChatName" style="background-color: #1b2e4b;color: aquamarine;">
           <p>Enter the name of the channel to join. This is the chat you want the bot to be in, <b>not the bot name!</b></p>
         </div>
         <!--Footer-->
@@ -149,22 +149,23 @@
   <!-- Modal: add new chat -->
 
 <!-- Modal: Discord Webhook -->
-<div class="modal fade" id="discordWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="discordWebhookModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+id="discordWebhook" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-lg h-full md:h-auto whiteText">
+      <div class="relative glimPanel rounded-lg shadow p-4" id="discordWebhookModal">
         <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Discord Live Notification</h4>
+        <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+            <h4 class="text-center whiteText font-bold text-2xl w-full">Discord Live Notification</h4>
         </div>
         <!--Body-->
-        <div class="modal-body">
-          <input type="text" class="form-control" placeholder="The message to post in Discord" id="discordWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+        <div class="prose prose-base whiteText text-center">
+          <input type="text" class="mt-4" placeholder="The message to post in Discord" id="discordWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
           <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
         </div>
         <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.DiscordWebhook.sendDiscordMessage(document.getElementById('discordWebhookMessage').value);$('#discordWebhook').modal('hide')">Send</button>
+        <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+          <button type="button" class="btn-warning" id="closeDiscordModal">Close</button>
+          <button type="button" class="btn-primary" onclick="ApiHandle.Webhooks.DiscordWebhook.sendDiscordMessage(document.getElementById('discordWebhookMessage').value);$('#discordWebhook').modal('hide')">Send</button>
         </div>
       </div>
     </div>
@@ -172,44 +173,46 @@
 <!-- Modal: add new chat -->
 
 <!-- Modal: Guilded Webhook-->
-<div class="modal fade" id="guildedWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="guildedWebhookModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="guildedWebhook" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+      <div class="relative glimPanel rounded-lg shadow p-4" id="guildedWebhookModal">
         <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Guilded Live Notification</h4>
+        <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+            <h4 class="text-center whiteText font-bold text-2xl w-full">Guilded Live Notifications</h4>
         </div>
         <!--Body-->
-        <div class="modal-body">
-          <input type="text" class="form-control" placeholder="The message to post in Guilded" id="guildedWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+        <div class="prose prose-base whiteText text-center">
+          <input type="text" class="mt-4" placeholder="The message to post in Guilded" id="guildedWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
           <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
         </div>
         <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.GuildedWebhook.sendGuildedMessage(document.getElementById('guildedWebhookMessage').value);$('#guildedWebhook').modal('hide')">Send</button>
+        <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+          <button type="button" class="btn-warning" id="closeGuildedModal">Close</button>
+          <button type="button" class="btn-primary" onclick="ApiHandle.Webhooks.GuildedWebhook.sendGuildedMessage(document.getElementById('guildedWebhookMessage').value);$('#guildedWebhook').modal('hide')">Send</button>
         </div>
       </div>
     </div>
 </div>
 
 <!-- Modal: Twitter Webhook-->
-<div class="modal fade" id="twitterWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="twitterWebhookModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="twitterWebhook" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+      <div class="relative glimPanel rounded-lg shadow p-4" id="twitterWebhookModal">
         <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Twitter Live Notification</h4>
+        <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+            <h4 class="text-center whiteText font-bold text-2xl w-full">Twitter Live Notifications</h4>
         </div>
         <!--Body-->
-        <div class="modal-body">
-          <input type="text" class="form-control" placeholder="The message to post to Twitter" id="twitterWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+        <div class="prose prose-base whiteText text-center">
+          <input type="text" class="mt-4" placeholder="The message to post to Twitter" id="twitterWebhookMessage">
           <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
         </div>
         <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.TwitterWebhook.sendTweet(document.getElementById('twitterWebhookMessage').value);$('#twitterWebhook').modal('hide')">Send</button>
+        <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+          <button type="button" class="btn-warning" id="closeTwitterModal">Close</button>
+          <button type="button" class="btn-primary" onclick="ApiHandle.Webhooks.TwitterWebhook.sendTweet(document.getElementById('twitterWebhookMessage').value);$('#twitterWebhook').modal('hide')">Send</button>
         </div>
       </div>
     </div>
@@ -217,22 +220,23 @@
 
 
 <!-- Modal: Matrix Webhook-->
-<div class="modal fade" id="matrixWebhook" tabindex="-1" role="dialog" aria-labelledby="chat modal" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content glimPanel whiteText" id="matrixWebhookModal">
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="matrixWebhook" tabindex="-1"aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+      <div class="relative glimPanel rounded-lg shadow p-4" id="matrixWebhookModal">
         <!--Header-->
-        <div class="modal-header text-center">
-          <h4 class="modal-title w-100">Matrix Live Notification</h4>
+        <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+            <h4 class="text-center whiteText font-bold text-2xl w-full">Matrix Live Notification</h4>
         </div>
         <!--Body-->
-        <div class="modal-body">
-          <input type="text" class="form-control" placeholder="The message to send to matrix" id="matrixWebhookMessage" style="background-color: #1b2e4b;color: aquamarine;border: 0px;">
+        <div class="prose prose-base whiteText text-center">
+          <input type="text" class="mt-4" placeholder="The message to send to matrix" id="matrixWebhookMessage">
           <p class="mt-2">Click send to send the above message. If you'd like, you can change the message sent. This will not change the default message</p>
         </div>
         <!--Footer-->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-outline-primary" onclick="ApiHandle.Webhooks.MatrixWebhook.sendMessage(document.getElementById('matrixWebhookMessage').value);$('#matrixWebhook').modal('hide')">Send</button>
+        <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+          <button type="button" class="btn-warning" id="closeMatrixModal">Close</button>
+          <button type="button" class="btn-primary" onclick="ApiHandle.Webhooks.MatrixWebhook.sendMessage(document.getElementById('matrixWebhookMessage').value);$('#matrixWebhook').modal('hide')">Send</button>
         </div>
       </div>
     </div>
@@ -240,7 +244,7 @@
 
 </div>
 
-<div class="dropdown-menu dropdown-menu-sm" id="context-menu" style="background-color: #1c224e;">
+<div class="dropdown-menu dropdown-menu-sm hidden" id="context-menu" style="background-color: #1c224e;">
   <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Add User')">Add User</a>
   <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Add Quote')">Quote</a>
   <a class="dropdown-item" style="color: aquamarine;cursor: pointer;" onclick="contextMenu('Follow User')">Follow User</a>
