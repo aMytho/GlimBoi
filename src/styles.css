@@ -174,3 +174,7 @@ select, input {
     cursor: not-allowed;
     filter: brightness(0.5);
 }
+
+#successMessageSolution, #errorMessageSolution::first-letter {
+    text-transform: capitalize;
+}

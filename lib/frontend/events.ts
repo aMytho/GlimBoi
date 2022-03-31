@@ -376,7 +376,7 @@ function saveEventSettings(event: eventName) {
                 {queueQuiet: ((document.getElementById(`queueQuiet`) as HTMLSelectElement).value.trim() === "true")},
                 {queuePoints: Number((document.getElementById(`queueCost`) as HTMLInputElement).value.trim())},
                 {queueRank: (document.getElementById(`queueRank`) as HTMLSelectElement).value.trim()},
-                {queueController: (document.getElementById(`queueController`) as HTMLSelectElement).value.trim()}
+                {queueController: (document.getElementById(`queueProgression`) as HTMLSelectElement).value.trim()}
             );
             break;
         default:
