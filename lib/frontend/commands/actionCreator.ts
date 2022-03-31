@@ -87,15 +87,15 @@ async function addJSONRow(table, mode:actionMode, filePath, fill?) {
 
 function switchAPIView(view, action) {
     if (view == "text") {
-        action.children[1].children[1].firstElementChild.classList = "col-6";
-        action.children[1].children[1].children[1].classList = "col-6";
-        action.children[1].children[1].children[2].classList = "col-12 hidden";
-        action.children[1].children[1].children[3].classList = "col-12 hidden";
+        action.children[1].children[1].firstElementChild.classList = "";
+        action.children[1].children[1].children[1].classList = "";
+        action.children[1].children[1].children[2].classList = "hidden";
+        action.children[1].children[1].children[3].classList = "hidden";
     } else {
-        action.children[1].children[1].firstElementChild.classList = "col-6 hidden";
-        action.children[1].children[1].children[1].classList = "col-6 hidden";
-        action.children[1].children[1].children[2].classList = "col-12";
-        action.children[1].children[1].children[3].classList = "col-12";
+        action.children[1].children[1].firstElementChild.classList = "hidden";
+        action.children[1].children[1].children[1].classList = "hidden";
+        action.children[1].children[1].children[2].classList = "col-span-2";
+        action.children[1].children[1].children[3].classList = "col-span-2";
     }
 }
 

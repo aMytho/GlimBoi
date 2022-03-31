@@ -45,7 +45,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc --watch",
     "start": "electron build/main.js",
-    "build": "tsc --project tsconfig.production.json && node scripts/copyDependencies.js",
+    "build": "tsc --project tsconfig.production.json && node scripts/copyDependencies.js && npx tailwindcss -c ./tailwind.config.js -w -o ./src/output.css -i ./src/styles.css",
     "build:exe": "electron-builder build  --win --publish never",
     "build:linux": "electron-builder build --linux --publish never",
     "deploy": "electron-builder build  --win --publish always",
@@ -61,11 +61,13 @@
     "electron-updater": "^4.3.5",
     "electron-window-state": "^5.0.3",
     "esm": "^3.2.25",
+    "flowbite": "^1.4.1",
     "jquery": "^3.6.0",
     "music-metadata": "^7.8.5",
     "ws": "^7.5.3"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.2",
     "@types/bootstrap": "^5.0.16",
     "@types/crypto-js": "^4.0.2",
     "@types/datatables.net": "^1.10.19",
@@ -76,6 +78,7 @@
     "electron-builder": "^22.11.11",
     "electron-packager": "^15.1.0",
     "pkginfo": "^0.4.1",
+    "tailwindcss": "^3.0.23",
     "typescript": "^4.3.4"
   }
 }

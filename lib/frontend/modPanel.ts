@@ -1,5 +1,7 @@
 // File controls the mod panel UI
 
+let BannedWordAddModal: Modal, BannedWordRemoveModal: Modal
+
 function addBannedWords(words:string) {
     let wordList = document.getElementById("bannedWordListElement") as HTMLUListElement;
     document.getElementById("addWordSuccessMessage").innerText = "";
@@ -25,6 +27,7 @@ function addBannedWords(words:string) {
         }
     }
     document.getElementById("addWordSuccessMessage").innerText = "Words added to filter."
+    BannedWordAddModal.hide();
 }
 
 function removeBannedWords(words:string) {
@@ -54,6 +57,7 @@ function removeBannedWords(words:string) {
         }
     }
     document.getElementById("removeWordSuccessMessage").innerText = "Words removed."
+    RemoveModal.hide();
 }
 
 
@@ -71,13 +75,27 @@ function loadModPanel() {
             })
         }
     })
-    $('#modalWordAdd').on('hidden.bs.modal', function (e) {
-        (document.getElementById("wordAddInput") as HTMLInputElement).value = "";
+
+    // Handle modals
+    BannedWordAddModal = new Modal(document.getElementById("modalWordAdd"), {
+        onHide: () => {
+            (document.getElementById("wordAddInput") as HTMLInputElement).value = "";
+            document.getElementById("addWordSuccessMessage").innerText = "";
+        }
     });
-    $('#modalWordRemove').on('hidden.bs.modal', function (e) {
-        (document.getElementById("wordRemoveInput") as HTMLInputElement).value = "";
+    BannedWordRemoveModal = new Modal(document.getElementById("modalWordRemove"), {
+        onHide: () => {
+            (document.getElementById("wordRemoveInput") as HTMLInputElement).value = "";
+            document.getElementById("addWordSuccessMessage").innerText = "";
+        }
     });
-    $('#toggleFilter').on('show.bs.modal', function (e) {
+
+    document.getElementById("activateWordAddModal").addEventListener("click", () => BannedWordAddModal.show());
+    document.getElementById("closeWordAddModal").addEventListener("click", () => BannedWordAddModal.hide());
+    document.getElementById("activateWordRemoveModal").addEventListener("click", () => BannedWordRemoveModal.show());
+    document.getElementById("closeWordRemoveModal").addEventListener("click", () => BannedWordRemoveModal.hide());
+
+    document.getElementById("activateToggleFilter").addEventListener("click", () => {
         let filterStatusMessageSpan = document.getElementById("filterStatusTextModal")!;
         if (CacheStore.get("modFilterEnabled", false)) {
             filterStatusMessageSpan.style.color = "#7fffa0";

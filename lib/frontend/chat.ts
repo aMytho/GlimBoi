@@ -16,6 +16,7 @@ let hasSentGuildedWebhook = false;
 let hasSentDiscordWebhook = false;
 let hasSentTwittwerWebhook = false;
 let hasSentMatrixWebhook = false;
+let ChatGuildedModal: Modal, ChatDiscordModal: Modal, ChatTwitterModal: Modal, ChatMatrixModal: Modal;
 
 ChatChannels.updatePath(appData[1]);
 
@@ -229,6 +230,16 @@ function loadChatWindow() {
         clipboard.writeText(e.target.innerText);
         showToast("The link has been copied to your clipboard.");
     });
+
+    ChatDiscordModal = new Modal(document.getElementById("discordWebhook"), {});
+    ChatGuildedModal = new Modal(document.getElementById("guildedWebhook"), {});
+    ChatTwitterModal = new Modal(document.getElementById("twitterWebhook"), {});
+    ChatMatrixModal = new Modal(document.getElementById("matrixWebhook"), {});
+
+    document.getElementById("closeDiscordModal").addEventListener("click", () => ChatDiscordModal.hide());
+    document.getElementById("closeGuildedModal").addEventListener("click", () => ChatGuildedModal.hide());
+    document.getElementById("closeTwitterModal").addEventListener("click", () => ChatTwitterModal.hide());
+    document.getElementById("closeMatrixModal").addEventListener("click", () => ChatMatrixModal.hide());
 }
 
 /**
@@ -286,13 +297,13 @@ function displayChannels(channels) {
 
     	if (channel.channel.toLowerCase() === 'glimboi') {
       		channelNameText = 'GlimBoi (TEST)';
-      		channelNameHTML = '<span class="text-warning"><b>GlimBoi (TEST)</b></span>';
+      		channelNameHTML = '<span class="text-warning text-xl font-bold"><b>GlimBoi (TEST)</b></span>';
     	}
 
     	$(currentlyConnected ? '#chatConnections .pinned' : '#chatConnections .scroller').append(`
-      		<div class="mx-0 row channel-listing" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        		<h4 class="col whiteText channelName p-0 mb-1" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
-        		<div class="d-flex btn-group mb-1" role="group">
+      		<div class="mx-0 channel-listing flow-root" data-channel="${channel.channel}" data-channelid="${channel._id}">
+        		<h4 class="float-left whiteText channelName p-0 mb-1 font-bold text-xl" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
+        		<div class="float-right d-flex mb-1" role="group">
           			<button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon fas fa-sync-alt" onclick="autoJoinChatButtons(this)"></button>
           			<button data-action="join" class="btn btn-success" ${disableJoin} onclick="joinChatButtons(this)">Join</button>
           			<button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(true)">Leave</button>
@@ -439,16 +450,16 @@ function addAction(action: LogType) {
 function reconnect() {
     console.log("We were disconnected from chat, attempting to rejoin in 5 seconds.");
     setTimeout(() => {
-        $('#modalError').modal('hide');
-        $('#reconnectModal').modal('toggle');
+        let ReconnectModal = new Modal(document.getElementById("reconnectModal"), {});
+        ReconnectModal.show();
         reconnectDelay = setTimeout(async () => {
             try {
                 console.log("Rejoined chat. Hopefully..........")
-                $('#reconnectModal').modal('hide');
+                ReconnectModal.hide();
                 joinChat(currentChannelToRejoin, true);
             } catch (e) {
                 errorMessage("Failed to rejoin Glimesh chat", "Wait a few minutes and request another token.");
-                $('#reconnectModal').modal('hide');
+                ReconnectModal.hide();
             }
         }, 5000);
     }, 3000);
@@ -491,16 +502,16 @@ function adjustMessageStateByUsername(username:string, state:messageState) {
 
 function askForWebhookConfirmation(webhook:webhookType) {
     if (webhook == "discord") {
-        $("#discordWebhook").modal('show');
+        ChatDiscordModal.show();
         (document.getElementById("discordWebhookMessage") as HTMLInputElement).value = CacheStore.get("discordWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "guilded") {
-        $("#guildedWebhook").modal('show');
+        ChatGuildedModal.show();
         (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "twitter") {
-        $("#twitterWebhook").modal('show');
+        ChatTwitterModal.show();
         (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
     } else if (webhook == "matrix") {
-        $("#matrixWebhook").modal('show');
+        ChatMatrixModal.show();
         (document.getElementById("matrixWebhookMessage") as HTMLInputElement).value = CacheStore.get("matrixMessage", "https://glimesh.tv/$streamer?follow_host=false");
     }
 }

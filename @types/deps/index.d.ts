@@ -1158,3 +1158,57 @@ declare class ApexCharts {
   declare module 'apexcharts' {
     export = ApexCharts
   }
+
+/**
+ * Flowbite modal options
+ */
+ interface ModalOptions {
+    placement?: string
+    backdropClasses?: string
+    onHide?: () => any
+    onShow?: () => any
+    onToggle?: () => any
+}
+/**
+ * Flowbite Modal
+ */
+declare class Modal {
+    constructor(targetEl: HTMLElement, options: ModalOptions)
+    /**
+     * Show the modal
+     */
+    show(): void
+    /**
+     * Hide the modal
+     */
+    hide(): void
+    /**
+     * Toggle the modal
+     */
+    toggle(): void
+    /**
+     * Internal property of the modal status. Off when created even if the modal is activated from another source.
+     */
+    _isHidden: boolean;
+}
+
+/**
+ * Flowbite modal options
+ */
+ interface DismissOptions {
+    triggerEl?: HTMLElement
+    transition?: string
+    /**
+     * In milliseconds
+     */
+    duration?: number
+
+    timing?: string
+    onHide?: () => any
+}
+
+declare class Dismiss {
+    constructor(targetEl: HTMLElement, options?: DismissOptions)
+
+    hide(): void
+}

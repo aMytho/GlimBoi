@@ -25,6 +25,8 @@ let currentPage:pageState = "home"
 
 var globalChatMessages:storedChatMessage[] = [];
 
+let SuccessModal:Modal, ErrorModal:Modal;
+
 function changeNavHighlight(highlight:string) { //Removes the old and highlights the new
   	document.getElementsByClassName("active")[0].classList.remove("active");
   	document.getElementById(highlight)!.classList.add("active");
@@ -79,6 +81,7 @@ window.onload = function() {
                         case "ChatLink": loadChatWindow(); currentPage = "chat"; break;
                         case "GlimBoiHeader": loadBotStats(); unlockRequestToken(); currentPage = "home"; break;
                     }
+                    loadFlowbite();
                 	// Make sure tooltips are triggered so they work
                 	$('[data-toggle=tooltip]').tooltip();
         	}
@@ -165,7 +168,13 @@ function loadLink(link: string) {
 function errorMessage(errorType: string, errorMessage: string) {
     document.getElementById("errorMessageText")!.innerHTML = errorType;
     document.getElementById("errorMessageSolution")!.innerHTML = errorMessage;
-    $('#modalError').modal("show")
+    ErrorModal = new Modal(document.getElementById("modalError"), {});
+    ErrorModal.show();
+
+    document.getElementById("closeErrorModal").addEventListener("click", () => {
+        ErrorModal.hide();
+        document.getElementById("closeErrorModal")!.removeEventListener("click", () => {});
+    });
 }
 
 
@@ -173,7 +182,14 @@ function errorMessage(errorType: string, errorMessage: string) {
 function successMessage(messageType: string, message: string) {
     document.getElementById("successMessageText")!.innerHTML = messageType;
     document.getElementById("successMessageSolution")!.innerHTML = message;
-    $('#modalSuccess').modal("show");
+    SuccessModal = new Modal(document.getElementById("modalSuccess"), {});
+    SuccessModal.show();
+
+    document.getElementById("closeSuccessModal").addEventListener("click", () => {
+        SuccessModal.hide();
+        document.getElementById("closeSuccessModal")!.removeEventListener("click", () => {});
+    });
+
 }
 
 async function getDataDirectory() {
@@ -199,26 +215,32 @@ async function showToast(message: string) {
     let div = document.createElement("div");
     let toast = await fs.readFile(`${dirName}/html/common/toast.html`);
     div.innerHTML += toast.toString();
+    div.className = "toast relative w-full max-w-xs rounded-lg shadow bottom-20 right-3"
     document.getElementById("toastContainer")!.appendChild(div);
-    // Select the toast and activate it
-    let toastDiv = $(div).find(".toast");
-    toastDiv.toast({delay: 10000});
-    toastDiv.toast('show');
+    let Toast = new Dismiss(div, {
+        triggerEl: div.getElementsByClassName("toast-close")[0] as HTMLElement,
+    })
     // Set the message
-    toastDiv.children(".toast-body").text(`\n       ${message} \n`);
+    div.getElementsByClassName("toast-body")[0].innerHTML = `\n       ${message} \n`;
 
     // Every 8 seconds decrease the counter by 1 until its 0
     let counter = 7;
     let interval = setInterval(() => {
         if (counter == 0) {
             clearInterval(interval);
-            toastDiv.toast('hide');
+            Toast.hide();
             setTimeout(() => {
                 div.remove();
             }, 1000);
         } else {
-            toastDiv.find(".text-muted").html(`${counter}`);
+            div.getElementsByClassName("text-muted")[0].innerHTML = `${counter}`;
             counter--;
         }
     }, 1000);
+}
+
+function loadFlowbite() {
+    let ev = document.createEvent("Event");
+    ev.initEvent("DOMContentLoaded", true, true);
+    window.document.dispatchEvent(ev);
 }

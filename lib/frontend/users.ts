@@ -3,6 +3,8 @@ QuoteHandle.updatePath(appData[1]);
 RankHandle.updatePath(appData[1]);
 
 let userTable; //physical table showing user data
+let UserAddModal:Modal, UserEditModal:Modal, UserEditingModal: Modal,
+QuoteAddModal:Modal, QuoteViewModal:Modal, QuoteRemoveModal:Modal
 
 function loadUsers() {
     loadUserTable();
@@ -84,7 +86,7 @@ function quoteSearch(user:string) {
     	} else {
       		let tempButtonUser = document.getElementById('userRemoveQuoteSearch')!;
       		tempButtonUser.innerText = 'Remove';
-      		tempButtonUser.setAttribute('onclick', `removeQuote(document.getElementById('quoteRemoveSearch').value, '${user}')`)
+      		tempButtonUser.setAttribute('onclick', `removeQuote(document.getElementById('quoteRemoveSearch').value, '${user}')`);
       		document.getElementById("modalRemoveQuote")!.innerHTML = `
         		<div class="removeQuoteList"></div>
         		<div class="icon-input-container">
@@ -153,16 +155,16 @@ function searchAndAddUser() {
             document.getElementById("addUserMessage")!.innerHTML = "That user already exists."
             setTimeout(() => {
                 resetAddUserBox();
-            }, 4000);
+            }, 5000);
         } else if (data == "INVALIDUSER") {
             console.log("The user cannot be created because the user doesn't exist on glimesh.");
             document.getElementById("addUserMessage")!.innerHTML = "The user does not exist on Glimesh. Ensure the username is correct."
             setTimeout(() => {
                 resetAddUserBox();
-            }, 4000);
+            }, 5000);
         } else { //SUCCESS WOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             console.log("Showing the streamer the user");
-            $("#modalUserAdd").modal("hide");
+            UserAddModal.hide();
             successMessage("User added!", `${data.userName} has been added to Glimboi.`);
             addUserTable(data);
         }
@@ -295,8 +297,8 @@ async function userSearch(user: string, inModal: boolean) {
             // @ts-ignore
             if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
         });
-        $("#modalUserEdit").modal("hide"); // close the modal
-        $("#modalUserEditing").modal("show"); // open the user modal
+        UserEditModal.hide();
+        UserEditingModal.show();
     }
 }
 
@@ -362,12 +364,12 @@ async function loadUserTable() {
             {
                 targets: -1,
                 data: null,
-                defaultContent: "<button class='deletionIcon'><i class='fas fa-trash'></i></button>"
+                defaultContent: "<button class='btn-danger deletionIcon'><i class='fas fa-trash'></i></button>"
             },
             {
                 targets: -2,
                 data: null,
-                defaultContent: "<button class='quoteIcon'>Open</button>"
+                defaultContent: "<button class='btn-info quoteIcon'>Open</button>"
             }, {
                 targets: -3,
                 data: null,
@@ -390,9 +392,9 @@ async function loadUserTable() {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
         let user = await UserHandle.findByUserName(data.userName) as UserType;
-        console.log('Building quote list with ' + user.userName)
+        console.log(`Building quote list with ${user.userName}`)
         makeList(data);
-        $("#modalQuoteView").modal("show");
+        QuoteViewModal.show();
     })
     $('#userTable').on('click', ' tbody tr a', function (e) {
         e.stopPropagation();
@@ -426,28 +428,49 @@ function addUserTable(data: UserType) {
  * Prepares the modals for resetting thier info on close.
  */
 function prepUserModals() {
-    $('#modalUserEdit').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userEditSearch") as HTMLInputElement).value = "";
-    })
-    $('#modalUserAdd').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userAddInput") as HTMLInputElement).value = "";
-    })
-    $('#modalUserRemove').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userremoveInput") as HTMLInputElement).value = "";
-    })
-    $('#modalQuoteRemove').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userQuoteSearch") as HTMLInputElement).value = "";
+    UserAddModal = new Modal(document.getElementById("modalUserAdd"), {
+        onHide: () => (document.getElementById("userAddInput") as HTMLInputElement).value = ""
     });
-    $('#modalQuoteAdd').on('hidden.bs.modal', function (e) {
-        (document.getElementById("userQuoteInputU") as HTMLInputElement).value = "";
-        (document.getElementById("userQuoteInputQ") as HTMLInputElement).value = "";
-    })
-    $('#modalUserEditing').on('hidden.bs.modal', function (e) {
-        document.getElementById("modalUserEditing")!.innerHTML = ``
-    })
-    $("#modalQuoteView").on('hidden.bs.modal', function (e) {
-        document.getElementById("quoteListHolder")!.innerHTML = ``
+    UserEditModal = new Modal(document.getElementById("modalUserEdit"), {
+        onHide: () => (document.getElementById("userEditSearch") as HTMLInputElement).value = ""
     });
+    UserEditModal = new Modal(document.getElementById("modalUserEdit"), {
+        onHide: () => (document.getElementById("userEditSearch") as HTMLInputElement).value = ``
+    });
+    UserEditingModal = new Modal(document.getElementById("modalUserEditing"), {
+        onHide: () => document.getElementById("modalUserEditing")!.innerHTML = ``
+    });
+
+    QuoteAddModal = new Modal(document.getElementById("modalQuoteAdd"), {
+        onHide: () => {
+            (document.getElementById("userQuoteInputU") as HTMLInputElement).value = "";
+            (document.getElementById("userQuoteInputQ") as HTMLInputElement).value = "";
+        }
+    });
+    QuoteViewModal = new Modal(document.getElementById("modalQuoteView"), {
+        onHide: () => document.getElementById("quoteListHolder")!.innerHTML = ``
+    });
+    QuoteRemoveModal = new Modal(document.getElementById("modalQuoteRemove"), {
+        onHide: () => {
+            document.getElementById("modalRemoveQuote").innerHTML = `
+        <input type="text" placeholder="Username" id="userQuoteSearch" class="mt-2">
+        <p id="editQuoteError" class="errorMessage"></p>`;
+        let tempButtonUser = document.getElementById('userRemoveQuoteSearch')!;
+        tempButtonUser.innerText = 'Search';
+        tempButtonUser.setAttribute('onclick', `quoteSearch(document.getElementById('userQuoteSearch').value)`)
+        }
+    });
+
+    document.getElementById("activateUserAddModal").addEventListener("click", () => UserAddModal.show());
+    document.getElementById("closeUserAddModal").addEventListener("click", () => UserAddModal.hide());
+    document.getElementById("activateUserEditModal").addEventListener("click", () => UserEditModal.show());
+    document.getElementById("closeUserEditModal").addEventListener("click", () => UserEditModal.hide());
+    document.getElementById("activateQuoteAddModal").addEventListener("click", () => QuoteAddModal.show());
+    document.getElementById("closeQuoteAddModal").addEventListener("click", () => QuoteAddModal.hide());
+    document.getElementById("activateQuoteViewModal").addEventListener("click", () => QuoteViewModal.show());
+    document.getElementById("closeQuoteViewModal").addEventListener("click", () => QuoteViewModal.hide());
+    document.getElementById("activateQuoteRemoveModal").addEventListener("click", () => QuoteRemoveModal.show());
+    document.getElementById("closeQuoteRemoveModal").addEventListener("click", () => QuoteRemoveModal.hide());
 }
 
 function syncQuotes(user: UserType | string, action) {

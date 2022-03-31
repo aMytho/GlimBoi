@@ -85,6 +85,7 @@ function logMessage(user:string, message:message, avatar:avatar, isReload: boole
         tokens.forEach(token => {
             htmlOfTokens += token.outerHTML;
         });
+        /*
         $("#chatList").append(`
           <li class="left clearfix ${adminClass} ${state} w-100" name='${user}' title="${getMessageHoverTitle(state)}">
                 <div contentLocation="1" class="chat-body1 clearfix testing" name='${user}' oncontextmenu="loadChatContextMenu(event)">
@@ -94,8 +95,15 @@ function logMessage(user:string, message:message, avatar:avatar, isReload: boole
                     <p name='${user}' messageID='${messageID}'><span id="chatUser" name='${user}' >${user}: </span> ${htmlOfTokens} </p>
                 </div>
           </li>`
-          );
+          );*/
 
+        let div = document.createElement("div");
+        div.className = `p-2 flex flex-row gap-3 items-center ${adminClass} rounded-md`;
+        div.innerHTML  =`
+            <img src="${avatar}" alt="User Avatar" class="h-10 w-10 rounded-lg" style="border-radius: 50%;">
+                <p name='${user}' messageID='${messageID}' class="py-4 px-2 flex flex-row gap-2">Mytho: ${htmlOfTokens}</p>
+              `
+        document.getElementById("chatContainer").appendChild(div);
         let scroll = document.getElementById("chatContainer")
         scroll!.scrollTo(0,document.getElementById("chatList").scrollHeight);
         // log to file
@@ -123,7 +131,7 @@ function getTokens(tokens: any[]) {
         if (token.src) {
             let img = document.createElement("img");
             img.src = token.src;
-            img.className = "mustBe40"
+            img.className = "h-10 w-10"
             tokens[index] = img;
         } else if (token.url) {
             let a = document.createElement("a");
@@ -131,6 +139,7 @@ function getTokens(tokens: any[]) {
             a.innerText = token.text;
             a.title = "Copy the link in a browser to view its contents";
             a.classList.add("copyLink");
+            a.style.color = "#007bff";
             tokens[index] = a;
         } else if (token.text) {
             let p = document.createElement("span") as HTMLSpanElement;

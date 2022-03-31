@@ -1,8 +1,9 @@
 MediaHandle.updatePath(appData[1]);
 let MediaTable;
+let MediaAddModal:Modal, MediaEditModal:Modal, MediaRemoveModal:Modal;
 
 async function loadMediaTable() {
-    prepMediaModals()
+    prepMediaModals();
     MediaTable = $("#obsResources").DataTable({
         data: await MediaHandle.getAll(), // returns all the commands
         columns: [
@@ -25,8 +26,8 @@ async function loadMediaTable() {
         let data = MediaTable.row(this).data();
         let mediaToBeEditied = await MediaHandle.getMediaByName(data.name);
         const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
-        MediaUI.loadEditModal(mediaToBeEditied);
-        $('#editMediaModal').modal("show");
+        MediaUI.loadEditModal(mediaToBeEditied, MediaEditModal);
+        MediaEditModal.show();
     });
 }
 
@@ -45,7 +46,7 @@ async function removeMedia(media: string) {
                     return MediaTable.row(value).data().name == media;
                 });
             MediaTable.rows(filteredData).remove().draw();
-            $("#removeMediaModal").modal("hide");
+            MediaRemoveModal.hide();
         } else {
             document.getElementById("RemoveMediaError").innerText = "No media was found with that name."
         }
@@ -76,37 +77,56 @@ async function displayMedia(media, source) {
 }
 
 function prepMediaModals() {
-    $('#addMediaButton').on('click', function (e) {
-        const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
-        MediaUI.loadAddModal();
-    })
-    $('#removeMediaModal').on('hidden.bs.modal', function (e) {
-        (document.getElementById("mediaRemoveInput") as HTMLSelectElement).value = "";
-        document.getElementById("RemoveMediaError").innerText = "";
-    })
-    $('#playAudioModal').on('hidden.bs.modal', function (e) {
-        (document.getElementById("playAudioModalSelect") as HTMLSelectElement).innerHTML = "";
-        // Add the default option
-        let defaultOption = document.createElement("option");
-        defaultOption.text = "Select audio";
-        defaultOption.value = null;
-        (document.getElementById("playAudioModalSelect") as HTMLSelectElement).add(defaultOption);
-    }).on('shown.bs.modal', async function (e) {
+    MediaAddModal = new Modal(document.getElementById("addMediaModal"), {
+        onShow: () => {
+            const MediaUI: typeof import("../frontend/media/modalManager") = require(`${appData[0]}/frontend/media/modalManager.js`);
+            MediaUI.loadAddModal(MediaAddModal);
+        },
+        onHide: () => {
+            document.getElementById("addMediaContent").innerHTML = "";
+        }
+    });
+    MediaEditModal = new Modal(document.getElementById("editMediaModal"), {
+        onHide: () => {
+            document.getElementById("editMediaContent").innerHTML = "";
+        }
+    });
+    MediaRemoveModal = new Modal(document.getElementById("removeMediaModal"), {
+        onHide: () => {
+            (document.getElementById("mediaRemoveInput") as HTMLSelectElement).value = "";
+            document.getElementById("RemoveMediaError").innerText = "";
+        }
+    });
+
+    document.getElementById("activateAddModal").addEventListener("click", () => MediaAddModal.show());
+    document.getElementById("activateRemoveModal").addEventListener("click", () => MediaRemoveModal.show());
+    document.getElementById("closeRemoveModal").addEventListener("click", () => MediaRemoveModal.hide());
+
+    document.getElementById("activateAudioModal").addEventListener("click", async () => {
         let selectElement = document.getElementById("playAudioModalSelect");
         let audioItems = await MediaHandle.getMediaByType("audio");
         for (let i = 0; i < audioItems.length; i++) {
             let name = audioItems[i].name
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
-    })
-    $('#playImageModal').on('hidden.bs.modal', function (e) {
+    });
+    document.getElementById("closeAudioModal").addEventListener("click", async () => {
+        (document.getElementById("playAudioModalSelect") as HTMLSelectElement).innerHTML = "";
+        // Add the default option
+        let defaultOption = document.createElement("option");
+        defaultOption.text = "Select audio";
+        defaultOption.value = null;
+        (document.getElementById("playAudioModalSelect") as HTMLSelectElement).add(defaultOption);
+    });
+    document.getElementById("closeImageModal").addEventListener("click", () => {
         (document.getElementById("playImageModalSelect") as HTMLSelectElement).innerHTML = "";
         // Add the default option
         let defaultOption = document.createElement("option");
         defaultOption.text = "Select an image, GIF, or video";
         defaultOption.value = null;
         (document.getElementById("playImageModalSelect") as HTMLSelectElement).add(defaultOption);
-    }).on('shown.bs.modal', async function (e) {
+    });
+    document.getElementById("activateImageModal").addEventListener("click", async () => {
         let selectElement = document.getElementById("playImageModalSelect");
         let imageItems = await MediaHandle.getMediaByType("image");
         let videoItems = await MediaHandle.getMediaByType("video");
@@ -115,7 +135,9 @@ function prepMediaModals() {
             let name = imageItems[i].name
             selectElement.innerHTML += "<option value=\"" + name + "\">" + name + "</option>";
         }
-    })// Only works in production
+    });
+
+    // Only works in production
     document.getElementById("pathOfOverlay").innerText = appData[0].replace("app.asar", "app.asar.unpacked").replace("build", "src/overlays/index.html")
 }
 

@@ -1,5 +1,6 @@
 // Runs the UI for events
-let viewingEvent: eventName | "default" = "default"
+let viewingEvent: eventName | "default" = "default";
+let QueueUserAddModal:Modal, QueueUserRemoveModal:Modal;
 
 function loadEvents() {
     viewingEvent = "default";
@@ -11,6 +12,24 @@ function loadEvents() {
             e.which == 46 || // period key
             /[0-9]/.test(String.fromCharCode(e.which)); // numbers
     })
+
+    QueueUserAddModal = new Modal(document.getElementById("modalQueueAdd"), {
+        onHide: () => {
+            (document.getElementById("queueAdd") as HTMLInputElement).value = "";
+        }
+    })
+
+    QueueUserRemoveModal = new Modal(document.getElementById("modalQueueRemove"), {
+        onHide: () => {
+            (document.getElementById("queueRemove") as HTMLInputElement).value = "";
+        }
+    })
+
+    document.getElementById("activateQueueUserAdd").addEventListener("click", () => QueueUserAddModal.show());
+    document.getElementById("closeEventsQueueAddModal").addEventListener("click", () => QueueUserAddModal.hide());
+    document.getElementById("activateQueueUserRemove").addEventListener("click", () => QueueUserRemoveModal.show());
+    document.getElementById("closeEventsQueueRemoveModal").addEventListener("click", () => QueueUserRemoveModal.hide());
+
 }
 
 
@@ -266,6 +285,7 @@ async function addToQueueUI() {
     if (userExists && EventHandle.queue.getUsersInQueue().indexOf(user) == -1 && ChatHandle.isConnected()) {
         EventHandle.queue.addToQueue(user);
         //addOrRemoveQueueUserUI(user, "add");
+        QueueUserAddModal.hide();
         successMessage("User Added", "User has been added to queue.");
     } else {
         errorMessage(
@@ -278,6 +298,7 @@ function removeFromQueueUI() {
     if (EventHandle.queue.getUsersInQueue().indexOf(user) != -1) {
         EventHandle.queue.removeFromQueue(user);
         //addOrRemoveQueueUserUI(user, "remove");
+        QueueUserRemoveModal.hide();
         successMessage("User Removed", "User has been removed from queue.");
     } else {
         errorMessage("User Failed", "The user is not in the queue.");

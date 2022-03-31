@@ -1,30 +1,51 @@
 // Handles the UI for ranks
 
+let RankAddModal:Modal, RankRemoveModal: Modal;
+
 async function rankPrep() {
     let currentRanks = await RankHandle.getAll();
     currentRanks.forEach(element => {
         if (element.rank !== "Mod" && element.rank !== "Streamer" && element.rank !== "user") {
             let rankButton = document.createElement("a");
-            rankButton.className = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`
+            rankButton.className = `btn-info mt-2 CUSTOM_RANK`
             rankButton.innerHTML = element.rank;
             rankButton.setAttribute("onclick", `displayRank("${element.rank}")`)
             document.getElementById("customRankButtons")!.append(rankButton)
         }
     });
-    rankModalPrep()
+    rankModalPrep();
 }
 
+function rankModalPrep() {
+    RankAddModal = new Modal(document.getElementById("modalRankAdd"), {
+        onHide: () => {
+            (document.getElementById("rankAddInput") as HTMLInputElement).value = "";
+            (document.getElementById("addRank") as HTMLParagraphElement).innerText = "";
+        }
+    });
+
+    RankRemoveModal = new Modal(document.getElementById("modalRankremove"), {
+        onHide: () => {
+            (document.getElementById("rankRemoveInput") as HTMLInputElement).value = "";
+            (document.getElementById("removeRank") as HTMLParagraphElement).innerText = "";
+        }
+    })
+    document.getElementById("triggerModalRankAdd").addEventListener("click", () => RankAddModal.show());
+    document.getElementById("closeModalRankAdd").addEventListener("click", () => RankAddModal.hide());
+    document.getElementById("triggerModalRankRemove").addEventListener("click", () => RankRemoveModal.show());
+    document.getElementById("closeModalRankRemove").addEventListener("click", () => RankRemoveModal.hide());
+}
 
 async function addRank() {
     let rankName = (document.getElementById("rankAddInput") as HTMLInputElement)!.value.trim();
     let rankCreated = await RankHandle.createRank(rankName);
     if (rankCreated == "RANKADDED") {
         let rankButton = document.createElement("a");
-        rankButton.className = `col-lg-12 col-11 btn btn-info mt-2 CUSTOM_RANK border-radius-5`;
+        rankButton.className = `btn-info mt-2 CUSTOM_RANK`;
         rankButton.innerHTML = rankName;
         rankButton.setAttribute("onclick", `displayRank('${rankName}')`)
         document.getElementById("customRankButtons")!.append(rankButton);
-        $('#modalRankAdd').modal('hide');
+        RankAddModal.hide();
     } else {
         document.getElementById("addRank")!.innerText = "That rank already exists."
     }
@@ -34,7 +55,7 @@ async function removeRank() {
     let rankName = (document.getElementById("rankRemoveInput")! as HTMLInputElement).value.trim();
     let rankRemoved = await RankHandle.removeRank(rankName)
     if (rankRemoved == "RANKREMOVED") {
-        $('#modalRankremove').modal('hide');
+        RankRemoveModal.hide();
         var possibleRanks = document.getElementsByClassName("CUSTOM_RANK") as HTMLCollectionOf<HTMLParagraphElement> // adjust later
         for (let item of possibleRanks) {
             if (item.innerText == rankName) {
@@ -98,16 +119,4 @@ async function displayRank(rank: rankName) {
         (document.getElementById("endEventsRank") as HTMLInputElement)!.checked = rankExists.canEndEvents;
         document.getElementById("saveRankSettings")!.classList.remove("disabled")
     }
-}
-
-function rankModalPrep() {
-    $('#modalRankAdd').on('hide.bs.modal', function (e) {
-        (document.getElementById("rankAddInput") as HTMLInputElement).value = "";
-        (document.getElementById("addRank") as HTMLParagraphElement).innerText = "";
-    })
-
-    $('#modalRankremove').on('hide.bs.modal', function (e) {
-        (document.getElementById("rankRemoveInput") as HTMLInputElement).value = "";
-        (document.getElementById("removeRank") as HTMLParagraphElement).innerText = "";
-    })
 }

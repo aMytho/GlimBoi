@@ -16,13 +16,15 @@ async function loadUserModal(user: UserType) {
             select.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
         }
     }
-    container.firstElementChild.children[1].firstElementChild.children[1].firstElementChild.children[1].firstElementChild.children[1].appendChild(select);
-    container.firstElementChild.children[1].firstElementChild.children[1].firstElementChild.children[1].children[1].children[1].innerHTML = String(user.points);
-    container.firstElementChild.children[1].firstElementChild.children[1].firstElementChild.children[1].children[2].children[1].innerHTML = String(user.watchTime);
+    console.log(container.firstElementChild.firstElementChild.children[1].firstElementChild.children[1].firstElementChild.children[1])
+    container.firstElementChild.firstElementChild.children[1].firstElementChild.children[1].firstElementChild.children[1].appendChild(select);
+    container.firstElementChild.firstElementChild.children[1].firstElementChild.children[1].children[1].children[1].innerHTML = String(user.points);
+    container.firstElementChild.firstElementChild.children[1].firstElementChild.children[1].children[2].children[1].innerHTML = String(user.watchTime);
     document.getElementById("modalUserEditing").appendChild(container);
-    document.getElementById("saveUserSettings").onclick = function () {
+    document.getElementById("saveUserSettings").addEventListener("click", () => {
         validateUserInfo(user.userName);
-    };
+    });
+    document.getElementById("closeUserEditingModal").addEventListener("click", () => UserEditingModal.hide());
 }
 
 function validateUserInfo(user: string) {
@@ -36,7 +38,7 @@ function validateUserInfo(user: string) {
         return
     } else {
         UserHandle.editUser(user, userPoints, (document.getElementById("userEditRankChoice") as HTMLInputElement).value, userWatchTime);
-        $("#modalUserEditing").modal("hide");
+        UserEditingModal.hide();
     }
 }
 

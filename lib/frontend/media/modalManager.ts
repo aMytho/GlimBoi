@@ -1,16 +1,16 @@
 
-async function loadAddModal() {
+async function loadAddModal(modal: Modal) {
     let data = await fs.readFile(dirName + `/html/media/addMedia.html`);
-    document.getElementById(`mediaContent`)!.innerHTML = data.toString();
-    preventText("add");
-    prepareMedia("add")
+    document.getElementById(`addMediaContent`)!.innerHTML = data.toString();
+    prepareModals("add", modal);
+    prepareMedia("add", modal);
 }
 
-async function loadEditModal(media: MediaType) {
+async function loadEditModal(media: MediaType, modal: Modal) {
     let data = await fs.readFile(dirName + `/html/media/editMedia.html`);
-    document.getElementById(`mediaContentEdit`)!.innerHTML = data.toString();
-    preventText("edit");
-    prepareMedia("edit");
+    document.getElementById(`editMediaContent`)!.innerHTML = data.toString();
+    prepareModals("edit", modal);
+    prepareMedia("edit", modal);
 
     // Set the media name
     (document.getElementById(`editMediaName`) as HTMLInputElement)!.value = media.name;
@@ -61,45 +61,18 @@ async function loadEditModal(media: MediaType) {
 }
 
 /**
- * Make sure the user can't enter text into number fields
+ * Modal preparation work
  * @param mode
  */
-function preventText(mode) {
-    $(`#${mode}MediaPositionX`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-    });
-    $(`#${mode}MediaPositionY`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-    });
-    $(`#${mode}MediaDuration`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which)) && e.which !== 46) e.preventDefault();
-    });
-    $(`#${mode}MediaVolume`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which)) && e.which !== 46) e.preventDefault();
-    });
-    $(`#${mode}MediaHeight`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which)) && e.which !== 46) e.preventDefault();
-    });
-    $(`#${mode}MediaWidth`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which)) && e.which !== 46) e.preventDefault();
-    });
-    $(`#${mode}MediaScale`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which)) && e.which !== 46) e.preventDefault();
-    });
+function prepareModals(mode, modal: Modal) {
+    document.getElementById(`${mode}CloseMediaModal`).addEventListener("click", () => modal.hide());
     setTimeout(() => {
-        $(`#${mode}OpenMenu`).click()
+        document.getElementById(`${mode}OpenMenu`).click();
     }, 700);
 }
 
 
-function prepareMedia(mode) {
+function prepareMedia(mode, modal: Modal) {
     // Activates all bootstrap tooltips
     $('[data-toggle-second="tooltip"]').tooltip();
     // Adds media
@@ -114,7 +87,7 @@ function prepareMedia(mode) {
                 MediaHandle.addMedia(mediaSettings);
                 MediaTable.row.add({ name: mediaSettings.name.toLowerCase(), type: mediaSettings.type, path: mediaSettings.path})
                 MediaTable.draw(); //Show changes
-                $(`#${mode}MediaModal`).modal("hide");
+                modal.hide();
             } else {
                 console.info("Media Edit Finished");
                 MediaHandle.editMedia(mediaSettings);
@@ -129,7 +102,7 @@ function prepareMedia(mode) {
                 data = { ...data, ...mediaSettings };
                 console.log(data);
                 row.data(data).draw();
-                $(`#${mode}MediaModal`).modal("hide");
+                modal.hide();
             }
         } else {
             console.log("Media is not valid.");

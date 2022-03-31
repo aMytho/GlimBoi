@@ -1,18 +1,18 @@
 <div class="topnav">
     <h3 class="active">Ban</h3>
     <div class="float-right" style="padding:12px 14px">
-        <i class="fas fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
-        <i class="fas fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
-        <i class="far fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
+        <i class="fas  mx-1 fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
+        <i class="fas  mx-1 fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
+        <i class="far  mx-1 fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
     </div>
 </div>
-<div class="actionBody mt-2">
-    <div class="actionMain text-center row">
-        <div class="col-6">
-            <span class="textarea" role="textbox" contenteditable id="userToBan"
-                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+<div class="actionBody mt-4">
+    <div class="actionMain text-center grid grid-cols-1 md:grid-cols-2 gap-x-4">
+        <div>
+            <span class="textarea w-full ml-4" role="textbox" contenteditable id="userToBan"
+                style="background-color: #1b2e4b;color:aquamarine;"></span>
         </div>
-        <div class="col-6">
+        <div>
             <h6 class="text-center">Enter the user to ban. ($variables supported!)</h6>
             <h6 class="text-center">Overrides mod immunity. Cannot ban streamer. Use wisely</h6>
         </div>

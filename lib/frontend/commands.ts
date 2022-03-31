@@ -1,6 +1,7 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
 CommandHandle.updatePath(appData[1]);
 let table; //The physical table for the UI
+let AddModal:Modal, EditModal:Modal, RemoveModal:Modal
 
 //Loads the command table.
 async function loadCommandTable() {
@@ -30,6 +31,7 @@ async function loadCommandTable() {
             },
         ],
         columnDefs: [{
+            className: "border-t-teal-50",
             targets: 1,
             data: "message",
             render: function (data, type, row, meta) {
@@ -56,8 +58,9 @@ async function loadCommandTable() {
         let data = table.row(this).data();
         const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
         let commandClicked = await CommandHandle.findCommand(data.commandName);
-        $('#modalCart').modal("show");
-        CommandUI.loadModalEdit(commandClicked);
+        console.log(1)
+        AddModal.show();
+        CommandUI.loadModalEdit(commandClicked, AddModal);
     });
 }
 
@@ -95,32 +98,27 @@ function checkRemoveCommand() {
 //edits commands
 function checkEditCommand() {
     let commandToBeEdited = ($("#commandEditInput").val() as string).toLowerCase();
-    let editErrorMessage = document.getElementById("editCommandMessage")
+    let editErrorMessage = document.getElementById("editSearchCommandLabel")
     commandToBeEdited = commandToBeEdited.replace(new RegExp("^[\!]+"), "").trim();
 
     //Make sure the command exists.
-    try {
-        CommandHandle.findCommand(commandToBeEdited).then(data => {
-            if (data !== null) {
-                console.log("Editing " + commandToBeEdited);
-                const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
-                $('#modalEditCommand').modal("hide");
-                $('#modalCart').modal("show");
-                CommandUI.loadModalEdit(data);
-            } else {
-                editErrorMessage.innerHTML = "This command does not exist.";
-                setTimeout(() => {
-                    editErrorMessage.innerHTML = "";
-                }, 4000);
-            }
-        })
-    } catch (e) {
-        console.log(e);
-        editErrorMessage.innerHTML = "This command does not exist.";
-        setTimeout(() => {
-            editErrorMessage.innerHTML = ""
-        }, 4000);
-    }
+    CommandHandle.findCommand(commandToBeEdited).then(data => {
+        if (data !== null) {
+            console.log(`Editing ${commandToBeEdited}`);
+            const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
+            // Close the search modal
+            EditModal.hide();
+            // Create and open the edit modal
+            AddModal.show();
+            CommandUI.loadModalEdit(data, AddModal);
+        } else {
+            editErrorMessage.innerHTML = "This command does not exist.";
+            setTimeout(() => {
+                editErrorMessage.innerHTML = "Enter the command to edit.";
+            }, 4000);
+        }
+    })
+
 }
 
 /**
@@ -148,22 +146,32 @@ function moveAction(element:HTMLElement, direction: "up" | "down") {
  * Runs on cmd page load. Adds filters and other things for the modals
  */
 function commandModalPrep() {
-    const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`)
-    $('#modalCart').on('show.bs.modal', function (e) {// @ts-ignore
-        if (e.relatedTarget) {
-            CommandUI.loadModalAdd();
+    const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
+    AddModal = new Modal(document.getElementById("addCommandModal"), {});
+
+    EditModal = new Modal(document.getElementById("editCommandModal"), {
+        onHide: () => {
+            (document.getElementById("commandEditInput") as HTMLInputElement).value = "";
         }
     });
-    $('#modalEditCommand').on('hidden.bs.modal', function (e) {
-        (document.getElementById("commandEditInput") as HTMLInputElement).value = "";
-        document.getElementById("errorMessageEdit").innerHTML = "";
-    });
-    $('#modalDelete').on('hidden.bs.modal', function (e) {
-        (document.getElementById("commandRemoveInput") as HTMLInputElement).value = "";
-        document.getElementById("errorMessageDelete").innerHTML = "";
+
+    RemoveModal = new Modal(document.getElementById("removeCommandModal"), {
+        onHide: () => {
+            (document.getElementById("commandRemoveInput") as HTMLInputElement).value = "";
+            document.getElementById("errorMessageDelete").innerHTML = "";
+        }
     });
 
-    $('#saveCommandSettings').on('click', function (e) {
+    document.getElementById("activateCommandAddModal").addEventListener("click", () => {
+        AddModal.show();
+        CommandUI.loadModalAdd(AddModal);
+    });
+    document.getElementById("activateCommandEditModal").addEventListener("click", () => EditModal.show());
+    document.getElementById("closeCommandEditModal").addEventListener("click", () => EditModal.hide());
+    document.getElementById("activateCommandRemoveModal").addEventListener("click", () => RemoveModal.show());
+    document.getElementById("closeCommandRemoveModal").addEventListener("click", () => RemoveModal.hide());
+
+    document.getElementById("saveCommandSettings").addEventListener('click', function (e) {
         successMessage("Settings Saved", "Command settings have been saved.");
         CacheStore.setMultiple([
             {commandRepeatDelay: Number(repeatDelay.value)},
@@ -185,16 +193,12 @@ function commandModalPrep() {
         switch (value) {
             case "5 (not recommended)":
                 return 5
-            break;
             case "15 (default)":
                 return 15
-            break;
             case "30":
                 return 30
-            break;
             case "60":
                 return 60
-            break;
         }
     }
 }

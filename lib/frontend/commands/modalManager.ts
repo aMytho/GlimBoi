@@ -2,7 +2,7 @@
 
 const ActionCreator:ActionCreator = require(appData[0] + "/frontend/commands/actionCreator.js");
 
-function prepareActions(mode) {
+function prepareActions(mode, modal: Modal) {
    // Activates all bootstrap tooltips
     $('[data-toggle-second="tooltip"]').tooltip()
 
@@ -35,12 +35,14 @@ function prepareActions(mode) {
         if (mode == "add") {
             CommandHandle.addCommand(commandSettings);
             addCommandTable(commandSettings);
-            $("#modalCart").modal("hide");
+            modal.hide();
+            showToast("Command added!");
         } else {
-            console.info("Command Edit Finished");
+            console.log("Command Edit Finished");
             CommandHandle.editCommand(commandSettings);
             editCommandTable(commandSettings);
-            $("#modalCart").modal("hide");
+            modal.hide();
+            showToast("Command edited!");
         }
     }
 
@@ -61,28 +63,16 @@ function prepareActions(mode) {
     document.getElementById("CreateWriteFile")!.onclick = () => addActionToUI("WriteFile", mode);
 }
 
-function prepareModals(mode) {
-    $(`#${mode}CommandPoints`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-    });
-    $(`#${mode}CommandUses`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
-    });
-    $(`#${mode}CommandCooldown`).keypress(function (e) {
-        // @ts-ignore
-        if (isNaN(String.fromCharCode(e.which)) && e.which !== 46) e.preventDefault();
-    });
+function prepareModals(mode: "add" | "edit", modal: Modal) {
+    document.getElementById(`${mode}CloseModal`)!.onclick = () => modal.hide();
     setTimeout(() => {
-        $(`#${mode}OpenMenu`).click()
+        document.getElementById(`${mode}OpenMenu`).click();
     }, 700);
 }
 
-async function loadModalAdd() {
+async function loadModalAdd(modal: Modal) {
     let data = await fs.readFile(dirName + `/html/commands/addCommand.html`);
     document.getElementById(`commandContent`)!.innerHTML = data.toString();
-    prepareModals("add")
     let selectRank = document.getElementById("addCommandRank");
     let options = await RankHandle.getAll();
     selectRank.innerHTML += "<option value=\"" + "Everyone" + "\">" + "Everyone (Default)" + "</option>";
@@ -90,16 +80,19 @@ async function loadModalAdd() {
         let opt = options[i].rank;
         selectRank.innerHTML += "<option value=\"" + opt + "\">" + opt + "</option>";
     }
-    prepareActions("add");
+    prepareModals("add", modal);
+    prepareActions("add", modal);
     addActionToUI("ChatMessage", "add");
+    loadFlowbite();
 }
 
-async function loadModalEdit(command) {
+async function loadModalEdit(command, modal: Modal) {
     let data = await fs.readFile(dirName + `/html/commands/editCommand.html`);
-    document.getElementById(`commandContent`)!.innerHTML = data.toString()
+    document.getElementById(`commandContent`)!.innerHTML = data.toString();
     await insertEditData(command);
-    prepareModals("edit");
-    prepareActions("edit");
+    prepareModals("edit", modal);
+    prepareActions("edit", modal);
+    loadFlowbite();
 }
 
 /**

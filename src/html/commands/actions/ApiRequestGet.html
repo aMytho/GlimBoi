@@ -1,33 +1,33 @@
 <div class="topnav">
     <h3 class="active">API Request (GET)</h3>
     <div class="float-right" style="padding:12px 14px">
-        <i class="fas fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
-        <i class="fas fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
-        <i class="far fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
+        <i class="fas mx-1 fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
+        <i class="fas mx-1 fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
+        <i class="far mx-1 fa-window-close" onclick="this.parentElement.parentElement.parentElement.remove()"></i>
     </div>
 </div>
 <div class="actionBody mt-2">
-    <div class="actionMain text-center row">
-        <div class="col-6">
-            <span class="textarea" role="textbox" contenteditable id="urlInput"
-                style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+    <div class="actionMain text-center grid grid-cols-1 md:grid-cols-3">
+        <div class="px-4 col-span-2">
+            <span class="textarea ml-4 w-11/12" role="textbox" contenteditable id="urlInput"
+                style="background-color: #1b2e4b;color:aquamarine;"></span>
         </div>
-        <div class="col-6">
+        <div class="px-4">
             <select class="settingSelect">
                 <option value="text">Returns Text</option>
                 <option value="json">Returns JSON</option>
             </select>
         </div>
     </div>
-    <div class="actionMain text-center row">
-        <div class="col-6">
-            <span class="textarea" role="textbox" contenteditable id="requestTextInput"
-            style="background-color: #1b2e4b;color:aquamarine;width: 100%;margin-left: 1rem;"></span>
+    <div class="actionMain text-center row grid grid-cols-2">
+        <div class="px-4">
+            <span class="textarea ml-4 w-11/12" role="textbox" contenteditable id="requestTextInput"
+            style="background-color: #1b2e4b;color:aquamarine;"></span>
         </div>
-        <div class="col-6">
+        <div class="px-4 text-center w-full text-lg ">
             <p>Enter the name of the variable to use the request data later.</p>
         </div>
-        <div class="col-12 hidden">
+        <div class="hidden">
             <table style="width:100%" class="table">
                 <tr>
                   <th>Add/Remove</th>
@@ -36,21 +36,21 @@
                 </tr>
                 <tr>
                   <td>
-                    <a class="btn btn-primary btn-group mt-2 btn-inline" href="#"><i class="fas fa-plus"></i></a>
+                    <a class="btn-primary mt-4" href="#"><i class="fas fa-plus"></i></a>
                 </td>
-                  <td><span class="textarea" role="textbox" contenteditable id="jsonKey"
+                  <td class="px-4"><span class="textarea" role="textbox" contenteditable id="jsonKey"
                     style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
-                  <td><span class="textarea" role="textbox" contenteditable id="varName"
+                  <td class="px-4"><span class="textarea" role="textbox" contenteditable id="varName"
                     style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
                 </tr>
               </table>
         </div>
-        <div class="col-12 hidden">
+        <div class="hidden text-center w-full text-lg">
             <p>Enter the JSON keys to search for. Add the variable name to pull from later.</p>
         </div>
     </div>
-    <div class="actionMain text-center row">
-        <div class="col-12">
+    <div class="actionMain text-center grid grid-cols-1 gap-4">
+        <div class="px-4">
             <table style="width:100%" class="table">
                 <tr>
                   <th>Add/Remove</th>
@@ -59,16 +59,16 @@
                 </tr>
                 <tr>
                   <td>
-                    <a class="btn btn-primary btn-group mt-2 btn-inline" href="#"><i class="fas fa-plus"></i></a>
+                    <a class="btn-primary mt-2" href="#"><i class="fas fa-plus"></i></a>
                 </td>
-                  <td><span class="textarea" role="textbox" contenteditable id="headerName"
-                    style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
-                  <td><span class="textarea" role="textbox" contenteditable id="headerValue"
-                    style="background-color: #1b2e4b;color:aquamarine;width: 100%"></span></td>
+                  <td class="px-4"><span class="textarea w-full" role="textbox" contenteditable id="headerName"
+                    style="background-color: #1b2e4b;color:aquamarine;"></span></td>
+                  <td class="px-4"><span class="textarea w-full" role="textbox" contenteditable id="headerValue"
+                    style="background-color: #1b2e4b;color:aquamarine;"></span></td>
                 </tr>
               </table>
         </div>
-        <div class="col-12">
+        <div class="px-4 w-full text-center font-bold text-xl">
             <p>Enter the headers with their values (if any)</p>
         </div>
     </div>
