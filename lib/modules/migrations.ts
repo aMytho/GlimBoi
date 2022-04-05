@@ -7,6 +7,7 @@ function migrate() {
     console.log("Checking for migrations");
     checkForScreenShots();
     checkForMediaOverlay();
+    checkForCommandTriggers();
 }
 
 /**
@@ -48,6 +49,25 @@ async function checkForMediaOverlay() {
     } catch (e) {
         console.log("Error checking for media overlay");
         console.log(e);
+    }
+}
+
+async function checkForCommandTriggers() {
+    let hasTriggers = CacheStore.get("hasCommandTriggers", false);
+    if (!hasTriggers) {
+        // The user has no triggers, convert their commands to add them.
+        console.log("No triggers found, converting commands");
+        let commands = await CommandHandle.getAll();
+        commands = commands.filter(command => command.triggers === undefined || command.triggers.length === 0);
+        let promises = [];
+        for (let command of commands) {
+            promises.push(CommandHandle.addDefaultTrigger(command.commandName));
+        }
+        await Promise.all(promises);
+        console.log("Commands converted");
+        CacheStore.set("hasCommandTriggers", true);
+    } else {
+        console.log("Triggers found, skipping conversion");
     }
 }
 
