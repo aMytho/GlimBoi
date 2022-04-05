@@ -2,10 +2,11 @@
 
 import Nedb from "@seald-io/nedb";
 
-let commandsDB:Nedb; //Database of commands.
+let commandsDB:Nedb<Command>; //Database of commands.
 
 const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js");
 const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js");
+const TriggerHelper:typeof import("./commands/triggerHelper") = require(appData[0] + "/modules/commands/triggerHelper.js");
 
 /**
  * A command
@@ -13,6 +14,7 @@ const CommandRunner:typeof import("../modules/commands/commandRunner") = require
  */
 class Command implements CommandType {
     commandName: string;
+    triggers: TriggerStructure[]; //Triggers for the command
     uses: number
     points: number;
     cooldown: number;
@@ -102,6 +104,22 @@ function findCommand(command: commandName): Promise<null | CommandType> {
 }
 
 /**
+ * Returns a list of commands that match the trigger. Only the trigger requested is in the trigger list.
+ * @param trigger The trigger to search for
+ */
+async function findByTrigger(trigger: CommandTrigger): Promise<CommandType[]> {
+    return new Promise(resolve => {
+        commandsDB.find({ triggers: { $elemMatch: { trigger: trigger } } }, function (err: any, docs: CommandType[]) {
+            docs.map(cmd => {
+                cmd.triggers = cmd.triggers.filter(trig => trig.trigger === trigger);
+                return cmd;
+            })
+            resolve(docs);
+        });
+    })
+}
+
+/**
  * Returns every command in the database.
  */
 function getAll(): Promise<CommandType[]> {
@@ -151,6 +169,20 @@ function countCommands(): Promise<number> {
     })
 }
 
-export { addCommand, addCommandCount, ChatAction, CommandRunner,
-countCommands, editCommand, findCommand, getAll,
-randomRepeatCommand, removeCommand , updatePath};
+/**
+ * Adds the default chatmessage trigger to a command.
+ * @param name The name of the command to edit
+ */
+function addDefaultTrigger(name:string) {
+    return new Promise(resolve => {
+        commandsDB.update({commandName: name}, {
+            $set: {triggers: [{trigger: "ChatMessage", constraints: {startsWith: name}}]}
+        }, {}, function (err, numReplaced) {
+            resolve(numReplaced);
+        });
+    })
+}
+
+export { addCommand, addCommandCount, addDefaultTrigger, ChatAction, CommandRunner,
+countCommands, editCommand, findByTrigger, findCommand, getAll,
+randomRepeatCommand, removeCommand, TriggerHelper, updatePath};
