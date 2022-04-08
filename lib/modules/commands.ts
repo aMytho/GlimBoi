@@ -48,7 +48,7 @@ function updatePath(updatedPath:string) {
  * Creates a new command.
  * @returns A command
  */
-function addCommand(commandData: CommandContructor) {
+function addCommand(commandData: CommandType) {
     let newCommand = new Command(commandData);
     console.log(newCommand);
     //inserts a document as a command.

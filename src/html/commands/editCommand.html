@@ -6,7 +6,7 @@
 <div class="relative flex flex-grow justify-center p-16 overflow-auto" id="commandeditModalBody">
     <span id="editOpenMenu" style="font-size:30px;cursor:pointer;position: absolute;top: 10px;right: 10px;"
         onclick="document.getElementById('mySidenavR').style.width = '50%';">☰</span>
-    <div class="container grid grid-cols-2 gap-4">
+        <div class="container grid grid-cols-2 gap-4">
             <div>
                 <h4>Add actions to begin!</h4>
                 <div id="editCommandList">
@@ -14,7 +14,7 @@
             </div>
             <div>
                 <div id="mySidenavR" class="h-full overflow-x-hidden pt-14 absolute right-0 top-0 duration-500 w-0" style="background-color: #1b2e4b;">
-                    <a href="javascript:void(0)" class="closebtn"
+                    <a href="javascript:void(0)" class="closebtn absolute right-5 top-1" style="font-size: 2rem;"
                         onclick="document.getElementById('mySidenavR').style.width = '0';">×</a>
                     <h4 class="text-center whiteText font-bold text-xl">Command Settings</h4>
                     <table class="table whiteText mt-2 mx-2 w-full border-collapse border-slate-200 bc rounded-xl sidenavR" style="background-color: #14365b;">
@@ -29,6 +29,17 @@
                                 <td data-toggle="tooltip" data-placement="top" title="The name of the command">Name</td>
                                 <td><input type="text" class="settingInput" id="editCommandName"
                                         placeholder="Command name with or without !" /></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip"
+                                    data-placement="top" title="What will activate the command">Triggers</td>
+                                <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0 flex flex-col" id="addTrigger">
+                                    <p>Enter the triggers you want to activate the command.</p>
+                                    <button id="editTriggerAdd" class="btn-primary">Add</button>
+                                    <div id="editTriggerData" class="mb-2 mt-2 flex flex-col gap-y-4">
+
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0" data-toggle="tooltip" data-placement="top" title="The amount of currency required">Points</td>
@@ -300,5 +311,10 @@
 
     #dropdown li:hover {
         background-color: #1672ce;
+    }
+
+    td .settingSelect {
+        padding-top: 0px;
+        padding-bottom: 0px;
     }
 </style>
