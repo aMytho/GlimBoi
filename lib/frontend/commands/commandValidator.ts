@@ -83,6 +83,7 @@
  * @param mode "add" or "edit" Which mode we are using
  */
 function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
+    resetMessageCommandModal(document.getElementById(`${mode}TriggerData`), mode);
     let triggers = document.getElementById(`${mode}TriggerData`).children;
     if (triggers.length !== 0) {
         let triggerArray:TriggerStructure[] = [];

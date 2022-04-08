@@ -263,6 +263,28 @@ async function handleTriggerSelection(mode: string, data?:TriggerStructure[]) {
 
         newTrigger.getElementsByClassName("selectTrigger")[0].addEventListener("change", () => changeTriggerOptions(newTrigger));
     });
+
+    if (data) {
+        let container = document.getElementById(`${mode}TriggerData`);
+        for(let trigger of data) {
+            let newTrigger = await getTriggerHTML("baseTrigger");
+            newTrigger.className = "border-2 border-solid border-sky-500 p-4";
+            container.appendChild(newTrigger);
+            let triggerSelecter = (newTrigger.getElementsByClassName("selectTrigger")[0] as HTMLSelectElement);
+            switch(trigger.trigger) {
+                case "ChatMessage": triggerSelecter.value = "chatMessage"; break;
+                case "Follow": triggerSelecter.value = "newFollower"; break;
+                case "Welcome User": triggerSelecter.value = "welcomeUser"; break;
+            }
+            changeTriggerOptions(newTrigger, data);
+
+            newTrigger.getElementsByClassName("removeTrigger")[0].addEventListener("click", async () => {
+                container.removeChild(newTrigger);
+            });
+
+            newTrigger.getElementsByClassName("selectTrigger")[0].addEventListener("change", () => changeTriggerOptions(newTrigger));
+        }
+    }
 }
 
 /**
