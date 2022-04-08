@@ -278,3 +278,7 @@ li .active {
 .settingSelect:focus {
     outline: none;
 }
+
+.errorClass {
+    border: red solid 3px !important;
+}

@@ -1496,6 +1496,10 @@ input:checked + .toggle-bg {
   bottom: 1.25rem;
 }
 
+.top-1 {
+  top: 0.25rem;
+}
+
 .z-50 {
   z-index: 50;
 }
@@ -1812,6 +1816,10 @@ input:checked + .toggle-bg {
   width: 91.666667%;
 }
 
+.w-auto {
+  width: auto;
+}
+
 .w-64 {
   width: 16rem;
 }
@@ -2000,6 +2008,10 @@ input:checked + .toggle-bg {
 .gap-x-2 {
   -moz-column-gap: 0.5rem;
        column-gap: 0.5rem;
+}
+
+.gap-y-4 {
+  row-gap: 1rem;
 }
 
 .gap-x-8 {
@@ -2904,6 +2916,10 @@ li .active {
 
 .settingSelect:focus {
   outline: none;
+}
+
+.errorClass {
+  border: red solid 3px !important;
 }
 
 .hover\:border-gray-300:hover {
