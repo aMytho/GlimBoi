@@ -155,7 +155,7 @@ select, input {
 }
 
 .admin_chat p {
-    background: #651c1c none repeat scroll 0 0;
+    background: #651c1c none repeat scroll 0 0 !important;
 }
 .admin_chat .chat-body1 img {
     background: #651c1c none repeat scroll 0 0;
