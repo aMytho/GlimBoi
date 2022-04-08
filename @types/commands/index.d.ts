@@ -86,7 +86,8 @@ interface CommandContructor {
      * What the command does
      */
     actions: any;
-    disabled: boolean
+    disabled: boolean;
+    triggers: TriggerStructure[];
 }
 
 interface RepeatableCommand extends CommandType {

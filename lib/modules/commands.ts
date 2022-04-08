@@ -23,7 +23,7 @@ class Command implements CommandType {
     shouldDelete: boolean;
     actions: ChatAction[];
     disabled: boolean;
-    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete, disabled}:CommandContructor) {
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete, disabled, triggers}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
         this.points = points; //Points required per command
@@ -33,6 +33,7 @@ class Command implements CommandType {
         this.shouldDelete = shouldDelete; // Should the command be deleted after use? (!cmd)
         this.actions = actions; // What the command will do once activated
         this.disabled = disabled; // Can the commaand be activated?
+        this.triggers = triggers;
     }
 }
 
@@ -75,11 +76,12 @@ function removeCommand(commandName: commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  */
-function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete, disabled }:CommandContructor) {
-    console.log(commandName, actions, cooldown, uses, points, rank, repeat, disabled)
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete, disabled, triggers }:CommandContructor) {
+    console.log(commandName, actions, cooldown, uses, points, rank, repeat, disabled, triggers)
     commandsDB.update({ commandName: commandName }, { $set: {
         actions: actions, cooldown: Number(cooldown), uses: Number(uses), disabled: disabled,
-        points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete } }, {}, function (err, numReplaced) {
+        points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete,
+        triggers: triggers} }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
     });
 }
