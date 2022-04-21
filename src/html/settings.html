@@ -34,7 +34,7 @@
                         <p>Disabled / Enabled</p>
                     </div>
                     <p>Webhook URI</p>
-                    <input class="icon-input settingsInput" type="text" placeholder="Discord Webhook URI"
+                    <input class="icon-input settingsInput" type="password" placeholder="Discord Webhook URI"
                         id="discordWebhookURL"
                         style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                     <p>Default Message</p>
@@ -64,7 +64,7 @@
                         <p>Disabled / Enabled</p>
                     </div>
                     <p>Webhook URI</p>
-                    <input class="icon-input settingsInput" type="text" placeholder="Guilded Webhook URI"
+                    <input class="icon-input settingsInput" type="password" placeholder="Guilded Webhook URI"
                         id="guildedWebhookURL"
                         style="background-color: #1b2e4b;color: aquamarine;width: 80%;">
                     <p>Default Message</p>
@@ -177,7 +177,7 @@
                     <p>WebSocket Password</p>
                     <p>A password is optional with OBS webscokets. If you are on a public internet
                         connection you should add a password.</p>
-                    <input class="icon-input settingsInput" type="text" placeholder="OBS websocket password"
+                    <input class="icon-input settingsInput" type="password" placeholder="OBS websocket password"
                         id="obsPassword"
                         style="background-color: #1b2e4b;color: aquamarine;width:80%;">
                 </div>
@@ -192,7 +192,7 @@
             </div>
         </div>
         <div class="hidden" id="followSettings" role="tabpanel" aria-labelledby="followSettingsTab">
-            <div class="row mt-2">
+            <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="whiteText ml-2">
                     <h3 class="whiteText font-bold text-2xl">Follow Message</h3>
                     <p>Send a message when someone follows.</p>
@@ -208,8 +208,8 @@
                     <input class="settingsInput" type="text" placeholder="Thanks for the follow $follower !"
                         id="followMessage">
                 </div>
-                <div class="whiteText"></div>
                 <div class="whiteText ml-2">
+                    <hr>
                     <h3 class="whiteText font-bold text-2xl">Streamlabs Alerts</h3>
                     <p>Play a Streamlabs alert on follow. Requires an existing account.</p>
                     <div class="niceSwitch">
@@ -219,12 +219,14 @@
                         </label>
                         <p>Disabled / Enabled</p>
                     </div>
-                    <p>Click <span onclick="loadLink('calm-citadel-14699.herokuapp.com/authorize')"
+                    <p>Click <span onclick="let streamlabsSettings = require(appData[0] + '/frontend/integrations/streamlabs.js');streamlabsSettings.default()"
                             style="color:rgb(251, 133, 251);cursor: pointer;">here</span> to get a token.
                     </p>
-                    <p>Enter your generated Streamlabs token. Keep Private!</p>
-                    <input class="settingsInput" type="text" placeholder="Streamlabs Token (keep private!)"
-                        id="streamlabsKey">
+                    <p>Enter your clientID and clientSecret. Keep Private!</p>
+                    <input class="settingsInput" type="password" placeholder="Client ID"
+                        id="streamlabsClientId">
+                    <input class="settingsInput mt-2" type="password" placeholder="Client Secret"
+                        id="streamlabsClientSecret">
                     <p>Message to show in the alert. Use $follower for the name of the follower.</p>
                     <input class="settingsInput" type="text" placeholder="Thanks for the follow $user "
                         id="streamlabsMessage">
