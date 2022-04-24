@@ -1,6 +1,6 @@
 <div class="m-4 mt-2 p-4 pt-2 whiteText grid grid-cols-1 md:grid-cols-2 gap-2">
   <div class="glimPanel rounded-xl mx-2 p-2 px-4 row-span-3 min-h-screen" id="chatBoxDM" style="background: rgba(27,46,75,1)!important;">
-    <div class="message_section w-full flex flex-col border border-solid border-slate-600 h-full">
+    <div class="message_section w-full flex flex-col border border-solid border-slate-600 h-full max-h-screen">
         <!--top of the chat-->
         <div class="new_message_head glimPanel whiteText">
           <div class="pull-left">
@@ -11,7 +11,7 @@
           </div>
         </div>
         <!--chat-->
-        <div class="flex flex-col h-80 my-2 overflow-auto" id="chatContainer">
+        <div class="flex flex-col my-2 overflow-auto h-full" id="chatContainer">
           <div contentLocation="1" class="p-2 flex flex-row gap-3 items-center admin_chat rounded-md" oncontextmenu="loadChatContextMenu(event)">
               <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-10 w-10 rounded-2xl" style="border-radius: 50%;">
               <p name='mytho' class="py-4 px-2">Mytho: Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
