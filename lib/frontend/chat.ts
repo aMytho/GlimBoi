@@ -442,12 +442,14 @@ function contextMenu(action: logEvent, duration: timeout) {
 
 
 function addAction(action: LogType) {
+    /*
     let newDiv = document.createElement("div");
     newDiv.className = "chat-body1 clearfix testing"
     let newText = document.createElement("p");
     newText.innerText = action.description
     newDiv.appendChild(newText);
     document.getElementById("actions")!.prepend(newDiv);
+    */
 }
 
 function reconnect() {
