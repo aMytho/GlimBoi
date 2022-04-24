@@ -6,7 +6,6 @@ async function checkContext(trigger:CommandTrigger, context) {
     // Get all the commands with the matching trigger
     let commands = await CommandHandle.findByTrigger(trigger);
     // Loop through them. Check their constraints. Remove any that fail the check.
-    // We also use this to modify the context if needed.
     commands = commands.filter(command => {
         switch(command.triggers[0].trigger) {
             case "ChatMessage":
