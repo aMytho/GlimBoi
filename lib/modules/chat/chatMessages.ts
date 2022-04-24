@@ -98,10 +98,10 @@ function logMessage(user:string, message:message, avatar:avatar, isReload: boole
           );*/
 
         let div = document.createElement("div");
-        div.className = `p-2 flex flex-row gap-3 items-center ${adminClass} rounded-xl`;
+        div.className = `p-2 flex flex-row gap-3 items-center ${adminClass}`;
         div.innerHTML  =`
             <img src="${avatar}" alt="User Avatar" class="h-10 w-10 rounded-lg" style="border-radius: 50%;">
-                <p name='${user}' messageID='${messageID}' class="py-4 px-2 flex flex-row gap-2" style="background: #1c4965 none repeat scroll 0 0">${user}: ${htmlOfTokens}</p>
+                <p name='${user}' messageID='${messageID}' class="py-4 px-2 flex flex-row gap-2 rounded-xl" style="background: #1c4965 none repeat scroll 0 0">${user}: ${htmlOfTokens}</p>
               `
         document.getElementById("chatContainer").appendChild(div);
         let scroll = document.getElementById("chatContainer")
