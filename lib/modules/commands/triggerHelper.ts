@@ -16,10 +16,12 @@ async function checkContext(trigger:CommandTrigger, context) {
                 }
                 break;
             case "Follow":
-                return true;
                 break;
             case "Welcome User":
-                return true;
+                let usr = (command.triggers[0].constraints as WelcomeUserTrigger).user;
+                if (!usr || (context.user == (command.triggers[0].constraints as WelcomeUserTrigger).user)) {
+                    return true
+                }
                 break;
             default:
                 break;

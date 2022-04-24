@@ -297,14 +297,16 @@ async function changeTriggerOptions(newTrigger:HTMLElement, data?:TriggerStructu
     newTrigger.getElementsByClassName("contentTrigger")[0].appendChild(newDiv);
     console.log(newDiv);
     console.log(data);
-    if (data && triggerSelecter.value == "chatMessage") {
+    if (data) {
         data.forEach(trigger => {
             switch(trigger.trigger) {
                 case "ChatMessage":
                     newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as ChatMessageTrigger).startsWith;
                     break;
                 case "Follow":
+                    break;
                 case "Welcome User":
+                    newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as WelcomeUserTrigger).user || "";
                     break;
             }
         })

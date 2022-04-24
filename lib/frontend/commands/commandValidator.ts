@@ -93,7 +93,6 @@ function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
             switch(localTrigger.getAttribute("data-triggerType")) {
                 case "chatMessage":
                     let msg = localTrigger.getElementsByTagName("input")[0].value;
-                    console.log(msg);
                     if (msg.length == 0) {
                         errorMessageCommandModal("You must enter a message", localTrigger.getElementsByTagName("input")[0], mode);
                         return;
@@ -110,7 +109,10 @@ function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
                     triggerArray.push({trigger: "Follow", constraints: {}});
                     break;
                 case "welcomeUser":
-                    triggerArray.push({trigger: "Welcome User", constraints: {}});
+                    let usr = localTrigger.getElementsByTagName("input")[0].value;
+                    triggerArray.push({trigger: "Welcome User", constraints: {
+                        user: usr
+                    }});
                     break;
             }
         }

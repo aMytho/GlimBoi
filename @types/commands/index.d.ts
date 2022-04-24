@@ -175,7 +175,10 @@ type FollowTrigger = {
 }
 
 type WelcomeUserTrigger = {
-
+    /**
+     * The user to exclusivly welcome. 
+     */
+    user?: string;
 }
 
 type TriggerContext = {
