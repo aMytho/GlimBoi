@@ -17,6 +17,7 @@ function startChannelStats() {
             if (currentPage == "chat") {
                 document.getElementById("fasUsers")!.innerHTML = `<span><i class="fas fa-users"></i></span> ${currentStats.viewcount}`
                 document.getElementById("fasHeart")!.innerHTML = `<span><i class="fas fa-heart"></i></span> ${currentStats.followers}`
+                document.getElementById("fasTitle")!.innerHTML = currentStats.title
             }
         } catch (e) {
             console.log(e);
