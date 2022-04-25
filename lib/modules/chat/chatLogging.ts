@@ -1,5 +1,6 @@
 let loggingFile: any;
 let createWriteStream: any;
+let isWaiting = false;
 
 /**
  * Logs a message to a file if enabled.
@@ -8,9 +9,10 @@ let createWriteStream: any;
  */
 async function logMessageToFile(user, message) {
     if (CacheStore.get("chatLogging", false)) {
+        console.log(loggingFile);
         if (loggingFile && loggingFile.closed == false) {
             try {
-                loggingFile.write(`${user}: ${message} || ${new Date()}`, "utf-8")
+                loggingFile.write(`\n${user}: ${message} || ${new Date()}`, "utf-8")
             } catch (e) {
                 console.log(e);
             }
@@ -27,19 +29,23 @@ async function logMessageToFile(user, message) {
  * Starts the message logging.
  * @returns
  */
-function startLogging():Promise<boolean> {
+function startLogging(): Promise<boolean> {
     return new Promise(async resolve => {
-        createWriteStream = require("fs").createWriteStream;
-        let logLocation = await ipcRenderer.invoke("getLogLocation");
-        console.log(logLocation);
-        if (logLocation == undefined || logLocation.canceled == true) {
-            console.log("They did not select a file.");
-            errorMessage("Logging Error", "You must select a file to log your chatmessages.");
-            resolve(false);
-        } else {
-            loggingFile = createWriteStream(logLocation.filePath);
-            console.log("Started logging chat messages.");
-            resolve(true);
+        if (isWaiting == false) {
+            isWaiting = true;
+            createWriteStream = require("fs").createWriteStream;
+            let logLocation = await ipcRenderer.invoke("getLogLocation");
+            console.log(logLocation);
+            if (logLocation == undefined || logLocation.canceled == true) {
+                console.log("They did not select a file.");
+                errorMessage("Logging Error", "You must select a file to log your chatmessages.");
+                resolve(false);
+            } else {
+                loggingFile = createWriteStream(logLocation.filePath);
+                console.log("Started logging chat messages.");
+                resolve(true);
+            }
+            isWaiting = false;
         }
     })
 }
