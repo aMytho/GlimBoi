@@ -19,7 +19,10 @@ async function checkContext(trigger:CommandTrigger, context) {
                 break;
             case "Welcome User":
                 let usr = (command.triggers[0].constraints as WelcomeUserTrigger).user;
-                if (!usr || (context.user == (command.triggers[0].constraints as WelcomeUserTrigger).user)) {
+                if (usr) {
+                    usr = usr.toLowerCase();
+                }
+                if (!usr || (context.user.toLowerCase() == usr)) {
                     return true
                 }
                 break;
