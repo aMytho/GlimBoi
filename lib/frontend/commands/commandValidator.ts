@@ -4,7 +4,7 @@
  * Makes sure that all the settings are valid for the command and displays errors if they are not
  * @param {string} mode Add or Edit
  */
- async function validateSettings(mode: "add" | "edit"):Promise<any> {
+ async function validateSettings(mode: "add" | "edit"):Promise<Partial<CommandType>> {
     // Declares and obtains all the command settings
     let commandName = (document.getElementById(`${mode}CommandName`) as HTMLInputElement).value.trim().toLowerCase();
     let commandPoints = parseFloat((document.getElementById(`${mode}CommandPoints`) as HTMLInputElement).value);
@@ -65,19 +65,62 @@
     resetMessageCommandModal(document.getElementById(`${mode}CommandCooldown`), mode);
 
     //The rank is a safe value, we don't need to check it.
+    let [repeatValue, shouldDeleteValue, disabledValue] = [false, false, false];
     //Now we set the repeat switch.
-    // @ts-ignore
-    if (commandRepeat == "false") { commandRepeat = false } else { commandRepeat = true };
-    // @ts-ignore
-    if (commandDelete == "false") { commandDelete = false } else { commandDelete = true };
+    if (commandRepeat == "false") { repeatValue = false } else { repeatValue = true };
+    if (commandDelete == "false") { shouldDeleteValue = false } else { shouldDeleteValue = true };
 
     // Finally we check the disable switch
-    // @ts-ignore
-    if (commandDisabled == "false") { commandDisabled = false } else { commandDisabled = true };
+    if (commandDisabled == "false") { disabledValue = false } else { disabledValue = true };
 
     // Now we can assume the command is fully safe to add to the db.
     return {commandName: commandName, points: commandPoints, uses: commandUses, cooldown: commandCooldown,
-        rank: commandRank, repeat: commandRepeat, shouldDelete: commandDelete, disabled: commandDisabled};
+        rank: commandRank, repeat: repeatValue, shouldDelete: shouldDeleteValue, disabled: disabledValue};
+}
+
+/**
+ * Makes sure the triggers are alright
+ * @param mode "add" or "edit" Which mode we are using
+ */
+function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
+    resetMessageCommandModal(document.getElementById(`${mode}TriggerData`), mode);
+    let triggers = document.getElementById(`${mode}TriggerData`).children;
+    if (triggers.length !== 0) {
+        let triggerArray:TriggerStructure[] = [];
+        // Check each trigger type and evalute it
+        for (let trigger = 0; trigger < triggers.length; trigger++) {
+            const localTrigger = triggers[trigger];
+            switch(localTrigger.getAttribute("data-triggerType")) {
+                case "chatMessage":
+                    let msg = localTrigger.getElementsByTagName("input")[0].value;
+                    if (msg.length == 0) {
+                        errorMessageCommandModal("You must enter a message", localTrigger.getElementsByTagName("input")[0], mode);
+                        return;
+                    } else if (msg.startsWith("!")) {
+                        errorMessageCommandModal("The message cannot start with a !", localTrigger.getElementsByTagName("input")[0], mode);
+                        return;
+                    }
+                    triggerArray.push({trigger: "ChatMessage", constraints: {
+                        startsWith: msg
+                    }});
+                    resetMessageCommandModal(localTrigger.getElementsByTagName("input")[0], mode);
+                    break;
+                case "newFollower":
+                    triggerArray.push({trigger: "Follow", constraints: {}});
+                    break;
+                case "welcomeUser":
+                    let usr = localTrigger.getElementsByTagName("input")[0].value;
+                    triggerArray.push({trigger: "Welcome User", constraints: {
+                        user: usr
+                    }});
+                    break;
+            }
+        }
+        return triggerArray;
+    } else {
+        errorMessageCommandModal("You must enter at least one trigger", document.getElementById(`${mode}TriggerData`), mode);
+        return;
+    }
 }
 
 /**
@@ -449,4 +492,4 @@ function resetMessageCommandModal(toBeReset:HTMLElement, mode: "add" | "edit") {
     }
 }
 
-export {validateActions, validateSettings}
+export {validateActions, validateSettings, validateTriggers}

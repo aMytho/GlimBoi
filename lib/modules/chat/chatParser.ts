@@ -211,7 +211,8 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                 }
                 break;
             default: //its not a glimboi command, may be a streamer command. We need to check and send the output to chat.
-                CommandHandle.CommandRunner.checkCommand(chatMessage);
+                chatMessage.message = chatMessage.message.replace(new RegExp("^[\!]+"), "").trim();
+                CommandHandle.TriggerHelper.checkContext("ChatMessage", chatMessage);
                 break;
         }
     }

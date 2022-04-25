@@ -3,6 +3,7 @@ interface CommandType {
      * Name of the command
      */
     commandName: string;
+    triggers: TriggerStructure[];
     /**
      * The amount of times the command has been activated
      */
@@ -85,7 +86,8 @@ interface CommandContructor {
      * What the command does
      */
     actions: any;
-    disabled: boolean
+    disabled: boolean;
+    triggers: TriggerStructure[];
 }
 
 interface RepeatableCommand extends CommandType {
@@ -114,6 +116,7 @@ declare class ChatAction implements ChatActionType {
     generateVariables: actionVariables
     removeGeneratedVariables(): void
     parseGenerateVariables(variables): actionVariables
+    run(variable:any): Promise<any>;
 }
 
 interface ChatMessageType extends ChatActionType {
@@ -121,8 +124,6 @@ interface ChatMessageType extends ChatActionType {
 }
 
 type BuildChatMessage = {message: string}
-type RunChatMessage = {activation: any, user: string}
-
 interface ApiRequestGetType extends ChatActionType {
     url:string
     headers:any
@@ -153,3 +154,43 @@ type actionInfo = any[] | any
 type actionVariables = string[]
 
 type actionMode = "add" | "edit"
+
+type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User";
+
+type TriggerStructure = {
+    trigger: CommandTrigger;
+    constraints?: undefined | TriggerConstraints;
+}
+type TriggerConstraints = ChatMessageTrigger | FollowTrigger | WelcomeUserTrigger
+
+type ChatMessageTrigger = {
+    /**
+     * What the message must start with to be triggered
+     */
+    startsWith?: string;
+}
+
+type FollowTrigger = {
+
+}
+
+type WelcomeUserTrigger = {
+    /**
+     * The user to exclusivly welcome. 
+     */
+    user?: string;
+}
+
+type TriggerContext = {
+    /**
+     * The message from chat
+     */
+    message?: string;
+    messageId?: string;
+    user?: {
+        avatarUrl?: string;
+        id?: string;
+        username?: string;
+    }
+    trigger: CommandTrigger;
+}

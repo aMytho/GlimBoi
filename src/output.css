@@ -1496,6 +1496,10 @@ input:checked + .toggle-bg {
   bottom: 1.25rem;
 }
 
+.top-1 {
+  top: 0.25rem;
+}
+
 .z-50 {
   z-index: 50;
 }
@@ -1524,6 +1528,10 @@ input:checked + .toggle-bg {
   grid-column: span 5 / span 5;
 }
 
+.row-span-3 {
+  grid-row: span 3 / span 3;
+}
+
 .float-right {
   float: right;
 }
@@ -1538,10 +1546,6 @@ input:checked + .toggle-bg {
 
 .m-4 {
   margin: 1rem;
-}
-
-.m-5 {
-  margin: 1.25rem;
 }
 
 .m-6 {
@@ -1562,11 +1566,6 @@ input:checked + .toggle-bg {
   margin-right: 0.5rem;
 }
 
-.my-3 {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -1575,6 +1574,11 @@ input:checked + .toggle-bg {
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .mx-0 {
@@ -1656,20 +1660,16 @@ input:checked + .toggle-bg {
   margin-bottom: 0.5rem;
 }
 
-.mb-0 {
-  margin-bottom: 0px;
-}
-
-.mt-0 {
-  margin-top: 0px;
-}
-
 .mb-3 {
   margin-bottom: 0.75rem;
 }
 
 .ml-1 {
   margin-left: 0.25rem;
+}
+
+.mb-0 {
+  margin-bottom: 0px;
 }
 
 .mt-5 {
@@ -1744,10 +1744,6 @@ input:checked + .toggle-bg {
   height: 100%;
 }
 
-.h-80 {
-  height: 20rem;
-}
-
 .h-10 {
   height: 2.5rem;
 }
@@ -1766,6 +1762,14 @@ input:checked + .toggle-bg {
 
 .h-9 {
   height: 2.25rem;
+}
+
+.max-h-screen {
+  max-height: 100vh;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-4 {
@@ -1812,6 +1816,10 @@ input:checked + .toggle-bg {
   width: 91.666667%;
 }
 
+.w-auto {
+  width: auto;
+}
+
 .w-64 {
   width: 16rem;
 }
@@ -1828,12 +1836,12 @@ input:checked + .toggle-bg {
   max-width: 36rem;
 }
 
-.max-w-none {
-  max-width: none;
-}
-
 .max-w-lg {
   max-width: 32rem;
+}
+
+.max-w-none {
+  max-width: none;
 }
 
 .flex-1 {
@@ -1992,14 +2000,18 @@ input:checked + .toggle-bg {
   gap: 2rem;
 }
 
+.gap-x-2 {
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+
 .gap-x-4 {
   -moz-column-gap: 1rem;
        column-gap: 1rem;
 }
 
-.gap-x-2 {
-  -moz-column-gap: 0.5rem;
-       column-gap: 0.5rem;
+.gap-y-4 {
+  row-gap: 1rem;
 }
 
 .gap-x-8 {
@@ -2125,14 +2137,14 @@ input:checked + .toggle-bg {
   border-color: rgb(164 202 254 / var(--tw-border-opacity));
 }
 
-.border-white {
-  --tw-border-opacity: 1;
-  border-color: rgb(255 255 255 / var(--tw-border-opacity));
-}
-
 .border-slate-600 {
   --tw-border-opacity: 1;
   border-color: rgb(71 85 105 / var(--tw-border-opacity));
+}
+
+.border-white {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
 .border-gray-300 {
@@ -2256,16 +2268,6 @@ input:checked + .toggle-bg {
   padding-right: 1.5rem;
 }
 
-.px-0 {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
-.py-3 {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -2274,6 +2276,16 @@ input:checked + .toggle-bg {
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+
+.px-0 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .py-2\.5 {
@@ -2782,7 +2794,7 @@ select, input {
 }
 
 .admin_chat p {
-  background: #651c1c none repeat scroll 0 0;
+  background: #651c1c none repeat scroll 0 0 !important;
 }
 
 .admin_chat .chat-body1 img {
@@ -2904,6 +2916,10 @@ li .active {
 
 .settingSelect:focus {
   outline: none;
+}
+
+.errorClass {
+  border: red solid 3px !important;
 }
 
 .hover\:border-gray-300:hover {

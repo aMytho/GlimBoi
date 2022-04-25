@@ -1,4 +1,45 @@
 <div class="m-4 mt-2 p-4 pt-2 whiteText grid grid-cols-1 md:grid-cols-2 gap-2">
+  <div class="glimPanel rounded-xl mx-2 p-2 px-4 row-span-3 min-h-screen" id="chatBoxDM" style="background: rgba(27,46,75,1)!important;">
+    <div class="message_section w-full flex flex-col border border-solid border-slate-600 h-full max-h-screen">
+        <!--top of the chat-->
+        <div class="new_message_head glimPanel whiteText">
+          <div class="pull-left">
+
+          </div>
+          <div class="pull-right">
+
+          </div>
+        </div>
+        <!--chat-->
+        <div class="flex flex-col my-2 overflow-auto h-full" id="chatContainer">
+          <div contentLocation="1" class="p-2 flex flex-row gap-3 items-center admin_chat rounded-md" oncontextmenu="loadChatContextMenu(event)">
+              <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-10 w-10 rounded-2xl" style="border-radius: 50%;">
+              <p name='mytho' class="py-4 px-2">Mytho: Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
+            </div>
+          <ul class="list-unstyled chatList hidden" id="chatList">
+            <li class="left clearfix admin_chat" name='mytho'>
+              <div contentLocation="1" class="p-2flow-root admin_chat" oncontextmenu="loadChatContextMenu(event)">
+                <span class="float-left" name='mytho'>
+                  <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-8 w-8 rounded-2xl">
+                </span>
+                <p name='mytho' class="float-right py-4 px-2"><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
+                <!--<div class="whiteText pull-left">09:40PM</div> -->
+              </div>
+            </li>
+
+          </ul>
+        </div>
+        <!--chat_area-->
+        <div class="mt-auto mx-4">
+          <textarea class="w-full" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
+          <div class="clearfix"></div>
+          <div class="flex flex-row items-center">
+            <a href="#" class="btn-success" id="sendMessage" onclick="sendMessageInBox()">Send</a>
+            <p>You can also press enter to send a message!</p>
+          </div>
+        </div>
+    </div>
+</div>
     <div class="glimPanel mx-2 rounded-xl p-2 px-4" id="chatChannelsDM">
         <div class="px-0 pl-1 flex flex-col h-full">
             <h3 class="whiteText font-bold text-2xl text-clip text-center">Recent Channel Connections</h3>
@@ -27,13 +68,24 @@
         </div>
     </div>
 
+
+    <div class="glimPanel rounded-xl mx-2 p-2 px-4">
+      <h3 class="whiteText font-bold text-2xl text-clip text-center">Stream Info</h3>
+        <h4 class="whiteText text-center py-3 my-3 border border-white border-x-0">
+          <p>Stats will be updated every 15 minutes.</p>
+          <p id="fasUsers">Viewers: 0</p>
+          <p id="fasHeart">Followers: 0</p>
+          <p id="fasTitle" class="text-lg font-semibold"></p>
+        </h4>
+    </div>
+
   <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatControls">
     <div class="card-body">
       <h3 class="whiteText font-bold text-2xl text-clip text-center">Chat Settings</h3>
         <h4 id="channelConnectedName" class="whiteText text-center py-3 my-3 border border-white border-x-0">
           Not Connected
         </h4>
-      <div class="mt-4 grid grid-cols-2">
+      <div class="mt-4 flex flex-row gap-x-2 flex-wrap">
         <div class="whiteText">
            <h3 class="text-warning text-xl font-bold">Health Reminder</h3>
            <p>Get reminders to stretch, drink water, and take a break.</p>
@@ -52,14 +104,14 @@
         <div class="whiteText">
            <h3 class="text-warning text-xl font-bold">Log Messages</h3>
            <p>Logs chat messages to a text file.</p>
-           <div class="row">
-              <div class="col-2">
+           <div class="flex">
+              <div>
                  <label class="switch">
                  <input type="checkbox" id="loggingEnabled">
                  <span class="slider round"></span>
                  </label>
               </div>
-              <div class="col-10">
+              <div class="ml-2 ">
                  <p class="text-left">Disabled / Enabled</p>
               </div>
            </div>
@@ -69,57 +121,6 @@
         <a class="btn-info" onclick="viewOrChangeChatSettings('change');successMessage('Settings Saved', 'Chat settings have been saved.')">Save</a>
      </div>
     </div>
-  </div>
-
-  <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatBoxDM">
-      <div class="message_section w-full flex flex-col border border-solid border-slate-600">
-          <!--top of the chat-->
-          <div class="new_message_head glimPanel whiteText">
-            <div class="pull-left">
-
-            </div>
-            <div class="pull-right">
-
-            </div>
-          </div>
-          <!--chat-->
-          <div class="flex flex-col h-80 my-2 overflow-auto" id="chatContainer">
-            <div contentLocation="1" class="p-2 flex flex-row gap-3 items-center admin_chat rounded-md" oncontextmenu="loadChatContextMenu(event)">
-                <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-10 w-10 rounded-2xl" style="border-radius: 50%;">
-                <p name='mytho' class="py-4 px-2">Mytho: Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
-              </div>
-            <ul class="list-unstyled chatList hidden" id="chatList">
-              <li class="left clearfix admin_chat" name='mytho'>
-                <div contentLocation="1" class="p-2flow-root admin_chat" oncontextmenu="loadChatContextMenu(event)">
-                  <span class="float-left" name='mytho'>
-                    <img src="../resources/img/Mytho.png" alt="User Avatar" class="h-8 w-8 rounded-2xl">
-                  </span>
-                  <p name='mytho' class="float-right py-4 px-2"><span id="chatUser" name='mytho'>Mytho: </span> Welcome to Glimesh Chat! When connected your messages will start to appear here. Happy streaming!</p>
-                  <!--<div class="whiteText pull-left">09:40PM</div> -->
-                </div>
-              </li>
-
-            </ul>
-          </div>
-          <!--chat_area-->
-          <div class="mt-auto mx-4">
-            <textarea class="w-full" id="messageArea" style="background-color: #2c4066;" placeholder="type a message"></textarea>
-            <div class="clearfix"></div>
-            <div class="flex flex-row items-center">
-              <a href="#" class="btn-success" id="sendMessage" onclick="sendMessageInBox()">Send</a>
-              <p>Right click a message to view additional options.</p>
-            </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="glimPanel rounded-xl mx-2" id="chatActionsDM">
-      <h3 class="whiteText font-bold text-2xl text-clip text-center mb-0">GlimBoi Logs</h3>
-      <p class="whiteText text-center mt-0">_______________</p>
-      <h5 class="whiteText text-center">Recent logs will be listed below.</h5>
-        <div id="actions" class="m-5 prose prose-base text-center whiteText max-w-none" style="overflow: auto; max-height: 450px;">
-
-        </div>
   </div>
 </div>
 

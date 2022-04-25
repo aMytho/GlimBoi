@@ -75,7 +75,8 @@ function showIntegrations() {
         document.getElementById("streamlabsEnabled")!.toggleAttribute("checked");
     }
 
-    (document.getElementById("streamlabsKey") as HTMLInputElement)!.value = CacheStore.get("streamlabsToken", "");
+    (document.getElementById("streamlabsClientId") as HTMLInputElement)!.value = CacheStore.get("streamlabsClientId", "");
+    (document.getElementById("streamlabsClientSecret") as HTMLInputElement)!.value = CacheStore.get("streamlabsClientSecret", "");
     (document.getElementById("streamlabsMessage") as HTMLInputElement)!.value = CacheStore.get("streamlabsMessage", "$follower just followed the stream!");
 
     // Twitter - - -
@@ -117,7 +118,8 @@ function saveIntegrations() {
         {followMessageEnabled: (document.getElementById("followMessageEnabled") as HTMLInputElement)!.checked},
         {followMessage: (document.getElementById("followMessage") as HTMLInputElement)!.value},
         {streamlabsEnabled: (document.getElementById("streamlabsEnabled") as HTMLInputElement)!.checked},
-        {streamlabsToken: (document.getElementById("streamlabsKey") as HTMLInputElement)!.value},
+        {streamlabsClientId: (document.getElementById("streamlabsClientId") as HTMLInputElement)!.value},
+        {streamlabsClientSecret: (document.getElementById("streamlabsClientSecret") as HTMLInputElement)!.value},
         {streamlabsMessage: (document.getElementById("streamlabsMessage") as HTMLInputElement)!.value},
         {twitterConfirmation: (document.getElementById("twitterConfirmation") as HTMLInputElement)!.checked},
         {twitterEnabled: (document.getElementById("twitterEnabled") as HTMLInputElement)!.checked},

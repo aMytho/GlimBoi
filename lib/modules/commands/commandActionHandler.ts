@@ -43,7 +43,7 @@ class ChatMessage extends ChatAction {
         this.message = message;
     }
 
-    async run({activation, user}:RunChatMessage) {
+    async run({activation, user}:any) {
         let chatMessage = await ActionResources.searchForVariables({activation: activation, user: user, message: this.message})
         ChatMessages.filterMessage(chatMessage, "glimboi");
         return
@@ -206,7 +206,7 @@ class ObsWebSocket extends ChatAction {
         this.instruction = instruction
     }
 
-    async run({activation, user}:RunChatMessage) {
+    async run({activation, user}:any) {
         let obsPacket = new ApiHandle.WebSockets.OBSWebSocket.ObsRequest(this.requestType, this.data);
         obsPacket = await this.checkForReplacedVariables(this.requestType, obsPacket, {activation: activation, user: user});
         console.log(obsPacket);
@@ -230,7 +230,7 @@ class ObsWebSocket extends ChatAction {
      * @param param2 Data about the command
      * @returns The OBS packet with replaced variables
      */
-    async checkForReplacedVariables(requestType:string, request, {activation, user}:RunChatMessage) {
+    async checkForReplacedVariables(requestType:string, request, {activation, user}:any) {
         switch (requestType) {
             case "ToggleMute":
             case "SetMute":
@@ -259,7 +259,7 @@ class Points extends ChatAction {
         this.points = points;
     }
 
-    async run({activation, user}:RunChatMessage) {
+    async run({activation, user}:any) {
         let target = await ActionResources.searchForVariables({message: this.target, activation: activation, user: user});
         // Remove $ if it exists. Would break queries
         target = target.replace(/\$/g, "");

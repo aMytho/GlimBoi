@@ -2,7 +2,8 @@
 
 let stats: NodeJS.Timeout; // Queries for updated stats every 15 minutes
 let checkForUsers: NodeJS.Timeout; // An interval that checks to see who has been active in chat
-let currentUsers:string[] = [] // Array of current users.
+let currentUsers:string[] = []; // Array of current users.
+let allUsers:Set<string> = new Set();
 let recentUserMessages = 0; //a count of user messages to compare against repeatable bot messages
 
 /**
@@ -16,6 +17,7 @@ function startChannelStats() {
             if (currentPage == "chat") {
                 document.getElementById("fasUsers")!.innerHTML = `<span><i class="fas fa-users"></i></span> ${currentStats.viewcount}`
                 document.getElementById("fasHeart")!.innerHTML = `<span><i class="fas fa-heart"></i></span> ${currentStats.followers}`
+                document.getElementById("fasTitle")!.innerHTML = currentStats.title
             }
         } catch (e) {
             console.log(e);
@@ -73,7 +75,14 @@ function resetUserMessageCounter() {
  * @param {string} user
  */
 function addCurrentUser(user:string) {
-    currentUsers.push(user.toLowerCase())
+    user = user.toLowerCase();
+    currentUsers.push(user);
+    if (!allUsers.has(user)) {
+        CommandHandle.TriggerHelper.checkContext("Welcome User", {
+            user: user
+        });
+        allUsers.add(user);
+    }
 }
 
 /**
@@ -92,4 +101,8 @@ function stopChatStats() {
     clearInterval(checkForUsers);
 }
 
-export {addCurrentUser, getUserMessageCount, increaseUserMessageCounter, loadChatStats, resetUserMessageCounter, stopChatStats}
+function getCurrentUsers() {
+    return currentUsers;
+}
+
+export {addCurrentUser, getCurrentUsers, getUserMessageCount, increaseUserMessageCounter, loadChatStats, resetUserMessageCounter, stopChatStats}

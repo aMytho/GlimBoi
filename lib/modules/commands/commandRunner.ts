@@ -5,47 +5,22 @@ let cooldownArray:commandName[] = [];
 
 /**
  * Checks if a command exists and runs it if it does.
- * @param {object} data An object full of data for the command to use.
- * @param {string} data.message The chat message that triggered the command
- * @param data.user The user that activated the command
  */
-async function checkCommand(data) {
-    let cleaned = data.message.replace(new RegExp("^[\!]+"), "").trim(); // Removes unwanted characters
-    let command = cleaned.split(" ")[0].toLowerCase()
+async function checkCommand(command: CommandType, context: TriggerContext) {
     try {
-        let commandExists = await CommandHandle.findCommand(command);
-        if (commandExists !== null) {
-            try {
-                if (commandExists.disabled == true) {
-                    showToast(`${commandExists.commandName} attempted to run but was disabled.`);
-                    return
-                }
-                let hasPerms = await permissionCheck(commandExists, data.user.username.toLowerCase());
-                if (hasPerms == "ACCEPTED") {
-                    await runCommand({ message: cleaned, command: commandExists, user: data.user }); // Run the command passing the message, command, and the user.
-                    if (commandExists.shouldDelete) {
-                        setTimeout(async () => {
-                            let messageDeleted = await ApiHandle.deleteMessage(data.id);
-                            if (messageDeleted) {
-                                LogHandle.logEvent({ event: "Delete Message", users: ["Glimboi", data.user.username], data: { messageID: data.id } })
-                                adjustMessageState(data.id, "deleted");
-                            }
-                        }, 400);
-                    }
-                } else if (hasPerms == "NEWUSER") {
-                    checkCommand(data);
-                } else { // They don't have permission
-                    ChatMessages.filterMessage(hasPerms, "glimboi");
-                    console.log(hasPerms);
-                }
-            } catch (e) {}
-        } else {
-            console.log(command + " is not a command");
+        let hasPerms = await permissionCheck(command, context.user.username.toLowerCase());
+        if (hasPerms == "ACCEPTED") {
+            await runCommand({ message: context.message, command: command, user: context.user });
+            postCommandRun(command, context);
+        } else if (hasPerms == "NEWUSER") {
+            checkCommand(command, context);
+        } else { // They don't have permission
+            if (hasPerms != "NOMESSAGE") {
+                ChatMessages.filterMessage(hasPerms, "glimboi");
+            }
+            console.log(hasPerms);
         }
-    } catch (error) {
-        console.log("Error running command");
-        console.log(error);
-    }
+    } catch (e) {}
 }
 
 /**
@@ -54,26 +29,11 @@ async function checkCommand(data) {
  * @param {string} user The user who activated the command.
  */
 async function runCommand({message, command, user}) {
-    // If a cooldown exists we add it to the cooldown array and remove it with a settimeout
-    if (command.cooldown && command.cooldown > 0) {
-        cooldownArray.push(command.commandName);
-        setTimeout(() => {
-            for (let i = 0; i < cooldownArray.length; i++) {
-                if (cooldownArray[i] == command.commandName) {
-                    cooldownArray.splice(i, 1)
-                }
-            }
-        }, command.cooldown * 60000);
-    }
-
-    // Increments the command uses by one.
-    CommandHandle.addCommandCount(command.commandName);
-
     // First we check for actions.
     if (command.actions) {
         let varsGenerated = []
         for (let i = 0; i < command.actions.length; i++) {
-            let action = new CommandHandle.ChatAction[`${command.actions[i].action}`](command.actions[i])
+            let action:ChatAction = new CommandHandle.ChatAction[`${command.actions[i].action}`](command.actions[i])
             let actionActivated = await action.run({activation: message, user: user});
             if (actionActivated) {
                 actionActivated.forEach(element => {
@@ -118,7 +78,12 @@ async function runCommand({message, command, user}) {
  * @param {string} user The user who activated the command
  * @async
  */
-async function permissionCheck(command:CommandType, user:string) {
+async function permissionCheck(command:CommandType, user:string): Promise<string> {
+    if (command.disabled == true) {
+        showToast(`${command.commandName} attempted to run but was disabled.`);
+        return "NOMESSAGE"
+    }
+
     if (command.cooldown && cooldownArray.includes(command.commandName)) {
         console.log(`Cooldown for ${command.commandName} is still active.`);
         return CacheStore.get("commandCooldownMessage", false) || `${command.commandName} is still on cooldown.`
@@ -147,6 +112,34 @@ async function permissionCheck(command:CommandType, user:string) {
         } else { return "User Error" }
     }
     return "ACCEPTED"
+}
+
+function postCommandRun(command: CommandType, context: TriggerContext) {
+    // Increment the command uses by one
+    CommandHandle.addCommandCount(command.commandName);
+
+    // If a cooldown exists we add it to the cooldown array and remove it with a settimeout
+    if (command.cooldown && command.cooldown > 0) {
+        cooldownArray.push(command.commandName);
+        setTimeout(() => {
+            for (let i = 0; i < cooldownArray.length; i++) {
+                if (cooldownArray[i] == command.commandName) {
+                    cooldownArray.splice(i, 1)
+                }
+            }
+        }, command.cooldown * 60000);
+    }
+
+    // If the command is to be removed we remove it
+    if (command.shouldDelete && context.messageId) {
+        setTimeout(async () => {
+            let messageDeleted = await ApiHandle.deleteMessage(Number(context.messageId));
+            if (messageDeleted) {
+                LogHandle.logEvent({ event: "Delete Message", users: ["Glimboi", context.user.username], data: { messageID: context.messageId } })
+                adjustMessageState(Number(context.messageId), "deleted");
+            }
+        }, 400);
+    }
 }
 
 export {checkCommand, runCommand}

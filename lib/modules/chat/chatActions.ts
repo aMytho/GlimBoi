@@ -142,7 +142,15 @@ async function addCommand(user: string, command: commandName, commandData: strin
             let newCMD = CommandHandle.addCommand({
                 commandName: command, uses: 0, points: 0, cooldown: 0,
                 rank: "Everyone", repeat: false, shouldDelete: false, disabled: false,
-                actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })]
+                actions: [new CommandHandle.ChatAction.ChatMessage({ message: commandData })],
+                triggers: [
+                    {
+                        trigger: "ChatMessage",
+                        constraints: {
+                            startsWith: command
+                        }
+                    }
+                ]
             });
             ChatMessages.filterMessage(command + " added!", "glimboi");
             try {

@@ -2,10 +2,11 @@
 
 import Nedb from "@seald-io/nedb";
 
-let commandsDB:Nedb; //Database of commands.
+let commandsDB:Nedb<Command>; //Database of commands.
 
 const ChatAction:typeof import("../modules/commands/commandActionHandler") = require(appData[0] + "/modules/commands/commandActionHandler.js");
 const CommandRunner:typeof import("../modules/commands/commandRunner") = require(appData[0] + "/modules/commands/commandRunner.js");
+const TriggerHelper:typeof import("./commands/triggerHelper") = require(appData[0] + "/modules/commands/triggerHelper.js");
 
 /**
  * A command
@@ -13,6 +14,7 @@ const CommandRunner:typeof import("../modules/commands/commandRunner") = require
  */
 class Command implements CommandType {
     commandName: string;
+    triggers: TriggerStructure[]; //Triggers for the command
     uses: number
     points: number;
     cooldown: number;
@@ -21,7 +23,7 @@ class Command implements CommandType {
     shouldDelete: boolean;
     actions: ChatAction[];
     disabled: boolean;
-    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete, disabled}:CommandContructor) {
+    constructor({commandName, uses, points, cooldown, rank, repeat, actions, shouldDelete, disabled, triggers}:CommandContructor) {
         this.commandName = commandName; //The name of the command
         this.uses = uses; //Times the command has been used.
         this.points = points; //Points required per command
@@ -31,6 +33,7 @@ class Command implements CommandType {
         this.shouldDelete = shouldDelete; // Should the command be deleted after use? (!cmd)
         this.actions = actions; // What the command will do once activated
         this.disabled = disabled; // Can the commaand be activated?
+        this.triggers = triggers;
     }
 }
 
@@ -46,7 +49,7 @@ function updatePath(updatedPath:string) {
  * Creates a new command.
  * @returns A command
  */
-function addCommand(commandData: CommandContructor) {
+function addCommand(commandData: CommandType) {
     let newCommand = new Command(commandData);
     console.log(newCommand);
     //inserts a document as a command.
@@ -73,11 +76,12 @@ function removeCommand(commandName: commandName) {
 /**
  * Edits a command by searching the name. All values are passed (maybe...). Updates the commands upon completion.
  */
-function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete, disabled }:CommandContructor) {
-    console.log(commandName, actions, cooldown, uses, points, rank, repeat, disabled)
+function editCommand({ commandName, actions, cooldown, uses, points, rank, repeat, shouldDelete, disabled, triggers }:CommandContructor) {
+    console.log(commandName, actions, cooldown, uses, points, rank, repeat, disabled, triggers)
     commandsDB.update({ commandName: commandName }, { $set: {
         actions: actions, cooldown: Number(cooldown), uses: Number(uses), disabled: disabled,
-        points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete } }, {}, function (err, numReplaced) {
+        points: Number(points), rank: rank, repeat: repeat, shouldDelete: shouldDelete,
+        triggers: triggers} }, {}, function (err, numReplaced) {
         console.log("Updating " + commandName);
     });
 }
@@ -97,6 +101,22 @@ function findCommand(command: commandName): Promise<null | CommandType> {
             } else {
                 resolve(null);
             }
+        });
+    })
+}
+
+/**
+ * Returns a list of commands that match the trigger. Only the trigger requested is in the trigger list.
+ * @param trigger The trigger to search for
+ */
+async function findByTrigger(trigger: CommandTrigger): Promise<CommandType[]> {
+    return new Promise(resolve => {
+        commandsDB.find({ triggers: { $elemMatch: { trigger: trigger } } }, function (err: any, docs: CommandType[]) {
+            docs.map(cmd => {
+                cmd.triggers = cmd.triggers.filter(trig => trig.trigger === trigger);
+                return cmd;
+            })
+            resolve(docs);
         });
     })
 }
@@ -151,6 +171,20 @@ function countCommands(): Promise<number> {
     })
 }
 
-export { addCommand, addCommandCount, ChatAction, CommandRunner,
-countCommands, editCommand, findCommand, getAll,
-randomRepeatCommand, removeCommand , updatePath};
+/**
+ * Adds the default chatmessage trigger to a command.
+ * @param name The name of the command to edit
+ */
+function addDefaultTrigger(name:string) {
+    return new Promise(resolve => {
+        commandsDB.update({commandName: name}, {
+            $set: {triggers: [{trigger: "ChatMessage", constraints: {startsWith: name}}]}
+        }, {}, function (err, numReplaced) {
+            resolve(numReplaced);
+        });
+    })
+}
+
+export { addCommand, addCommandCount, addDefaultTrigger, ChatAction, CommandRunner,
+countCommands, editCommand, findByTrigger, findCommand, getAll,
+randomRepeatCommand, removeCommand, TriggerHelper, updatePath};
