@@ -101,4 +101,8 @@ function stopChatStats() {
     clearInterval(checkForUsers);
 }
 
-export {addCurrentUser, getUserMessageCount, increaseUserMessageCounter, loadChatStats, resetUserMessageCounter, stopChatStats}
+function getCurrentUsers() {
+    return currentUsers;
+}
+
+export {addCurrentUser, getCurrentUsers, getUserMessageCount, increaseUserMessageCounter, loadChatStats, resetUserMessageCounter, stopChatStats}
