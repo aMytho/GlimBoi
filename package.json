@@ -1,7 +1,7 @@
 {
   "name": "glimboi",
   "productName": "GlimBoi",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "A chatbot for Glimesh.tv",
   "main": "build/main.js",
   "repository": {
@@ -45,7 +45,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc --watch",
     "start": "electron build/main.js",
-    "build": "tsc --project tsconfig.production.json && npx tailwindcss -c ./tailwind.config.js -w -o ./src/output.css -i ./src/styles.css",
+    "build": "tsc --project tsconfig.production.json && npx tailwindcss -c ./tailwind.config.js -o ./src/output.css -i ./src/styles.css",
     "build:exe": "electron-builder build  --win --publish never",
     "build:linux": "electron-builder build --linux --publish never",
     "deploy": "electron-builder build  --win --publish always",
