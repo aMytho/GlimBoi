@@ -17,12 +17,12 @@ async function validateRank(rank:string): Promise<RankType | false> {
 async function compareRanks(rank1:string, rank2:string, message?:string): Promise<boolean> {
     let [rank1Exists, rank2Exists] = await Promise.all([validateRank(rank1), validateRank(rank2)]);
     if (!rank1Exists || !rank2Exists) {
-        ChatMessages.filterMessage(message, "glimboi");
+        ChatMessages.sendMessage(message);
         return false
     }
     let passedRankTest = rank1Exists.rankTier > rank2Exists.rankTier;
     if (!passedRankTest) {
-        ChatMessages.filterMessage(message, "glimboi");
+        ChatMessages.sendMessage(message);
     }
     return passedRankTest
 }
@@ -76,7 +76,7 @@ async function compareUserPoints(user:string | UserType, points: number, addUser
 function isEventEnabled(event: eventName, message?:string): boolean {
     let status = EventHandle.isEventEnabled(event);
     if (!status) {
-        ChatMessages.filterMessage(message, "glimboi");
+        ChatMessages.sendMessage(message);
     }
     return status;
 }

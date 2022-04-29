@@ -11,7 +11,7 @@ function addToGiveaway(user:string) {
     usersInGiveaway.push(user);
     // if quite mode is off, send a confirmation
     if (!CacheStore.get("giveawayQuiet", true, true)) {
-        ChatMessages.filterMessage(getEnteredMessage(user), "glimboi");
+        ChatMessages.sendMessage(getEnteredMessage(user));
     }
 }
 
@@ -39,7 +39,7 @@ function enterGiveaway(user:string) {
     if (!isInGiveaway(user)) {
         addToGiveaway(user);
     } else {
-        ChatMessages.filterMessage(`${user}, you have already entered the giveaway`, "glimboi");
+        ChatMessages.sendMessage(`${user}, you have already entered the giveaway`);
     }
 }
 
@@ -52,7 +52,7 @@ function startGiveaway(fromChat: boolean, user?:string) {
     if (Util.isEventEnabled("giveaway", "The giveaway is not enabled.")) {
         if (EventHandle.isEventActive("giveaway")) {
             if (fromChat) {
-                ChatMessages.filterMessage(`${user}, there is already a giveaway in progress`, "glimboi");
+                ChatMessages.sendMessage(`${user}, there is already a giveaway in progress`);
             } else {
                 errorMessage("Giveaway Error", "There is already a giveaway in progress");
             }
@@ -66,7 +66,7 @@ function startGiveaway(fromChat: boolean, user?:string) {
             successMessage("Giveaway Started", `A giveaway has begun!`);
         }
         EventHandle.addEvent("giveaway");
-        ChatMessages.filterMessage(`The giveaway has started! Type !enter to join the giveaway!`, "glimboi");
+        ChatMessages.sendMessage(`The giveaway has started! Type !enter to join the giveaway!`);
         if (user) {
             enterGiveaway(user);
         }
@@ -77,7 +77,7 @@ function startGiveaway(fromChat: boolean, user?:string) {
             // reset the giveaway
             resetGiveaway();
             // send the winner
-            ChatMessages.filterMessage(`The winner is: ${winner}!`, "glimboi");
+            ChatMessages.sendMessage(`The winner is: ${winner}!`);
         }, CacheStore.get("giveawayDuration", 60000, true));
     } else {
         if (!fromChat) {
@@ -110,7 +110,7 @@ function stopGiveaway(fromUI?: boolean): void {
     EventHandle.removeEvent("giveaway");
     clearTimeout(giveawayTimer);
     resetGiveaway();
-    ChatMessages.filterMessage(`The giveaway has been stopped.`, "glimboi");
+    ChatMessages.sendMessage(`The giveaway has been stopped.`);
     if (fromUI) {
         successMessage("Giveaway Stopped", "The giveaway has been stopped.");
     }

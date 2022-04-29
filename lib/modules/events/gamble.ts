@@ -13,7 +13,7 @@ async function gamble(user:string, wager:number) {
         }
     } else {
         if (userData.points < wager) {
-            ChatMessages.filterMessage(`${userData.userName} does not have enough points to wager.`, "glimboi");
+            ChatMessages.sendMessage(`${userData.userName} does not have enough points to wager.`);
             return
         }
     }
@@ -27,10 +27,10 @@ async function gamble(user:string, wager:number) {
     // take the chance of winning and see if the user won
     if (hasWon) {
         UserHandle.addPoints(user, actualEarnings);
-        ChatMessages.filterMessage(getGambleMessage("win", user, actualEarnings));
+        ChatMessages.sendMessage(getGambleMessage("win", user, actualEarnings));
     } else {
         UserHandle.removePoints(user, Math.round(wager));
-        ChatMessages.filterMessage(getGambleMessage("lose", user, Math.round(wager)), "glimboi");
+        ChatMessages.sendMessage(getGambleMessage("lose", user, Math.round(wager)));
     }
 }
 

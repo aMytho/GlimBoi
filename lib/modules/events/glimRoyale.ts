@@ -20,10 +20,10 @@ function startGlimRoyale(user:string, points: number, fromUI?: boolean) {
     if (!ChatHandle.isConnected()) {return false}
     let currentStatus = statusCheck();
     if (currentStatus == "active") {
-        ChatMessages.filterMessage("The battle is already in progress.", "glimboi");
+        ChatMessages.sendMessage("The battle is already in progress.");
         return false;
     } else if (currentStatus == "cooldown") {
-        ChatMessages.filterMessage("The battle is in cooldown. Please wait.", "glimboi");
+        ChatMessages.sendMessage("The battle is in cooldown. Please wait.");
         return false;
     } else { // we can start a new battle
         EventHandle.addEvent("glimroyale")
@@ -39,7 +39,7 @@ function startGlimRoyale(user:string, points: number, fromUI?: boolean) {
 
 function waitInLobby() {
     console.log("Waiting for the glimroyale match to start");
-    ChatMessages.filterMessage("The battle is starting soon! Type !join to join the Glimroyale.", "glimboi");
+    ChatMessages.sendMessage("The battle is starting soon! Type !join to join the Glimroyale.");
     glimRoyaleLobby = setTimeout(() => {
         beginMatch();
     }, 30000);
@@ -48,10 +48,10 @@ function waitInLobby() {
 function beginMatch() {
     // make sure there are at least 2 users in battle
     if (usersInBattle.length < 2) {
-        ChatMessages.filterMessage("Not enough users in battle", "glimboi");
+        ChatMessages.sendMessage("Not enough users in battle", "glimboi");
         endMatch("", false);
     } else {
-        ChatMessages.filterMessage("The battle has started! Results will be posted after the battle has ended.", "glimboi");
+        ChatMessages.sendMessage("The battle has started! Results will be posted after the battle has ended.");
         // start the battle. Each user needs to fight another. Continue until one user is left
         console.log(JSON.stringify(usersInBattle));
         while (usersInBattle.length > 1) {
@@ -120,20 +120,20 @@ async function endMatch(message: string, forced?: boolean) {
         resultsOfEachMatch = [];
         wager = 0;
         EventHandle.removeEvent("glimroyale");
-        ChatMessages.filterMessage("Glimroyale stopped", "glimboi");
+        ChatMessages.sendMessage("Glimroyale stopped");
         successMessage("Glimroyale Stopped", "Glimroyale has been stopped manually.");
         return
     }
     setTimeout(async () => {
         console.log(JSON.stringify(resultsOfEachMatch), usersInBattle);
         if (forced) {
-            ChatMessages.filterMessage("Glimroyale stopped", "glimboi");
+            ChatMessages.sendMessage("Glimroyale stopped");
             successMessage("Glimroyale Stopped", "Glimroyale has been stopped manually.");
         } else {
             if (!CacheStore.get("glimroyaleQuiet", false, true)) {
                 await sendResults(resultsOfEachMatch);
             }
-            ChatMessages.filterMessage(message, "glimboi");
+            ChatMessages.sendMessage(message, "glimboi");
             // award the victor everyone elses wagers
             let pointsToAward = wager * (resultsOfEachMatch.length + 1);
             UserHandle.addPoints(usersInBattle[0].user, pointsToAward);
@@ -159,7 +159,7 @@ async function sendResults(results: glimroyaleTurn[]) {
     for (let i = 0; i < results.length; i++) {
         await new Promise(resolve => {
             setTimeout(() => {
-                ChatMessages.filterMessage(results[i].message, "glimboi");
+                ChatMessages.sendMessage(results[i].message);
                 resolve(true);
             }, 2500);
         })
@@ -237,7 +237,7 @@ function userIntro(user: string) {
         `${user} is ready to face the Glimroyale!`,
         `${user} prepares for battle!`
     ];
-    ChatMessages.filterMessage(messages[Math.floor(Math.random() * messages.length)], "glimboi");
+    ChatMessages.sendMessage(messages[Math.floor(Math.random() * messages.length)]);
 }
 
 export {startGlimRoyale, statusCheck, joinBattle, endMatch, getWager}

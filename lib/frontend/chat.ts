@@ -326,7 +326,7 @@ function displayChannels(channels) {
 function sendMessageInBox() {
     let msgValue = document.getElementById("messageArea")! as HTMLInputElement
     try {
-        ChatMessages.filterMessage(msgValue.value, "user");
+        ChatMessages.sendMessage(msgValue.value, "user");
     } catch(e) {
         errorMessage("Chat Error", "You must be in a chat to send a message.")
     }

@@ -41,9 +41,8 @@ function startHealth(healthReminder: number) {
         console.log(healthInterval, healthReminder)
         healthInterval = setInterval(() => {
             if (healthReminder !== 0) {
-                ChatMessages.filterMessage(
+                ChatMessages.sendMessage(
                     "You've been streaming for a while. Make sure to get up, stretch, drink some water, and take a break if needed.",
-                    "glimboi"
                 );
             }
         }, healthReminder * 60000);

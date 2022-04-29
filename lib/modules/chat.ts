@@ -81,10 +81,10 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
 
         if (isReconnect) {
             if (reconnectMessage) {
-                ChatMessages.filterMessage("Glimboi was disconnected and has now returned.", "glimboi");
+                ChatMessages.sendMessage("Glimboi was disconnected and has now returned.");
             }
         } else {
-            ChatMessages.filterMessage("Glimboi has joined the chat :glimsmile:", "glimboi");
+            ChatMessages.sendMessage("Glimboi has joined the chat :glimsmile:");
         }
     });
 

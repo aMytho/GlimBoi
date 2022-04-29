@@ -12,18 +12,18 @@ async function modifyUserFromChat(user: string, target: string, attemptedAction:
         if (attemptedAction == "canAddUsers") {
             let targetUser = await checkTarget(target, true);
             if (!targetUser.alreadyExists && targetUser.user) {
-                ChatMessages.glimboiMessage("User addded to GlimBoi!");
+                ChatMessages.sendMessage("User addded to GlimBoi!");
                 addUserTable(targetUser.user);
             } else {
-                ChatMessages.glimboiMessage("User already exists!");
+                ChatMessages.sendMessage("User already exists!");
             }
         } else if (attemptedAction == "canRemoveUsers") {
             let userExists = await UserHandle.findByUserName(target);
             if (userExists == "ADDUSER") {
-                ChatMessages.glimboiMessage("That user is not added to GlimBoi.");
+                ChatMessages.sendMessage("That user is not added to GlimBoi.");
             } else {
                 let userRemoved = await UserHandle.removeUser(target, false, user);
-                ChatMessages.filterMessage(`${userRemoved} removed from GlimBoi.`, "glimboi");
+                ChatMessages.sendMessage(`${userRemoved} removed from GlimBoi.`);
                 removeUserFromTable(userRemoved);
             }
         }
@@ -36,9 +36,9 @@ async function modifyUserFromChat(user: string, target: string, attemptedAction:
 function randomQuoteChat() {
     QuoteHandle.randomQuote().then(data => {
         if (data == null) {
-            ChatMessages.glimboiMessage(`No quotes exist.`)
+            ChatMessages.sendMessage(`No quotes exist.`)
         } else {
-            ChatMessages.filterMessage(`@${data.user} - ${data.data}`, "glimboi")
+            ChatMessages.sendMessage(`@${data.user} - ${data.data}`);
         }
     })
 }
@@ -55,9 +55,9 @@ async function addQuoteChat(user: string, data: string, creator: string) {
         let trimMessage = 10 + creator.length + 2;
         let quoteResult = await UserHandle.addQuote(creator.toLowerCase(), data.substring(trimMessage), user.toLowerCase());
         if (quoteResult) {
-            ChatMessages.glimboiMessage(`Quote added.`);
+            ChatMessages.sendMessage(`Quote added.`);
         } else {
-            ChatMessages.glimboiMessage(`That user does not exist.`);
+            ChatMessages.sendMessage(`That user does not exist.`);
         }
     }
 }
@@ -72,13 +72,13 @@ async function delQuoteChat(user: string, creator: string, id: number) {
     if (await permissionCheck(user, "canRemoveQuotes", "remove quotes")) {
         console.log(creator, id);// @ts-ignore
         if (creator == "" || creator == " " || id == "" || id == " " || creator == undefined || id == undefined) {
-            ChatMessages.glimboiMessage("A user and an ID must be included. ex. !quote del mytho 2")
+            ChatMessages.sendMessage("A user and an ID must be included. ex. !quote del mytho 2")
         } else {
-            let quoteResult = await UserHandle.removeQuoteByID(Number(id), creator.toLowerCase())
+            let quoteResult = await UserHandle.removeQuoteByID(Number(id), creator.toLowerCase());
             if (quoteResult == "NOQUOTEFOUND") {
-                ChatMessages.glimboiMessage("No quote was found with that ID.")
+                ChatMessages.sendMessage("No quote was found with that ID.");
             } else {
-                ChatMessages.glimboiMessage("Quote removed.")
+                ChatMessages.sendMessage("Quote removed.");
             }
         }
     }
@@ -97,10 +97,10 @@ async function removeCommand(user: string, command: commandName) {
         let commandExists = await CommandHandle.findCommand(command);
         if (commandExists !== null) {
             CommandHandle.removeCommand(command);
-            ChatMessages.filterMessage("Command Removed", 'glimboi');
+            ChatMessages.sendMessage("Command Removed");
             removeCommandFromTable(command);
         } else {
-            ChatMessages.filterMessage("That command does not exist", 'glimboi');
+            ChatMessages.sendMessage("That command does not exist");
         }
     }
 }
@@ -117,7 +117,7 @@ async function addCommand(user: string, command: commandName, commandData: strin
     if (await permissionCheck(user, "canAddCommands", "add commands")) {
         command = command.toLowerCase()
         if (command == null || command == undefined || command == "" || command == " ") {
-            ChatMessages.filterMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.", "glimboi");
+            ChatMessages.sendMessage("The command name was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.");
             return
         }
         if (type == "!command") {
@@ -129,7 +129,7 @@ async function addCommand(user: string, command: commandName, commandData: strin
         }
         commandData = commandData.trim()
         if (commandData == null || commandData == undefined || commandData == "" || commandData == " ") {
-            ChatMessages.filterMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used. ");
+            ChatMessages.sendMessage("The command data was not valid. The syntax should look something like this: !cmd add !NAME RESPONSE . This may vary depending on the syntax used.");
             return
         }
         command = command.replace(new RegExp("^[\!]+"), "").trim();
@@ -137,7 +137,7 @@ async function addCommand(user: string, command: commandName, commandData: strin
         let commandExists = await CommandHandle.findCommand(command);
         if (commandExists !== null) {
             console.log(command + " already exists.");
-            ChatMessages.filterMessage(command + " already exists", "glimboi");
+            ChatMessages.sendMessage(`${command} already exists`);
         } else {
             let newCMD = CommandHandle.addCommand({
                 commandName: command, uses: 0, points: 0, cooldown: 0,
@@ -152,7 +152,7 @@ async function addCommand(user: string, command: commandName, commandData: strin
                     }
                 ]
             });
-            ChatMessages.filterMessage(command + " added!", "glimboi");
+            ChatMessages.sendMessage(`${command} added!`);
             try {
                 addCommandTable({ commandName: command, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions })
             } catch (e) { }
@@ -176,7 +176,7 @@ async function commandList() {
     } else if (cmdmsg.length > 255) {
         cmdmsg = "This streamer has so many commands we can't post them all to chat!"
     }
-    ChatMessages.filterMessage(cmdmsg);
+    ChatMessages.sendMessage(cmdmsg);
 }
 
 /**
@@ -189,7 +189,7 @@ async function getRank(user: string) {
         let newUser = await UserHandle.addUser(user, false, user);
         if (newUser !== "INVALIDUSER") { getRank((newUser as UserType).userName) }
     } else {
-        ChatMessages.filterMessage(`${user} has the rank of ${rank.role}`, "glimboi");
+        ChatMessages.sendMessage(`${user} has the rank of ${rank.role}`);
     }
 }
 
@@ -215,19 +215,19 @@ async function addPointsChat(user: string, target: string, count: string | numbe
             let targetExists = await UserHandle.findByUserName(target);
             if (targetExists !== "ADDUSER") {
                 UserHandle.addPoints(target, count);
-                ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
+                ChatMessages.sendMessage(`${count} ${CacheStore.get("pointsName", "Points")} were added to ${target}`);
             } else {
                 let userAdded = await UserHandle.addUser(target, false, user);
                 if (userAdded !== "INVALIDUSER") {
-                    ChatMessages.filterMessage(`${target} has been added to glimboi.`, "glimboi");
+                    ChatMessages.sendMessage(`${target} has been added to glimboi.`, "glimboi");
                     UserHandle.addPoints(target, count);
-                    ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were added to ${target}`, "glimboi");
+                    ChatMessages.sendMessage(`${count} ${CacheStore.get("pointsName", "Points")} were added to ${target}`);
                 } else {
-                    ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
+                    ChatMessages.sendMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
                 }
             }
         } else {
-            ChatMessages.filterMessage(`${count} is an invalid number.`, "glimboi");
+            ChatMessages.sendMessage(`${count} is an invalid number.`, "glimboi");
         }
     }
 }
@@ -247,27 +247,27 @@ async function removePointsChat(user: string, target: string, count: number | st
             if (targetExists !== "ADDUSER") {
                 if ((targetExists.points - count) < 0) {
                     UserHandle.editUserPoints(target, 0);
-                    ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
+                    ChatMessages.sendMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`);
                 } else {
                     UserHandle.removePoints(target, count);
-                    ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
+                    ChatMessages.sendMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`);
                 }
             } else {
                 let userAdded = await UserHandle.addUser(target, false, user);
                 if (userAdded !== "INVALIDUSER") {
                     if (((userAdded as UserType).points - count) < 0) {
                         UserHandle.editUserPoints(target, 0);
-                        ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
+                        ChatMessages.sendMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`);
                     } else {
                         UserHandle.removePoints(target, count);
-                        ChatMessages.filterMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`, "glimboi");
+                        ChatMessages.sendMessage(`${count} ${CacheStore.get("pointsName", "Points")} were removed from ${target}`);
                     }
                 } else {
-                    ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
+                    ChatMessages.sendMessage(`${target} was not found. Ensure the name is typed correctly.`);
                 }
             }
         } else {
-            ChatMessages.filterMessage(`${count} is an invalid number.`, "glimboi");
+            ChatMessages.sendMessage(`${count} is an invalid number.`);
         }
     }
 }
@@ -286,19 +286,19 @@ async function editPointsChat(user: string, target: string, count: number | stri
             let targetExists = await UserHandle.findByUserName(target);
             if (targetExists !== "ADDUSER") {
                 UserHandle.editUserPoints(target, count);
-                ChatMessages.filterMessage(`${target} now has ${count} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+                ChatMessages.sendMessage(`${target} now has ${count} ${CacheStore.get("pointsName", "Points")}`);
             } else {
                 let userAdded = await UserHandle.addUser(target, false, user);
                 if (userAdded !== "INVALIDUSER") {
-                    ChatMessages.filterMessage(`${target} has been added to glimboi.`);
+                    ChatMessages.sendMessage(`${target} has been added to glimboi.`);
                     UserHandle.editUserPoints(target, count);
-                    ChatMessages.filterMessage(`${target} now has ${count} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+                    ChatMessages.sendMessage(`${target} now has ${count} ${CacheStore.get("pointsName", "Points")}`);
                 } else {
-                    ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly.`, "glimboi");
+                    ChatMessages.sendMessage(`${target} was not found. Ensure the name is typed correctly.`);
                 }
             }
         } else {
-            ChatMessages.filterMessage(`${count} is an invalid number.`, "glimboi");
+            ChatMessages.sendMessage(`${count} is an invalid number.`);
         }
     }
 }
@@ -312,11 +312,11 @@ async function getPointsChat(user: string, target: string) {
     if (!targetCheck(user, "The user was not specified. ex. !points get Mytho")) return;
     let targetExists = await UserHandle.findByUserName(target);
     if (targetExists !== "ADDUSER") {
-        ChatMessages.filterMessage(`${target} has ${targetExists.points} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+        ChatMessages.sendMessage(`${target} has ${targetExists.points} ${CacheStore.get("pointsName", "Points")}`);
     } else {
         let newUser = await UserHandle.addUser(target, false, user);
         if (newUser !== "INVALIDUSER") { getPointsChat((newUser as UserType).userName, target) } else {
-            ChatMessages.filterMessage(`${target} was not found. Ensure the name is typed correctly and the user exists in glimboi.`, "glimboi");
+            ChatMessages.sendMessage(`${target} was not found. Ensure the name is typed correctly and the user exists in glimboi.`);
         }
     }
 }
@@ -329,13 +329,13 @@ async function getOwnPointsChat(user: string) {
     if (!targetCheck(user, "The user was not specified. ex. !points get Mytho")) return;
     let userExists = await UserHandle.findByUserName(user);
     if (userExists !== "ADDUSER") {
-        ChatMessages.filterMessage(`${userExists.userName} has ${userExists.points} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+        ChatMessages.sendMessage(`${userExists.userName} has ${userExists.points} ${CacheStore.get("pointsName", "Points")}`);
     } else {
         let newUser = await UserHandle.addUser(user, false, user)
         if (newUser !== "INVALIDUSER") {
-            ChatMessages.filterMessage(`${(newUser as UserType).userName} has ${(newUser as UserType).points} ${CacheStore.get("pointsName", "Points")}`, "glimboi");
+            ChatMessages.sendMessage(`${(newUser as UserType).userName} has ${(newUser as UserType).points} ${CacheStore.get("pointsName", "Points")}`);
         } else {
-            ChatMessages.filterMessage(`${user} was not found.`, "glimboi");
+            ChatMessages.sendMessage(`${user} was not found.`, "glimboi");
         }
     }
 }
@@ -353,24 +353,24 @@ async function getTopPoints(requestedPosition?: number, leaderBoard?: any) {
                 let pointsPosition = Number(requestedPosition)
                 console.log(pointsPosition)
                 if (pointsPosition <= 0) {
-                    ChatMessages.filterMessage("That number is not valid.")
+                    ChatMessages.sendMessage("That number is not valid.");
                 } else if (topPoints[pointsPosition - 1] !== undefined) {
                     pointsPosition = pointsPosition - 1
-                    ChatMessages.filterMessage(`Number ${pointsPosition + 1} is ${topPoints[pointsPosition].userName} with ${topPoints[pointsPosition].points}`)
+                    ChatMessages.sendMessage(`Number ${pointsPosition + 1} is ${topPoints[pointsPosition].userName} with ${topPoints[pointsPosition].points}`);
                 } else {
-                    ChatMessages.filterMessage("There is not a user with that position.")
+                    ChatMessages.sendMessage("There is not a user with that position.");
                 }
             } else {
-                ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi")
+                ChatMessages.sendMessage("There are not enough users to use the leaderboad function.");
             }
         } else {
-            ChatMessages.filterMessage("Add a number to query a position. ex. !points 5 would return the user with the 5th most points. You can also use !points get USER", "glimboi")
+            ChatMessages.sendMessage("Add a number to query a position. ex. !points 5 would return the user with the 5th most points. You can also use !points get USER");
         }
     } else {
         if (topPoints.length > 0) {
-            ChatMessages.filterMessage(`The top user is ${topPoints[0].userName}`, "glimboi");
+            ChatMessages.sendMessage(`The top user is ${topPoints[0].userName}`);
         } else {
-            ChatMessages.filterMessage("There are not enough users to use the leaderboad function.", "glimboi");
+            ChatMessages.sendMessage("There are not enough users to use the leaderboad function.");
         }
     }
 }
@@ -380,11 +380,11 @@ async function getTopPoints(requestedPosition?: number, leaderBoard?: any) {
  */
 function getSong() {
     if (musicPlaylist[currentSongIndex] && musicPlaylist[currentSongIndex].artists) {
-        ChatMessages.filterMessage(`Now playing ${musicPlaylist[currentSongIndex].name} by ${musicPlaylist[currentSongIndex].artists}`, "glimboi")
+        ChatMessages.sendMessage(`Now playing ${musicPlaylist[currentSongIndex].name} by ${musicPlaylist[currentSongIndex].artists}`);
     } else if (musicPlaylist[currentSongIndex]) {
-        ChatMessages.filterMessage(`Now playing ${musicPlaylist[currentSongIndex].name}`, "glimboi")
+        ChatMessages.sendMessage(`Now playing ${musicPlaylist[currentSongIndex].name}`);
     } else {
-        ChatMessages.filterMessage(`No song is currently playing.`, "glimboi")
+        ChatMessages.sendMessage(`No song is currently playing.`);
     }
 }
 /**
@@ -398,17 +398,17 @@ async function nextSong(user: string, action) {
             if (musicPlaylist[currentSongIndex]) {
                 nextOrPrevious("foward");
             } else {
-                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+                ChatMessages.sendMessage("No songs are in the queue.");
             }
         } else {
             if (musicPlaylist[currentSongIndex]) {
                 if (currentSongIndex + 1 >= musicPlaylist.length) {
-                    ChatMessages.filterMessage(`Next up is ${musicPlaylist[0].name}`, "glimboi");
+                    ChatMessages.sendMessage(`Next up is ${musicPlaylist[0].name}`);
                 } else {
-                    ChatMessages.filterMessage(`Next up is ${musicPlaylist[currentSongIndex + 1].name}`, "glimboi")
+                    ChatMessages.sendMessage(`Next up is ${musicPlaylist[currentSongIndex + 1].name}`);
                 }
             } else {
-                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+                ChatMessages.sendMessage("No songs are in the queue.");
             }
         }
     }
@@ -425,17 +425,17 @@ async function previousSong(user: string, action: string) {
             if (musicPlaylist[currentSongIndex]) {
                 nextOrPrevious("backward");
             } else {
-                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+                ChatMessages.sendMessage("No songs are in the queue.");
             }
         } else {
             if (musicPlaylist[currentSongIndex]) {
                 if (currentSongIndex - 1 < 0) {
-                    ChatMessages.filterMessage(`Last song was ${musicPlaylist[0].name}`, "glimboi");
+                    ChatMessages.sendMessage(`Last song was ${musicPlaylist[0].name}`);
                 } else {
-                    ChatMessages.filterMessage(`Last song was ${musicPlaylist[currentSongIndex - 1].name}`, "glimboi")
+                    ChatMessages.sendMessage(`Last song was ${musicPlaylist[currentSongIndex - 1].name}`);
                 }
             } else {
-                ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+                ChatMessages.sendMessage("No songs are in the queue.");
             }
         }
     }
@@ -449,9 +449,9 @@ async function replaySong(user: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (musicPlaylist[currentSongIndex]) {
             toggleShuffleRepeat(document.getElementById("repeatButton"), !repeatEnabled, "Repeat");
-            ChatMessages.filterMessage("Repeat Toggled", "glimboi")
+            ChatMessages.sendMessage("Repeat Toggled", "glimboi")
         } else {
-            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+            ChatMessages.sendMessage("No songs are in the queue.");
         }
     }
 }
@@ -463,10 +463,10 @@ async function replaySong(user: string) {
 async function toggleShuffle(user: string) {
     if (await permissionCheck(user, "canControlMusic", "control the music player")) {
         if (musicPlaylist[currentSongIndex]) {
-            toggleShuffleRepeat(document.getElementById("shuffleButton"), !shuffleEnabled, "Shuffle")
-            ChatMessages.filterMessage("Shuffle Toggled", "glimboi")
+            toggleShuffleRepeat(document.getElementById("shuffleButton"), !shuffleEnabled, "Shuffle");
+            ChatMessages.sendMessage("Shuffle Toggled");
         } else {
-            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+            ChatMessages.sendMessage("No songs are in the queue.");
         }
     }
 }
@@ -480,7 +480,7 @@ async function playPause(user: string, action) {
         if (musicPlaylist[currentSongIndex]) {
             toggleMusic()
         } else {
-            ChatMessages.filterMessage("No songs are in the queue.", "glimboi")
+            ChatMessages.sendMessage("No songs are in the queue.");
         }
     }
 }
@@ -557,10 +557,10 @@ async function checkAndStartGlimroyale(user: string, wager: number) {
                 if (glimroyaleUser !== "ADDUSER" && glimroyaleUser.points >= wager) {
                     EventHandle.glimroyale.startGlimRoyale(user, wager);
                 } else {
-                    ChatMessages.filterMessage("You do not have enough currency to start Glimrealm.", "glimboi");
+                    ChatMessages.sendMessage("You do not have enough currency to start Glimrealm.");
                 }
             } else {
-                ChatMessages.filterMessage("Wager must be a number.", "glimboi");
+                ChatMessages.sendMessage("Wager must be a number.");
             }
         }
     }
@@ -587,13 +587,13 @@ async function checkPoll(user: string, message: string | undefined) {
                         console.log(possibleAnswers, messageWithoutQuestion);
                         EventHandle.poll.startPoll(question, possibleAnswers, user);
                     } else {
-                        ChatMessages.filterMessage("You need to specify an option. !poll question? option1 | option2 | etc", "glimboi");
+                        ChatMessages.sendMessage("You need to specify an option. !poll question? option1 | option2 | etc");
                     }
                 } else {
-                    ChatMessages.filterMessage("Please ask a question. !poll question? option1 | option2 | etc ", "glimboi");
+                    ChatMessages.sendMessage("Please ask a question. !poll question? option1 | option2 | etc ");
                 }
             } else {
-                ChatMessages.filterMessage("Incorrect syntax. Try !poll question? option1 | option2 | etc. Make sure to end the question with?", "glimboi");
+                ChatMessages.sendMessage("Incorrect syntax. Try !poll question? option1 | option2 | etc. Make sure to end the question with?");
             }
         }
     }
@@ -607,7 +607,7 @@ async function checkPoll(user: string, message: string | undefined) {
 async function eightBall(user: string, message: string) {
     if (Util.isEventEnabled("eightBall", "Eightball is not enabled.")) {
         if (message.trim().length <= 6) {
-            return ChatMessages.filterMessage("You must specify a question to get a response. !8ball question?", "glimboi");
+            return ChatMessages.sendMessage("You must specify a question to get a response. !8ball question?");
         }
         let possibleResponses = [
             `@${user}, It is Certain.`,
@@ -632,7 +632,7 @@ async function eightBall(user: string, message: string) {
             `@${user}, Very doubtful.`,
         ];
         let responseNumber = Math.round(Math.random() * possibleResponses.length);
-        ChatMessages.filterMessage(possibleResponses[responseNumber], "glimboi");
+        ChatMessages.sendMessage(possibleResponses[responseNumber]);
     }
 }
 
@@ -642,7 +642,7 @@ function gamble(user: string, message) {
         let splitMessage: string[] = message.split(" ");
         let amount: number = parseInt(splitMessage[1]);
         if (isNaN(amount) || amount <= 0) {
-            ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`, "glimboi");
+            ChatMessages.sendMessage(`${user}, Please respond with a number indicating your response. ex. !gamble 1`);
         } else {
             EventHandle.gamble.gamble(user, amount);
         }
@@ -661,9 +661,9 @@ async function queueController(request: "next" | "end" | "all", user?: string) {
     if (request == "next") {
         let nextUser = EventHandle.queue.getUsersInQueue()[0];
         if (nextUser) {
-            ChatMessages.filterMessage(`The next user is ${nextUser}.`, "glimboi");
+            ChatMessages.sendMessage(`The next user is ${nextUser}.`);
         } else {
-            ChatMessages.filterMessage("There are no users in the queue.", "glimboi");
+            ChatMessages.sendMessage("There are no users in the queue.");
         }
     } else if (request == "end") {
         if (await permissionCheck(user, "canEndEvents", "end queue")) {
@@ -672,9 +672,9 @@ async function queueController(request: "next" | "end" | "all", user?: string) {
     } else {
         let queueUsers = EventHandle.queue.getUsersInQueue();
         if (queueUsers.length > 0) {
-            ChatMessages.filterMessage(`The queue is currently ${queueUsers.length} users long.`, "glimboi");
+            ChatMessages.sendMessage(`The queue is currently ${queueUsers.length} users long.`);
         } else {
-            ChatMessages.filterMessage("There are no users in the queue.", "glimboi");
+            ChatMessages.sendMessage("There are no users in the queue.");
         }
     }
 }
@@ -717,17 +717,17 @@ async function addOrRemoveQueue(user:string, action: "add" | "remove", target:st
             if (pontentialUser.user && EventHandle.queue.getUsersInQueue().indexOf(pontentialUser.user.userName.toLowerCase()) == -1) {
                 EventHandle.queue.addToQueue(target);
             } else {
-                ChatMessages.filterMessage(`Invalid target. Ensure they are not already in the queue.`, "glimboi");
+                ChatMessages.sendMessage(`Invalid target. Ensure they are not already in the queue.`);
             }
         } else if (action == "remove") {
             let pontentialUser = await checkTarget(target, true);
             if (pontentialUser.user) {
                 EventHandle.queue.removeFromQueue(target);
             } else {
-                ChatMessages.filterMessage(`Invalid target`, "glimboi");
+                ChatMessages.sendMessage(`Invalid target`);
             }
         } else {
-            ChatMessages.filterMessage("Incorrect syntax. Try !queue add or !queue remove", "glimboi");
+            ChatMessages.sendMessage("Incorrect syntax. Try !queue add or !queue remove");
         }
     }
 }
@@ -738,7 +738,7 @@ async function addOrRemoveQueue(user:string, action: "add" | "remove", target:st
  * @param {string} attemptedAction The action they attempted to perform.
  */
 function invalidPerms(user: string, attemptedAction: string) {
-    ChatMessages.filterMessage(`${user} does not have permission to ${attemptedAction}.`, "glimboi");
+    ChatMessages.sendMessage(`${user} does not have permission to ${attemptedAction}.`);
 }
 
 /**
@@ -750,7 +750,7 @@ function targetCheck(target: any, message = "No target specified."): boolean {
     if (target && target.length > 0) {
         return true;
     } else {
-        ChatMessages.filterMessage(message, "glimboi");
+        ChatMessages.sendMessage(message);
         return false;
     }
 }
@@ -788,11 +788,11 @@ async function checkTarget(user: string, addUser: boolean): Promise<{ alreadyExi
             if (newUser !== "INVALIDUSER") {
                 return { alreadyExists: false, user: newUser as UserType }
             } else {
-                ChatMessages.filterMessage(`${user} does not exist on Glimesh.`, "glimboi");
+                ChatMessages.sendMessage(`${user} does not exist on Glimesh.`);
                 return { alreadyExists: false, user: null }
             }
         } else {
-            ChatMessages.filterMessage(`${user} has not been added to Glimboi.`, "glimboi");
+            ChatMessages.sendMessage(`${user} has not been added to Glimboi.`);
             return { alreadyExists: false, user: false }
         }
     } else {

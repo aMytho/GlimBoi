@@ -42,19 +42,19 @@ function startPoll(question: string, options: string[], user: string) {
         PollController.status = "active";
         PollController.question = question;
         PollController.options = options;
-        ChatMessages.filterMessage(`${user} asks: ${PollController.question}? Options: ${listOptions()}`, "glimboi");
+        ChatMessages.sendMessage(`${user} asks: ${PollController.question}? Options: ${listOptions()}`);
         EventHandle.addEvent("poll");
         setTimeout(() => {
-            ChatMessages.filterMessage(`Respond with !v # to vote.`, "glimboi");
+            ChatMessages.sendMessage(`Respond with !v # to vote.`);
         }, 3000);
         pollTimer = setTimeout(() => {
             let result = getResults();
-            ChatMessages.filterMessage(result.message, "glimboi");
+            ChatMessages.sendMessage(result.message);
             resetPoll();
         }, CacheStore.get("pollDuration", 60000, true));
         return true;
     } else {
-        ChatMessages.filterMessage("A poll is already active", "glimboi");
+        ChatMessages.sendMessage("A poll is already active");
         return false;
     }
 }
@@ -81,13 +81,13 @@ function addResponse(response: number, user: string) {
     // Check if the user has already voted
     for (let i = 0; i < PollController.responses.length; i++) {
         if (PollController.responses[i].user === user) {
-            ChatMessages.filterMessage(`${user} has already voted`, "glimboi");
+            ChatMessages.sendMessage(`${user} has already voted`);
             return
         }
     }
     // check that the response is a valid option
     if (response <= 0 || response > PollController.options.length) {
-        ChatMessages.filterMessage(`${user} has entered an invalid option`, "glimboi");
+        ChatMessages.sendMessage(`${user} has entered an invalid option`);
     } else {
         PollController.responses.push({ user: user, vote: response - 1 });
     }
@@ -143,7 +143,7 @@ function getResults(): pollResult {
  */
 function stopPoll() {
     resetPoll();
-    ChatMessages.filterMessage("Poll stopped", "glimboi");
+    ChatMessages.sendMessage("Poll stopped", "glimboi");
 }
 
 export { addResponse, getPollStatus, resetPoll, startPoll, stopPoll };

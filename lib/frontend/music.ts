@@ -207,7 +207,7 @@ function updateInfo(info, notMusicTab) {
     } catch(e) {}
     Server.updateMusicOverlay({ name: info.name, artists: info.artists });
     if (CacheStore.get("musicAttribution", false) && ChatHandle.isConnected() && notMusicTab) {
-        ChatMessages.filterMessage(artistsMedia, "glimboi");
+        ChatMessages.sendMessage(artistsMedia, "glimboi");
     }
     if (CacheStore.get("musicFile", false) && notMusicTab) {
         fs.writeFile(appData[1] + '/data/nowPlaying.txt', artistsMedia);

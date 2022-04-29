@@ -57,7 +57,7 @@ async function handleEvent(event:eventName, user:string, message: string) {
                 let splitMessage:string[] = message.split(" ");
                 let vote:number = parseInt(splitMessage[1]);
                 if (isNaN(vote)) {
-                    ChatMessages.filterMessage(`${user}, Please respond with a number indicating your response. ex. !vote 1, !v 1`, "glimboi");
+                    ChatMessages.sendMessage(`${user}, Please respond with a number indicating your response. ex. !vote 1, !v 1`);
                 } else {
                     poll.addResponse(vote, user);
                 }
@@ -70,7 +70,7 @@ async function handleEvent(event:eventName, user:string, message: string) {
                 if (userExists !== "ADDUSER") {
                     let enteredGlimrealm = glimRealm.addGlimRealmUser(user, userExists.points);
                     if (!enteredGlimrealm) {
-                        ChatMessages.filterMessage(`${user} has already entered the glimrealm.`, "glimboi");
+                        ChatMessages.sendMessage(`${user} has already entered the glimrealm.`);
                     }
                 } else {
                     let userAdded = await UserHandle.addUser(user, false, user);
@@ -105,10 +105,10 @@ async function handleEvent(event:eventName, user:string, message: string) {
                     if (Util.compareUserPoints(potentialUser, glimroyale.getWager(), true)) {
                         let joined = glimroyale.joinBattle(potentialUser.userName);
                         if (!joined) {
-                            ChatMessages.filterMessage(`@${user}, You have already joined the Glimroyale`, "glimboi");
+                            ChatMessages.sendMessage(`@${user}, You have already joined the Glimroyale`);
                         }
                     } else {
-                        ChatMessages.filterMessage("@" + user + ", You do not have enough points to join the Glimroyale.", "glimboi");
+                        ChatMessages.sendMessage("@" + user + ", You do not have enough points to join the Glimroyale.");
                     }
                 }
             }

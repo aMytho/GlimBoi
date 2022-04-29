@@ -1,9 +1,4 @@
 /**
- * A plain text message
- */
-type message = string
-
-/**
  * The glimesh users avatar URL
  */
 type avatar = string
@@ -25,7 +20,7 @@ type storedChatMessage = [
     /**
      * The message
      */
-    message,
+    string,
     /**
      * The URL of the user's avatar
      */

@@ -4,14 +4,14 @@ let usersInQueue: string[] = [];
 
 function addToQueue(user: string) {
     usersInQueue.push(user.toLowerCase());
-    ChatMessages.glimboiMessage(`${user} has joined the queue.`);
+    ChatMessages.sendMessage(`${user} has joined the queue.`);
     alterUI(user, "add");
 }
 
 async function canJoinQueue(user: string, override: boolean): Promise<boolean> {
     // Make sure they are not already in the queue
     if (usersInQueue.indexOf(user) !== -1) {
-        ChatMessages.glimboiMessage(`${user} is already in the queue`);
+        ChatMessages.sendMessage(`${user} is already in the queue`);
         return false;
     }
     let userExists = await UserHandle.findByUserName(user);
@@ -31,11 +31,11 @@ async function canJoinQueue(user: string, override: boolean): Promise<boolean> {
                     UserHandle.removePointsAboveZero((userExists as UserType).userName, CacheStore.get("queuePoints", 100));
                     return true;
                 }
-                ChatMessages.glimboiMessage(
+                ChatMessages.sendMessage(
                     `${user} does not have the minimum rank tier to join the queue. They need to be at least ${queueRank.rankTier}`);
                 return false;
             } else {
-                ChatMessages.glimboiMessage(
+                ChatMessages.sendMessage(
                     `${user} does not have enough points to join the queue. User: ${(userExists as UserType).points} Queue: ${CacheStore.get("queuePoints", 100)}`);
                 return false
             }
@@ -59,14 +59,14 @@ function startQueue(user?: string) {
         return false
     }
     if (EventHandle.isEventActive("queue")) {
-        ChatMessages.filterMessage(`A queue is already in progress. !join to join the queue`, "glimboi");
+        ChatMessages.sendMessage(`A queue is already in progress. !join to join the queue`);
         return false;
     } else {
         EventHandle.addEvent("queue");
         if (user) {
             addToQueue(user);
         }
-        ChatMessages.filterMessage(`${user || ApiHandle.getStreamerName()} has started the queue. !join to join the queue`, "glimboi");
+        ChatMessages.sendMessage(`${user || ApiHandle.getStreamerName()} has started the queue. !join to join the queue`);
         return true;
     }
 }
@@ -76,7 +76,7 @@ function removeFromQueue(user: string): true | void {
     if (index !== -1) {
         usersInQueue.splice(index, 1);
         alterUI(user, "remove");
-        ChatMessages.glimboiMessage(`${user} has left the queue.`);
+        ChatMessages.sendMessage(`${user} has left the queue.`);
         return true;
     }
 }
@@ -84,7 +84,7 @@ function removeFromQueue(user: string): true | void {
 function progressQueue() {
     let user = usersInQueue.shift();
     if (user) {
-        ChatMessages.filterMessage(`${user} has completed the queue.`, "glimboi");
+        ChatMessages.sendMessage(`${user} has completed the queue.`);
         alterUI(user, "remove");
     }
     if (usersInQueue.length == 0) {
@@ -96,7 +96,7 @@ function progressQueue() {
 function endQueue() {
     EventHandle.removeEvent("queue");
     usersInQueue = [];
-    ChatMessages.glimboiMessage("The queue has been ended.");
+    ChatMessages.sendMessage("The queue has been ended.");
     if (currentPage == "events") {
         try {
             resetQueueUI();

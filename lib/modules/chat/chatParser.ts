@@ -33,7 +33,7 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                     case "":
                     case "help":
                     case "info":
-                        ChatMessages.filterMessage(`Glimboi command docs: https://glimboi.com/docs/intro/commands/`, "glimboi");
+                        ChatMessages.sendMessage(`Glimboi command docs: https://glimboi.com/docs/intro/commands/`);
                         break;
                     default:
                         break;
@@ -86,14 +86,14 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                         break;
                     case "get": ChatActions.getPointsChat(userChat, message[2]);
                         break;
-                    case "help": ChatMessages.filterMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
+                    case "help": ChatMessages.sendMessage("Syntax: !points ACTION(add,sub,set,get) USER(who you are targeting) COUNT(a number)", "glimboi")
                         break;
                     default:
                         ChatActions.getTopPoints(Number(message[1]), true);
                         break;
                 }
                 break;
-            case "!test": ChatMessages.glimboiMessage("Test complete. If you have a command called test this replaced it.");
+            case "!test": ChatMessages.sendMessage("Test complete. If you have a command called test this replaced it.");
                 break;
             case "!raffle": ChatActions.checkAndStartRaffle(userChat);
                 break;
@@ -203,11 +203,11 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
                         case "toggle":
                             ChatActions.toggleShuffle(userChat)
                             break;
-                        default: ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
+                        default: ChatMessages.sendMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
                             break;
                     }
                 } else {
-                    ChatMessages.glimboiMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
+                    ChatMessages.sendMessage("Command not known. Try !sr next, last, skip, previous, repeat, shuffle, toggle");
                 }
                 break;
             default: //its not a glimboi command, may be a streamer command. We need to check and send the output to chat.

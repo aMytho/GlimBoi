@@ -10,7 +10,7 @@ let currencyGained = 0; // how much money the raiders recieve
  */
 function startBankHeist(user:string, fromUI?: boolean) {
     if (bankHeistStatus == "ready") {
-        ChatMessages.filterMessage(user + " had just started a bankheist. Type !bankheist to join! Starts in 30 seconds.", "glimboi");
+        ChatMessages.sendMessage(user + " had just started a bankheist. Type !bankheist to join! Starts in 30 seconds.");
         bankHeistStatus = "prep";
         startPrep();
         if (!fromUI) {
@@ -21,11 +21,11 @@ function startBankHeist(user:string, fromUI?: boolean) {
         if (CacheStore.get("bankheistQuiet", true, true)) {
             return
         }
-        ChatMessages.filterMessage(rallyMessage(user), "glimboi");
+        ChatMessages.sendMessage(rallyMessage(user));
     } else if (bankHeistStatus == "active") {
-        ChatMessages.filterMessage("The bankheist had already begun. You can join in the next round.", "glimboi");
+        ChatMessages.sendMessage("The bankheist had already begun. You can join in the next round.");
     } else {
-        ChatMessages.filterMessage("You have already joined the team!", "glimboi");
+        ChatMessages.sendMessage("You have already joined the team!");
     }
 }
 
@@ -36,12 +36,12 @@ function startPrep() {
     setTimeout(() => {
         if (users.length <= 1) {
             console.log("Not enough users for a bankheist");
-            ChatMessages.filterMessage("There were not enough users for a bankheist. You need a minimum of two members to particapate.", "glimboi");
+            ChatMessages.sendMessage("There were not enough users for a bankheist. You need a minimum of two members to particapate.");
             bankHeistStatus = "ready";
         } else {
             console.log("Starting bankheist!");
             bankHeistStatus = "active"
-            ChatMessages.filterMessage("Your team approaches the bank. You enter through the front door.", "glimboi");
+            ChatMessages.sendMessage("Your team approaches the bank. You enter through the front door.");
             walkIn()
         }
     }, 30000);
@@ -153,11 +153,11 @@ function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`The remaining team has ${currencyGained} ${CacheStore.get("pointsName", "Points")}!`, "glimboi");
+                    ChatMessages.sendMessage(`The remaining team has ${currencyGained} ${CacheStore.get("pointsName", "Points")}!`);
                     distributePoints(currencyLooted);
                 }
             } else {
-                ChatMessages.filterMessage(`The team escaped without being captured! Your team gained a total of ${currencyLooted} ${CacheStore.get("pointsName", "Points")}. It will be divided among the successful raiders.`, "glimboi");
+                ChatMessages.sendMessage(`The team escaped without being captured! Your team gained a total of ${currencyLooted} ${CacheStore.get("pointsName", "Points")}. It will be divided among the successful raiders.`);
                 distributePoints(currencyLooted)
             }
         } else {
@@ -168,11 +168,11 @@ function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
                 if (users.length == 0) {
                     bankHeistFailed()
                 } else {
-                    ChatMessages.filterMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${CacheStore.get("pointsName", "Points")}! It will be divided among the successful raiders`, "glimboi");
+                    ChatMessages.sendMessage(`:glimmoney: The remaining team escaped with ${currencyGained} ${CacheStore.get("pointsName", "Points")}! It will be divided among the successful raiders`);
                     distributePoints(currencyLooted)
                 }
             } else {
-                ChatMessages.filterMessage(`:glimmoney: The team escaped with ${currencyGained} ${CacheStore.get("pointsName", "Points")} ! It will be divided among the successful raiders`, "glimboi");
+                ChatMessages.sendMessage(`:glimmoney: The team escaped with ${currencyGained} ${CacheStore.get("pointsName", "Points")} ! It will be divided among the successful raiders`);
                 distributePoints(currencyLooted)
             }
         }
@@ -185,7 +185,7 @@ function escapeSequence(justTriggeredAlarm:boolean, currencyLooted:number) {
 function bankHeistFailed() {
     console.log("BankHeist failed!");
     setTimeout(() => {
-        ChatMessages.filterMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.", "glimboi");
+        ChatMessages.sendMessage("Everyone on your team has been captured! A glimdrop :glimsmile: will post bail for them in 10 minutes.");
         resetUsers()
         bankHeistStatus = "ready"
     }, 6000);
@@ -227,17 +227,11 @@ function rallyMessage(user:string) {
     let number = Math.floor(Math.random()*4);
     switch (number) {
         case 0: return `Yay :glimhype:, ${user} is here!`
-        case 1:
-            return `${user} has joined the party!`
-            break;
-        case 2:
-            return `${user} showed up to raid!`
+        case 1: return `${user} has joined the party!`
+        case 2: return `${user} showed up to raid!`
         case 3: return `${user} is here to help!`
-            break;
         case 4: return `${user} is looking for a new financial opportunity.`
-            break;
-            default: return `${user} is ready!`
-            break;
+        default: return `${user} is ready!`
     }
 }
 
@@ -246,7 +240,7 @@ function rallyMessage(user:string) {
  */
 function bankHeistMessage(message: string) {
     if (!CacheStore.get("bankheistQuiet", true, true)) {
-        ChatMessages.filterMessage(message, "glimboi");
+        ChatMessages.sendMessage(message);
     }
 }
 
