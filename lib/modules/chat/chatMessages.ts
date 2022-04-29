@@ -29,7 +29,7 @@ async function sendMessage(data: string, source: "user" | "glimboi" = "glimboi")
             // Filter the message so its safe to send
             let message = filterMessage(data);
             // If the user sent a command we need to put it in loop protection
-            if (source == "user") {
+            if (source == "user" && message.startsWith("!")) {
                 CommandHandle.CommandRunner.loopSafeUsers.push(ChatHandle.getBotName().toLowerCase());
             }
 
