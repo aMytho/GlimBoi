@@ -166,6 +166,7 @@ async function sendMessage(message, isSecondAttempt?: boolean) {
         await AuthHandle.requestToken();
         sendMessage(message, true);
     }
+    return;
 }
 
 /**

@@ -1,38 +1,20 @@
-/**
- * For standard chat message functions
- */
 
 /**
  * Filters a message to prepare it for sending. If it cannot be sent we send a message to chat notifying the stream.
  * @param {string} message The chat message to be sent to chat
  * @param {string} source Where the emssage is coming from. Either user or glimboi
  */
-function filterMessage(message:string, source?: "user" | "glimboi") {
-  	if (source !== 'user' && message.startsWith('!')) {
-    	console.log(`Tried to send the message ${message} but that might be an infinite loop, so we stopped`); // Typo - {$message}
-    	sendMessage("Hi, we detected the potential for an infinite loop, and hopefully stopped it? Check your command response!");
-    	return;
-  	}
-  	if (message.length == 0 ) {
-    	console.log("Message was not long enough or no message was sent.");
-    	sendMessage("The message was not long enough or no message was sent.")
-    	return
-  	}
-  	if (source == "user") {
-    	if (message.length > 255) {
-      		sendMessage("The command/message was too long to send.");
-    	} else {
-      		message = message.replace(/[\t\r\n""]+/g, "");
-      		sendMessage(message);
-    	}
-  	} else {
-    	if (message.length > 255) {
-      		glimboiMessage("The command/message was too long to send.");
-    	} else {
-      		message = message.replace(/[\t\r\n""]+/g, "");
-      		glimboiMessage(message, false);
-    	}
-  	}
+function filterMessage(message: string): string {
+    // Length checks
+    if (message.length > 255) {
+        console.log(`Message too long. Message: ${message}`);
+        return "The command/message was too long to send.";
+    } else if (message.length === 0) {
+        console.log(`Message too short. Message: ${message}`);
+        return "The command/message was too short to send.";
+    }
+
+    return message.replace(/[\t\r\n""]+/g, "");
 }
 
 
@@ -40,32 +22,24 @@ function filterMessage(message:string, source?: "user" | "glimboi") {
  * Sends a message to chat. This function is called when a user presses send.
  * @param {string} data A message to be sent to chat
  */
-function sendMessage(data:message) {
-  	try {
-    	let websocketConnetion = ChatHandle.getConnection();
+async function sendMessage(data: string, source: "user" | "glimboi" = "glimboi") {
+    try {
+        let websocketConnetion = ChatHandle.getConnection();
         if (websocketConnetion.readyState !== 2 && websocketConnetion.readyState !== 3) {
-            ApiHandle.sendMessage(data);
+            // Filter the message so its safe to send
+            let message = filterMessage(data);
+            // If the user sent a command we need to put it in loop protection
+            if (source == "user") {
+                CommandHandle.CommandRunner.loopSafeUsers.push(ChatHandle.getBotName().toLowerCase());
+            }
+
+            await ApiHandle.sendMessage(message);
         } else {
             throw "Socket error, probably not logged in yet"
         }
-  	} catch(e) {
-    	console.log(e);
-    	errorMessage("Auth Error", "The bot must be authenticated for this feature to work. You must be in a chat to send a message.")
-  	}
-}
-
-/**
- * Sends a message to chat as the bot. This is not from a user pressing send.
- * @param {string} data The message to be sent to chat
- */
-function glimboiMessage(data: message, logError: boolean = false) {
-    try {
-        ApiHandle.sendMessage(data);
     } catch (e) {
-        if (logError) {
-            console.log(e);
-            errorMessage("Message Error", "Message failed to send. You must be authenticated and be in a chat to send a message.")
-        }
+        console.log(e);
+        errorMessage("Auth Error", "The bot must be authenticated for this feature to work. You must be in a chat to send a message.")
     }
 }
 
@@ -77,7 +51,7 @@ function glimboiMessage(data: message, logError: boolean = false) {
  * @param {boolean} isReload Is this reloading all the messages for the chat page, or a new message?
  * @param {number} messageID The ID of the message from glimesh chat
  */
-function logMessage(user:string, message:message, avatar:avatar, isReload: boolean, messageID:number, state:messageState, messageTokens) {
+function logMessage(user:string, message:string, avatar:avatar, isReload: boolean, messageID:number, state:messageState, messageTokens) {
     let tokens = getTokens(messageTokens);
     try {
         let adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
@@ -85,17 +59,6 @@ function logMessage(user:string, message:message, avatar:avatar, isReload: boole
         tokens.forEach(token => {
             htmlOfTokens += token.outerHTML;
         });
-        /*
-        $("#chatList").append(`
-          <li class="left clearfix ${adminClass} ${state} w-100" name='${user}' title="${getMessageHoverTitle(state)}">
-                <div contentLocation="1" class="chat-body1 clearfix testing" name='${user}' oncontextmenu="loadChatContextMenu(event)">
-                    <span class="chat-img1 pull-left" name='${user}'>
-                      <img src="${avatar}" alt="User Avatar" class="rounded-circle" name='${user}'>
-                    </span>
-                    <p name='${user}' messageID='${messageID}'><span id="chatUser" name='${user}' >${user}: </span> ${htmlOfTokens} </p>
-                </div>
-          </li>`
-          );*/
 
         let div = document.createElement("div");
         div.className = `p-2 flex flex-row gap-3 items-center ${adminClass}`;
@@ -148,4 +111,4 @@ function getTokens(tokens: any[]) {
     return tokens
 }
 
-export { filterMessage, getTokens, glimboiMessage, logMessage, sendMessage }
+export { getTokens, logMessage, sendMessage }

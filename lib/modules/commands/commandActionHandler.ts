@@ -45,7 +45,7 @@ class ChatMessage extends ChatAction {
 
     async run({activation, user}:any) {
         let chatMessage = await ActionResources.searchForVariables({activation: activation, user: user, message: this.message})
-        ChatMessages.filterMessage(chatMessage, "glimboi");
+        await ChatMessages.sendMessage(chatMessage);
         return
     }
 }
@@ -185,7 +185,7 @@ class Matrix extends ChatAction {
 
     async run({activation, user}) {
         let message = await ActionResources.searchForVariables({message: this.message, user: user, activation: activation});
-        ApiHandle.Webhooks.MatrixWebhook.sendMessage(message, this.room);
+        await ApiHandle.Webhooks.MatrixWebhook.sendMessage(message, this.room);
         return
     }
 }
