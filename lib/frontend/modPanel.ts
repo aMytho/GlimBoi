@@ -57,7 +57,7 @@ function removeBannedWords(words:string) {
         }
     }
     document.getElementById("removeWordSuccessMessage").innerText = "Words removed."
-    RemoveModal.hide();
+    BannedWordRemoveModal.hide();
 }
 
 
