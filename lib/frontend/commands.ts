@@ -1,7 +1,7 @@
 //handles command for electron. This file talks to the commands file in the lib folder. THEY ARE DIFFERENT!
 CommandHandle.updatePath(appData[1]);
 let table; //The physical table for the UI
-let AddModal:Modal, EditModal:Modal;
+let AddModal:Modal;
 let commandDupePrevention: boolean = false;
 
 //Loads the command table.
@@ -120,39 +120,13 @@ async function loadCommandTable() {
     });
 }
 
-//edits commands
-function checkEditCommand() {
-    let commandToBeEdited = ($("#commandEditInput").val() as string).toLowerCase();
-    let editErrorMessage = document.getElementById("editSearchCommandLabel")
-    commandToBeEdited = commandToBeEdited.replace(new RegExp("^[\!]+"), "").trim();
-
-    //Make sure the command exists.
-    CommandHandle.findCommand(commandToBeEdited).then(data => {
-        if (data !== null) {
-            console.log(`Editing ${commandToBeEdited}`);
-            const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
-            // Close the search modal
-            EditModal.hide();
-            // Create and open the edit modal
-            AddModal.show();
-            CommandUI.loadModalEdit(data, AddModal);
-        } else {
-            editErrorMessage.innerHTML = "This command does not exist.";
-            setTimeout(() => {
-                editErrorMessage.innerHTML = "Enter the command to edit.";
-            }, 4000);
-        }
-    })
-
-}
-
 /**
  * Removes any HTML/CSS that is invisible to the user.
  * @param {string} html All the command data
  */
 function strip(html:string) {
-  	let doc = new DOMParser().parseFromString(html, 'text/html');
-  	return doc.body.textContent || "";
+    let doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
 }
 
 function moveAction(element:HTMLElement, direction: "up" | "down") {
@@ -174,18 +148,10 @@ function commandModalPrep() {
     const CommandUI = require(`${appData[0]}/frontend/commands/modalManager.js`);
     AddModal = new Modal(document.getElementById("addCommandModal"), {});
 
-    EditModal = new Modal(document.getElementById("editCommandModal"), {
-        onHide: () => {
-            (document.getElementById("commandEditInput") as HTMLInputElement).value = "";
-        }
-    });
-
     document.getElementById("activateCommandAddModal").addEventListener("click", () => {
         AddModal.show();
         CommandUI.loadModalAdd(AddModal);
     });
-    document.getElementById("activateCommandEditModal").addEventListener("click", () => EditModal.show());
-    document.getElementById("closeCommandEditModal").addEventListener("click", () => EditModal.hide());
 
     document.getElementById("saveCommandSettings").addEventListener('click', function (e) {
         successMessage("Settings Saved", "Command settings have been saved.");

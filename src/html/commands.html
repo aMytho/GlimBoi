@@ -12,7 +12,6 @@
     </div>
     <div class="flex flex-wrap flex-row justify-center mt-2">
         <a class="btn-primary" id="activateCommandAddModal" href="#">Add Command</a>
-        <a class="btn-success" id="activateCommandEditModal" href="#">Edit Commands</a>
     </div>
     <div id="commandTabs" class="mt-4">
         <div id="userCommands" role="tabpanel" aria-labelledby="userCommandsTab">
@@ -458,36 +457,6 @@
     </div>
 </div>
 <!-- Modal: Add Command -->
-
-<!-- Modal: Edit Command -->
-<div id="editCommandModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
-    <div class="relative max-w-md h-full md:h-auto whiteText">
-        <!-- Modal content -->
-        <div class="relative glimPanel rounded-lg shadow p-4">
-            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
-                <h4 class="text-center whiteText font-bold text-2xl w-full">Edit a Command</h4>
-            </div>
-            <form class="px-6 pb-4 mt-8" action="#">
-                <div class="flex justify-between">
-                    <div class="flex items-start">
-                        <div class="flex items-center h-5">
-                            <input type="text" placeholder="Command Name" id="commandEditInput">
-                        </div>
-                        <div class="ml-3 text-sm">
-                            <label for="remember" id="editSearchCommandLabel" class="font-medium">Enter the command to edit.</label>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
-                <button class="btn-success" onclick="checkEditCommand()" id="editCommandButtonFinish">Edit</button>
-                <button type="button" class="btn-warning" id="closeCommandEditModal">Close</button>
-                <p id="errorMessageEdit"></p>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal: Edit Command -->
 
 <style>
     #example {
