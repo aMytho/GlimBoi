@@ -11,7 +11,10 @@ function handleGlimeshMessage(chatMessage: incomingGlimeshMessage ) {
     EventHandle.getCurrentEvents().forEach(element => {
         EventHandle.handleEvent(element, userChat, messageChat)
     });
-    ChatStats.addCurrentUser(userChat);
+    // Update current users. Don't send yourself
+    if (userChat.toLowerCase() != ChatHandle.getBotName().toLowerCase()) {
+        ChatStats.addCurrentUser(userChat);
+    }
     if (messageChat.startsWith("!")) { //If it is a command of some sort...
         let message = messageChat.split(" ");
         switch (message[0]) {
