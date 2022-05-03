@@ -154,7 +154,7 @@ async function addCommand(user: string, command: commandName, commandData: strin
             });
             ChatMessages.sendMessage(`${command} added!`);
             try {
-                addCommandTable({ commandName: command, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions })
+                addCommandTable({ commandName: command, uses: 0, points: 0, rank: "Everyone", actions: newCMD.actions, disabled: false })
             } catch (e) { }
         }
     }
