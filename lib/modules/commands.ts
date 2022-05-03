@@ -185,6 +185,19 @@ function addDefaultTrigger(name:string) {
     })
 }
 
+/**
+ * Sets the command status.
+ * @param command The command to edit
+ * @param status The status to set the command to
+ */
+function setCommandStatus(command: string, status: boolean):Promise<void> {
+    return new Promise(resolve => {
+        commandsDB.update({commandName: command}, {$set: {disabled: !status}}, {}, function() {
+            resolve();
+        })
+    })
+}
+
 export { addCommand, addCommandCount, addDefaultTrigger, ChatAction, CommandRunner,
 countCommands, editCommand, findByTrigger, findCommand, getAll,
-randomRepeatCommand, removeCommand, TriggerHelper, updatePath};
+randomRepeatCommand, removeCommand, setCommandStatus, TriggerHelper, updatePath};
