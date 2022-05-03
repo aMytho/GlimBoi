@@ -28,21 +28,22 @@ function fillObsData(data, html) {
             html.firstElementChild.firstElementChild.innerText = data.data["scene-name"];
             return html;
         case "changeVisibility":
-            html.firstElementChild.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
+            html.firstElementChild.firstElementChild.firstElementChild;
+            html.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
             let sourceVisible;
             if (data.data["render"]) {
                 sourceVisible = "show";
             } else {
                 sourceVisible = "hide";
             }
-            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.value = sourceVisible;
-            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.querySelector(`[value="${sourceVisible}"]`).setAttribute("selected", "selected");
+            html.firstElementChild.children[2].firstElementChild.value = sourceVisible;
+            html.firstElementChild.children[2].firstElementChild.querySelector(`[value="${sourceVisible}"]`).setAttribute("selected", "selected");
             return html;
         case "muteSource":
-            html.firstElementChild.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
+            html.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
             if (data.requestType == "ToggleMute") {
-                html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.value = "toggleMute";
-                html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.querySelector(`[value="toggleMute"]`).setAttribute("selected", "selected");
+                html.firstElementChild.children[2].firstElementChild.value = "toggleMute";
+                html.firstElementChild.children[2].firstElementChild.querySelector(`[value="toggleMute"]`).setAttribute("selected", "selected");
             } else {
                 let shouldMute;
                 if (data.data["mute"] == true) {
@@ -50,8 +51,8 @@ function fillObsData(data, html) {
                 } else {
                     shouldMute = "unMute";
                 }
-                html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.value = shouldMute;
-                html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.querySelector(`[value="${shouldMute}"]`).setAttribute("selected", "selected");
+                html.firstElementChild.children[2].firstElementChild.value = shouldMute;
+                html.firstElementChild.children[2].firstElementChild.querySelector(`[value="${shouldMute}"]`).setAttribute("selected", "selected");
             }
             return html;
         case "replayBuffer":
@@ -59,9 +60,9 @@ function fillObsData(data, html) {
             html.firstElementChild.firstElementChild.querySelector(`[value="${data.requestType}"]`).setAttribute("selected", "selected");
             return html;
         case "setVolume":
-            html.firstElementChild.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
-            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.children[1].value = String(data.data["volume"]);
-            html.firstElementChild.lastElementChild.firstElementChild.firstElementChild.children[2].innerText = data.data["volume"].toString();
+            html.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
+            html.firstElementChild.children[2].children[1].value = String(data.data["volume"]);
+            html.firstElementChild.children[2].children[2].innerText = data.data["volume"].toString();
             return html;
         case "startStopStreamRecording":
             switch (data.requestType) {

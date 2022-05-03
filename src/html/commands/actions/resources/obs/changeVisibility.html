@@ -6,12 +6,6 @@
     <div>
         <p>Enter the source to change the visibility of. $variables supported</p>
     </div>
-    <style>
-        .sceneSwitch[contenteditable]:empty::before {
-            content: "Enter the source to affect. Caps matter." !important;
-            color: gray;
-        }
-    </style>
     <div>
         <select class="settingSelect ml-4">
             <option value="hide">Hide</option>
@@ -22,3 +16,9 @@
         <p>Select your desired effect.</p>
     </div>
 </div>
+<style>
+    .sceneSwitch[contenteditable]:empty::before {
+        content: "Enter the source to affect. Caps matter." !important;
+        color: gray;
+    }
+</style>

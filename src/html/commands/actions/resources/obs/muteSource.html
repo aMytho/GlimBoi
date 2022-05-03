@@ -1,18 +1,12 @@
 <div class="actionMain text-center col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-    <div >
+    <div>
         <span class="textarea sceneSwitch ml-4 w-f" role="textbox" contenteditable
             style="background-color: #1b2e4b;color:aquamarine;"></span>
     </div>
-    <div >
+    <div>
         <p>Enter the source to mute. $variables supported</p>
     </div>
-    <style>
-        .sceneSwitch[contenteditable]:empty::before {
-            content: "Enter the source to mute. Caps matter." !important;
-            color: gray;
-        }
-    </style>
-    <div >
+    <div>
         <select class="settingSelect ml-4">
             <option value="mute">Mute</option>
             <option value="unMute">UnMute</option>
@@ -23,3 +17,9 @@
         <p>Select your desired effect.</p>
     </div>
 </div>
+<style>
+    .sceneSwitch[contenteditable]:empty::before {
+        content: "Enter the source to mute. Caps matter." !important;
+        color: gray;
+    }
+</style>

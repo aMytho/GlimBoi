@@ -6,22 +6,20 @@
     <div>
         <p>Enter the source to modify. $variables supported</p>
     </div>
-    <style>
-        .sceneSwitch[contenteditable]:empty::before {
-            content: "Enter the source to modify. Caps matter." !important;
-            color: gray;
-        }
-    </style>
     <div>
-        <div>
-            <label for="volume">Volume</label>
-            <input id="volume" type="range" min="-100" max="0" step="0.5"
-                oninput="this.parentElement.children[2].innerText = this.value" class="settingInput ml-4">
-            <p class="text-center">-50</p><!-- Volume Label -->
-        </div>
+        <label for="volume">Volume</label>
+        <input id="volume" type="range" min="-100" max="0" step="0.5"
+            oninput="this.parentElement.children[2].innerText = this.value" class="settingInput ml-4">
+        <p class="text-center">-50</p><!-- Volume Label -->
     </div>
     <div>
         <p class="ml-4">Select your desired volume.</p>
         <p class="ml-4">Due to a bug the slider may not update. The label is always accurate.
     </div>
 </div>
+<style>
+    .sceneSwitch[contenteditable]:empty::before {
+        content: "Enter the source to modify. Caps matter." !important;
+        color: gray;
+    }
+</style>

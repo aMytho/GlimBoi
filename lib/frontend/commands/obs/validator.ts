@@ -39,8 +39,8 @@ function getStartStopStreamingSelection(command) {
 }
 
 function getMuteSourceInfo(command: HTMLElement) {
-    let source = (command.firstElementChild.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
-    let actionToTake = (command.firstElementChild.lastElementChild.firstElementChild.firstElementChild as HTMLSelectElement).value;
+    let source = (command.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
+    let actionToTake = (command.firstElementChild.children[2].firstElementChild as HTMLSelectElement).value;
     if (actionToTake == "toggleMute") {
         return { type: "ObsWebSocket", requestType: "ToggleMute", variables: [], data: { source: source }, instruction: "muteSource" };
     } else {
@@ -50,8 +50,8 @@ function getMuteSourceInfo(command: HTMLElement) {
 }
 
 function getVisibilityValue(command) {
-    let source = (command.firstElementChild.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
-    let actionToTake = (command.firstElementChild.lastElementChild.firstElementChild.firstElementChild as HTMLSelectElement).value;
+    let source = (command.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
+    let actionToTake = (command.firstElementChild.children[2].firstElementChild as HTMLSelectElement).value;
     if (actionToTake == "hide") {
         return { type: "ObsWebSocket", requestType: "SetSceneItemRender", variables: [], data: { source: source, render: false }, instruction: "changeVisibility" };
     } else {
@@ -60,8 +60,8 @@ function getVisibilityValue(command) {
 }
 
 function getVolumeValue(command) {
-    let source = (command.firstElementChild.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
-    let volume = (command.firstElementChild.lastElementChild.firstElementChild.firstElementChild.children[2] as HTMLParagraphElement).innerText;
+    let source = (command.firstElementChild.firstElementChild.firstElementChild as HTMLSpanElement).innerText;
+    let volume = (command.firstElementChild.children[2].children[2] as HTMLParagraphElement).innerText;
     return {type: "ObsWebSocket", requestType: "SetVolume", variables: [], data: {source: source.trim(), volume: parseFloat(volume), useDecibel: true}, instruction: "setVolume"};
 }
 
