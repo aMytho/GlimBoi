@@ -13,7 +13,6 @@
     <div class="flex flex-wrap flex-row justify-center mt-2">
         <a class="btn-primary" id="activateCommandAddModal" href="#">Add Command</a>
         <a class="btn-success" id="activateCommandEditModal" href="#">Edit Commands</a>
-        <a class="btn-danger" href="#" id="activateCommandRemoveModal">Remove Command</a>
     </div>
     <div id="commandTabs" class="mt-4">
         <div id="userCommands" role="tabpanel" aria-labelledby="userCommandsTab">
@@ -489,39 +488,6 @@
     </div>
 </div>
 <!-- Modal: Edit Command -->
-
-<!-- Modal: Remove Command -->
-<div id="removeCommandModal" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
-    tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
-    <div class="relative max-w-md h-full md:h-auto whiteText">
-        <div class="relative glimPanel rounded-lg shadow p-4">
-            <!--Header-->
-            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
-                <h4 class="text-center whiteText font-bold text-2xl w-full">Remove a Command</h4>
-            </div>
-            <!--Body-->
-            <form class="px-6 pb-4 mt-8" action="#">
-                <div class="flex justify-between">
-                    <div class="flex items-start">
-                        <div class="flex items-center h-5">
-                            <input type="text" placeholder="Command Name" id="commandRemoveInput">
-                        </div>
-                        <div class="ml-3 text-sm">
-                            <label for="remember" id="removeCommandMessage" class="font-medium">Enter the command to remove.</label>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <!--Footer-->
-            <div class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
-                <button class="btn-danger" onclick="checkRemoveCommand()">Remove</button>
-                <button type="button" class="btn-warning" id="closeCommandRemoveModal">Close</button>
-                <p id="errorMessageDelete"></p>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal: Remove Command -->
 
 <style>
     #example {
