@@ -147,7 +147,7 @@ type CustomUserVaribles = {
     data: string | any;
 }
 
-type actionName = "ChatMessage" | "ApiRequestGet" | "Audio" | "Ban" | "Follow" | "ImageGif" |
+type actionName = "ChatMessage" | "ApiRequestGet" | "ApiRequest" | "Audio" | "Ban" | "Follow" | "ImageGif" |
 "Matrix" | "ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Twitter" |
 "Wait" | "WriteFile"
 type actionInfo = any[] | any
@@ -176,7 +176,7 @@ type FollowTrigger = {
 
 type WelcomeUserTrigger = {
     /**
-     * The user to exclusivly welcome. 
+     * The user to exclusivly welcome.
      */
     user?: string;
 }

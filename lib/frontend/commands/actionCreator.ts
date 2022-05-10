@@ -9,8 +9,8 @@ async function buildChatMessageUI(mode:actionMode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
-async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
-    let action = await getActionHTML("ApiRequestGet");
+async function buildApiRequestUI(mode:actionMode, commandInfo) {
+    let action = await getActionHTML("ApiRequest");
     action.children[1].firstElementChild.children[1].firstElementChild.addEventListener("change", event => {
         switchAPIView((action.children[1].firstElementChild.children[1].firstElementChild as HTMLInputElement).value, action)
     })
@@ -52,6 +52,14 @@ async function buildApiRequestGetUI(mode:actionMode, commandInfo) {
                 }
                 addJSONRow(action.children[1].children[2].firstElementChild.firstElementChild.firstElementChild, mode, "HeaderRow", {variable: commandInfo.headers[i][1], data: commandInfo.headers[i][0]});
             }
+        }
+        if (commandInfo.body) {
+            (action.children[1].children[3].children[0].firstElementChild as HTMLSpanElement).innerText = commandInfo.body;
+        }
+        if (commandInfo.httpRequest) {
+            (action.children[1].children[3].children[1].firstElementChild as HTMLSelectElement).value = commandInfo.httpRequest;
+        } else {
+            (action.children[1].children[3].children[1].firstElementChild as HTMLSelectElement).value = "GET";
         }
     }
     document.getElementById(`${mode}CommandList`).appendChild(action);
@@ -263,6 +271,6 @@ async function getActionHTML(action: string) {
     return div;
 }
 
-export {buildApiRequestGetUI, buildAudioUI, buildBanUI, buildChatMessageUI,buildFollowUI,
+export {buildApiRequestUI, buildAudioUI, buildBanUI, buildChatMessageUI,buildFollowUI,
     buildImageGifUI, buildReadFileUI, buildMatrixUI, buildObsWebSocketUI, buildPointsUI,
     buildTimeoutUI, buildTweetUI, buildVideoUI, buildWaitUI, buildWriteFileUI}

@@ -56,26 +56,44 @@ class ChatMessage extends ChatAction {
  * @param {array} headers The headers to include with the request
  * @param {array} returns What variables we set and what data we search for in the response
  */
-class ApiRequestGet extends ChatAction {
+class ApiRequest extends ChatAction {
     url:string
     headers:any
     returns: any
-    constructor({url, headers, returns}) {
-        super("ApiRequestGet", ["url", "headers", "path"], returns );
+    body:any
+    httpRequest: string
+    constructor({url, headers, returns, body, httpRequest}) {
+        super("ApiRequest", ["url", "headers", "path"], returns );
         this.url = url;
         this.headers = headers;
         this.returns = returns;
+        this.body = body;
+        this.httpRequest = httpRequest;
     }
 
-    async run() {
-        await ActionResources.ApiRequest({url: this.url, headers: this.headers, mode: "GET", request: null, path: this.returns, pathType: this.getPathType()})
-        return this.generateVariables
+    async run({activation, user}) {
+        [this.url, this.body] = await Promise.all([
+            ActionResources.searchForVariables({activation: activation, user: user, message: this.url || ""}),
+            ActionResources.searchForVariables({activation: activation, user: user, message: this.body || ""})
+        ]);
+
+        const request:typeof import("../API/request") = require(appData[0] + "/modules/API/request.js");
+        await request.default({url: this.url, headers: this.headers, mode: this.httpRequest || "GET",
+        request: null, path: this.returns, pathType: this.getPathType(), body: this.body});
+        return this.generateVariables;
     }
 
     getPathType() {
         if (this.returns[0].data == null) {
             return "text"
         } else return "json"
+    }
+}
+
+// Legay API Request
+class ApiRequestGet extends ApiRequest {
+    constructor({url, headers, returns}) {
+        super({url: url, headers: headers, returns: returns, body: null, httpRequest: "GET"});
     }
 }
 
@@ -396,5 +414,5 @@ class WriteFile extends ChatAction {
     }
 }
 
-export {ActionResources, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, Matrix,
+export {ActionResources, ApiRequest, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, Matrix,
 ObsWebSocket, Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}

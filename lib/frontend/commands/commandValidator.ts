@@ -92,12 +92,15 @@ function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
             const localTrigger = triggers[trigger];
             switch(localTrigger.getAttribute("data-triggerType")) {
                 case "chatMessage":
-                    let msg = localTrigger.getElementsByTagName("input")[0].value;
+                    let msg = localTrigger.getElementsByTagName("input")[0].value.trim();
                     if (msg.length == 0) {
                         errorMessageCommandModal("You must enter a message", localTrigger.getElementsByTagName("input")[0], mode);
                         return;
                     } else if (msg.startsWith("!")) {
                         errorMessageCommandModal("The message cannot start with a !", localTrigger.getElementsByTagName("input")[0], mode);
+                        return;
+                    } else if (msg.split(" ").length > 1) {
+                        errorMessageCommandModal("The message must be 1 word", localTrigger.getElementsByTagName("input")[0], mode);
                         return;
                     }
                     triggerArray.push({trigger: "ChatMessage", constraints: {
@@ -172,8 +175,11 @@ async function determineActionAndCheck(action, mode:actionMode) {
                 errorMessageCommandModal(e, action.firstElementChild, mode)
                 return false
             }
-        case "API Request (GET)":
+        case "API Request (GET)": // Legacy
+        case "API Request":
             try {
+                let httpRequest = action.children[1].children[3].children[1].firstElementChild.value;
+                let body = action.children[1].children[3].children[0].firstElementChild.innerText;
                 let url = strip(action.children[1].firstElementChild.firstElementChild.firstElementChild.innerText.trim())
                 if (url.length == 0) {
                     throw "You must enter a URL"
@@ -220,7 +226,7 @@ async function determineActionAndCheck(action, mode:actionMode) {
                         headersToMake.push([header, value])
                     }
                 resetMessageCommandModal(action.firstElementChild, mode);
-                return {type: "ApiRequestGet", url: url, headers: headersToMake, returns: varsToMake}
+                return {type: "ApiRequest", url: url, headers: headersToMake, returns: varsToMake, body: body, httpRequest: httpRequest}
             } catch(e) {
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode)

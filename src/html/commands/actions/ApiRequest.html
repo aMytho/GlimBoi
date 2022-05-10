@@ -1,5 +1,5 @@
 <div class="topnav">
-    <h3 class="active">API Request (GET)</h3>
+    <h3 class="active">API Request</h3>
     <div class="float-right" style="padding:12px 14px">
         <i class="fas mx-1 fa-arrow-down" onclick="moveAction(this.parentElement.parentElement.parentElement, 'down')"></i>
         <i class="fas mx-1 fa-arrow-up" onclick="moveAction(this.parentElement.parentElement.parentElement, 'up')"></i>
@@ -68,14 +68,31 @@
                 </tr>
               </table>
         </div>
-        <div class="px-4 w-full text-center font-bold text-xl">
-            <p>Enter the headers with their values (if any)</p>
+    </div>
+    <div class="actionMain text-center grid grid-cols-1 md:grid-cols-3">
+        <div class="px-4 col-span-2">
+            <span class="textarea ml-4 w-11/12" role="textbox" contenteditable id="bodyInput"
+                style="background-color: #1b2e4b;color:aquamarine;"></span>
         </div>
+        <div class="px-4">
+            <select class="settingSelect">
+                <option value="GET">GET (Default)</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="PATCH">PATCH</option>
+            </select>
+        </div>
+
     </div>
 </div>
 <style>
 #urlInput[contenteditable]:empty::before {
   content: "Full URL to API including ? query strings";
+  color: gray;
+}
+#bodyInput[contenteditable]:empty::before {
+  content: "The body to send with the message. Optional";
   color: gray;
 }
 #requestTextInput[contenteditable]:empty::before {
@@ -91,11 +108,11 @@
   color: gray;
 }
 #headerName[contenteditable]:empty::before {
-  content: "Name of the header";
+  content: "Name of the header. Optional";
   color: gray;
 }
 #headerValue[contenteditable]:empty::before {
-  content: "Value";
+  content: "Value. Required if header name is set";
   color: gray;
 }
 </style>

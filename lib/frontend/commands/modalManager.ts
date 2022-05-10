@@ -53,7 +53,7 @@ function prepareActions(mode, modal: Modal) {
     }
 
     document.getElementById("CreateChatMessage")!.onclick = () => addActionToUI("ChatMessage", mode);
-    document.getElementById("CreateApiRequestGet")!.onclick = () => addActionToUI("ApiRequestGet", mode);
+    document.getElementById("CreateApiRequest")!.onclick = () => addActionToUI("ApiRequest", mode);
     document.getElementById("CreateAudio")!.onclick = () => addActionToUI("Audio", mode);
     document.getElementById("CreateBan")!.onclick = () => addActionToUI("Ban", mode);
     document.getElementById("CreateFollow")!.onclick = () => addActionToUI("Follow", mode);
@@ -115,7 +115,8 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         case "ChatMessage": await ActionCreator.buildChatMessageUI(mode, data);
             break;
 
-        case "ApiRequestGet": await ActionCreator.buildApiRequestGetUI(mode, data);
+        case "ApiRequestGet": // Legacy
+        case "ApiRequest": await ActionCreator.buildApiRequestUI(mode, data);
             break;
 
         case "Audio": await ActionCreator.buildAudioUI(mode, data);
@@ -295,7 +296,6 @@ async function changeTriggerOptions(newTrigger:HTMLElement, data?:TriggerStructu
     let newDiv = await getTriggerHTML(triggerSelecter.value);
     newTrigger.getElementsByClassName("contentTrigger")[0].innerHTML = "";
     newTrigger.getElementsByClassName("contentTrigger")[0].appendChild(newDiv);
-    console.log(newDiv);
     console.log(data);
     if (data) {
         data.forEach(trigger => {
