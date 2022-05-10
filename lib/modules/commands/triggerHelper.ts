@@ -9,8 +9,9 @@ async function checkContext(trigger:CommandTrigger, context) {
     commands = commands.filter(command => {
         switch(command.triggers[0].trigger) {
             case "ChatMessage":
-                if (
-                    (context as incomingGlimeshMessage).message.startsWith((command.triggers[0].constraints as ChatMessageTrigger).startsWith)
+                if ( // Check that it starts with the trigger
+                    (context as incomingGlimeshMessage).message.toLowerCase().startsWith((command.triggers[0].constraints as ChatMessageTrigger).startsWith.toLowerCase())
+                    && /* Check that the first word matches for extra security */ (context as incomingGlimeshMessage).message.split(" ")[0].toLowerCase() === (command.triggers[0].constraints as ChatMessageTrigger).startsWith.toLowerCase()
                 ) {
                     return true;
                 }
