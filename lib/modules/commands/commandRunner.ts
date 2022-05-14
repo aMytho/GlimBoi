@@ -1,7 +1,5 @@
 // This file handles commands. Runs, replace vars, repeats, etc
 
-// Represents commands that the bot can safely respond to. Used in loop protection.
-const loopSafeUsers: string[] = [];
 // Holds all of the commands that are on cooldown
 let cooldownArray:commandName[] = [];
 
@@ -85,19 +83,6 @@ async function permissionCheck(command:CommandType, user:string): Promise<string
         showToast(`${command.commandName} attempted to run but was disabled.`);
         return "NOMESSAGE"
     }
-    console.log(user, ChatHandle.getBotName(), loopSafeUsers);
-    if (user == ChatHandle.getBotName().toLowerCase()) {
-        if (!loopSafeUsers.includes(user)) {
-            return "Glimboi cannot respond to itself."
-        }
-        // Remove the user from the array once
-        for (let i = 0; i < loopSafeUsers.length; i++) {
-            if (loopSafeUsers[i] == user) {
-                loopSafeUsers.splice(i, 1);
-                break;
-            }
-        }
-    }
 
     if (command.cooldown && cooldownArray.includes(command.commandName)) {
         console.log(`Cooldown for ${command.commandName} is still active.`);
@@ -157,4 +142,4 @@ function postCommandRun(command: CommandType, context: TriggerContext) {
     }
 }
 
-export {checkCommand, loopSafeUsers, runCommand}
+export {checkCommand, runCommand}

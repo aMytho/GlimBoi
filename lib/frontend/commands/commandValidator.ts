@@ -82,7 +82,7 @@
  * Makes sure the triggers are alright
  * @param mode "add" or "edit" Which mode we are using
  */
-function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
+async function validateTriggers(mode:"add" | "edit"): Promise<undefined | TriggerStructure[]> {
     resetMessageCommandModal(document.getElementById(`${mode}TriggerData`), mode);
     let triggers = document.getElementById(`${mode}TriggerData`).children;
     if (triggers.length !== 0) {
@@ -102,6 +102,25 @@ function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
                     } else if (msg.split(" ").length > 1) {
                         errorMessageCommandModal("The message must be 1 word", localTrigger.getElementsByTagName("input")[0], mode);
                         return;
+                    }
+
+                    let tempTrigger = msg.split(" ")[0].toLowerCase(); // Get the first word
+                    let commands = await CommandHandle.findByTrigger("ChatMessage");
+                    for (let command of commands) {
+                        if (!command.actions) {
+                            // Its a legacy command, we check the message value instead of actions
+                            if (command.message.toLowerCase() == tempTrigger) {
+                                errorMessageCommandModal(`The command ${command.commandName} already has a trigger of ${command.message}`,localTrigger.getElementsByTagName("input")[0], mode);
+                                return;
+                            }
+                        } else {
+                            for (let action of command.actions) { //@ts-ignore  Loop through all the triggers
+                                if (action.action == "ChatMessage" && action.message.split(" ")[0].toLowerCase().slice(1) == tempTrigger) { // @ts-ignore
+                                    errorMessageCommandModal(`The command ${command.commandName} already has a trigger of ${action.message}`,localTrigger.getElementsByTagName("input")[0], mode);
+                                    return;
+                                }
+                            }
+                        }
                     }
                     triggerArray.push({trigger: "ChatMessage", constraints: {
                         startsWith: msg
@@ -133,10 +152,11 @@ function validateTriggers(mode:"add" | "edit"): undefined | TriggerStructure[] {
  */
 async function validateActions(mode) {
     let actionsHTML = document.getElementById(`${mode}CommandList`).children;
-    let actionsToBeCreated = []
+    let actionsToBeCreated = [];
+    let triggers = document.getElementById(`${mode}TriggerData`).children;
     if (actionsHTML.length !== 0) {
         for (let i = 0; i < actionsHTML.length; i++) {
-            let actionValue = await determineActionAndCheck(actionsHTML[i], mode)
+            let actionValue = await determineActionAndCheck(actionsHTML[i], mode, triggers)
             if (!actionValue) {
                 return false
             } else {
@@ -157,7 +177,7 @@ async function validateActions(mode) {
  * @param {string} mode Which mode we are in
  * @returns
  */
-async function determineActionAndCheck(action, mode:actionMode) {
+async function determineActionAndCheck(action, mode: actionMode, triggers: HTMLCollection) {
     switch (action.firstElementChild.firstElementChild.innerText) {
         case "Chat Message":
             try {
@@ -166,10 +186,35 @@ async function determineActionAndCheck(action, mode:actionMode) {
                     throw "You must enter a chat message"
                 } else if (possibleMessage.length > 255) {
                     throw "The chat message is too long. Must less than 256 characters"
-                } else if (possibleMessage.length <= 255) {
-                    resetMessageCommandModal(action.firstElementChild, mode)
-                    return { type: "ChatMessage", message: possibleMessage }
                 }
+
+                // Loop prevention. A command must not call other commands
+                if (possibleMessage.startsWith("!")) {
+                    let tempMessage = possibleMessage.slice(1).split(" ")[0].toLowerCase(); // Get the first word
+                    let commands = await CommandHandle.findByTrigger("ChatMessage");
+                    for (let command of commands) {
+                        for (let trigger of command.triggers) { // Loop through all the triggers
+                            // Make sure it won't trigger anything
+                            if ((trigger.constraints as ChatMessageTrigger).startsWith.toLowerCase() == tempMessage) {
+                                throw `This action will trigger the command ${command.commandName}`
+                            }
+                        }
+                    }
+
+                    // A command must not call itself
+                    for (let element of triggers) {
+                        if (element.getAttribute("data-triggerType") == "chatMessage") {
+                            let trigger = element.getElementsByTagName("input")[0].value.toLowerCase();
+                            if (trigger.startsWith("!")) trigger = trigger.slice(1);
+                            if (trigger == possibleMessage) {
+                                throw "This action will trigger itself."
+                            }
+                        }
+                    }
+                }
+
+                resetMessageCommandModal(action.firstElementChild, mode)
+                return { type: "ChatMessage", message: possibleMessage }
             } catch (e) {
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode)

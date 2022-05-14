@@ -6,7 +6,7 @@ function prepareActions(mode, modal: Modal) {
     document.getElementById(`${mode}CommandButtonModal`)!.onclick = async function () {
         const commandValidator: typeof import("../commands/commandValidator") = require(appData[0] + "/frontend/commands/commandValidator.js");
         // First we check the triggers
-        const triggers = commandValidator.validateTriggers(mode);
+        const triggers = await commandValidator.validateTriggers(mode);
         if (triggers) {
             console.log("Triggers are valid");
         } else {
