@@ -16,12 +16,10 @@ function loadMusicProgram() {
     if (musicPlaylist[currentSongIndex]) {
         for (let i = 0; i < musicPlaylist.length; i++) {
             let newSong = document.createElement("div");
-            // @ts-ignore
-            newSong.classList = "song";
+            newSong.className = "song";
             newSong.setAttribute("data-index", "3");
             let newIMG = document.createElement("img");
-            // @ts-ignore
-            newIMG.classList = "thumb"
+            newIMG.className = "thumb"
             if (musicPlaylist[i].cover) {
                 newIMG.src = `data:${musicPlaylist[i].format};base64,${musicPlaylist[i].cover.toString('base64')}`;
             } else {
@@ -37,11 +35,9 @@ function loadMusicProgram() {
             document.getElementById("musicPlaylist")!.appendChild(newSong)
         }
         if (isPlaying) {
-            // @ts-ignore
-            document.getElementById("playPauseIcon")!.classList = "fas fa-pause fa-lg"
+            document.getElementById("playPauseIcon")!.className = "fas fa-pause fa-lg"
         } else {
-            // @ts-ignore
-            document.getElementById("playPauseIcon")!.classList = "fas fa-play fa-lg"
+            document.getElementById("playPauseIcon")!.className = "fas fa-play fa-lg"
         }
         updateInfo(musicPlaylist[currentSongIndex], false);
     }
@@ -90,12 +86,10 @@ async function loadSongs(files) {
             }
             let newName = song.name.slice(0, song.name.lastIndexOf("."))
             let newSong = document.createElement("div");
-            // @ts-ignore
-            newSong.classList = "song";
+            newSong.className = "song";
             newSong.setAttribute("data-index", "3");
             let newIMG = document.createElement("img");
-            // @ts-ignore
-            newIMG.classList = "thumb"
+            newIMG.className = "thumb"
             if (songCover) {
                 newIMG.src = `data:${songCover[1]};base64,${songCover[0].toString('base64')}`;
             } else {
@@ -115,9 +109,9 @@ async function loadSongs(files) {
         }
     }
     if (files.length > 0) {
-    playSong(0, true);
-    (document.getElementById("musicFolderUpload") as HTMLInputElement)!.value = ""
-    CacheStore.set("lastPlayed", musicDirectory.substring(0, musicDirectory.lastIndexOf(lastSong) - 1))
+        playSong(0, true);
+        (document.getElementById("musicFolderUpload") as HTMLInputElement)!.value = ""
+        CacheStore.set("lastPlayed", musicDirectory.substring(0, musicDirectory.lastIndexOf(lastSong) - 1))
     }
 }
 
@@ -127,22 +121,20 @@ async function loadSongs(files) {
 async function toggleMusic() {
     let audioExists = document.getElementById("musicAudio")! as HTMLAudioElement;
     try {
-    let playPauseIcon = document.getElementById("playPauseIcon")!;
-    let progressBar = document.getElementById("progressBarMusic")!;
-    if (isPlaying) {
-        audioExists.pause();
-        progressBar.style.animationPlayState = "paused";
-        // @ts-ignore
-        playPauseIcon.classList = "fas fa-play fa-lg";
-        isPlaying = false
-    } else if (isPlaying == false && audioExists.src !== "") {
-        await audioExists.play();
-        progressBar.style.animationPlayState = "running";
-        // @ts-ignore
-        playPauseIcon.classList = "fas fa-pause fa-lg";
-        isPlaying = true;
-    }
-    } catch(e) {
+        let playPauseIcon = document.getElementById("playPauseIcon")!;
+        let progressBar = document.getElementById("progressBarMusic")!;
+        if (isPlaying) {
+            audioExists.pause();
+            progressBar.style.animationPlayState = "paused";
+            playPauseIcon.className = "fas fa-play fa-lg";
+            isPlaying = false
+        } else if (isPlaying == false && audioExists.src !== "") {
+            await audioExists.play();
+            progressBar.style.animationPlayState = "running";
+            playPauseIcon.className = "fas fa-pause fa-lg";
+            isPlaying = true;
+        }
+    } catch (e) {
         if (isPlaying) {
             audioExists.pause();
             isPlaying = false
@@ -234,7 +226,7 @@ async function playSong(songIndex:songIndex, fadeIn?:boolean) {
     let musicAudio = document.getElementById("musicAudio")! as HTMLAudioElement;
     musicAudio.src = musicPlaylist[songIndex].path;
     musicAudio.volume = volume;
-    await musicAudio.play()
+    await musicAudio.play();
     if (fadeIn && volume > 0) {
         musicAudio.volume = volume / 2 / 2;
         setTimeout(() => {
@@ -248,8 +240,7 @@ async function playSong(songIndex:songIndex, fadeIn?:boolean) {
     musicAudio.removeEventListener("ended", musicEndedHandler);
     musicAudio.addEventListener("ended", musicEndedHandler);
     try {
-        // @ts-ignore
-        document.getElementById("playPauseIcon")!.classList = "fas fa-pause fa-lg";
+        document.getElementById("playPauseIcon")!.className = "fas fa-pause fa-lg";
     } catch(e) {}
     updateInfo(musicPlaylist[songIndex], true);
 }
@@ -309,16 +300,16 @@ async function loadPreviousFolder() {
             });
             console.log(tempSongs)
             if (tempSongs.length > 0) {
-                loadSongs(tempSongs)
+                loadSongs(tempSongs);
             } else {
-                errorMessage("Glimboi was unable to find any songs in the folder.", "")
+                showToast("Glimboi was unable to find any songs in the folder.");
             }
         } catch (e) {
-            errorMessage("Glimboi was unable to load the last folder.", "The last directory used was not found.")
-            console.log(e)
+            errorMessage("Glimboi was unable to load the last folder.", "The last directory used was not found.");
+            console.log(e);
         }
     } else {
-        errorMessage("GlimBoi cannot detect which folder was last played.", "Try playing a new folder. It will be automatically saved and preloaded for next time.")
+        showToast("GlimBoi cannot detect which folder was last played. When you load a new folder it will be automatically saved and preloaded for next time.");
     }
 }
 
