@@ -37,68 +37,65 @@ async function getBot(): Promise<null | string> {
     }
 }
 
-function autoJoinChatButtons(e) {
-    let listing = $(e).closest('.channel-listing');
-  	let channel = listing.attr('data-channel');
-  	let channelid = listing.attr('data-channelid');
-    $('button[data-action=auto-join]').prop('disabled', true);
+// Usr clicks on autojoin button for a channel
+function autoJoinChatButtons(e:HTMLInputElement) {
+    let listing = e.parentElement.parentElement.parentElement;
+    let channel = listing.getAttribute('data-channel');
+    let channelid = listing.getAttribute('data-channelid');
 
-    let enabled = ($(e).attr('data-enabled') == "false"); // Invert current setting
-    console.log(e);
-    console.log(`Setting autoJoin for ${channel} to ${enabled}`);
+    console.log(`Setting autoJoin for ${channel} to ${e.checked}`);
 
     // Set the selected channel to be auto-join
-    ChatChannels.setAutoJoinChannelByID(channelid, enabled).then(channel => {
-        $('button[data-action=auto-join]').prop('disabled', false);
-
-        // Done, so reset the classes
-        $('[data-action=auto-join]').removeClass('btn-success').addClass('btn-outline-warning');
-        $('[data-action=auto-join]').attr('data-enabled', "false");
-
-        if (channel === null) {
+    ChatChannels.setAutoJoinChannelByID(channelid, e.checked).then(channel => {
+        if (channel == null) {
             return;
-        }
-        if (channel.autoJoin) {
-            $(e).removeClass('btn-outline-warning').addClass('btn-success');
-            $(e).attr('data-enabled', String(channel.autoJoin));
+        } else {
+            let channelListings = document.getElementsByClassName("channel-listing");
+            for (let i = 0; i < channelListings.length; i++) {
+                if (channelListings[i].getAttribute("data-channelid") != channelid) {
+                    (channelListings[i].children[2].firstElementChild.firstElementChild as HTMLInputElement).checked = false;
+                }
+            }
         }
     });
 }
 
 function deleteButtonsChat(e:HTMLInputElement) {
-    let listing = $(e).closest('.channel-listing');
-  	let channel = listing.attr('data-channel');
-    let channelid = listing.attr('data-channelid');
-    $(e).prop('disabled', true); // Disable delete btn
+    let listing = e.parentElement.parentElement; // The channel row
+    let channel = listing.getAttribute('data-channel');
+    let channelid = listing.getAttribute('data-channelid');
+    e.setAttribute("disabled", "true") // Disable delete btn
+
     if (currentChatConnected === channel) {
         currentChatConnected = null;
         ChatHandle.disconnect();
         needsReconnect = false;
     }
-    $(listing).remove();
+
+    listing.remove();
     ChatChannels.removeRecentChannelByID(channelid); // Remove from DB
 }
 
 // Join a chat? Set a timeout to avoid a race condition between disconnect and joinChat
-function joinChatButtons(e: HTMLElement) {
-    let channel = $(e).closest('.channel-listing').attr('data-channel');
+async function joinChatButtons(e: HTMLElement) {
+    let channel = e.parentElement.parentElement.getAttribute("data-channel");
     console.log("Trying to join a channel");
     //Joins a chat
-    setTimeout(async function () {
-        await joinChat(channel);
-        needsReconnect = true;
-        if (ChatHandle.isConnected() === false) {
-            // Clear the right-side text of what channel we're connect to & reload channels after deletion
-            $('#channelConnectedName').removeClass('text-success').addClass('text-danger');
-            $('#channelConnectedName').text('Not Connected');
-            ChatChannels.getAllRecentChannels().then(channels => displayChannels(channels));
-        }
-    }, 500);
+    await joinChat(channel);
+    needsReconnect = true;
+    if (ChatHandle.isConnected() === false) {
+        // Clear the right-side text of what channel we're connect to & reload channels after deletion
+        let channelNameTitle = document.getElementById("channelConnectedName");
+        channelNameTitle.classList.remove("text-success");
+        channelNameTitle.classList.add("text-danger");
+        channelNameTitle.innerHTML = "Not Connected";
+        ChatChannels.getAllRecentChannels().then(channels => displayChannels(channels));
+    }
 }
 
 async function leaveChatButton(manual = false) {
     $('button[data-action=leave]').prop('disabled', true);
-  	$('button[data-action=join]').prop('disabled', false);
+    $('button[data-action=join]').prop('disabled', false);
     // Always disconnect unless we're deleting
     currentChatConnected = null;
     ChatHandle.disconnect();
@@ -154,7 +151,7 @@ $(document).on('click', '#triggerNewChatAdd', async function (event) {
         // Authenticate if we can and check the channel
         let response = await ApiHandle.getChannelID((chatToJoin as string));
         if (response == null) {
-            errorMessage(" Auth Error", "Please complete authentication and request a token.");
+            errorMessage("Auth Error", "Please complete authentication and request a token.");
         } else if (response == false) {
             errorMessage("Channel Error",
             "Please make sure that the channel exists. Check your spelling. Enter the channel you want to JOIN, not your bot account.");
@@ -170,71 +167,66 @@ $(document).on('click', '#triggerNewChatAdd', async function (event) {
  * Loads the chat window, autofills some data from the API and displays it
  */
 function loadChatWindow() {
-  	globalChatMessages.forEach(msg => {
-    	ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4], msg[5]);
-  	});
+    // Load the recent chatmessages and display them
+    globalChatMessages.forEach(msg => {
+        ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4], msg[5]);
+    });
 
-    LogHandle.getLogByType(["Delete Message", "Ban User", "Long Timeout User", "Short Timeout User", "UnBan User", "Add Points", "Add User",
-    "Edit Points", "Edit User", "Remove Points", "Remove User", "Add Quote"]).then(data => {
-        if (data !== null) {
-            data.forEach(eventType => {
-                addAction(eventType)
-            })
-        }
-    })
+    try {
+        getBot().then(botName => {
+            let ts = Date.now();
+            let defaultChannels: channel[] = [{
+                channel: 'GlimBoi',
+                timestamp: ts,
+                autoJoin: false
+            }];
 
-  	try {
-    	getBot().then(botName => {
-      		let ts = (Date.now());
-      		let defaultChannels = [{
-        		channel: 'GlimBoi',
-        		timestamp: ts,
-        		autoJoin: false
-      		}];
+            // If we have authentication, add the authenticated user to recent channels
+            if (botName != null) {
+                defaultChannels.push({
+                    channel: botName,
+                    timestamp: ts,
+                    autoJoin: false
+                });
+            }
 
-      		// If we have authentication, add our name to recent channels
-      		if (botName !== null) {
-        		defaultChannels.push({
-          			channel: botName,
-          			timestamp: ts,
-          			autoJoin: false
-        		});
-      		}
+            ChatChannels.getAllRecentChannels().then(channels => {
+                // No channels exist, add the defaults
+                if (channels.length == 0) {
+                    defaultChannels.forEach(chan => {
+                        ChatChannels.addRecentChannel(chan.channel, chan.timestamp, chan.autoJoin);
+                    });
+                    channels = defaultChannels;
+                }
 
-      		ChatChannels.getAllRecentChannels().then(channels => {
-        		if (channels.length == 0) {
-          			defaultChannels.forEach(chan => {
-            			ChatChannels.addRecentChannel(chan.channel, chan.timestamp, chan.autoJoin);
-          			});// @ts-ignore
-          			channels = defaultChannels;
-        		}
+                // Check for autojoin and join the channel if it's enabled
+                channels.forEach(chan => {
+                    if (chan.autoJoin === true && ChatHandle.isConnected() === false) {
+                        joinChat(chan.channel);
+                    }
+                });
 
-        		$('#chatConnections').empty();
-        		channels.forEach(chan => {
-          			if (chan.autoJoin === true && ChatHandle.isConnected() === false) {
-            			joinChat(chan.channel);
-          			}
-        		});
-
-        		displayChannels(channels);
-      		});
-    	});
-  	} catch (e) {
-    	console.log(e);
-  	}
+                displayChannels(channels);
+            });
+        });
+    } catch (e) {
+        console.log(e);
+    }
     viewOrChangeChatSettings("view");
 
-    // use jquery to select all a elements
+    // Enable clipboard for glimesh links
     $('#chatContainer').on("click", ".copyLink", function (e) {
         clipboard.writeText(e.target.innerText);
         showToast("The link has been copied to your clipboard.");
     });
 
+    // Create chat modals
     ChatDiscordModal = new Modal(document.getElementById("discordWebhook"), {});
     ChatGuildedModal = new Modal(document.getElementById("guildedWebhook"), {});
     ChatTwitterModal = new Modal(document.getElementById("twitterWebhook"), {});
     ChatMatrixModal = new Modal(document.getElementById("matrixWebhook"), {});
 
+    // Enabled the closing of chat modals
     document.getElementById("closeDiscordModal").addEventListener("click", () => ChatDiscordModal.hide());
     document.getElementById("closeDiscordModal2").addEventListener("click", () => ChatDiscordModal.hide());
     document.getElementById("closeGuildedModal").addEventListener("click", () => ChatGuildedModal.hide());
@@ -263,64 +255,83 @@ async function addChannelAndDisplay(chatToJoin) {
 
 /**
  * Displays all loaded channels into the recent channels / chats box, sorted by timestamp last connected
- *
- * @param {array[object]} channels
+ * @param channels - Array of channels to display
  */
-function displayChannels(channels) {
-  	$('#chatConnections').empty(); // clear
-  	$('#chatConnections').append(`<div class="pinned"></div>`);
-  	$('#chatConnections').append(`<div class="scroller"></div>`);
+function displayChannels(channels: channel[]) {
+    // Empty the list
+    let chatConnections = document.getElementById("chatConnections");
+    chatConnections.innerHTML = "";
 
-  	// Sort channels by timestamp
-  	channels.sort((a,b) => (a.timestamp < b.timestamp) ? 1 : ((b.timestamp < a.timestamp) ? -1 : 0))
+    // Insert the containers
+    let pinned = document.createElement("div");
+    pinned.classList.add("pinned");
+    let scroller = document.createElement("div");
+    scroller.classList.add("scroller");
+    chatConnections.appendChild(pinned);
+    chatConnections.appendChild(scroller);
 
-  	// Add default elements
-  	channels.forEach(channel => {
-    	let d = new Date(channel.timestamp);
-    	let currentlyConnected = currentChatConnected === channel.channel;
+    // Sort channels by timestamp (last connected)
+    channels.sort((a,b) => (a.timestamp < b.timestamp) ? 1 : ((b.timestamp < a.timestamp) ? -1 : 0))
 
-    	if (currentChatConnected === null) {
-      		$('#channelConnectedName').removeClass('text-success').addClass('text-danger');
-      		$('#channelConnectedName').text('Not Connected');
-      		$('#navChatStatus').removeClass('text-success').addClass('text-danger');
-      		$('#navChatStatus').text('Not Connected');
-    	} else if (currentlyConnected) {
-      		$('#channelConnectedName').removeClass('text-danger').addClass('text-success');
-      		$('#channelConnectedName').text(currentChatConnected);
-    	}
+    // Add default elements
+    channels.forEach(channel => {
+        let d = new Date(channel.timestamp);
+        let currentlyConnected = currentChatConnected === channel.channel;
 
-    	// Disable all leave buttons (except on the connected chat)
-    	// Enable all join buttons (except on the connected chat)
-    	let disableJoin = (currentChatConnected !== null) ? 'disabled' : '';
-    	let disableLeave = (currentChatConnected === null || !currentlyConnected) ? 'disabled' : '';
-    	let joinClasses = (channel.autoJoin) ? 'btn-success' : 'btn-outline-warning';
+        let channelNameDisplay = document.getElementById("channelConnectedName");
+        if (currentChatConnected === null) {
+            channelNameDisplay.innerText = "Not Connected";
+            channelNameDisplay.classList.remove("text-green-500");
+            channelNameDisplay.classList.add("text-red-500");
 
-    	let channelNameText = channel.channel;
-    	let channelNameHTML = channel.channel;
+            let navChatStatus = document.getElementById("navChatStatus");
+            navChatStatus.innerText = "Not Connected";
+            navChatStatus.classList.remove("text-green-500");
+            navChatStatus.classList.add("text-red-500");
+        } else if (currentlyConnected) {
+            channelNameDisplay.classList.remove("text-red-500");
+            channelNameDisplay.classList.add("text-green-500");
+            channelNameDisplay.innerText = currentChatConnected;
+        }
 
-    	if (channel.channel.toLowerCase() === 'glimboi') {
-      		channelNameText = 'GlimBoi (TEST)';
-      		channelNameHTML = '<span class="text-warning text-xl font-bold"><b>GlimBoi (TEST)</b></span>';
-    	}
+        // Disable all leave buttons (except on the connected chat)
+        // Enable all join buttons (except on the connected chat)
+        let disableJoin = (currentChatConnected !== null) ? 'disabled' : '';
+        let disableLeave = (currentChatConnected === null || !currentlyConnected) ? 'disabled' : '';
+        let autoJoin = (channel.autoJoin) ? 'checked' : '';
 
-    	$(currentlyConnected ? '#chatConnections .pinned' : '#chatConnections .scroller').append(`
-      		<div class="mx-0 channel-listing flow-root" data-channel="${channel.channel}" data-channelid="${channel._id}">
-        		<h4 class="float-left whiteText channelName p-0 mb-1 font-bold text-xl" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
-        		<div class="float-right d-flex mb-1" role="group">
-          			<button title="Auto Join" data-enabled="${channel.autoJoin}" data-action="auto-join" class="btn ${joinClasses} btn-icon fas fa-sync-alt" onclick="autoJoinChatButtons(this)"></button>
-          			<button data-action="join" class="btn btn-success" ${disableJoin} onclick="joinChatButtons(this)">Join</button>
-          			<button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(true)">Leave</button>
-          			<button title="Delete" data-action="delete" class="btn btn-danger btn-icon fas fa-trash" onclick="deleteButtonsChat(this)"></button>
-        		</div>
-      		</div>
-    	`);
-  	});
+        let channelNameText = channel.channel;
+        let channelNameHTML = channel.channel;
+
+        if (channel.channel.toLowerCase() === 'glimboi') {
+            channelNameText = 'GlimBoi (TEST)';
+            channelNameHTML = '<span class="text-yellow-300 text-xl font-bold"><b>GlimBoi (TEST)</b></span>';
+        }
+
+        $(currentlyConnected ? '#chatConnections .pinned' : '#chatConnections .scroller').append(`
+            <div class="mx-0 channel-listing flow-root" data-channel="${channel.channel}" data-channelid="${channel._id}">
+                <h4 class="float-left whiteText channelName p-0 mb-1 font-bold text-xl" title="Last Seen: ${d.toLocaleString()} | Channel: ${channelNameText}">${channelNameHTML}</h4>
+                <div id="${channel._id}-autoJoin" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Automatically join this channel at startup
+                </div>
+                <div class="float-right d-flex mb-1" role="group">
+                    <label class="switch" data-action="auto-join" data-tooltip-target="${channel._id}-autoJoin" data-tooltip-trigger="hover">
+                        <input type="checkbox" ${autoJoin} onclick="autoJoinChatButtons(this)">
+                        <span class="slider round"></span>
+                    </label>
+                    <button data-action="join" class="btn btn-success" ${disableJoin} onclick="joinChatButtons(this)">Join</button>
+                    <button data-action="leave" class="btn btn-danger" ${disableLeave} onclick="leaveChatButton(true)">Leave</button>
+                    <button title="Delete" data-action="delete" class="btn btn-danger btn-icon fas fa-trash" onclick="deleteButtonsChat(this)"></button>
+                </div>
+            </div>
+        `);
+    });
+    loadFlowbite();
 }
 
 /**
  * Sends a message to chat as the bot. This is user input.
  * Resets when sent.
- *
  * Not to be confused with ChatMessages.sendMessage
  */
 function sendMessageInBox() {
@@ -438,18 +449,6 @@ function contextMenu(action: logEvent, duration: timeout) {
             break;
     }
 
-}
-
-
-function addAction(action: LogType) {
-    /*
-    let newDiv = document.createElement("div");
-    newDiv.className = "chat-body1 clearfix testing"
-    let newText = document.createElement("p");
-    newText.innerText = action.description
-    newDiv.appendChild(newText);
-    document.getElementById("actions")!.prepend(newDiv);
-    */
 }
 
 function reconnect() {

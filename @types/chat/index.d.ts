@@ -7,8 +7,9 @@ type messageID = number
 type messageState = "none" | "deleted" | "timeout" | "ban"
 interface channel {
     channel: string
-    timestamp: Date
+    timestamp: number
     autoJoin?: boolean
+    _id?: string
 }
 
 type chatChannel = {channel: string, timestamp: string, autoJoin?: boolean}

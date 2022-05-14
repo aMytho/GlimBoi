@@ -95,7 +95,7 @@ function logEvent(data: LogConstructor): void {
     console.log(newEvent);
     loggingDB.insert(newEvent, function (err, doc) {});
     if (currentPage == "chat") {
-        addAction(newEvent)
+        //addAction(newEvent)
     } else if (currentPage == "mod") {
         switch (newEvent.event) {
             case "Delete Message":
