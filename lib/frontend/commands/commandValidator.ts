@@ -106,17 +106,19 @@ async function validateTriggers(mode:"add" | "edit"): Promise<undefined | Trigge
 
                     let tempTrigger = msg.split(" ")[0].toLowerCase(); // Get the first word
                     let commands = await CommandHandle.findByTrigger("ChatMessage");
+                    let commandName = (document.getElementById(`${mode}CommandName`) as HTMLInputElement).value.trim().toLowerCase();
                     for (let command of commands) {
+                        if (command.commandName == commandName) continue;
                         if (!command.actions) {
                             // Its a legacy command, we check the message value instead of actions
-                            if (command.message.toLowerCase() == tempTrigger) {
-                                errorMessageCommandModal(`The command ${command.commandName} already has a trigger of ${command.message}`,localTrigger.getElementsByTagName("input")[0], mode);
+                            if (command.message.startsWith("!") && command.message.toLowerCase().slice(1) == tempTrigger) {
+                                errorMessageCommandModal(`The command ${command.commandName} sends a message of ${command.message} which would trigger this command`,localTrigger.getElementsByTagName("input")[0], mode);
                                 return;
                             }
                         } else {
                             for (let action of command.actions) { //@ts-ignore  Loop through all the triggers
-                                if (action.action == "ChatMessage" && action.message.split(" ")[0].toLowerCase().slice(1) == tempTrigger) { // @ts-ignore
-                                    errorMessageCommandModal(`The command ${command.commandName} already has a trigger of ${action.message}`,localTrigger.getElementsByTagName("input")[0], mode);
+                                if (action.action == "ChatMessage" && action.message.startsWith("!") && action.message.split(" ")[0].toLowerCase().slice(1) == tempTrigger) { // @ts-ignore
+                                    errorMessageCommandModal(`The command ${command.commandName} sends a message of ${action.message} which would trigger this command`,localTrigger.getElementsByTagName("input")[0], mode);
                                     return;
                                 }
                             }
@@ -192,7 +194,9 @@ async function determineActionAndCheck(action, mode: actionMode, triggers: HTMLC
                 if (possibleMessage.startsWith("!")) {
                     let tempMessage = possibleMessage.slice(1).split(" ")[0].toLowerCase(); // Get the first word
                     let commands = await CommandHandle.findByTrigger("ChatMessage");
+                    let commandName = (document.getElementById(`${mode}CommandName`) as HTMLInputElement).value.trim().toLowerCase();
                     for (let command of commands) {
+                        if (command.commandName == commandName) continue;
                         for (let trigger of command.triggers) { // Loop through all the triggers
                             // Make sure it won't trigger anything
                             if ((trigger.constraints as ChatMessageTrigger).startsWith.toLowerCase() == tempMessage) {
@@ -206,7 +210,7 @@ async function determineActionAndCheck(action, mode: actionMode, triggers: HTMLC
                         if (element.getAttribute("data-triggerType") == "chatMessage") {
                             let trigger = element.getElementsByTagName("input")[0].value.toLowerCase();
                             if (trigger.startsWith("!")) trigger = trigger.slice(1);
-                            if (trigger == possibleMessage) {
+                            if (trigger == tempMessage) {
                                 throw "This action will trigger itself."
                             }
                         }
@@ -527,6 +531,7 @@ function errorMessageCommandModal(message:string, errLocation:HTMLElement, mode:
         document.getElementById(`${mode}CommandErrors`)!.appendChild(cmdErrorMessage);
         let partWithError = errLocation.parentElement;
         partWithError!.classList.add("errorClass");
+        document.getElementById("mySidenavR").scrollTo(0, document.getElementById("mySidenavR").scrollHeight);
         console.log("Command is not valid.");
     } catch (e) {
         console.log("error displaying source of error, probably fine")
