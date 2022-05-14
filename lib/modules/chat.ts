@@ -151,7 +151,8 @@ function subscribeToGlimeshEvent(event: glimeshEvent, {channelID, streamerID}) {
         case "followers":
             connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${streamerID}) { user { username } } }","variables":{} }]`);
             break;
-        case "viewers": connection.send(`["1","9","__absinthe__:control","doc",{"query":"subscription{ channel(id: ${channelID}) { stream {countViewers} } }","variables":{} }]`);
+        case "channel":
+            connection.send(`["1","9","__absinthe__:control","doc",{"query":"subscription{ channel(id: ${channelID}) { stream {countViewers} } }","variables":{} }]`);
             break;
         default:
             break;

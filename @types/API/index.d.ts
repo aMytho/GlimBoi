@@ -54,7 +54,7 @@ type glimeshRequest = "userID" | "channelID"
 /**
  * The event we want to listen for
  */
-type glimeshEvent = "chat" | "followers" | "subscribers" | "viewers"
+type glimeshEvent = "chat" | "followers" | "subscribers" | "channel"
 
 interface incomingGlimeshMessage {
     tokens: string
