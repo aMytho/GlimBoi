@@ -2,7 +2,6 @@ name: Build/release
 
 on:
   workflow_dispatch:
-    types: [deploy]
     inputs:
       version:
         description: 'The version to create'
