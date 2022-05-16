@@ -38,7 +38,8 @@
       "!docs/*",
       "!dist/*",
       "!@types/*",
-      "!lib/*"
+      "!lib/*",
+      "!scripts/*"
     ]
   },
   "scripts": {
