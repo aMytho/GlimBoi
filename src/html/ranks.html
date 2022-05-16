@@ -19,125 +19,210 @@
   <div class="col-span-5" id="rankContainer">
     <div class="glimPanel rounded-xl h-full p-3 mx-2" id="rankDetails">
       <div class="whiteText font-bold text-2xl">
-        <h2 id="rankName">Rank: None Selected</h2>
+        <h2 id="rankName" data-rank="None">Rank: None Selected</h2>
         <p id="rankMessage" class="text-xl">Select a rank to edit permissions!</p>
         <hr style="border-color: aliceblue;" class="mt-2 w-full">
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Add Commands</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="addCommandsTooltip"
+            data-tooltip-trigger="hover">Add Commands</h3>
+        <div id="addCommandsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to add a command from chat. !cmd new CMD_NAME CMD_MESSAGE
+        </div>
           <label class="switch">
             <input type="checkbox" id="addCommandsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Edit Commands</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="editCommandsTooltip"
+            data-tooltip-trigger="hover">Edit Commands</h3>
+        <div id="editCommandsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to edit commands from chat.
+        </div>
           <label class="switch">
             <input type="checkbox" id="editCommandsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Remove Commands</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="removeCommandsTooltip"
+            data-tooltip-trigger="hover">Remove Commands</h3>
+        <div id="removeCommandsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to remove commands from chat. !cmd del CMD_NAME
+        </div>
           <label class="switch">
             <input type="checkbox" id="removeCommandsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Add Users</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="addUsersTooltip"
+            data-tooltip-trigger="hover">Add Users</h3>
+        <div id="addUsersTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to add users from chat. !user new USERNAME
+        </div>
           <label class="switch">
             <input type="checkbox" id="addUsersRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Edit Users</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="editUsersTooltip"
+            data-tooltip-trigger="hover">Edit Users</h3>
+        <div id="editUsersTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to edit users from chat. Currently Disabled
+        </div>
           <label class="switch">
             <input type="checkbox" id="editUsersRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Remove Users</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="removeUsersTooltip"
+            data-tooltip-trigger="hover">Remove Users</h3>
+        <div id="removeUsersTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to remove users from chat. !user del USERNAME
+        </div>
           <label class="switch">
             <input type="checkbox" id="removeUsersRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Add Quotes</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="addQuotesTooltip"
+            data-tooltip-trigger="hover">Add Quotes</h3>
+        <div id="addQuotesTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to add quotes from chat. !quote new USER QUOTE_DATA
+        </div>
           <label class="switch">
             <input type="checkbox" id="addQuotesRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Edit Quotes</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="editQuotesTooltip"
+            data-tooltip-trigger="hover">Edit Quotes</h3>
+        <div id="editQuotesTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to edit quotes from chat. Currently Disabled
+        </div>
           <label class="switch">
             <input type="checkbox" id="editQuotesRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Remove Quotes</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="removeQuotesTooltip"
+            data-tooltip-trigger="hover">Remove Quotes</h3>
+        <div id="removeQuotesTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to remove quotes from chat. !quote del USER QUOTE_ID
+        </div>
           <label class="switch">
             <input type="checkbox" id="removeQuotesRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Add Points</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="addPointsTooltip"
+            data-tooltip-trigger="hover">Add Points</h3>
+        <div id="addPointsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to increase a user's points from chat. !points add USER AMOUNT
+        </div>
           <label class="switch">
             <input type="checkbox" id="addPointsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Edit Points</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="editPointsTooltip"
+            data-tooltip-trigger="hover">Edit Points</h3>
+        <div id="editPointsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to edit a user's points from chat. !points set USER AMOUNT
+        </div>
           <label class="switch">
             <input type="checkbox" id="editPointsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Remove Points</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="removePointsTooltip"
+            data-tooltip-trigger="hover">Remove Points</h3>
+        <div id="removePointsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to remove points from chat. !points sub USER AMOUNT
+        </div>
           <label class="switch">
             <input type="checkbox" id="removePointsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Control Music Player</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="musicTooltip"
+            data-tooltip-trigger="hover">Contorl Music Player</h3>
+        <div id="musicTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to control the music player. See Glimboi Commands
+        </div>
           <label class="switch">
             <input type="checkbox" id="controlMusicRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Mod Immunity</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="modImmunityTooltip"
+            data-tooltip-trigger="hover">Mod Immunity</h3>
+        <div id="modImmunityTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Protects the user from the bad word filter. Only affects moderator actions from within Glimboi.
+        </div>
           <label class="switch">
             <input type="checkbox" id="modImmunityRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Start Events/Games</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="startEventsTooltip"
+            data-tooltip-trigger="hover">Start Events/Games</h3>
+        <div id="startEventsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to start events and games from chat. See Events Page.
+        </div>
           <label class="switch">
             <input type="checkbox" id="startEventsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">End Events/Games</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="endEventsTooltip"
+            data-tooltip-trigger="hover">End Events/Games</h3>
+        <div id="endEventsTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Allow the user to end events and games from chat. See Events Page.
+        </div>
           <label class="switch">
             <input type="checkbox" id="endEventsRank">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="whiteText px-3">
-          <h3 class="font-semibold text-xl">Rank Tier</h3>
+            <h3 class="font-semibold text-xl cursor-default" data-tooltip-target="rankTierTooltip"
+            data-tooltip-trigger="hover">Rank Tier</h3>
+        <div id="rankTierTooltip" role="tooltip"
+            class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Sets the rank tier for commands. Uses fallthrough ranking. See Commands Page.
+        </div>
           <input type="number" id="tierRank" class="textarea">
         </div>
       </div>
@@ -148,6 +233,18 @@
 
 
 <style>
+    #rankName[data-rank="None"] {
+        color: rgb(240 82 82);
+    }
+    #rankName[data-rank="user"] {
+        color: rgb(168, 116, 197);
+    }
+    #rankName[data-rank="Mod"] {
+        color: rgb(91, 162, 91);
+    }
+    #rankName[data-rank="Streamer"] {
+        color: rgb(24, 155, 225);
+    }
   .switch {
     position: relative;
     display: inline-block;

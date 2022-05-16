@@ -98,7 +98,8 @@ function saveRankSettings(rank:rankName) {
 async function displayRank(rank: rankName) {
     let rankExists = await RankHandle.getRankPerms(rank)
     if (rankExists !== null) {
-        (document.getElementById("rankName") as HTMLInputElement)!.innerText = rankExists.rank;
+        (document.getElementById("rankName") as HTMLHeadingElement)!.innerText = rankExists.rank;
+        (document.getElementById("rankName") as HTMLHeadingElement)!.setAttribute("data-rank", rankExists.rank);
         (document.getElementById("tierRank") as HTMLInputElement)!.value = rankExists.rankTier.toString();
         (document.getElementById("rankMessage") as HTMLInputElement)!.innerText = "Make sure to save your changes!";
         (document.getElementById("addCommandsRank") as HTMLInputElement)!.checked = rankExists.canAddCommands;
