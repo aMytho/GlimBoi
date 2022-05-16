@@ -7,6 +7,8 @@ on:
         description: 'The version to create'
         required: true
         type: string
+  push:
+    tags: ["*"]
 
 jobs:
   release:
@@ -32,5 +34,4 @@ jobs:
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
 
-          # Creates a release with the passed in version number
-          release: ${{ github.event.inputs.version }}
+          release: true
