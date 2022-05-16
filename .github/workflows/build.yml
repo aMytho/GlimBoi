@@ -3,6 +3,11 @@ name: Build/release
 on:
   workflow_dispatch:
     types: [deploy]
+    inputs:
+      version:
+        description: 'The version to create'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -29,4 +34,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
 
           # Creates a release with the passed in version number
-          release: v${{ github.event.client_payload.version }}
+          release: v${{ github.event.inputs.version }}
