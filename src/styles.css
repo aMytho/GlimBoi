@@ -66,8 +66,7 @@ body {
     overflow-x: hidden; /*prevents a vertical scollbar*/
 }
 .glimPanel {
-    background: rgb(20,25,61);
-    background: radial-gradient(circle, rgba(20,25,61,1) 0%, rgba(20,25,61,1) 31%, rgba(27,46,75,1) 86%);
+    background: rgba(27,46,75,1);
 }
 .glimNav {
     background-color: #151033 !important; /*Nav bar*/
@@ -281,4 +280,8 @@ li .active {
 
 .errorClass {
     border: red solid 3px !important;
+}
+
+#rankContainer h3 {
+    max-width: fit-content;
 }
