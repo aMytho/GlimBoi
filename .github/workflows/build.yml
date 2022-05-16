@@ -33,4 +33,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
 
           # Creates a release with the passed in version number
-          release: v${{ github.event.inputs.version }}
+          release: ${{ github.event.inputs.version }}
