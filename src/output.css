@@ -2093,12 +2093,12 @@ input:checked + .toggle-bg {
   border-width: 1px;
 }
 
-.border-0 {
-  border-width: 0px;
-}
-
 .border-2 {
   border-width: 2px;
+}
+
+.border-0 {
+  border-width: 0px;
 }
 
 .border-x-0 {
@@ -2536,6 +2536,16 @@ input:checked + .toggle-bg {
 
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+#notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 200px;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .btn-info {

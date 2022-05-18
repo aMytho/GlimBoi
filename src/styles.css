@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+#notification {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 200px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
 .btn-info {
     @apply text-white bg-cyan-500 hover:bg-cyan-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800;
     font-size: 1.2rem;
