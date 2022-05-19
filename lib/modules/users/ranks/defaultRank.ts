@@ -20,6 +20,7 @@ export class UserRank {
     modImmunity: boolean;
     canStartEvents: boolean;
     canEndEvents: boolean;
+    color: string;
 
     constructor() {
         this.rank = "user";
@@ -40,5 +41,6 @@ export class UserRank {
         this.modImmunity = false;
         this.canStartEvents = true;
         this.canEndEvents = false;
+        this.color = "#1c4965";
     }
 }

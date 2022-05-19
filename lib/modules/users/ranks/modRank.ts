@@ -21,5 +21,6 @@ export class ModRank extends UserRank {
         this.canRemoveQuotes = true;
         this.canControlMusic = true;
         this.canEndEvents = true;
+        this.color = "#5ba25b";
     }
 }

@@ -9,5 +9,6 @@ export class StreamerRank extends ModRank {
         this.rank = "Streamer";
         this.rankTier = 3;
         this.modImmunity = true;
+        this.color = "#651c1c";
     }
 }
