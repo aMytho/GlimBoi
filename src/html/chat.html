@@ -89,7 +89,7 @@
         <h4 id="channelConnectedName" class="text-center py-3 my-3 border border-white border-x-0">
             Not Connected
         </h4>
-        <div class="mt-4 flex flex-row gap-x-2 flex-wrap">
+        <div class="mt-4 flex flex-row gap-x-2 gap-y-2 flex-wrap justify-center py-3 my-3 border border-white border-x-0 border-t-0">
             <div class="whiteText">
                 <h3 class="text-warning text-xl font-bold">Health Reminder</h3>
                 <p>Get reminders to stretch, drink water, and take a break.</p>
@@ -120,6 +120,26 @@
                         <p class="text-left">Disabled / Enabled</p>
                     </div>
                 </div>
+            </div>
+            <div class="whiteText">
+                <h3 class="text-warning text-xl font-bold">Join Message</h3>
+                <p>Send a message when Glimboi joins your chat.</p>
+                <div class="flex">
+                    <div>
+                        <label class="switch">
+                            <input type="checkbox" id="joinMessageEnabled">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="ml-2 ">
+                        <p class="text-left">Disabled / Enabled</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="text" class="mt-4 w-full"
+                placeholder="Glimboi has joined the chat :glimsmile:" id="joinMessageInput"
+                style="background-color: #1b2e4b;color: aquamarine;">
             </div>
         </div>
         <div class="text-center mt-4 mb-2">

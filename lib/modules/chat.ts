@@ -84,7 +84,10 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
                 ChatMessages.sendMessage("Glimboi was disconnected and has now returned.");
             }
         } else {
-            ChatMessages.sendMessage("Glimboi has joined the chat :glimsmile:");
+            if (CacheStore.get("joinChatMessageEnabled", true)) {
+                let joinMessage = CacheStore.get("joinChatMessage", "Glimboi has joined the chat :glimsmile:");
+                ChatMessages.sendMessage(joinMessage);
+            }
         }
     });
 
