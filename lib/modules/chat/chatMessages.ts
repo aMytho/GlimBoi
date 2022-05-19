@@ -47,23 +47,35 @@ async function sendMessage(data: string, source: "user" | "glimboi" = "glimboi")
  * @param {boolean} isReload Is this reloading all the messages for the chat page, or a new message?
  * @param {number} messageID The ID of the message from glimesh chat
  */
-function logMessage(user:string, message:string, avatar:avatar, isReload: boolean, messageID:number, state:messageState, messageTokens) {
+async function logMessage(user: string, message: string, avatar: avatar, isReload: boolean, messageID: number, state: messageState, messageTokens, rankColor?: string) {
     let tokens = getTokens(messageTokens);
     try {
-        let adminClass = (user === ChatHandle.getBotName()) ? 'admin_chat' : '';
+        let color = "#1C4965";
+        if (rankColor) {
+            color = rankColor;
+        } else {
+            let userData = await UserHandle.findByUserName(user);
+            if (userData != "ADDUSER") {
+                let userRank = await RankHandle.getRankPerms(userData.role);
+                if (userRank) {
+                    color = userRank.color;
+                }
+            }
+        }
+
         let htmlOfTokens = ``;
         tokens.forEach(token => {
             htmlOfTokens += token.outerHTML;
         });
 
         let div = document.createElement("div");
-        div.className = `p-2 flex flex-row gap-3 items-center ${adminClass}`;
-        div.innerHTML  =`
+        div.className = `p-2 flex flex-row gap-3 items-center`;
+        div.innerHTML = `
             <img src="${avatar}" alt="User Avatar" class="h-10 w-10 rounded-lg" style="border-radius: 50%;">
-                <p name='${user}' messageID='${messageID}' class="py-4 px-2 flex flex-row gap-2 rounded-xl" style="background: #1c4965 none repeat scroll 0 0">${user}: ${htmlOfTokens}</p>
+                <p name='${user}' messageID='${messageID}' class="py-4 px-2 flex flex-row gap-2 rounded-xl" style="background: ${color} none repeat scroll 0 0">${user}: ${htmlOfTokens}</p>
               `
         document.getElementById("chatContainer").appendChild(div);
-        let scroll = document.getElementById("chatContainer")
+        let scroll = document.getElementById("chatContainer");
         scroll!.scrollTo(0, scroll.scrollHeight);
         // log to file
         if (!isReload) {
@@ -72,7 +84,20 @@ function logMessage(user:string, message:string, avatar:avatar, isReload: boolea
     } catch (e) {}
 }
 
-function getMessageHoverTitle(state:messageState) {
+async function logMany(messages: Partial<storedChatMessage>[]) {
+    let usersToRequest = messages.map(message => message[0].toLowerCase());
+    console.log(usersToRequest);
+    let users = await UserHandle.findManyUsers(usersToRequest);
+    let ranks = await RankHandle.getManyRankPerms(users.map(user => user.role));
+    messages.forEach(message => {
+        let user = users.filter(user => user.userName === message[0].toLowerCase())[0];
+        let rank = ranks.filter(rank => rank.rank === user.role)[0];
+        let rankColor = rank ? rank.color : "#1C4965";
+        logMessage(message[0], message[1], message[2], true, message[3], message[4], message[5], rankColor);
+    });
+}
+
+function getMessageHoverTitle(state: messageState) {
     switch (state) {
         case "ban": return "Message removed due to ban."
         case "deleted": return "Message deleted by manual deletion"
@@ -107,4 +132,4 @@ function getTokens(tokens: any[]) {
     return tokens
 }
 
-export { getTokens, logMessage, sendMessage }
+export { getTokens, logMany, logMessage, sendMessage }

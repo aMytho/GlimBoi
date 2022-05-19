@@ -94,6 +94,17 @@ function findByUserName(name: string): Promise<UserType | "ADDUSER"> {
 }
 
 /**
+ * Returns the users sorted requested
+ */
+function findManyUsers(users: string[]): Promise<UserType[]> {
+    return new Promise(resolve => {
+        usersDB.find({ userName: { $in: users } }, function (err: Error | null, docs: UserType[]) {
+            resolve(docs);
+        })
+    })
+}
+
+/**
  * Returns all users
 */
 function getAll(): Promise<UserType[]> {
@@ -321,5 +332,5 @@ function getAllPoints() {
     })
 }
 
-export {addPoints, addQuote, addUser, countUsers, earnPointsWT, editUser, editUserPoints, findByUserName,
+export {addPoints, addQuote, addUser, countUsers, earnPointsWT, editUser, editUserPoints, findByUserName, findManyUsers,
 getAll, getAllPoints, getTopPoints, removePoints, removePointsAboveZero, removeUser, removeQuoteByID, updatePath}

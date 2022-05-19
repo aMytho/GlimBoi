@@ -99,6 +99,7 @@ interface RankType {
     modImmunity: boolean;
     canStartEvents: boolean;
     canEndEvents: boolean;
+    color: string
 }
 
 type rankName = "user" | "Mod" | "Streamer" | string

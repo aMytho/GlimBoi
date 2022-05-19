@@ -65,6 +65,21 @@ function checkRankProperties(docs: RankType[]) {
                                 rank.rankTier = 1;
                                 break;
                         };
+                    } else if (key == "color") {
+                        switch(rank.rank) {
+                            case "Streamer":
+                                rank.color = RANK_DEFAULTS.Streamer.color;
+                                break;
+                            case "Mod":
+                                rank.color = RANK_DEFAULTS.Mod.color;
+                                break;
+                            case "user":
+                                rank.color = RANK_DEFAULTS.user.color;
+                                break;
+                            default:
+                                rank.color = RANK_DEFAULTS.user.color;
+                                break;
+                        };
                     } else {
                         switch(rank.rank) {
                             case "Streamer":
@@ -199,4 +214,15 @@ function getRankPerms(rank: rankName): Promise<RankType | null> {
     })
 }
 
-export {createRank, editRank, getAll, getRankPerms, rankController, removeRank, updatePath}
+/**
+ * Returns all of the ranks requested
+ */
+function getManyRankPerms(rank: rankName[]): Promise<RankType[]> {
+    return new Promise(resolve => {
+        rankDB.find({ rank: { $in: rank }}, {}, function (err, docs: RankType[]) {
+            resolve(docs);
+        })
+    })
+}
+
+export {createRank, editRank, getAll, getManyRankPerms, getRankPerms, rankController, removeRank, updatePath}

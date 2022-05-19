@@ -1,6 +1,6 @@
 // Handles the UI for ranks
 
-let RankAddModal:Modal, RankRemoveModal: Modal;
+let RankAddModal:Modal, RankRemoveModal: Modal, RankResetModal: Modal;
 
 async function rankPrep() {
     let currentRanks = await RankHandle.getAll();
@@ -29,11 +29,16 @@ function rankModalPrep() {
             (document.getElementById("rankRemoveInput") as HTMLInputElement).value = "";
             (document.getElementById("removeRank") as HTMLParagraphElement).innerText = "";
         }
-    })
+    });
+
+    RankResetModal = new Modal(document.getElementById("modalRankReset"), {});
+
     document.getElementById("triggerModalRankAdd").addEventListener("click", () => RankAddModal.show());
     document.getElementById("closeModalRankAdd").addEventListener("click", () => RankAddModal.hide());
     document.getElementById("triggerModalRankRemove").addEventListener("click", () => RankRemoveModal.show());
     document.getElementById("closeModalRankRemove").addEventListener("click", () => RankRemoveModal.hide());
+    document.getElementById("triggerModalRankReset").addEventListener("click", () => RankResetModal.show());
+    document.getElementById("closeModalRankReset").addEventListener("click", () => RankResetModal.hide());
 }
 
 async function addRank() {
@@ -69,6 +74,15 @@ async function removeRank() {
     }
 }
 
+async function resetRank() {
+    let rankName = (document.getElementById("rankName")! as HTMLParagraphElement).innerText.trim();
+    // Delete the rank, then add a new one. Same as reset :[]
+    await RankHandle.removeRank(rankName);
+    await RankHandle.createRank(rankName);
+    displayRank(rankName);
+    RankResetModal.hide();
+}
+
 function saveRankSettings(rank:rankName) {
     let updatedRank = {
         rank: rank,
@@ -88,7 +102,8 @@ function saveRankSettings(rank:rankName) {
         canControlMusic: (document.getElementById("controlMusicRank") as HTMLInputElement).checked,
         modImmunity: (document.getElementById("modImmunityRank") as HTMLInputElement).checked,
         canStartEvents: (document.getElementById("startEventsRank") as HTMLInputElement).checked,
-        canEndEvents: (document.getElementById("endEventsRank") as HTMLInputElement).checked
+        canEndEvents: (document.getElementById("endEventsRank") as HTMLInputElement).checked,
+        color: (document.getElementById("colorRank") as HTMLInputElement).value
     }
     console.log(updatedRank);
     RankHandle.editRank(updatedRank);
@@ -118,6 +133,7 @@ async function displayRank(rank: rankName) {
         (document.getElementById("modImmunityRank") as HTMLInputElement)!.checked = rankExists.modImmunity;
         (document.getElementById("startEventsRank") as HTMLInputElement)!.checked = rankExists.canStartEvents;
         (document.getElementById("endEventsRank") as HTMLInputElement)!.checked = rankExists.canEndEvents;
-        document.getElementById("saveRankSettings")!.classList.remove("disabled")
+        (document.getElementById("colorRank") as HTMLInputElement)!.value = rankExists.color;
+        document.getElementById("saveRankSettings")!.classList.remove("disabled");
     }
 }

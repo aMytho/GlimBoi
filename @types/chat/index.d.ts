@@ -35,7 +35,7 @@ type storedChatMessage = [
      */
     messageState,
     /**
-     * IDK
+     * Message Tokens (parts of a glimesh message that are parsed)
      */
     any
 ]

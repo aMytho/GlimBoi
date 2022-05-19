@@ -168,9 +168,7 @@ $(document).on('click', '#triggerNewChatAdd', async function (event) {
  */
 function loadChatWindow() {
     // Load the recent chatmessages and display them
-    globalChatMessages.forEach(msg => {
-        ChatMessages.logMessage(msg[0], msg[1], msg[2], true, msg[3], msg[4], msg[5]);
-    });
+    ChatMessages.logMany(globalChatMessages);
 
     try {
         getBot().then(botName => {
@@ -527,10 +525,16 @@ function viewOrChangeChatSettings(mode: "view" | "change") {
             document.getElementById("loggingEnabled")!.toggleAttribute("checked");
         }
         (document.getElementById("healthReminder") as HTMLInputElement).value = String(CacheStore.get("chatHealth", 0));
+        (document.getElementById("joinMessageInput") as HTMLInputElement).value = CacheStore.get("joinChatMessage", "Glimboi has joined the chat :glimsmile:");
+        if (CacheStore.get("joinChatMessageEnabled", true)) {
+            document.getElementById("joinMessageEnabled")!.toggleAttribute("checked");
+        }
     } else {
         CacheStore.setMultiple([
             {chatLogging: (document.getElementById("loggingEnabled") as HTMLInputElement)!.checked},
-            {chatHealth: Number((document.getElementById("healthReminder") as HTMLInputElement).value)}
+            {chatHealth: Number((document.getElementById("healthReminder") as HTMLInputElement).value)},
+            {joinChatMessage: (document.getElementById("joinMessageInput") as HTMLInputElement)!.value},
+            {joinChatMessageEnabled: (document.getElementById("joinMessageEnabled") as HTMLInputElement)!.checked},
         ]);
     }
 }
