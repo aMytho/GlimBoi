@@ -309,20 +309,10 @@ async function followUser(channelID: number, unfollow: boolean, liveNotification
     }
 }
 
-async function randomAnimalFact(animal: "dog" | "cat") {
-    try {
-        let animalFactData = await fetch(`https://some-random-api.ml/animal/${animal}`, { method: "GET" })
-        let animalFact = await animalFactData.json();
-        return animalFact.fact
-    } catch(e) {
-        return null
-    }
-}
-
 function getStreamerName() {
     return streamer;
 }
 
 export { deleteMessage, followUser, getBotAccount, getChannelID, getID, getSocials, getStats,
-getStreamerName, getStreamWebhook, getUserID, getStreamerId, getSubCategory, glimeshApiRequest, randomAnimalFact,
+getStreamerName, getStreamWebhook, getUserID, getStreamerId, getSubCategory, glimeshApiRequest,
 sendMessage, Webhooks, WebSockets};

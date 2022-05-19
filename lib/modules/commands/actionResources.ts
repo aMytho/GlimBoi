@@ -110,11 +110,13 @@ async function replaceVariable({ variable, activation, user }) {
             let twitter = await ApiHandle.getSocials("twitter", ApiHandle.getStreamerName()).catch(reason => twitter = 'Twitter Error');
             return "https://twitter.com/" + twitter
         case "$catfact":
-            let catFact = await ApiHandle.randomAnimalFact("cat");
-            return catFact
+            let CatModule:typeof import("../API/webhooks/animal") = require(`${appData[0]}/modules/API/webhooks/animal.js`);
+            let catFact = await CatModule.randomAnimalFact("cat");
+            return catFact;
         case "$dogfact":
-            let dogFact = await ApiHandle.randomAnimalFact("dog");
-            return dogFact
+            let DogModule:typeof import("../API/webhooks/animal") = require(`${appData[0]}/modules/API/webhooks/animal.js`);
+            let dogFact = await DogModule.randomAnimalFact("dog");
+            return dogFact;
         case "$uptime":
             let uptime = await ApiHandle.getStats();
             if (uptime) {
