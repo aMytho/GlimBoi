@@ -25,6 +25,9 @@ function connect() {
                     } else {
                         document.getElementById("songAuthor").innerText = ""
                     }
+                    if (message.data.cover) {
+                        document.getElementById("songCover").src = `data:${message.data.format};base64,${message.data.cover}`
+                    }
                     timer = setTimeout(() => {
                         document.getElementById("songOverlay").style.opacity = 0
                         connection.send(JSON.stringify({ status: "ok", actionCompleted: "newSong", songName: message.data.name }))
@@ -32,6 +35,7 @@ function connect() {
                 }
             }
         } catch (e) {
+            console.log(e);
             try {
                 connection.send(JSON.stringify({ status: "error", actionCompleted: "none", errorType: String(error) }))
             } catch (f) {
