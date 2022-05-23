@@ -1,80 +1,82 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%;">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glimboi Overlay</title>
     <script src="js/music.js"></script>
-    <link rel="stylesheet"  href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
+
 <body style="height: 100%;">
     <div class="container" style="height: 100% !important;">
-            <div class="song active" data-index="3" id="songOverlay">
-                <img class="thumb" src="resources/music.png">
-                                <div class="body">
-                                    <h3 class="title" id="songTitle">Terraria: Otherworld Extracted Soundtrack - Journey to the Core (Underworld)</h3>
-                                    <p class="author" id="songAuthor">Ametryo</p>
-                                </div></div>
+        <div class="song active" data-index="3" id="songOverlay">
+            <img class="thumb" src="resources/music.png">
+            <div class="body">
+                <h3 class="title" id="songTitle">PlaceHolder Title</h3>
+                <p class="author" id="songAuthor">Placeholder Author</p>
+            </div>
+        </div>
     </div>
 
     <style>
+        .song {
+            zoom: 200%;
+            display: flex;
+            align-items: center;
+            max-width: none !important;
+            background-color: rgba(240, 255, 255, 0.65);
+            padding: 8px 16px;
+            border-radius: 5px;
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+            opacity: 0;
+        }
 
-.song {
-  zoom: 200%;
-  display: flex;
-  align-items: center;
-  max-width: none !important;
-  background-color: rgba(240, 255, 255, 0.65);
-  padding: 8px 16px;
-  border-radius: 5px;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-  transition: 0.3s;
-  opacity: 0;
-}
 
+        .song.active {
+            background-color: rgba(0, 139, 139, 0.664)
+        }
 
-.song.active {
-  background-color: rgba(0, 139, 139, 0.664)
-}
+        .song:active {
+            opacity: 0.8;
+        }
 
-.song:active {
-  opacity: 0.8;
-}
+        .song.active .option,
+        .song.active .author,
+        .song.active .title {
+            color: #fff;
+        }
 
-.song.active .option,
-.song.active .author,
-.song.active .title {
-  color: #fff;
-}
+        .song .thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 20%;
+            background-size: cover;
+            margin: 0 8px;
+        }
 
-.song .thumb {
-  width: 44px;
-  height: 44px;
-  border-radius: 20%;
-  background-size: cover;
-  margin: 0 8px;
-}
+        .song .body {
+            flex: 1;
+            padding: 0 16px;
+        }
 
-.song .body {
-  flex: 1;
-  padding: 0 16px;
-}
+        .song .title {
+            font-size: 18px;
+            color: #fff;
+            text-overflow: ellipsis;
+        }
 
-.song .title {
-  font-size: 18px;
-  color: #fff;
-  text-overflow: ellipsis;
-}
-
-.song .author {
-  font-size: 15px;
-  color: black;
-}
-
+        .song .author {
+            font-size: 15px;
+            color: black;
+        }
     </style>
 
 </body>
+
 </html>
