@@ -5,6 +5,7 @@ let currentSongIndex = 0, volume = 0.5, repeatEnabled = false, shuffleEnabled = 
  * Loads the music program. Changes all of the UI elements to match what is currently playing.
  */
 function loadMusicProgram() {
+    // Handles volume changes
     document.getElementById("musicVolumeSlider")!.addEventListener("change", event => {
         (document.getElementById("musicAudio") as HTMLAudioElement)!.volume = Number((event.target as HTMLInputElement).value);
         volume = Number((event.target as HTMLInputElement).value);
@@ -168,7 +169,7 @@ function nextOrPrevious(direction:skipOrPrevious) {
 }
 
 /**
- * SHows the song info on the player and send info to the music settings.
+ * Shows the song info on the player and send info to the music settings.
  * @param {object} info The song info
  * @param {boolean} notMusicTab Is this function called because someone click on the tab?
  */
@@ -176,14 +177,19 @@ function updateInfo(info, notMusicTab) {
     let artistsMedia = info.artists ? `Now playing ${info.name} by ${info.artists}` : `Now playing ${info.name}`;
     let artistsDisplay = info.artists ? info.artists : `No artists in metadata`;
     try {
+        let musicPlayer = (document.getElementById("musicAudio") as HTMLAudioElement);
         let progressPercantage = document.getElementById("progressBarMusic")!;
         progressPercantage.classList.remove("prog-bar-inner");
         void progressPercantage.offsetWidth;
         progressPercantage.classList.add("prog-bar-inner");
-        progressPercantage.style.animationDuration = `${Math.round((document.getElementById("musicAudio") as HTMLAudioElement)!.duration - (document.getElementById("musicAudio") as HTMLAudioElement)!.currentTime)}s`;
-        progressPercantage.style.animationPlayState = "running"
-        document.getElementById("songTitle")!.innerText = info.name
-        document.getElementById("songAuthor")!.innerText = artistsDisplay
+        progressPercantage.style.animationDuration = `${Math.round(musicPlayer.duration - musicPlayer.currentTime)}s`;
+        progressPercantage.style.animationPlayState = "running";
+        document.getElementById("songTitle")!.innerText = info.name;
+        document.getElementById("songAuthor")!.innerText = artistsDisplay;
+        // Convert seconds to minutes and seconds
+        let minutes = Math.floor(musicPlayer.duration / 60);
+        let seconds = Math.floor(musicPlayer!.duration - minutes * 60);
+        document.getElementById("totalDuration")!.innerText = `${minutes}:${seconds}`;
         try {
             (document.getElementById("artForMusic") as HTMLImageElement)!.src = `data:${info.format};base64,${info.cover.toString('base64')}`;
         } catch (e) {
@@ -197,7 +203,11 @@ function updateInfo(info, notMusicTab) {
             }
         }
     } catch(e) {}
-    Server.updateMusicOverlay({ name: info.name, artists: info.artists });
+    if (info.cover) {
+        Server.updateMusicOverlay({ name: info.name, artists: info.artists, cover: info.cover.toString("base64"), format: info.format });
+    } else {
+        Server.updateMusicOverlay({ name: info.name, artists: info.artists});
+    }
     if (CacheStore.get("musicAttribution", false) && ChatHandle.isConnected() && notMusicTab) {
         ChatMessages.sendMessage(artistsMedia, "glimboi");
     }
