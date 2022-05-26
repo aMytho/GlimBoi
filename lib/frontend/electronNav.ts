@@ -1,5 +1,5 @@
 //handles sending users to different to parts of the app
-const {clipboard, ipcRenderer, shell} = require("electron"); // @ts-ignore
+const {clipboard, ipcRenderer} = require("electron"); // @ts-ignore
 let appData:appDataType = ipcRenderer.sendSync("appDataRequest", null); //Ask main process for app data
 let isDev = appData[2];
 console.log(appData);
@@ -157,7 +157,7 @@ $(document).on('keypress','input, textarea', function (event) {
  * Opens a link in the users default browser
  */
 function loadLink(link: string) {
-    shell.openExternal("https://" + link)
+    ipcRenderer.invoke("openPath", `https://${link}`, "external");
 }
 
 // Shows an error message to the user in the form of a modal.

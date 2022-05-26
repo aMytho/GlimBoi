@@ -126,6 +126,15 @@ ipcMain.handle("backup", async (event) => {
     return folderSelection;
 })
 
+ipcMain.handle("openPath", (event, path: string, location: "internal" | "external") => {
+    let shell = require("electron").shell;
+    if (location == "internal") {
+        shell.openPath(path);
+    } else {
+        shell.openExternal(path, {activate: true});
+    }
+    return;
+})
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

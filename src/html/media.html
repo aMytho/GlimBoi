@@ -183,7 +183,7 @@
                 <p>You can have various actions in the bot trigger media. You can play audio and display images,GIFs,
                     and videos. You must add the overlay as a browser source in OBS. The overlay is index.html in
                     <span>
-                    <a onclick="shell.openPath(dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays')"
+                    <a onclick="ipcRenderer.invoke('openPath', dirName.substring(0, dirName.indexOf('app.asar')) + 'app.asar.unpacked/src/overlays', 'internal')"
                             href="#" style="color: #006e80;">this</a></span> directory. It will allow your viewers to hear and see the media.
                 </p>
                 <p class="mt-2">The overlay will launch when you join a chat. To test it without joining a chat you can
