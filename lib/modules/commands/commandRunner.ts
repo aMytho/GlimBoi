@@ -10,8 +10,14 @@ async function checkCommand(command: CommandType, context: TriggerContext) {
     try {
         let hasPerms = await permissionCheck(command, context.user.username.toLowerCase());
         if (hasPerms == "ACCEPTED") {
+            // Check if any variables need to be created from the context
+            if (context.variables) injectVariables(context.variables);
+            // Run the command
             await runCommand({ message: context.message, command: command, user: context.user });
+            // Cleanup
             postCommandRun(command, context);
+            // Remove generated variables (if any)
+            if (context.variables) withdrawVariables(context.variables);
         } else if (hasPerms == "NEWUSER") {
             checkCommand(command, context);
         } else { // They don't have permission
@@ -139,6 +145,29 @@ function postCommandRun(command: CommandType, context: TriggerContext) {
                 adjustMessageState(Number(context.messageId), "deleted");
             }
         }, 400);
+    }
+}
+
+/**
+ * Adds variables from a command context
+ */
+function injectVariables(variables: ContextPossibleVariables) {
+    if (variables.recipient) {
+        CommandHandle.ChatAction.ActionResources.addVariable({name: "$recipient", data: variables.recipient.username});
+    } else if (variables.donation) {
+        CommandHandle.ChatAction.ActionResources.addVariable({name: "$donationAmount", data: variables.donation.amount});
+    }
+}
+
+/**
+ * Removes variables that were generated from a command textext
+ */
+function withdrawVariables(variables: ContextPossibleVariables) {
+    // TO DO -- When you have multiple variables to remove add them to an array and send it. One call, rather than many calls.
+    if (variables.recipient) {
+        CommandHandle.ChatAction.ActionResources.removeVariables(["$recipient"]);
+    } else if (variables.donation) {
+        CommandHandle.ChatAction.ActionResources.removeVariables(["$donationAmount"]);
     }
 }
 

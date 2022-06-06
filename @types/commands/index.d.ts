@@ -114,7 +114,6 @@ declare class ChatAction implements ChatActionType {
     action: actionName
     info: actionInfo
     generateVariables: actionVariables
-    removeGeneratedVariables(): void
     parseGenerateVariables(variables): actionVariables
     run(variable:any): Promise<any>;
 }
@@ -148,14 +147,14 @@ type CustomUserVaribles = {
 }
 
 type actionName = "ChatMessage" | "ApiRequestGet" | "ApiRequest" | "Audio" | "Ban" | "Follow" | "ImageGif" |
-"Matrix" | "ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Twitter" |
+"Matrix" | "ObsWebSocket" | "Points" | "ReadFile" |  "Video" | "Timeout" | "Twitter" | "Notification" |
 "Wait" | "WriteFile"
 type actionInfo = any[] | any
 type actionVariables = string[]
 
 type actionMode = "add" | "edit"
 
-type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User";
+type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User" | "Subscribe" | "Gift Sub" | "Donate";
 
 type TriggerStructure = {
     trigger: CommandTrigger;
@@ -170,9 +169,7 @@ type ChatMessageTrigger = {
     startsWith?: string;
 }
 
-type FollowTrigger = {
-
-}
+type FollowTrigger = {}
 
 type WelcomeUserTrigger = {
     /**
@@ -180,6 +177,8 @@ type WelcomeUserTrigger = {
      */
     user?: string;
 }
+
+type SubscribeTrigger = {}
 
 type TriggerContext = {
     /**
@@ -193,4 +192,21 @@ type TriggerContext = {
         username?: string;
     }
     trigger: CommandTrigger;
+
+    variables?: ContextPossibleVariables;
+}
+
+type ContextPossibleVariables = {
+    /**
+     * Someone gifted a sub
+     */
+    recipient?: {
+        username?: string;
+    }
+    /**
+     * Someone donated to the streamer
+     */
+    donation?: {
+        amount?: string
+    }
 }

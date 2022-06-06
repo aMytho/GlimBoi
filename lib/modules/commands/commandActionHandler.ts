@@ -19,10 +19,6 @@ class ChatAction implements ChatActionType {
         this.generateVariables = this.parseGenerateVariables(varsToSet);
     }
 
-    removeGeneratedVariables() {
-        ActionResources.removeVariables(this.generateVariables)
-    }
-
     parseGenerateVariables(variables) {
         let toBeGenerated = [];
         for (let i = 0; i < variables.length; i++) {
@@ -205,6 +201,32 @@ class Matrix extends ChatAction {
         let message = await ActionResources.searchForVariables({message: this.message, user: user, activation: activation});
         await ApiHandle.Webhooks.MatrixWebhook.sendMessage(message, this.room);
         return
+    }
+}
+
+/**
+ * Send a message to yourself via the bot notification tools
+ */
+class Notification extends ChatAction {
+    target: "toast" | "info" | "error";
+    message: string;
+
+    constructor({message, target}) {
+        super("Notification", ["message", "target"], undefined);
+        this.target = target;
+        this.message = message;
+    };
+
+    async run({activation, user}) {
+        let message = await ActionResources.searchForVariables({message: this.message, user: user, activation: activation});
+        if (this.target == "toast") {
+            showToast(message);
+        } else if (this.target == "info") {
+            successMessage(message, "");
+        } else if (this.target == "error") {
+            errorMessage(message, "");
+        }
+        return;
     }
 }
 
@@ -415,4 +437,4 @@ class WriteFile extends ChatAction {
 }
 
 export {ActionResources, ApiRequest, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, Matrix,
-ObsWebSocket, Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}
+Notification, ObsWebSocket, Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}
