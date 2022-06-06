@@ -169,6 +169,15 @@ async function buildMatrixUI(mode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
+async function builtNotificationUI(mode, commandInfo) {
+    let action = await getActionHTML("Notification");
+    if (commandInfo) {
+        (action.children[1].firstElementChild.firstElementChild.firstElementChild as HTMLSelectElement).value = commandInfo.target;
+        (action.children[1].children[1].firstElementChild.firstElementChild as HTMLParagraphElement).innerText = commandInfo.message;
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
+
 async function buildReadFileUI(mode:actionMode, commandInfo) {
     let action = await getActionHTML("ReadFile");
     if (commandInfo) {
@@ -272,5 +281,5 @@ async function getActionHTML(action: string) {
 }
 
 export {buildApiRequestUI, buildAudioUI, buildBanUI, buildChatMessageUI,buildFollowUI,
-    buildImageGifUI, buildReadFileUI, buildMatrixUI, buildObsWebSocketUI, buildPointsUI,
+    buildImageGifUI, buildReadFileUI, buildMatrixUI, builtNotificationUI, buildObsWebSocketUI, buildPointsUI,
     buildTimeoutUI, buildTweetUI, buildVideoUI, buildWaitUI, buildWriteFileUI}
