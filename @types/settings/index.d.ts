@@ -32,8 +32,9 @@ interface LogConstructor {
     notification?: string
 }
 
-type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" |
-"Remove Points" | "Add Quote" | friendlyWarningAction | "New Follower" | "Follow User" | "Unfollow User"
+type logEvent = "Add User" | "Edit User" | "Remove User" | "Add Points" | "Edit Points" | "New Subscriber" |
+"Remove Points" | "Add Quote" | friendlyWarningAction | "New Follower" | "Follow User" | "Unfollow User" | "Gift Sub" |
+"Donation"
 
 /**
  * Duration of the timeout

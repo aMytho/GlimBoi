@@ -72,6 +72,12 @@ class LoggingEvent implements LogType {
                 return `${this.time}: ${caused} followed ${affected[0]}`
             case "Unfollow User":
                 return `${this.time}: ${caused} unfollowed ${affected[0]}`
+            case "New Subscriber":
+                return `${this.time}: ${caused} just subscribed!`
+            case "Gift Sub":
+                return `${this.time}: ${caused} gifted a sub to ${affected[0]}`
+            case "Donation":
+                return `${this.time}: ${caused} donated ${data.amount}`
             default:
                 return "No event was sent to the Log Handler."
         }
