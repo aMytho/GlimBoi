@@ -59,6 +59,7 @@ function prepareActions(mode, modal: Modal) {
     document.getElementById("CreateFollow")!.onclick = () => addActionToUI("Follow", mode);
     document.getElementById("CreateImageGif")!.onclick = () => addActionToUI("ImageGif", mode);
     document.getElementById("CreateMatrix")!.onclick = () => addActionToUI("Matrix", mode);
+    document.getElementById("CreateNotification")!.onclick = () => addActionToUI("Notification", mode);
     document.getElementById("CreateObsWebSocket")!.onclick = () => addActionToUI("ObsWebSocket", mode);
     document.getElementById("CreateReadFile")!.onclick = () => addActionToUI("ReadFile", mode);
     document.getElementById("CreatePoints")!.onclick = () => addActionToUI("Points", mode);
@@ -132,6 +133,9 @@ async function addActionToUI(action: actionName, mode: actionMode, data?: object
         break;
 
         case "Matrix": await ActionCreator.buildMatrixUI(mode, data);
+        break;
+
+        case "Notification": await ActionCreator.builtNotificationUI(mode, data);
         break;
 
         case "ObsWebSocket": await ActionCreator.buildObsWebSocketUI(mode, data);
@@ -275,6 +279,9 @@ async function handleTriggerSelection(mode: string, data?:TriggerStructure[]) {
             switch(trigger.trigger) {
                 case "ChatMessage": triggerSelecter.value = "chatMessage"; break;
                 case "Follow": triggerSelecter.value = "newFollower"; break;
+                case "Subscribe": triggerSelecter.value = "subscribe"; break;
+                case "Gift Sub": triggerSelecter.value = "giftSub"; break;
+                case "Donate": triggerSelecter.value = "donate"; break;
                 case "Welcome User": triggerSelecter.value = "welcomeUser"; break;
             }
             changeTriggerOptions(newTrigger, data);
@@ -304,6 +311,9 @@ async function changeTriggerOptions(newTrigger:HTMLElement, data?:TriggerStructu
                     newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as ChatMessageTrigger).startsWith;
                     break;
                 case "Follow":
+                case "Subscribe":
+                case "Gift Sub":
+                case "Donate":
                     break;
                 case "Welcome User":
                     newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as WelcomeUserTrigger).user || "";

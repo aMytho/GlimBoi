@@ -132,6 +132,15 @@ async function validateTriggers(mode:"add" | "edit"): Promise<undefined | Trigge
                 case "newFollower":
                     triggerArray.push({trigger: "Follow", constraints: {}});
                     break;
+                case "subscribe":
+                    triggerArray.push({trigger: "Subscribe", constraints: {}});
+                    break;
+                case "giftSub":
+                    triggerArray.push({trigger: "Gift Sub", constraints: {}});
+                    break;
+                case "donate":
+                    triggerArray.push({trigger: "Donate", constraints: {}});
+                    break;
                 case "welcomeUser":
                     let usr = localTrigger.getElementsByTagName("input")[0].value;
                     triggerArray.push({trigger: "Welcome User", constraints: {
@@ -360,6 +369,16 @@ async function determineActionAndCheck(action, mode: actionMode, triggers: HTMLC
                 console.log(e);
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
+            }
+        case "Notification":
+            try {
+                let notificationType = action.children[1].firstElementChild.firstElementChild.firstElementChild.value;
+                let message = strip(action.children[1].children[1].firstElementChild.firstElementChild.innerText).trim();
+                return {type: "Notification", message: message, target: notificationType}
+            } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false;
             }
         case "ObsWebSocket":
             try {
