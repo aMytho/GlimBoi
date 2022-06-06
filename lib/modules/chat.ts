@@ -100,7 +100,11 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         switch (chatMessage[1]) {
             case null:
                 if (chatMessage[4].result.data.chatMessage) {
-                    ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
+                    if (chatMessage[4].result.data.chatMessage.isSubscriptionMessage) {
+                        ChatEvents.handleMoney(chatMessage[4].result.data.chatMessage);
+                    } else {
+                        ChatParser.handleGlimeshMessage(chatMessage[4].result.data.chatMessage);
+                    }
                 } else {
                     ChatEvents.handleNewFollower(chatMessage[4].result.data.followers.user.username);
                 }
@@ -149,7 +153,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
 function subscribeToGlimeshEvent(event: glimeshEvent, {channelID, streamerID}) {
     switch (event) {
         case "chat":
-            connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id }, message, tokens {...on ChatMessageToken {text} ...on EmoteToken {src} ...on UrlToken {url} ...on TextToken {text}} } }","variables":{} }]`);
+            connection.send(`["1","2","__absinthe__:control","doc",{"query":"subscription{ chatMessage(channelId: ${channelID}) { id, user { username avatarUrl id }, isSubscriptionMessage, message, tokens {...on ChatMessageToken {text} ...on EmoteToken {src} ...on UrlToken {url} ...on TextToken {text}} } }","variables":{} }]`);
             break;
         case "followers":
             connection.send(`["1","8","__absinthe__:control","doc",{"query":"subscription{ followers(streamerId: ${streamerID}) { user { username } } }","variables":{} }]`);

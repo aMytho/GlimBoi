@@ -16,18 +16,20 @@ async function checkContext(trigger:CommandTrigger, context) {
                     return true;
                 }
                 break;
+                case "Welcome User":
+                    let usr = (command.triggers[0].constraints as WelcomeUserTrigger).user;
+                    if (usr) {
+                        usr = usr.toLowerCase();
+                    }
+                    if (!usr || (context.user.toLowerCase() == usr)) {
+                        return true
+                    }
+                    break;
             case "Follow":
+            case "Subscribe":
+            case "Gift Sub":
+            case "Donate":
                 return true;
-                break;
-            case "Welcome User":
-                let usr = (command.triggers[0].constraints as WelcomeUserTrigger).user;
-                if (usr) {
-                    usr = usr.toLowerCase();
-                }
-                if (!usr || (context.user.toLowerCase() == usr)) {
-                    return true
-                }
-                break;
             default:
                 break;
         }
@@ -49,6 +51,12 @@ function parseContext(trigger: CommandTrigger, context:any):TriggerContext {
             return {user: {username: context.user}, message: context.message, trigger: trigger};
         case "Welcome User":
             return {user: {username: context.user}, trigger: trigger};
+        case "Subscribe":
+            return {user: {username: context.user}, trigger: trigger};
+        case "Gift Sub":
+            return {user: {username: context.user}, variables: {recipient: {username: context.recipient}}, trigger: trigger}
+        case "Donate":
+            return {user: {username: context.user}, variables: {donation: {amount: context.amount}}, trigger: trigger};
         // For any others you may have to provide the context items you need. Query usr ID, etc
     }
 }
