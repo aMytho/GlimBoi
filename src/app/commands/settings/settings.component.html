@@ -1,0 +1,37 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 mt-2">
+    <div class="whiteText mx-2">
+        <h3 class="text-3xl font-semibold text-gray-100">Repeat Protection</h3>
+        <p class="text-lg text-blue-400 mt-1">The amount of non bot messages for the next repeatable message
+            to go through.</p>
+        <form class="mt-4">
+            <label for="sel1">Cooldown:</label>
+            <select class="w-80" id="repeatProtect">
+                <option id="rp15">15 (default)</option>
+                <option id="rp5">5 (not recommended)</option>
+                <option id="rp30">30</option>
+                <option id="rp60">60</option>
+            </select>
+        </form>
+    </div>
+    <div class="whiteText mx-2">
+        <h3 class="text-3xl font-semibold text-gray-100">Repeat Delay</h3>
+        <p class="text-lg text-blue-400 mt-1">The amount of time that must pass until the next repeatable
+            command is sent to chat.
+        </p>
+        <form class="mt-4">
+            <label for="initialValueSlider">Initial</label>
+            <input type="range" class="w-80" id="repeatDelaySlider" min="5" max="60" step="5">
+            <p id="repeatDelayValue"></p>
+        </form>
+    </div>
+    <div class="whiteText mx-2">
+        <h3 class="text-3xl font-semibold text-gray-100">Cooldown Message</h3>
+        <p class="text-lg text-blue-400 mt-1">The message sent to chat when a cooldown is tripped.</p>
+        <form class="mt-4">
+            <input class="w-10/12 mt-auto" type="text" placeholder="Cooldown Message" id="cooldownMessage">
+        </form>
+    </div>
+</div>
+<div class="flex flex-wrap justify-center mt-4">
+    <a id="saveCommandSettings" class="btn-info">Save</a>
+</div>

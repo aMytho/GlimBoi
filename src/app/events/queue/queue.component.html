@@ -1,0 +1,116 @@
+<div class="flex flex-row flex-wrap justify-center">
+    <a class="btn-primary" href="#" onclick="startQueueFromUI()">Start Queue</a>
+    <a class="btn-success" href="#" id="activateQueueUserAdd">Add User</a>
+    <a class="btn-warning" href="#" id="activateQueueUserRemove">Remove User</a>
+    <a class="btn-info" href="#" onclick="EventHandle.queue.progressQueue()">Progress Queue</a>
+    <a class="btn-danger" href="#" onclick="stopQueueFromUI()">End Queue</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 mt-2">
+    <div>
+        <h3 class="text-center whiteText font-bold text-2xl">Queue Settings</h3>
+        <!-- table with 3 rows for settings-->
+        <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl"
+            style="background-color: #14365b;">
+            <tr>
+                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Setting</th>
+                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Value</th>
+            </tr>
+            <tbody>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Cost of Entry
+                    </td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <input type="text" class="settingInput input-number" id="queueCost"
+                            placeholder="The amount of points to enter the queue." value="0">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Minimum Rank
+                    </td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="queueRank">
+                            <option value="Everyone">Everyone (Default)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Progression
+                        Rank</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="queueProgression">
+                            <option value="Everyone">Everyone (Default)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Quiet Mode
+                    </td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="queueQuiet">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Enabled</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="queueEnabled">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-6">
+            <a class="btn-danger" onclick="resetEventSettings('queue')">Reset</a>
+            <a class="btn-info" onclick="saveEventSettings('queue')">Save</a>
+        </div>
+
+    </div>
+    <div>
+        <div class="text-center" style="min-height: 300px">
+            <h3 class="whiteText font-bold text-2xl">Users in Queue</h3>
+            <p>Users will appear below.</p>
+            <ul class="list-group eventUserList" id="queueUserList">
+            </ul>
+            <h4 id="queueWinner"></h4>
+        </div>
+
+    </div>
+    <div>
+        <div class="text-center" style="min-height: 300px">
+            <h3 class="whiteText font-bold text-2xl">Queue</h3>
+            <p class="text-lg mt-2">An organized method for user actions. Ex. Joining a game</p>
+            <p class="text-lg mt-2">The queue can be started on this page or by typing !queue in chat.
+                Users type
+                !join to enter the queue. You can also add users with !queue add USER</p>
+            <p class="text-lg mt-2">The results will be updated live on this page. Commands below.</p>
+            <p class="text-lg mt-1">
+                !queue : Starts the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue stop : Stops the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue reset : Resets the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue add USER : Adds a user to the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue remove USER : Removes a user from the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue progress : Progresses the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue next : Returns the next user in the queue.
+            </p>
+            <p class="text-lg mt-1">
+                !queue length : Returns the length of the queue.
+            </p>
+        </div>
+    </div>
+</div>

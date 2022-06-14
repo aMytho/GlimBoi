@@ -1,0 +1,77 @@
+<div class="text-center w-full mt-4">
+    <a class="btn-primary" href="#" onclick="EventHandle.giveaway.startGiveaway(false);">Start
+        Giveaway</a>
+    <a class="btn-danger" href="#" onclick="EventHandle.giveaway.stopGiveaway(true)">Stop
+        Giveaway</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 mt-2">
+    <div>
+        <h3 class="text-center whiteText font-bold text-2xl">Giveaway Settings</h3>
+        <!-- table with 3 rows for settings-->
+        <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl"
+            style="background-color: #14365b;">
+            <tr>
+                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Setting</th>
+                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Value</th>
+            </tr>
+            <tbody>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Duration
+                        (Minutes)</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <input type="text" class="settingInput input-number" id="giveawayDuration"
+                            placeholder="The duration of the giveaway in minutes." value="1">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Quiet Mode
+                    </td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="giveawayQuiet">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Enabled</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="giveawayEnabled">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-6">
+            <a class="btn-danger" onclick="resetEventSettings('giveaway')">Reset</a>
+            <a class="btn-info" onclick="saveEventSettings('giveaway')">Save</a>
+        </div>
+
+    </div>
+    <div>
+        <div class="text-center" style="min-height: 300px">
+            <h3 class="text-center whiteText font-bold text-2xl">Users in Giveaway</h3>
+            <ul class="list-group eventUserList">
+                <li class="list-group-item">Live results are still in dev, results posted to
+                    chat.</li>
+            </ul>
+        </div>
+
+    </div>
+    <div>
+        <div class="text-center" style="min-height: 300px">
+            <h3 class="text-center whiteText font-bold text-2xl">Giveaway</h3>
+            <p class="text-lg mt-2">A Giveaway picks 1 user who entered to "win". This is different from
+                raffles in
+                that it does not reward any points.</p>
+            <p class="text-lg mt-2">A Giveaway can be started on this page or by typing !giveaway in
+                chat. Users type
+                !enter to join the Giveaway.</p>
+            <p class="text-lg mt-2">The results will be updated live on this page and the winner will be
+                announced to
+                chat.</p>
+        </div>
+    </div>
+</div>

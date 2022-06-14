@@ -1,0 +1,184 @@
+<div class="glimPanel m-4 p-4 rounded-xl">
+    <ul class="mb-3 flex flex-wrap justify-center">
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(1)">Info</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(2)">Raffle</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(3)">Giveaway</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(4)">Poll</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(5)">Glimrealm</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(6)">Bankheist</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(7)">Glimroyale</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(8)">Duel</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(9)">Eightball</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(10)">Gamble</button>
+        </li>
+        <li class="mx-2">
+            <button class="btn-info inline-block py-4 px-4" (click)="setPage(11)">Queue</button>
+        </li>
+    </ul>
+    <div class="whiteText" [ngSwitch]="currentPage">
+        <div class="row" *ngSwitchCase="1">
+            <div class="text-center">
+                <ul style="list-style-type: none;">
+                    <li>
+                        <h4>Events Beta</h4>
+                    </li>
+                    <li>
+                        <p>Most events can be started from both the UI and chat.</p>
+                    </li>
+                    <li>
+                        <p>Each event has settings that you can change. Quiet mode lowers the amount of
+                            event related messages sent to chat.</p>
+                    </li>
+                    <li>
+                        <p>Each event can be disabled/enabled. You can also toggle the duration of some
+                            events.</p>
+                    </li>
+                    <li>
+                        <p>Questions? Join our <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                                onclick="loadLink('discord.com/invite/NZeqEjhHKf')">Discord</span>!</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <app-event-raffle *ngSwitchCase="2"></app-event-raffle>
+        <app-event-giveaway *ngSwitchCase="3"></app-event-giveaway>
+        <app-event-poll *ngSwitchCase="4"></app-event-poll>
+        <app-event-glimrealm *ngSwitchCase="5"></app-event-glimrealm>
+        <app-event-bankheist *ngSwitchCase="6"></app-event-bankheist>
+        <app-event-glimroyale *ngSwitchCase="7"></app-event-glimroyale>
+        <app-event-duel *ngSwitchCase="8"></app-event-duel>
+        <app-event-eightball *ngSwitchCase="9"></app-event-eightball>
+        <app-event-gamble *ngSwitchCase="10"></app-event-gamble>
+        <app-event-queue *ngSwitchCase="11"></app-event-queue>
+    </div>
+
+    <h4 class="text-center">Events are still in beta, please report any issues you may have.</h4>
+</div>
+
+<!-- Modal: Poll -->
+<div class="modal fade hidden" id="modalPoll" tabindex="-1" role="dialog" aria-labelledby="success modal"
+    aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content glimPanel whiteText" id="pollList">
+            <!--Header-->
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100">Creata a Poll</h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body" id="modalPollBody">
+                <p class="text-center">Any blank options will be removed. The question and options must not exceed the
+                    chat limit.</p>
+                <table class="table table-hover" id="pollData">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-toggle="tooltip" data-placement="top" title="The poll question">Question</td>
+                            <td contenteditable="true" id="pollQuestion"></td>
+                        </tr>
+                        <tr>
+                            <td data-toggle="tooltip" data-placement="top" title="Poll response">Option</td>
+                            <td contenteditable="true" class="pollOption"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <p id="PollModalText"></p>
+                <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-info"
+                    onclick="$('#pollData tbody').append(`<tr><td data-toggle='tooltip' data-placement='top' title='Poll response'>Option</td> <td contenteditable='true' class='pollOption'></td></tr>`)">Add
+                    Option</button>
+                <button type="button" class="btn btn-outline-success"
+                    onclick="EventHandle.poll.checkPollStatus(null, document.getElementById('pollQuestion').innerText, true)">Start
+                    Poll</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="modalQueueAdd" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Add a User</h4>
+            </div>
+            <!--Body-->
+            <form class="px-6 pb-4 mt-8" action="#">
+                <div class="flex justify-between">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="text" placeholder="User" id="queueAdd">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="remember" id="queueAdd" class="font-medium">Enter the user to add.</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!--Footer-->
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-success" onclick="addToQueueUI()">Add</button>
+                <button id="closeEventsQueueAddModal" type="button" class="btn-warning">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="modalQueueRemove" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Remove a User</h4>
+            </div>
+            <!--Body-->
+            <form class="px-6 pb-4 mt-8" action="#">
+                <div class="flex justify-between">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input type="text" placeholder="User" id="queueRemove">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="remember" id="queueRemove" class="font-medium">Enter the user to remove.</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!--Footer-->
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-danger" onclick="removeFromQueueUI()">Remove</button>
+                <button type="button" class="btn-warning" id="closeEventsQueueRemoveModal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

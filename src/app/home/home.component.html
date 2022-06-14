@@ -1,0 +1,79 @@
+<div class="card-body mt-2 mb-6 ml-3 mr-3 px-8 pb-8 rounded-xl glimPanel whiteText">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
+            <h4 class="text-2xl font-bold mt-3">Welcome to <span style="color:turquoise">GlimBoi</span></h4>
+            <p class="mt-6 text-xl">To get started select "Authorize." Log in with the account you want the bot to speak as. Glimboi
+                should request a token, but if you can't join a chat you should request one yourself.</p>
+            <p class="mt-6 text-xl">After that Glimboi will automatically request a token on startup. It may take 5-10 seconds to do
+                so. If you can't get something to work let me know!</p>
+            <p class="mt-6 text-xl">The bot may get disconnected, but it should rejoin after 5-10 seconds. You can toggle the message
+                on the chat page. It will look like nothing is happening, but it is reconnecting on the
+                background.</p>
+            <div class="flex flex-row flex-wrap gap-1 mt-4" >
+                <button class="btn-info grow" type="submit" id="authButton2" (click)="loadLink('glimboi.com/docs')">Documentation</button>
+                <button class="btn-info grow" type="submit" id="authButton3"
+                    (click)="loadLink('github.com/aMytho/GlimBoi/blob/main/README.md')">Contributing</button>
+                <button class="btn-info grow" type="submit" id="authButton4"
+                    (click)="loadLink('forms.gle/tkEf3ZLZBbpKhZCE7')">Feedback</button>
+                <button class="btn-info grow" type="submit" id="authButton6"
+                    (click)="loadLink('github.com/aMytho/GlimBoi/releases/latest')">Update Details</button>
+            </div>
+        </div>
+        <div>
+            <button class="btn-info mt-2 w-full" type="submit" id="saveAuth"
+                onclick="AuthHandle.requestUserAuthorization()">Authorize</button>
+            <button class="btn-info mt-2 w-full" type="submit" id="joinChannelBOT" disabled
+                onclick="AuthHandle.requestToken(true);">Request Token</button>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div id="chart" class="mt-2">
+                        <h3 class="text-center text-2xl font-bold">Bot Information</h3>
+                        <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl " style="background-color: #14365b;">
+                            <thead>
+                                <tr>
+                                    <th class="p-3 cyanBorder border-1 border-b-0 border-x-0 text-xl text-left" scope="col">Collection</th>
+                                    <th class="p-3 cyanBorder border-1 border-b-0 border-x-0 text-xl text-left" scope="col">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color: aliceblue;">
+                                <tr>
+                                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                        Commands
+                                    </td>
+                                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                                        <span id="commandCount">0</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                        Users
+                                    </td>
+                                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                        <span id="userCount">0</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                        Points
+                                    </td>
+                                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                        <span id="pointCount">0</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                        Quotes
+                                    </td>
+                                    <td class="p-3 cyanBorder border-solid border-1 border-x-0 border-b-0">
+                                        <span id="quoteCount">0</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

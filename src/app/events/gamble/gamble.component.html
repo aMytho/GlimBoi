@@ -1,0 +1,57 @@
+<div class="grid grid-cols-1 md:grid-cols-2 mt-2">
+    <div>
+        <h3 class="text-center whiteText font-bold text-2xl">Gamble Settings</h3>
+        <table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl"
+            style="background-color: #14365b;">
+            <tr>
+                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Setting</th>
+                <th class="p-3 cyanBorder border-2 border-b-0 border-x-0 text-xl">Value</th>
+            </tr>
+            <tbody>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Win
+                        Multiplier</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <input type="text" class="settingInput input-number" id="gambleMultiplier"
+                            placeholder="The win multiplier." value="1.5">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Chance to Win
+                    </td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <input type="text" class="settingInput input-number" id="gambleWinRate"
+                            placeholder="The chance to win." value="20">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">Enabled</td>
+                    <td class="p-3 cyanBorder border-solid border-4 border-x-0 border-b-0">
+                        <select class="settingSelect" id="gambleEnabled">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-6">
+            <a class="btn-danger" onclick="resetEventSettings('gamble')">Reset</a>
+            <a class="btn-info" onclick="saveEventSettings('gamble')">Save</a>
+        </div>
+    </div>
+    <div class="mx-2">
+        <div class="text-center" style="min-height: 300px">
+            <h3 class="whiteText font-bold text-2xl">Gamble</h3>
+            <p class="text-lg mt-2">Gamble is a way for users to win/lose points.</p>
+            <p class="text-lg mt-2">Start by typing !gamble wager. If they lose they lose all the
+                wagered points. If
+                they win they win
+                the points based on the multiplier.</p>
+            <p class="text-lg mt-2">Multiplier Examples</p>
+            <p class="text-lg mt-1">1.0 => Gained the wager.</p>
+            <p class="text-lg mt-1">1.5 => Gained the wager and and extra half of it.</p>
+            <p class="text-lg mt-1">2.0 => Gained twice the wagered points.</p>
+        </div>
+    </div>
+</div>

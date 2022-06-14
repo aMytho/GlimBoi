@@ -1,0 +1,16 @@
+<table class="table whiteText mt-2 w-full border-collapse border-slate-200 bc rounded-xl" style="background-color: #14365b;" id="pointsTable">
+    <thead>
+        <tr>
+            <th class="p-3 cyanBorder border-solid border-2 border-b-0 border-x-0 text-xl" scope="col">#</th>
+            <th class="p-3 cyanBorder border-solid border-2 border-b-0 border-x-0 text-xl" scope="col">User</th>
+            <th class="p-3 cyanBorder border-solid border-2 border-b-0 border-x-0 text-xl" scope="col">Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of pointData; let i=index">
+            <td class="p-3 cyanBorder border-solid border-b-0 border-x-0" [ngClass]="{'border-4': i == 0, 'border-1': i != 0}" scope="row">{{i+1}}</td>
+            <td class="p-3 cyanBorder border-solid border-b-0 border-x-0" [ngClass]="{'border-4': i == 0, 'border-1': i != 0}">{{user.userName}}</td>
+            <td class="p-3 cyanBorder border-solid border-b-0 border-x-0" [ngClass]="{'border-4': i == 0, 'border-1': i != 0}">{{user.points}}</td>
+        </tr>
+    </tbody>
+</table>

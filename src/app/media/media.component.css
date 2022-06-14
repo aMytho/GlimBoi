@@ -1,0 +1,22 @@
+#obsResources {
+    background-color: #14365b;
+    color: aliceblue !important;
+}
+#obsResources tr[class="even"] {
+    cursor: pointer;
+    background-color: #1b4776;
+}
+
+#obsResources tr[class="odd"] {
+    cursor: pointer;
+    background-color: #14365b;
+}
+
+#obsResources td {
+    border-top-color: #006e80;
+    border-top-width: 1px;
+}
+
+#obsResources tr:hover {
+    background-color: #3169a5;
+}

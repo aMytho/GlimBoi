@@ -1,0 +1,63 @@
+<div class="glimPanel m-4 p-4 rounded-xl" id="command-btn-panel">
+    <div class="mb-3 flex flex-wrap flex-row justify-center">
+        <button class="btn-info py-4 px-4" (click)="setPage(1)">Commands</button>
+        <button class="btn-info py-4 px-4" (click)="setPage(2)">Glimboi Commands</button>
+        <button class="btn-info py-4 px-4" (click)="setPage(3)">Variables</button>
+        <button class="btn-info py-4 px-4" (click)="setPage(4)">Settings</button>
+    </div>
+    <div class="flex flex-wrap flex-row justify-center mt-2">
+        <a class="btn-primary" id="activateCommandAddModal" href="#">Add Command</a>
+    </div>
+    <div class="mt-4" [ngSwitch]="currentPage">
+        <div id="userCommands" *ngSwitchCase="1">
+            <h5 class="whiteText text-center font-bold text-xl">Below lists all of the commands that you have made. You can
+                add some here, or add them from chat. (Check Glimboi Commands)</h5>
+            <table id="example" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
+                style="width: 100% !important;"></table>
+        </div>
+        <app-command-default *ngSwitchCase="2"></app-command-default>
+        <app-command-variables *ngSwitchCase="3"></app-command-variables>
+        <app-command-settings *ngSwitchCase="4"></app-command-settings>
+    </div>
+</div>
+
+
+<!-- Modal: Add Command -->
+<div class="hidden fixed top-0 left-0 right-0 bottom-0 m-6 z-50" id="addCommandModal" tabindex="-1" aria-hidden="true"
+    style="overflow-wrap: break-word;">
+    <div class="absolute max-w-none w-full h-full">
+        <div class="glimPanel whiteText h-full w-full p-4 absolute flex flex-col" id="commandContent">
+
+        </div>
+    </div>
+</div>
+<!-- Modal: Add Command -->
+
+<style>
+    #example {
+        background-color: #14365b;
+        color: aliceblue !important;
+    }
+
+    #example tr[class="even"] {
+        cursor: pointer;
+        background-color: #1b4776;
+    }
+
+    #example tr[class="odd"] {
+        cursor: pointer;
+        background-color: #14365b;
+    }
+
+    #example td {
+        border-top-color: #006e80;
+        border-top-width: 1px;
+    }
+
+    #example tr:hover {
+        background-color: #3169a5;
+    }
+</style>
+
+<!--Tailwind data. Never rendered-->
+<div id="tailwindCSS" class="border-t border-1 border-4-teal-50 hidden text-yellow-300 text-green-500 text-red-500"></div>

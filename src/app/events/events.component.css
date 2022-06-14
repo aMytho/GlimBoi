@@ -1,0 +1,10 @@
+table td+td {
+    border-left: 2px solid aliceblue;
+}
+
+.eventUserList li {
+    background-color: transparent !important;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}

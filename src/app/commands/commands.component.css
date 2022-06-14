@@ -1,0 +1,20 @@
+#example tr[class="even"] {
+    cursor: pointer;
+}
+#example tr[class="odd"] {
+    cursor: pointer;
+}
+.active {
+    border-color: #17a2b8 !important;
+}
+.draggable {
+    cursor: move;
+    margin-bottom: 1rem;
+    user-select: none;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 4rem;
+    width: 16rem;
+    border: 1px solid #cbd5e0;
+}
