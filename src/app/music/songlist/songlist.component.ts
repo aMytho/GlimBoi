@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
     selector: 'app-songlist',
     templateUrl: './songlist.component.html',
-    styleUrls: ['../music.component.scss']
+    styleUrls: ['../music.component.css']
 })
 export class SonglistComponent implements OnInit {
     //listOfSongs: Song[] = [];

@@ -4,7 +4,7 @@ import { UserManager } from 'src/app/core/users/user_manager.service';
 @Component({
     selector: 'app-points-table',
     templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss']
+    styleUrls: ['./table.component.css']
 })
 export class TableComponent implements OnInit {
     pointData: {userName: string, points: number}[] = [];

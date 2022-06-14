@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-command-variables',
   templateUrl: './variables.component.html',
-  styleUrls: ['./variables.component.scss']
+  styleUrls: ['./variables.component.css']
 })
 export class VariablesComponent implements OnInit {
 

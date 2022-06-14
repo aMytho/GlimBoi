@@ -5,7 +5,7 @@ import { PointsForm } from './points.form';
 @Component({
     selector: 'app-points',
     templateUrl: './points.component.html',
-    styleUrls: ['./points.component.scss']
+    styleUrls: ['./points.component.css']
 })
 export class PointsComponent implements OnInit {
 
