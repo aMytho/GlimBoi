@@ -1,9 +1,10 @@
 import { app, BrowserWindow, screen, ipcMain, dialog } from 'electron'; //electron modules
 import log from 'electron-log' // helps with logging to file for main process
 console.log = log.log; //Logs all console messages in the main process to a file for debug purposes.
-import { autoUpdater } from 'electron-updater'; //handles updates
-import isDev = require("electron-is-dev"); // detects if we are in dev mode
+import { autoUpdater } from 'electron-updater'; //@ts-ignore -- handles updates
+import isDev = require("electron-is-dev"); //@ts-ignore -- detects if we are in dev mode
 import windowStateKeeper from 'electron-window-state';
+import { join } from "path";
 
 ipcMain.on('app_version', (event) => {
     console.log(`Glimboi dev mode: ${isDev}`);
@@ -54,9 +55,13 @@ function createWindow() {
         },
         frame: false
     })
-    win.loadFile(__dirname + '\\../src/index.html');
-    win.setIcon('resources/Icons/icon.png');
-    mainWindowState.manage(win);
+    if (isDev) {
+        connect(win);
+    } else {
+        win.loadFile(join(__dirname, "..", "TODO - file url", 'index.html'));
+    }
+    win.setIcon(join(__dirname, "..", "/src/assets/icons", "icon.png"));
+    win.setTitle("Glimboi");
 }
 app.whenReady().then(createWindow);
 
@@ -87,12 +92,13 @@ ipcMain.on("window", async (event, arg: "close" | "import" | "maximize" | "minim
             console.log("Importing new data, closing window");
             let { copyFile } = require("fs");
             // do file stuff
+            if (!files) return
             for (let file of files) {
                 try {
                     await copyFile(`${path}/${file.name}.db`, `${app.getPath("userData")}/data/${file.name}.db`, 0, () => {});
                 } catch (e) {
                     console.error(e);
-                    dialog.showMessageBoxSync(null, {
+                    dialog.showMessageBoxSync({
                         message: "Error importing data file. Please restart Glimboi.",
                         type: "error",
                         title: "Error",
@@ -101,7 +107,7 @@ ipcMain.on("window", async (event, arg: "close" | "import" | "maximize" | "minim
                     break;
                 }
             }
-            dialog.showMessageBoxSync(null, {message: "Data imported successfully! Glimboi will now restart.", type: "info", title: "Success"});
+            dialog.showMessageBoxSync({message: "Data imported successfully! Glimboi will now restart.", type: "info", title: "Success"});
             win.reload();
     }
 });
@@ -149,3 +155,16 @@ app.on('activate', () => {
         createWindow();
     }
 })
+
+ipcMain.on("appDataRequest", (event) => {
+    event.returnValue = [__dirname, app.getPath("userData") + '/testing']
+})
+
+function connect(win:BrowserWindow) {
+    win.loadURL("http://localhost:4200").catch(data => {
+        console.log("Server not found, reconnecting in 10 seconds. Is the Angular server running?");
+        setTimeout(() => {
+            connect(win);
+        }, 10000);
+    })
+}

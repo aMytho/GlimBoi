@@ -1,4 +1,5 @@
 import Nedb from "@seald-io/nedb";
+import { resolve } from "path";
 const Datastore = (<any>window).require('@seald-io/nedb');
 import { environment } from "../../../environments/environment"
 import { DatabaseNames } from "./database_names.entity";
@@ -74,6 +75,32 @@ class DatabaseManager {
                 }
             });
         });
+    }
+
+    remove(object: any) {
+        return new Promise(resolve => {
+            this.database.remove(object, {}, function (err: Error | null, numRemoved: number) {
+                if (err !== null) {
+                    console.log(err);
+                } else {
+                    console.log(`Removed ${numRemoved} documents`);
+                }
+                resolve(null);
+            });
+        })
+    }
+
+    update(query: any, modifier: any) {
+        return new Promise(resolve => {
+            this.database.update(query, modifier, {}, function (err: Error | null, numReplaced: number) {
+                if (err !== null) {
+                    console.log(err);
+                } else {
+                    console.log(`Updated ${numReplaced} documents`);
+                }
+                resolve(null);
+            });
+        })
     }
 }
 

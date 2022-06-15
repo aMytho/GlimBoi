@@ -12,8 +12,13 @@
         <div id="userCommands" *ngSwitchCase="1">
             <h5 class="whiteText text-center font-bold text-xl">Below lists all of the commands that you have made. You can
                 add some here, or add them from chat. (Check Glimboi Commands)</h5>
-            <table id="example" class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
-                style="width: 100% !important;"></table>
+            <table datatable [dtOptions]="dataTableOptions" id="example"
+                class="w-full border-solid border-x-0 border-t-2 border-t-white mt-2 rounded-xl"
+                style="width: 100% !important;">
+                <tbody>
+
+                </tbody>
+                </table>
         </div>
         <app-command-default *ngSwitchCase="2"></app-command-default>
         <app-command-variables *ngSwitchCase="3"></app-command-variables>

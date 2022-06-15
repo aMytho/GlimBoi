@@ -5,6 +5,7 @@ import { CommandsRoutingModule } from './commands-routing.module';
 import { VariablesComponent } from './variables/variables.component';
 import { SettingsComponent } from './settings/settings.component';
 import { DefaultComponent } from './default/default.component';
+import { DataTablesModule } from 'angular-datatables';
 
 
 
@@ -17,7 +18,8 @@ import { DefaultComponent } from './default/default.component';
   ],
   imports: [
     CommonModule,
-    CommandsRoutingModule
+    CommandsRoutingModule,
+    DataTablesModule
   ]
 })
 export class CommandsModule {}
