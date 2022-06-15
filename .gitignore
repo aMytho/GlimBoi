@@ -5,3 +5,4 @@ dist/
 build/
 changelog.txt
 todo.txt
+.angular/

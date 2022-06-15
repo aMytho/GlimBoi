@@ -49,5 +49,66 @@ export interface Command {
      * The media to display
      * @deprecated
      */
-    media?: string
+    media?: string;
+    /**
+     * The triggers of the command
+     */
+    triggers: TriggerStructure[];
+}
+
+export type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User" | "Subscribe" | "Gift Sub" | "Donate";
+
+type TriggerStructure = {
+    trigger: CommandTrigger;
+    constraints?: undefined | TriggerConstraints;
+}
+type TriggerConstraints = ChatMessageTrigger | FollowTrigger | WelcomeUserTrigger
+
+type ChatMessageTrigger = {
+    /**
+     * What the message must start with to be triggered
+     */
+    startsWith?: string;
+}
+
+type FollowTrigger = {}
+
+type WelcomeUserTrigger = {
+    /**
+     * The user to exclusivly welcome.
+     */
+    user?: string;
+}
+
+type SubscribeTrigger = {}
+
+type TriggerContext = {
+    /**
+     * The message from chat
+     */
+    message?: string;
+    messageId?: string;
+    user?: {
+        avatarUrl?: string;
+        id?: string;
+        username?: string;
+    }
+    trigger: CommandTrigger;
+
+    variables?: ContextPossibleVariables;
+}
+
+type ContextPossibleVariables = {
+    /**
+     * Someone gifted a sub
+     */
+    recipient?: {
+        username?: string;
+    }
+    /**
+     * Someone donated to the streamer
+     */
+    donation?: {
+        amount?: string
+    }
 }

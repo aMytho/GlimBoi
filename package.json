@@ -46,7 +46,8 @@
     "build": "tsc --project tsconfig.main.json && ng build",
     "compile": "tsc --project tsconfig.main.json && ng build",
     "deploy": "node scripts/deploy.js",
-    "dev": "tsc --watch",
+    "dev": "electron build/main.js",
+    "dev:web": "ng serve",
     "start": "electron build/main.js & ng serve"
   },
   "author": "Mytho",
@@ -63,6 +64,8 @@
     "@seald-io/nedb": "^2.2.1",
     "angular-datatables": "^13.1.0",
     "crypto-js": "^4.1.1",
+    "datatables.net": "^1.11.3",
+    "datatables.net-dt": "^1.11.3",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.3.1",
     "electron-updater": "^4.3.5",
