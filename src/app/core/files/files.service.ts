@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ElectronService } from '../electron/electron.service';
+import * as fs from "fs";
 
 /**
  * Handles all file operations. Proxy for fs
@@ -8,9 +8,11 @@ import { ElectronService } from '../electron/electron.service';
     providedIn: 'root'
 })
 export class FilesService {
+    fs: typeof fs;
     constructor(
-        private electronService: ElectronService
-    ) { }
+    ) {
+        this.fs = window.require('fs');
+    }
 
     /**
      * Reads data from a file
@@ -19,9 +21,9 @@ export class FilesService {
      */
     readFile(path: string): Promise<string | null> {
         return new Promise(resolve => {
-            this.electronService.fs.readFile(path, (err, data) => {
+            this.fs.readFile(path, (err, data) => {
                 if (err) {
-                    console.log(err);
+                    console.log(err, path);
                     resolve(null);
                 } else {
                     resolve(data.toString());
@@ -37,7 +39,7 @@ export class FilesService {
      */
     writeFile(path: string, data: string): Promise<void> {
         return new Promise(resolve => {
-            this.electronService.fs.writeFile(path, data, (err) => {
+            this.fs.writeFile(path, data, (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -53,7 +55,7 @@ export class FilesService {
      */
     fileExists(path: string): Promise<boolean> {
         return new Promise(resolve => {
-            this.electronService.fs.access(path, (err) => {
+            this.fs.access(path, (err) => {
                 if (err) {
                     resolve(false);
                 } else {
@@ -69,7 +71,7 @@ export class FilesService {
      */
     makeDir(path: string): Promise<void> {
         return new Promise(resolve => {
-            this.electronService.fs.mkdir(path, (err) => {
+            this.fs.mkdir(path, (err) => {
                 if (err) {
                     console.log(err);
                 }

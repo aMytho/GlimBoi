@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, webFrame } from 'electron';
 import * as childProcess from 'child_process';
-import * as fs from 'fs';
 
 @Injectable({
     providedIn: 'root'
@@ -13,15 +12,14 @@ export class ElectronService {
     ipcRenderer: typeof ipcRenderer;
     webFrame: typeof webFrame;
     childProcess: typeof childProcess;
-    fs: typeof fs;
 
     constructor() {
         // Conditional imports
+        console.log("Initializing ElectronService...");
         this.ipcRenderer = window.require('electron').ipcRenderer;
         this.webFrame = window.require('electron').webFrame;
 
         this.childProcess = window.require('child_process');
-        this.fs = window.require('fs');
 
         // Notes :
         // * A NodeJS's dependency imported with 'window.require' MUST BE present in `dependencies` of both `app/package.json`

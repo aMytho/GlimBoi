@@ -8,13 +8,11 @@ import { FilesService } from '../files/files.service';
 export class SettingsService {
     path: string
     cache: any
-    /**
-     * Cache constructor
-     */
+
     constructor(
         private fileService: FilesService
     ) {
-        this.path = `${environment.appData[1]}/data/cache.test.json`;
+        this.path = `${environment.appData[1]}/testing/data/cache.json`;
         this.cache = {};
     }
 
@@ -50,7 +48,7 @@ export class SettingsService {
      * @param {boolean} setDefault Should we create a new key if it doesn't exist?
      * @returns {any} returns null if undefined
      */
-    get(key: string, defaultValue:any = null, setDefault = false) {
+    get(key: string, defaultValue: any = null, setDefault = false) {
         let val = this.cache[key];
 
         if (val == undefined) {
@@ -63,27 +61,33 @@ export class SettingsService {
 
     /**
      * Gets (or sets) the file that stores the cache data. Created if it does not yet exist.
+     * This is ran by the APP_INITIALIZER factory.
      * @param {string} path The path to the cache file
      * @returns {object} The cache data
      */
     async setFile() {
-        try {// @ts-ignore
-            this.cache = JSON.parse(await fs.readFile(this.path)); // Reads the cache file
-        } catch (e) {
+        let data = JSON.parse(await this.fileService.readFile(this.path)); // Reads the cache file
+        if (data != null) {
+            this.cache = data;
+        } else {
             try {
-                await this.fileService.writeFile(this.path, JSON.stringify({}));// @ts-ignore if it doesn't exist, create it
-                this.cache = JSON.parse(await fs.readFile(this.path));
+                console.log("Creating settings file");
+                await this.fileService.writeFile(this.path, JSON.stringify({}));// if it doesn't exist, create it
+                this.cache = JSON.parse(await this.fileService.readFile(this.path));
             } catch (e2) {
+                console.log(e2);
                 this.cache = {}; // If something goes wrong, just return an empty object
             }
-        } finally {
-            const migrations = require(`${environment.appData[0]}/migrations.js`);
-            let migrateData = await migrations.migrate({
-                mediaVersion: this.get("mediaVersion", 2),
-                serverUrl: this.get("serverUrl", "localhost"),
-                serverPort: this.get("serverPort", 3000)
-            });
-            // TODO SAVE DATA
         }
+        /*
+        const migrations = require(`${environment.appData[0]}/migrations.js`);
+        let migrateData = await migrations.migrate({
+            mediaVersion: this.get("mediaVersion", 2),
+            serverUrl: this.get("serverUrl", "localhost"),
+            serverPort: this.get("serverPort", 3000)
+        });
+        // TODO SAVE DATA
+        */
+
     }
 }
