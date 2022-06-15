@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserManager } from 'src/app/core/users/user_manager.service';
+import { PointsService } from '../points.service';
 
 @Component({
     selector: 'app-points-table',
@@ -7,12 +8,18 @@ import { UserManager } from 'src/app/core/users/user_manager.service';
     styleUrls: ['./table.component.css']
 })
 export class TableComponent implements OnInit {
-    pointData: {userName: string, points: number}[] = [];
+    pointData: { userName: string, points: number }[] = [];
     constructor(
-        private userManager: UserManager
-    ) { }
+        private userManager: UserManager,
+        private pointsService: PointsService
+    ) {
+        this.pointsService.reload.subscribe(() => {
+            this.ngOnInit();
+        });
+    }
 
     async ngOnInit(): Promise<void> {
+        console.log(true)
         // Get up to 10 users with the most points
         let users = await this.userManager.findByPoints(10);
         // Map the users to an array of objects with the user name and points

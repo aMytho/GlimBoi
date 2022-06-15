@@ -2,49 +2,48 @@
     <div class="card-body glimPanel rounded-xl col-span-1 p-4 whiteText">
         <div class="flow-root">
             <h3 class="float-left text-lg font-semibold">Starting</h3>
-            <h4 class="float-right text-lg font-semibold" id="StartingPoints">100</h4>
+            <h4 class="float-right text-lg font-semibold" id="StartingPoints">{{data.startingPoints}}</h4>
         </div>
         <div class="flow-root mt-2">
             <h3 class="float-left text-lg font-semibold">Rate</h3>
-            <h4 class="float-right text-lg font-semibold" id="EarningPoints">100</h4>
+            <h4 class="float-right text-lg font-semibold" id="EarningPoints">{{data.earningPoints}}</h4>
         </div>
         <div class="flow-root mt-2">
             <h3 class="float-left text-lg font-semibold">Total</h3>
-            <h4 class="float-right text-lg font-semibold" id="TotalPoints">100</h4>
+            <h4 class="float-right text-lg font-semibold" id="TotalPoints">{{totalPoints}}</h4>
         </div>
-        <div class="mt-2">
-            <h3 class="text-center text-xl font-semibold">Initial Value</h3>
-            <p>The amount of points a new user starts with.</p>
-            <form class="mt-2">
-                <label for="rateValueSlider">Starting Amount</label>
-                <input type="range" class="w-full " id="pointValue" min="0" max="500"
-                    oninput="document.getElementById('pointValueOutput').innerText = this.value">
-                <p id="pointValueOutput">100</p>
-            </form>
-        </div>
-        <div class="mt-2">
-            <h3 class="text-center text-xl font-semibold">Rate</h3>
-            <p>The amount of points earned per 15 minutes.</p>
-            <form class="mt-2">
-                <label for="rateValueSlider">Rate</label>
-                <input type="range" class="w-full" id="pointRate" min="0" max="100"
-                    oninput="document.getElementById('rateValueOutput').innerText = this.value">
-                <p id="rateValueOutput">100</p>
-            </form>
-        </div>
-        <div class="mt-2">
-            <h3 class="text-center text-xl font-semibold">Name</h3>
-            <p>The name of your currency.</p>
-            <input class="w-full rounded-md mt-auto" type="text" placeholder="Name" id="pointsNewName">
-        </div>
-        <div class="mt-3 flex justify-center">
-            <a class="btn-info" onclick="getPoints()">Refresh Leaderboard</a>
-            <a class="btn-info" onclick="saveUserPointSettings()">Save</a>
-        </div>
+        <form class="mt-2" #pointsForm="ngForm">
+            <div class="mt-2">
+                <h3 class="text-center text-xl font-semibold">Initial Value</h3>
+                <p class="mb-2">The amount of points a new user starts with.</p>
+                <label for="pointValue">Starting Amount</label>
+                <input type="range" class="w-full " id="pointsStart" name="pointsStart"
+                min="0" max="500" [(ngModel)]="model.startingPoints">
+                <p>{{model.startingPoints}}</p>
+            </div>
+            <div class="mt-2">
+                <h3 class="text-center text-xl font-semibold">Rate</h3>
+                <p class="mb-2">The amount of points earned per 15 minutes.</p>
+                <label for="pointRate">Rate</label>
+                <input type="range" class="w-full" id="pointRate" name="pointRate"
+                 min="0" max="100" [(ngModel)]="model.earningPoints">
+                <p>{{model.earningPoints}}</p>
+            </div>
+            <div class="mt-2">
+                <h3 class="text-center text-xl font-semibold">Name</h3>
+                <p>The name of your currency.</p>
+                <input class="w-full rounded-md mt-auto" type="text" placeholder="pointsName" id="pointsName"
+                name="pointsName" [(ngModel)]="model.pointsName">
+            </div>
+            <div class="mt-3 flex justify-center">
+                <a class="btn-info" (click)="reloadTable()">Refresh Leaderboard</a>
+                <a class="btn-info" (click)="onSubmit()">Save</a>
+            </div>
+        </form>
     </div>
 
     <div class="card-body glimPanel p-4 rounded-xl col-span-2 sm:mt-4 md:mt-0">
-        <h3 class="whiteText text-center text-2xl font-bold" id="pointName">Points Leaderboard</h3>
+        <h3 class="whiteText text-center text-2xl font-bold" id="pointName">{{data.pointsName}} Leaderboard</h3>
         <app-points-table></app-points-table>
     </div>
 
