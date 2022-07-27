@@ -182,6 +182,10 @@ type SubscribeTrigger = {}
 
 type TriggerContext = {
     /**
+     * Allows the command to run regardless of permissions
+     */
+    bypassPermissions?: boolean;
+    /**
      * The message from chat
      */
     message?: string;
