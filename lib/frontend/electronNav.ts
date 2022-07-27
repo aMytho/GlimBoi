@@ -19,6 +19,7 @@ const fs:typeof import("fs").promises = require("fs").promises;
 const DumbCacheStore:CacheStore = require(appData[0] + "/modules/cache.js");
 const LogHandle:LogHandle = require(appData[0] + "/modules/log.js");
 const Server:Server = require(appData[0] + "/modules/server.js");
+let Companion: Companion = require(appData[0] + "/modules/companion/companion.js");
 const Util:Util = require(appData[0] + "/modules/util/util.js");
 const mm = require("music-metadata");
 let currentPage:pageState = "home"

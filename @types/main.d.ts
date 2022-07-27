@@ -26,6 +26,7 @@ type ModHandle = typeof import ("../lib/modules/modPanel")// @ts-ignore
 type LogHandle = typeof import("../lib/modules/log")// @ts-ignore
 type CacheStore = typeof import("../lib/modules/cache")// @ts-ignore
 type Server = typeof import("../lib/modules/server")// @ts-ignore
+type Companion = typeof import("../lib/modules/companion/companion")// @ts-ignore
 type Util = typeof import("../lib/modules/util/util")// @ts-ignore
 
 type Type = typeof import("bootstrap")
