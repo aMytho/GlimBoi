@@ -283,6 +283,7 @@ async function handleTriggerSelection(mode: string, data?:TriggerStructure[]) {
                 case "Gift Sub": triggerSelecter.value = "giftSub"; break;
                 case "Donate": triggerSelecter.value = "donate"; break;
                 case "Welcome User": triggerSelecter.value = "welcomeUser"; break;
+                case "Manual": triggerSelecter.value = "manual"; break;
             }
             changeTriggerOptions(newTrigger, data);
 
@@ -310,13 +311,14 @@ async function changeTriggerOptions(newTrigger:HTMLElement, data?:TriggerStructu
                 case "ChatMessage":
                     newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as ChatMessageTrigger).startsWith;
                     break;
+                case "Welcome User":
+                    newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as WelcomeUserTrigger).user || "";
+                    break;
                 case "Follow":
                 case "Subscribe":
                 case "Gift Sub":
                 case "Donate":
-                    break;
-                case "Welcome User":
-                    newTrigger.getElementsByTagName("input")[0].value = (trigger.constraints as WelcomeUserTrigger).user || "";
+                case "Manual":
                     break;
             }
         })

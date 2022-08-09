@@ -154,7 +154,7 @@ type actionVariables = string[]
 
 type actionMode = "add" | "edit"
 
-type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User" | "Subscribe" | "Gift Sub" | "Donate";
+type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User" | "Subscribe" | "Gift Sub" | "Donate" | "Manual";
 
 type TriggerStructure = {
     trigger: CommandTrigger;

@@ -25,6 +25,11 @@ async function checkContext(trigger:CommandTrigger, context) {
                         return true
                     }
                     break;
+                case "Manual":
+                    if (command.commandName == context.commandName.toLowerCase()) {
+                        return true
+                    }
+                    break;
             case "Follow":
             case "Subscribe":
             case "Gift Sub":
@@ -57,6 +62,8 @@ function parseContext(trigger: CommandTrigger, context:any):TriggerContext {
             return {user: {username: context.user}, variables: {recipient: {username: context.recipient}}, trigger: trigger}
         case "Donate":
             return {user: {username: context.user}, variables: {donation: {amount: context.amount}}, trigger: trigger};
+        case "Manual":
+            return {user: {username: ""}, trigger: trigger, bypassPermissions: true}
         // For any others you may have to provide the context items you need. Query usr ID, etc
     }
 }
