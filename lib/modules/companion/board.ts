@@ -1,15 +1,23 @@
 export interface Board {
+    description: string;
     id: number;
     name: string;
     buttons: Button[];
+    columns: number;
+    rowHeight: number;
+    squish: null;
 }
 
 export interface Button {
-    id: number;
+    id: string;
     name: string;
-    img: any;
-    action: "runCommand" | "runMedia" | "sendMessage";
-    data: ButtonAction
+    img?: any;
+    instructions: Instruction[];
+    dimensions: {width: number, height: number, positionX: number, positionY: number};
+    x: number;
+    y: number;
+    w: number;
+    h: number;
 }
 
 export type ButtonAction = {
@@ -25,6 +33,11 @@ export type ButtonAction = {
     message?: {
         message: string;
     }
+}
+
+export type Instruction = {
+    action: string;
+    data: ButtonAction
 }
 
 export type BoardAction = "addBoard" | "removeBoard" | "editBoard" | "reset" | "getBoards";

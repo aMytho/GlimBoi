@@ -15,14 +15,18 @@ function updatePath(updatedPath:string) {
     companionDB = new Datastore({ filename: `${updatedPath}/data/companion.db`, autoload: true });
 }
 
-function addBoard(board:string) {
+function addBoard(board:Board) {
     return new Promise(async resolve => {
-        let boardExisits = await getBoardByName(board);
+        let boardExisits = await getBoardByName(board.name);
         if (!boardExisits) {
             companionDB.insert({
-                buttons: [],
-                id: 1,
-                name: board
+                buttons: board.buttons,
+                id: board.id,
+                name: board.name,
+                description: board.description,
+                columns: board.columns,
+                rowHeight: board.rowHeight,
+                squish: null
             }, function(err, boardLocal) {
                 resolve(boardLocal);
             });
@@ -56,9 +60,9 @@ function getBoardByName(name: string) {
     })
 }
 
-function removeBoard(name: string) {
+function removeBoard(id: number) {
     return new Promise(resolve => {
-        companionDB.remove({name: name}, {}, (err, numRemoved) => {
+        companionDB.remove({id: id}, {}, (err, numRemoved) => {
             if (numRemoved > 0) {
                 resolve(true);
             } else {
@@ -70,7 +74,7 @@ function removeBoard(name: string) {
 
 function editBoard(board:Board) {
     return new Promise(resolve => {
-        companionDB.update({name: board.name}, board, {}, (err, numReplaced) => {
+        companionDB.update({id: board.id}, board, {}, (err, numReplaced) => {
             if (numReplaced > 0) {
                 resolve(true);
             } else {
@@ -91,10 +95,10 @@ function reset() {
 async function handleBoard(action: requestType, board: Board) {
     switch (action) {
         case "addBoard":
-            addBoard(board.name);
+            addBoard(board);
             break;
         case "removeBoard":
-            removeBoard(board.name);
+            removeBoard(board.id);
             break;
         case "editBoard":
             editBoard(board);
