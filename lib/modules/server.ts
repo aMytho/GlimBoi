@@ -29,9 +29,6 @@ function startServer() {
     if (httpServer == undefined) {
         const http: typeof import("http") = require('http');
         httpServer = http.createServer(async function (req: IncomingMessage, res: ServerResponse) {
-            // Load companion DB
-            Companion = require(appData[0] + "/modules/companion/companion.js");
-            Companion.updatePath(appData[1]);
             const url: typeof import("url") = require('url');
             const queryObject = url.parse(req.url, true);
             console.log(queryObject);
@@ -42,7 +39,9 @@ function startServer() {
                     return ""
                 }
             }
-
+            // Set CORS
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE")
             if (queryObject.href.startsWith("/api")) {
                 // Read and await for the body data
                 const buffers = [];
@@ -63,7 +62,7 @@ function startServer() {
                 res.end('Not found.');
             }
         });
-        httpServer.listen(4200);
+        httpServer.listen(4201);
     } else {
         console.log("HTTP server already running.")
     }
@@ -163,7 +162,7 @@ async function handleIncomingRequest(request) {
                 ChatMessages.sendMessage(data.message.message);
                 break;
             case "board":
-                console.log("Board request");
+                console.log("Board request");// @ts-ignore
                 let response = await Companion.handleBoard(data.request.type, data.board);
                 if (response) {
                     let packet: OutgoingPacket = {
