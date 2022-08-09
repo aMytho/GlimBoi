@@ -58,8 +58,31 @@ function startServer() {
                     body: tryToConvertRequest(body)
                 }, res);
             } else {
-                res.writeHead(404);
-                res.end('Not found.');
+                if (queryObject.href.includes(".js")) {
+                    fs.readFile(dirName + `/glimboard${queryObject.href}`).then(file => {
+                        res.setHeader("Content-Type", "application/javascript");
+                        res.end(file.toString());
+                    });
+                    return;
+                } if (queryObject.href.includes(".css")) {
+                    fs.readFile(dirName + `/glimboard${queryObject.href}`).then(file => {
+                        res.setHeader("Content-Type", "text/css");
+                        res.end(file.toString());
+                    });
+                    return;
+                } else if (queryObject.href.includes(".svg")) {
+                    let tempFS = require("fs").readFile
+                    tempFS(dirName + `/glimboard${queryObject.href}`, function(err, data) {
+                        res.setHeader("Content-Type", 'image/svg+xml');
+                        res.end(data, "utf-8");
+                    });
+                    return;
+                } else {
+                    fs.readFile(dirName + `/glimboard/index.html`).then(file => {
+                        res.end(file.toString());
+                    });
+                    return;
+                }
             }
         });
         httpServer.listen(4201);
