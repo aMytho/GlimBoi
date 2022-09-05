@@ -17,7 +17,7 @@ function updatePath(updatedPath:string) {
 
 function addBoard(board:Board) {
     return new Promise(async resolve => {
-        let boardExisits = await getBoardByName(board.name);
+        let boardExisits = await getBoardById(board.id);
         if (!boardExisits) {
             companionDB.insert({
                 buttons: board.buttons,
@@ -48,9 +48,9 @@ function getBoards() {
     });
 }
 
-function getBoardByName(name: string) {
+function getBoardById(id: number) {
     return new Promise(resolve => {
-        companionDB.findOne({name: name}, {}, function(err, board) {
+        companionDB.findOne({id: id}, {}, function(err, board) {
             if (board == undefined) {
                 resolve(false);
             } else {
