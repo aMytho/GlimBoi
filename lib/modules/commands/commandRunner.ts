@@ -9,7 +9,7 @@ let cooldownArray:commandName[] = [];
 async function checkCommand(command: CommandType, context: TriggerContext) {
     try {
         let hasPerms = await permissionCheck(command, context.user.username.toLowerCase());
-        if (hasPerms == "ACCEPTED") {
+        if (hasPerms == "ACCEPTED" || context.bypassPermissions) {
             // Check if any variables need to be created from the context
             if (context.variables) injectVariables(context.variables);
             // Run the command

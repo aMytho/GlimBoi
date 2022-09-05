@@ -147,6 +147,9 @@ async function validateTriggers(mode:"add" | "edit"): Promise<undefined | Trigge
                         user: usr
                     }});
                     break;
+                case "manual":
+                    triggerArray.push({trigger: "Manual", constraints: {}});
+                    break;
             }
         }
         return triggerArray;

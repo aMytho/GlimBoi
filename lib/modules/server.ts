@@ -1,45 +1,116 @@
 // File hosts the glimboi server for media, songs, and other data.
 
-let host:import("ws").Server;
+import { IncomingMessage, ServerResponse } from "http";
+import { Http2Server } from "http2";
+import { IncomingPacket, OutgoingPacket } from "./server/packet";
+
+let websocketServer: import("ws").Server;
+let httpServer: Http2Server;
 
 /**
  * Starts the server. Pulls the address and port from the cache.
  */
 function startServer() {
-    // make sure the server isn't already running
-    if (host !== undefined) {
-        console.log("Server already running.");
-        return;
+    // Setup websocket server if it isn't already running
+    if (websocketServer == undefined) {
+        let { Server } = require('ws');
+        // Create the server.
+        let serverInfo = {
+            port: CacheStore.get("serverPort", 3000),
+            host: CacheStore.get("serverUrl", "localhost")
+        }
+        websocketServer = new Server(serverInfo);
+        setupListeners();
+    } else {
+        console.log("Websocket server already running.");
     }
-    let {Server} = require('ws');
-    // Create the server.
-    let serverInfo = {
-        port: CacheStore.get("serverPort", 3000),
-        host: CacheStore.get("serverUrl", "localhost")
+
+    // Setup HTTP server if it isn't already running
+    if (httpServer == undefined) {
+        const http: typeof import("http") = require('http');
+        httpServer = http.createServer(async function (req: IncomingMessage, res: ServerResponse) {
+            const url: typeof import("url") = require('url');
+            const queryObject = url.parse(req.url, true);
+            console.log(queryObject);
+            let tryToConvertRequest = (body) => {
+                try {
+                    return JSON.parse(body)
+                } catch(e) {
+                    return ""
+                }
+            }
+            // Set CORS
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE")
+            if (queryObject.href.startsWith("/api")) {
+                // Read and await for the body data
+                const buffers = [];
+                for await (const chunk of req) {
+                    buffers.push(chunk);
+                }
+                const body = Buffer.concat(buffers).toString();
+
+                const httpModule: typeof import("./server/http") = require(appData[0] + "/modules/server/http.js")
+                res.writeHead(200);
+                httpModule.handleAPIRequest({
+                    href: queryObject.href,
+                    method: req.method,
+                    body: tryToConvertRequest(body)
+                }, res);
+            } else {
+                if (queryObject.href.includes(".js")) {
+                    fs.readFile(dirName + `/glimboard${queryObject.href}`).then(file => {
+                        res.setHeader("Content-Type", "application/javascript");
+                        res.end(file.toString());
+                    });
+                    return;
+                } if (queryObject.href.includes(".css")) {
+                    fs.readFile(dirName + `/glimboard${queryObject.href}`).then(file => {
+                        res.setHeader("Content-Type", "text/css");
+                        res.end(file.toString());
+                    });
+                    return;
+                } else if (queryObject.href.includes(".svg")) {
+                    let tempFS = require("fs").readFile
+                    tempFS(dirName + `/glimboard${queryObject.href}`, function(err, data) {
+                        res.setHeader("Content-Type", 'image/svg+xml');
+                        res.end(data, "utf-8");
+                    });
+                    return;
+                } else {
+                    fs.readFile(dirName + `/glimboard/index.html`).then(file => {
+                        res.end(file.toString());
+                    });
+                    return;
+                }
+            }
+        });
+        httpServer.listen(4201);
+    } else {
+        console.log("HTTP server already running.")
     }
-    host = new Server(serverInfo);
-    setupListeners();
 }
 
 /**
  * Set up the listeners for the server (msg, close, etc)
  */
 function setupListeners() {
-    host.on("connection", function() {
+    websocketServer.on("connection", function (ws) {
+        ws.on("message", function (message) {
+            handleIncomingRequest(message);
+        });
         console.log("A user connected to the server.");
+        showToast("A user connected to your server.");
     })
 
-    host.on("close", function() {
+    websocketServer.on("close", function () {
         console.log("A user disconnected from the server.");
+        showToast("A user disconnected from your server.");
     });
 
-    host.on("error", function(err) {
+    websocketServer.on("error", function (err) {
         console.log("Error: " + err);
         restartServer();
-    });
-
-    host.on("message", function(data) {
-        console.log("Message: " + data);
     });
 }
 
@@ -48,9 +119,9 @@ function setupListeners() {
  * @param message
  * @param secondTry
  */
-function emit(message: string, secondTry = false) {
+function emit(message: string | OutgoingPacket, secondTry = false) {
     try {
-        host.clients.forEach(function(client) {
+        websocketServer.clients.forEach(function (client) {
             client.send(message);
         });
     } catch (e) {
@@ -70,11 +141,11 @@ function emit(message: string, secondTry = false) {
  */
 function close() {
     console.log("Closing the server")
-    host.clients.forEach(function(client) {
+    websocketServer.clients.forEach(function (client) {
         client.close();
     });
-    host.removeAllListeners();
-    host.close();
+    websocketServer.removeAllListeners();
+    websocketServer.close();
 }
 
 /**
@@ -85,6 +156,52 @@ function restartServer() {
     setTimeout(() => {
         startServer();
     }, 7000);
+}
+
+async function handleIncomingRequest(request) {
+    console.log("Incoming request: " + request);
+    // Parse the data. If actioncompleted it is a response and can be ignored
+    try {
+        let data: IncomingPacket = JSON.parse(request);
+        if (data.actionCompleted) return
+
+        // Handle the request
+        switch (data.action) {
+            case "runCommand":
+                console.log("Request to run command: " + data.command.name);// @ts-ignore
+                CommandHandle.TriggerHelper.checkContext(data.command.trigger, data.command.context);
+                break;
+            case "runMedia":
+                console.log("Request to run media: " + data.media.name);
+                let media = await MediaHandle.getMediaByName(data.media.name);
+                if (media) {// @ts-ignore
+                    activateMedia(media, data.media.type);
+                } else {
+                    console.log("Media not found: " + data.media.name);
+                }
+                break;
+            case "sendMessage":
+                console.log("Request to send message: " + data.message.message);
+                ChatMessages.sendMessage(data.message.message);
+                break;
+            case "board":
+                console.log("Board request");// @ts-ignore
+                let response = await Companion.handleBoard(data.request.type, data.board);
+                if (response) {
+                    let packet: OutgoingPacket = {
+                        ID: data.ID,
+                    };
+                    let final = Object.assign(packet, response);
+                    emit(JSON.stringify(final));
+                }
+                break;
+            default:
+                console.log("Unknown request: " + data);
+                break;
+        }
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 
@@ -115,4 +232,4 @@ function updateMusicOverlay(song: any) {
     } catch (e) { }
 }
 
-export {activateMedia, close, emit, restartServer, startServer, updateMusicOverlay}
+export { activateMedia, close, emit, restartServer, startServer, updateMusicOverlay }

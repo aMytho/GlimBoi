@@ -154,7 +154,7 @@ type actionVariables = string[]
 
 type actionMode = "add" | "edit"
 
-type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User" | "Subscribe" | "Gift Sub" | "Donate";
+type CommandTrigger = "ChatMessage" | "Follow" | "Welcome User" | "Subscribe" | "Gift Sub" | "Donate" | "Manual";
 
 type TriggerStructure = {
     trigger: CommandTrigger;
@@ -181,6 +181,10 @@ type WelcomeUserTrigger = {
 type SubscribeTrigger = {}
 
 type TriggerContext = {
+    /**
+     * Allows the command to run regardless of permissions
+     */
+    bypassPermissions?: boolean;
     /**
      * The message from chat
      */

@@ -10,6 +10,7 @@
             <a class="btn-info" href="#" data-modal-toggle="playAudioModal" id="activateAudioModal">Play Audio</a>
             <a class="btn-info" href="#" data-modal-toggle="playImageModal" id="activateImageModal">Display Media</a>
             <a class="btn-info" href="#" data-modal-toggle="overlayInfo">Overlay Info</a>
+            <a class="btn-info" href="#" data-modal-toggle="glimboardInfo">Glimboard</a>
             <a class="btn-info" href="#" data-modal-toggle="mediaSettings"
                 onclick="showMediaSettings()">Overlay Settings</a>
         </div>
@@ -197,6 +198,33 @@
             <!--Footer-->
             <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
                 <button type="button" class="btn-warning" data-modal-toggle="overlayInfo">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="glimboardInfo" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Glimboard Info</h4>
+            </div>
+            <!--Body-->
+            <div class="px-6 pb-4 mt-8 prose prose-body whiteText">
+                <p>Glimboard is a basic streamdeck for the bot. It allows you to control basic features of the bot from
+                    another device such as a phone/tablet.
+                </p>
+                <p class="mt-2">The app can be accessed by launching the overlay or joining the chat. On another device
+                    head to http://YOURLOCALIP:4201 . This will display the app.
+                </p>
+                <p class="mt-2">If you are accessing this on your own device you can head to http://localhost:4201 .</p>
+                <p class="mt-2">Questions? Join the discord or send Mytho a DM.</p>
+            </div>
+            <!--Footer-->
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" data-modal-toggle="glimboardInfo">Close</button>
             </div>
         </div>
     </div>
