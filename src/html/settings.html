@@ -87,40 +87,45 @@
                     <hr>
                     <h3 class="whiteText font-bold text-2xl">Twitter</h3>
                     <p>Tweet when you join a channel. <b>Does not affect command tweets.</b></p>
-                    <div class="niceSwitch">
-                        <label class="switch">
-                            <input type="checkbox" id="twitterEnabled">
-                            <span class="slider round"></span>
-                        </label>
-                        <p>Disabled / Enabled</p>
-                    </div>
-                    <p>Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                            onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span>
-                    </p>
-                    <p>An access token is required to use the Twitter API. Generating one will open an URL
-                        in your default browser.
-                        You <b>must</b> be signed in to approve the app. You can copy the link from the
-                        address bar into another browser if you prefer.
-                    </p>
-                    <p>Default Message</p>
-                    <input class="icon-input settingsInput" type="text" placeholder="Default Message"
-                        id="twitterMessage"
-                        style="background-color: #1b2e4b;color: aquamarine;width: 95%;">
-                    <p>Confirm before send?</p>
-                    <div class="niceSwitch">
-                        <label class="switch">
-                            <input type="checkbox" id="twitterConfirmation">
-                            <span class="slider round"></span>
-                        </label>
-                        <p>Disabled / Enabled</p>
-                    </div>
-                    <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
-                        add stream specific details (what you're doing that stream)</p>
-                    <b>To fully disable Twitter integration you need to revoke Glimboi from the allowed apps
-                        list
-                        <span style="color:rgb(251, 133, 251);cursor: pointer;"
-                            onclick="loadLink('twitter.com/settings/connected_apps')">here</span>.
-                    </b>
+                    <p>Due to the new API pricing, <b style="color: #dc3545;">all Twitter features are disabled</b> until further notice.
+                        I will look into the option for users to use their own keys. Unless Twitter changes its mind, this will be a paid service.</p>
+                    <p>Regardless of your settings, Glimboi will not interact with Twitter via the command action or go-live feature.</p>
+                    <div class="sad_musk_change">
+                        <div class="niceSwitch">
+                            <label class="switch">
+                                <input type="checkbox" disabled id="twitterEnabled">
+                                <span class="slider round"></span>
+                            </label>
+                            <p>Disabled / Enabled</p>
+                        </div>
+                        <p style="display: none;">Access Token <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                                onclick="ApiHandle.Webhooks.TwitterWebhook.requestUserAuthorization()">Generate</span>
+                        </p>
+                        <p>An access token is required to use the Twitter API. Generating one will open an URL
+                            in your default browser.
+                            You <b>must</b> be signed in to approve the app. You can copy the link from the
+                            address bar into another browser if you prefer.
+                        </p>
+                        <p>Default Message</p>
+                        <input class="icon-input settingsInput" type="text" placeholder="Default Message"
+                            id="twitterMessage"
+                            style="background-color: #1b2e4b;color: aquamarine;width: 95%;" disabled>
+                        <p>Confirm before send?</p>
+                        <div class="niceSwitch">
+                            <label class="switch">
+                                <input type="checkbox" disabled id="twitterConfirmation">
+                                <span class="slider round"></span>
+                            </label>
+                            <p>Disabled / Enabled</p>
+                        </div>
+                        <p>If enabled Glimboi will ask for confirmation before sending the message. You can also
+                            add stream specific details (what you're doing that stream)</p>
+                        </div>
+                        <b>To fully disable Twitter integration you need to revoke Glimboi from the allowed apps
+                            list
+                            <span style="color:rgb(251, 133, 251);cursor: pointer;"
+                                onclick="loadLink('twitter.com/settings/connected_apps')">here</span>.
+                        </b>
                 </div>
                 <!--MATRIX-->
                 <div class="whiteText ml-2">

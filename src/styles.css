@@ -295,3 +295,8 @@ li .active {
 #rankContainer h3 {
     max-width: fit-content;
 }
+
+.sad_musk_change {
+    opacity: 30%;
+    cursor: not-allowed;
+}

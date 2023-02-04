@@ -221,7 +221,7 @@ function loadChatWindow() {
     // Create chat modals
     ChatDiscordModal = new Modal(document.getElementById("discordWebhook"), {});
     ChatGuildedModal = new Modal(document.getElementById("guildedWebhook"), {});
-    ChatTwitterModal = new Modal(document.getElementById("twitterWebhook"), {});
+    //ChatTwitterModal = new Modal(document.getElementById("twitterWebhook"), {});
     ChatMatrixModal = new Modal(document.getElementById("matrixWebhook"), {});
 
     // Enabled the closing of chat modals
@@ -229,8 +229,8 @@ function loadChatWindow() {
     document.getElementById("closeDiscordModal2").addEventListener("click", () => ChatDiscordModal.hide());
     document.getElementById("closeGuildedModal").addEventListener("click", () => ChatGuildedModal.hide());
     document.getElementById("closeGuildedModal2").addEventListener("click", () => ChatGuildedModal.hide());
-    document.getElementById("closeTwitterModal").addEventListener("click", () => ChatTwitterModal.hide());
-    document.getElementById("closeTwitterModal2").addEventListener("click", () => ChatTwitterModal.hide());
+    // document.getElementById("closeTwitterModal").addEventListener("click", () => ChatTwitterModal.hide());
+    // document.getElementById("closeTwitterModal2").addEventListener("click", () => ChatTwitterModal.hide());
     document.getElementById("closeMatrixModal").addEventListener("click", () => ChatMatrixModal.hide());
     document.getElementById("closeMatrixModal2").addEventListener("click", () => ChatMatrixModal.hide());
 }
@@ -510,8 +510,8 @@ function askForWebhookConfirmation(webhook:webhookType) {
         ChatGuildedModal.show();
         (document.getElementById("guildedWebhookMessage") as HTMLInputElement).value = CacheStore.get("guildedWebhookMessage", "$streamer just went live on https://glimesh.tv/$streamer");
     } else if (webhook == "twitter") {
-        ChatTwitterModal.show();
-        (document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
+        //ChatTwitterModal.show();
+        //(document.getElementById("twitterWebhookMessage") as HTMLInputElement).value = CacheStore.get("twitterMessage", "$streamer just went live on https://glimesh.tv/$streamer?follow_host=false");
     } else if (webhook == "matrix") {
         ChatMatrixModal.show();
         (document.getElementById("matrixWebhookMessage") as HTMLInputElement).value = CacheStore.get("matrixMessage", "https://glimesh.tv/$streamer?follow_host=false");

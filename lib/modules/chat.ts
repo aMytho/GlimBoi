@@ -220,14 +220,14 @@ function postChat():void {
             hasSentGuildedWebhook = true;
         }
     }
-    if (CacheStore.get("twitterEnabled", false) && hasSentTwittwerWebhook == false) {
-        if (CacheStore.get("twitterConfirmation", true)) {
-            askForWebhookConfirmation("twitter");
-        } else {
-            ApiHandle.Webhooks.TwitterWebhook.sendTweet();
-            hasSentTwittwerWebhook = true;
-        }
-    }
+    // if (CacheStore.get("twitterEnabled", false) && hasSentTwittwerWebhook == false) {
+    //     if (CacheStore.get("twitterConfirmation", true)) {
+    //         askForWebhookConfirmation("twitter");
+    //     } else {
+    //         ApiHandle.Webhooks.TwitterWebhook.sendTweet();
+    //         hasSentTwittwerWebhook = true;
+    //     }
+    // }
     if (CacheStore.get("matrixEnabled", false) && hasSentMatrixWebhook == false) {
         if (CacheStore.get("matrixConfirmation", true)) {
             askForWebhookConfirmation("matrix");

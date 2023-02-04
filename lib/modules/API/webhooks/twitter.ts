@@ -9,6 +9,8 @@ let serverActive = false;
 * Sends a tweet to twitter. Default message is used if none is provided.
 */
 async function sendTweet(message?: string) {
+    showToast("Due to the Twitter API now being a paid service, all Twitter features have been disabled.");
+    return null;
     let accessToken = CacheStore.get("twitterAccessToken", true);
     if (accessToken) {
         // Token exists. Check if it needs to be refreshed
@@ -58,6 +60,8 @@ async function sendTweet(message?: string) {
  * Gets an access token from twitter.
  */
 async function requestUserAuthorization(): Promise<boolean> {
+    showToast("Due to the Twitter API now being a paid service, all Twitter features have been disabled.");
+    return;
     const OauthLib: typeof import("../../auth/oauth") = require(appData[0] + "/modules/auth/oauth.js");
     const { challenge, verifier } = await OauthLib.generateVerifierAndChallenge();
     const URL = `twitter.com/i/oauth2/authorize?response_type=code&client_id=${ClientID}&redirect_uri=${RedirectURL}&scope=${Scopes}&state=${OauthLib.generateRandomString(5)}&code_challenge=${challenge}&code_challenge_method=s256`;
@@ -139,6 +143,8 @@ async function requestUserAuthorization(): Promise<boolean> {
  * Refreshes the access token if it exists.
  */
 async function requestRefreshToken(): Promise<boolean | null> {
+    showToast("Due to the Twitter API now being a paid service, all Twitter features have been disabled.");
+    return null;
     let refreshToken = CacheStore.get("twitterRefreshToken", "");
     if (refreshToken) {
         let refreshRequest = await fetch("https://api.twitter.com/2/oauth2/token", {

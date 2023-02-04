@@ -2960,6 +2960,11 @@ li .active {
   max-width: fit-content;
 }
 
+.sad_musk_change {
+  opacity: 30%;
+  cursor: not-allowed;
+}
+
 .hover\:border-gray-300:hover {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
