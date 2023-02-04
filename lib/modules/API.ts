@@ -309,10 +309,33 @@ async function followUser(channelID: number, unfollow: boolean, liveNotification
     }
 }
 
+/**
+ * Follows or unfollows a channel
+ * @param channelID The channel ID to follow or unfollow
+ * @param title The new title to set
+ */
+async function changeTitle(title: string) {
+    let query = `mutation{updateStreamInfo(channelId: ${channelID}, title: "${title}") {id, title}}`;
+    
+    let response = await glimeshQuery(query);
+    console.log(response);
+    if (typeof response == "object" && response !== null) {
+        // @ts-ignore
+        showToast(`Set title: ${response.updateStreamInfo.title}`);
+        return response;
+    } else if (response == null) {
+        showToast("You must authorize the bot to be able to change the title.");
+        return null;
+    } else if (response == false) {
+        showToast("Ensure that the title set is no more than 255 characters.");
+        return false;
+    }
+}
+
 function getStreamerName() {
     return streamer;
 }
 
-export { deleteMessage, followUser, getBotAccount, getChannelID, getID, getSocials, getStats,
+export { changeTitle, deleteMessage, followUser, getBotAccount, getChannelID, getID, getSocials, getStats,
 getStreamerName, getStreamWebhook, getUserID, getStreamerId, getSubCategory, glimeshApiRequest,
 sendMessage, Webhooks, WebSockets};

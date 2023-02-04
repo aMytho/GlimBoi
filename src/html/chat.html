@@ -74,7 +74,7 @@
     </div>
 
 
-    <div class="glimPanel rounded-xl mx-2 p-2 px-4">
+    <div class="glimPanel rounded-xl mx-2 p-2 px-4 flex flex-wrap flex-col">
         <h3 class="whiteText font-bold text-2xl text-clip text-center">Stream Info</h3>
         <h4 class="whiteText text-center py-3 my-3 border border-white border-x-0">
             <p>Stats will be updated every 15 minutes.</p>
@@ -82,6 +82,7 @@
             <p id="fasHeart">Followers: 0</p>
             <p id="fasTitle" class="text-lg font-semibold"></p>
         </h4>
+        <a class="btn-info" data-modal-toggle="streamInfoModal">Update Stream Info</a>
     </div>
 
     <div class="glimPanel rounded-xl mx-2 p-2 px-4" id="chatControls">
@@ -254,6 +255,31 @@
                 <button type="button" class="btn-warning" id="closeTwitterModal">Close</button>
                 <button type="button" class="btn-primary" id="closeTwitterModal2"
                     onclick="ApiHandle.Webhooks.TwitterWebhook.sendTweet(document.getElementById('twitterWebhookMessage').value);">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Stream Info -->
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="streamInfoModal" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-md h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4" id="twitterWebhookModal">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Update Stream Info</h4>
+            </div>
+            <!--Body-->
+            <div class="prose prose-base whiteText text-center">
+                <input type="text" class="mt-4" placeholder="The title to set" id="infoTitleMessage">
+                <p class="mt-2">Click change to set the above title.</p>
+            </div>
+            <!--Footer-->
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" id="closeInfoModal" data-modal-toggle="streamInfoModal">Close</button>
+                <button type="button" class="btn-primary" id="closeInfoModal2" data-modal-toggle="streamInfoModal"
+                    onclick="ApiHandle.changeTitle(document.getElementById('infoTitleMessage').value);">Change</button>
             </div>
         </div>
     </div>
