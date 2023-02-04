@@ -238,6 +238,16 @@ async function buildTweetUI(mode:actionMode, commandInfo) {
     document.getElementById(`${mode}CommandList`)!.appendChild(action);
 }
 
+async function buildUpdateStreamInfo(mode: actionMode, commandInfo) {
+    let action = await getActionHTML("UpdateStreamInfo");
+    console.log(commandInfo)
+    if (commandInfo) {
+        (action.children[1].children[0].firstElementChild.firstElementChild as HTMLSelectElement).value = "title";
+        (action.children[1].children[1].firstElementChild.firstElementChild as HTMLSpanElement).innerText = commandInfo.title;
+    }
+    document.getElementById(`${mode}CommandList`)!.appendChild(action);
+}
+
 async function buildVideoUI(mode:actionMode, commandInfo) {
     let action = await getActionHTML("Video");
     let videoSelect = action.children[1].firstElementChild.firstElementChild.firstElementChild;
@@ -282,4 +292,4 @@ async function getActionHTML(action: string) {
 
 export {buildApiRequestUI, buildAudioUI, buildBanUI, buildChatMessageUI,buildFollowUI,
     buildImageGifUI, buildReadFileUI, buildMatrixUI, builtNotificationUI, buildObsWebSocketUI, buildPointsUI,
-    buildTimeoutUI, buildTweetUI, buildVideoUI, buildWaitUI, buildWriteFileUI}
+    buildTimeoutUI, buildTweetUI, buildUpdateStreamInfo, buildVideoUI, buildWaitUI, buildWriteFileUI}

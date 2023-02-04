@@ -470,6 +470,20 @@ async function determineActionAndCheck(action, mode: actionMode, triggers: HTMLC
                 errorMessageCommandModal(e, action.firstElementChild, mode);
                 return false
             }
+        case "UpdateStreamInfo":
+            try {
+                let titleMessage = action.children[1].children[1].firstElementChild.firstElementChild.innerText;
+                if (titleMessage.length == 0) {
+                    throw "No title was provided.";
+                } else if (titleMessage.length > 255) {
+                    throw "Title must be less than 255 characters."
+                }
+                return {type: "UpdateStreamInfo", whatToUpdate: "title", title: titleMessage}
+            } catch(e) {
+                console.log(e);
+                errorMessageCommandModal(e, action.firstElementChild, mode);
+                return false
+            }
         case "Video":
             try {
                 let possibleVideo = action.children[1].firstElementChild.firstElementChild.firstElementChild.value

@@ -376,6 +376,24 @@ class Twitter extends ChatAction {
 }
 
 /**
+ * Update the stream info of your own stream.
+ */
+class UpdateStreamInfo extends ChatAction {
+    whatToUpdate: string;
+    title: string;
+    constructor({whatToUpdate, title}) {
+        super("UpdateStreamInfo", ["whatToUpdate", "title"], undefined);
+        this.whatToUpdate = whatToUpdate;
+        this.title = title;
+    }
+
+    async run({activation, user}) {
+        let target = await ActionResources.searchForVariables({message: this.title, activation: activation, user: user});
+        ApiHandle.changeTitle(target);
+    }
+}
+
+/**
  * Plays a video in the overlay
  * @param {string} source The video file we are playing
  */
@@ -437,4 +455,4 @@ class WriteFile extends ChatAction {
 }
 
 export {ActionResources, ApiRequest, ApiRequestGet, Audio, Ban, ChatMessage, Follow, ImageGif, Matrix,
-Notification, ObsWebSocket, Points, ReadFile, Timeout, Twitter, Video, Wait, WriteFile}
+Notification, ObsWebSocket, Points, ReadFile, Timeout, Twitter, UpdateStreamInfo, Video, Wait, WriteFile}
