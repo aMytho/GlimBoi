@@ -61,3 +61,8 @@ interface modInfoPack {
     source?: "manual" | "ruleset"
     caused?: string
 }
+
+/**
+ * Version of OBS websocket rpc (after v5). 2 is the latest version.
+ */
+type obsVersion = 1 | 2;

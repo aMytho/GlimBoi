@@ -1,5 +1,7 @@
 // File handles creating/deleting/updating files and folders
 
+import { ObsWebSocket } from "./commands/commandActionHandler";
+
 /**
  * Runs all migrations
  */
@@ -8,6 +10,7 @@ function migrate() {
     checkForScreenShots();
     checkForMediaOverlay();
     checkForCommandTriggers();
+    checkForOBSVersion();
 }
 
 /**
@@ -68,6 +71,93 @@ async function checkForCommandTriggers() {
         CacheStore.set("hasCommandTriggers", true);
     } else {
         console.log("Triggers found, skipping conversion");
+    }
+}
+
+async function checkForOBSVersion() {
+    let obsVersion = CacheStore.get("obsVersion", 1);
+    if (obsVersion < 2) {
+        console.log(`OBS rpc needs an update! Updating to: ${obsVersion + 1}`);
+        if (obsVersion == 1) {
+            //User was on v4. Need upgrade to v5.
+            let obsCommands = await CommandHandle.getAll();
+            let promises = [];
+            // For each command
+            obsCommands.forEach((cmd) => { // Make sure it has actions
+                if (cmd.actions && cmd.actions.length > 0) {
+                    // Loop through each action and check for obswebsocket
+                    cmd.actions.forEach((action, i) => {
+                        if (action.action == "ObsWebSocket") {
+                            // Needs migration
+                            switch ((action as ObsWebSocket).requestType as string) {
+                                case "SetMute":
+                                    (action as ObsWebSocket).requestType = "SetInputMute";
+                                    (action as ObsWebSocket).data.inputName = (action as ObsWebSocket).data.source;
+                                    delete (action as ObsWebSocket).data.source;
+                                    (action as ObsWebSocket).data.inputMuted = (action as ObsWebSocket).data.mute;
+                                    delete (action as ObsWebSocket).data.mute;
+                                    break;
+                                case "ToggleMute":
+                                    (action as ObsWebSocket).requestType = "ToggleInputMute";
+                                    (action as ObsWebSocket).data.inputName = (action as ObsWebSocket).data.source;
+                                    delete (action as ObsWebSocket).data.source;
+                                    break;
+                                case "SetVolume":
+                                    (action as ObsWebSocket).requestType = "SetInputVolume";
+                                    (action as ObsWebSocket).data.inputName = (action as ObsWebSocket).data.source;
+                                    delete (action as ObsWebSocket).data.source;
+                                    (action as ObsWebSocket).data.inputVolumeDb = (action as ObsWebSocket).data.volume;
+                                    delete (action as ObsWebSocket).data.volume;
+                                    break;
+                                case "SetCurrentScene":
+                                    (action as ObsWebSocket).requestType = "SetCurrentProgramScene";
+                                    (action as ObsWebSocket).data.sceneName = (action as ObsWebSocket).data["scene-name"];
+                                    delete (action as ObsWebSocket).data["scene-name"];
+                                    break;
+                                case "SetSceneItemRender":
+                                    (action as ObsWebSocket).requestType = "SetSceneItemEnabled";
+                                    (action as ObsWebSocket).data.sceneName = "Unknown";
+                                    (action as ObsWebSocket).data.sceneItemId = 1;
+                                    (action as ObsWebSocket).data.sceneItemEnabled = false;
+
+                                    delete (action as ObsWebSocket).data["source"];
+                                    delete (action as ObsWebSocket).data["render"];
+                                    break;
+                                case "StartStreaming":
+                                    (action as ObsWebSocket).requestType = "StartStream";
+                                    break;
+                                case "StopStreaming":
+                                    (action as ObsWebSocket).requestType = "StopStream";
+                                    break;
+                                case "StartRecording":
+                                    (action as ObsWebSocket).requestType = "StartRecord";
+                                    break;
+                                case "StopRecording":
+                                    (action as ObsWebSocket).requestType = "StopRecord";
+                                    break;
+                                case "TakeSourceScreenshot":
+                                    (action as ObsWebSocket).requestType = "SaveSourceScreenshot";
+                                    (action as ObsWebSocket).data.sourceName = "Unknown";
+                                    (action as ObsWebSocket).data.imageFormat = (action as ObsWebSocket).data.embedPictureFormat;
+                                    (action as ObsWebSocket).data.imageFilePath = (action as ObsWebSocket).data.saveToFilePath;
+                                    delete (action as ObsWebSocket).data["embedPictureFormat"];
+                                    delete (action as ObsWebSocket).data["saveToFilePath"];
+                                    break;
+                            }
+                            
+                            // Don't uncomment until you have a backup and you know all has been converted
+                            promises.push(CommandHandle.updateCommand(cmd.commandName, "actions", cmd.actions));
+                        }
+                    })
+                }
+            });
+
+            // Wait until all commands have been migrated
+            await Promise.all(promises);
+            CacheStore.set("obsVersion", 2);
+        }
+    } else {
+        console.log("OBS rpc is already the latest version.");
     }
 }
 
