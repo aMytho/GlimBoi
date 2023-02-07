@@ -8,25 +8,44 @@ let cooldownArray:commandName[] = [];
  */
 async function checkCommand(command: CommandType, context: TriggerContext) {
     try {
-        let hasPerms = await permissionCheck(command, context.user.username.toLowerCase());
-        if (hasPerms == "ACCEPTED" || context.bypassPermissions) {
-            // Check if any variables need to be created from the context
-            if (context.variables) injectVariables(context.variables);
-            // Run the command
-            await runCommand({ message: context.message, command: command, user: context.user });
-            // Cleanup
-            postCommandRun(command, context);
-            // Remove generated variables (if any)
-            if (context.variables) withdrawVariables(context.variables);
-        } else if (hasPerms == "NEWUSER") {
-            checkCommand(command, context);
-        } else { // They don't have permission
-            if (hasPerms != "NOMESSAGE") {
-                ChatMessages.sendMessage(hasPerms);
+        // Bypass activated, likely manual trigger. Skip permission check and run
+        if (context.bypassPermissions) {
+            setupRuntime(command, context);
+        } else {
+            // Needs a permission check
+            let hasPerms = await permissionCheck(command, context.user.username.toLowerCase());
+            // All good!
+            if (hasPerms == "ACCEPTED") {
+                setupRuntime(command, context);
+                // New user, wait till usr creation and recheck
+            } else if (hasPerms == "NEWUSER") {
+                checkCommand(command, context);
+            } else { // They don't have permission
+                if (hasPerms != "NOMESSAGE") {
+                    ChatMessages.sendMessage(hasPerms);
+                }
+                console.log(`Command permission check failed: ${hasPerms}`);
             }
-            console.log(hasPerms);
         }
-    } catch (e) {}
+    } catch (e) {
+        console.log("Command Error: " + e);
+    }
+}
+
+/**
+ * Inject the variables, run the command, cleanup, and withdraw variables for the command
+ * @param command The command to run
+ * @param context The context of the command
+ */
+async function setupRuntime(command: CommandType, context: TriggerContext) {
+    // Check if any variables need to be created from the context
+    if (context.variables) injectVariables(context.variables);
+    // Run the command
+    await runCommand({ message: context.message, command: command, user: context.user });
+    // Cleanup
+    postCommandRun(command, context);
+    // Remove generated variables (if any)
+    if (context.variables) withdrawVariables(context.variables);
 }
 
 /**
