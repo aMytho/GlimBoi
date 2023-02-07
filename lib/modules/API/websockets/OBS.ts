@@ -117,7 +117,10 @@ async function waitForResponse(messageToListenFor: string, dataToGet: CommandAct
  * The base OBS request. Contains the basic info and any extra user added data.
  */
 class ObsRequest {
-    request: OutgoingMessage;
+    public request: OutgoingMessage = {
+        op: 1,
+        d: {}
+    }
     constructor() {}
 
     createRequest<Type extends keyof OutgoingMessageTypes>(op: Type, d: OutgoingMessageTypes[typeof op]) {
@@ -133,6 +136,7 @@ class ObsRequest {
         (this.request.d as OutgoingMessageTypes[6]).requestId = id;
         (this.request.d as OutgoingMessageTypes[6]).requestType = type;
         (this.request.d as OutgoingMessageTypes[6]).requestData = request;
+        this.request.op = 6;
     }
 
     handleSpecialRequests(data: any) {
