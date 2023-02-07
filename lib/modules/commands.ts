@@ -87,6 +87,22 @@ function editCommand({ commandName, actions, cooldown, uses, points, rank, repea
 }
 
 /**
+ * Updates a command. This only overwrites one property. Use editCommand for multiple props
+ * @param commandName The command to update
+ * @param prop The prop to set
+ * @param val The value to update
+ */
+function updateCommand(commandName: string, prop: keyof CommandType, val: any) {
+    return new Promise((resolve) => {
+        commandsDB.update({commandName: commandName}, { $set: {
+            [`${prop}`]: val
+        }}, {}, function(err) {
+            resolve(err);
+        });
+    })
+}
+
+/**
  * Returns a command (promise). Null if not found
  * @param {string} command Name of command.
  * @returns A command
@@ -200,4 +216,4 @@ function setCommandStatus(command: string, status: boolean):Promise<void> {
 
 export { addCommand, addCommandCount, addDefaultTrigger, ChatAction, CommandRunner,
 countCommands, editCommand, findByTrigger, findCommand, getAll,
-randomRepeatCommand, removeCommand, setCommandStatus, TriggerHelper, updatePath};
+randomRepeatCommand, removeCommand, setCommandStatus, TriggerHelper, updateCommand, updatePath};
