@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import { IncomingMessage, OBSRequestTypes, OutgoingMessage, OutgoingMessageTypes, WebSocketOpCode } from "./types/obsProtocol";
 
 /**
  * The how many messages have been sent to the OBS websocket. The number is the last request. request-id
@@ -6,7 +7,7 @@ import EventEmitter from "events";
 let messageID = 0; // @ts-ignore
 let host:WebSocket = {};
 
-let ObsEmitter = new EventEmitter;
+let ObsEmitter = new EventEmitter();
 
 /**
  * Connects to the OBS websocket
@@ -21,27 +22,30 @@ function connect() {
     return new Promise((resolve) => {
         host.onopen = async () => {
             console.log("OBS connection opened");
-            let authSucceeded = await authenticate();
-            if (authSucceeded) {
+            let authSucceeded = await identify();
+            if (authSucceeded.success) {
                 resolve(true);
             } else {
                 resolve(false);
-                errorMessage("OBS Auth Error", `Glimboi was not able to authenticate with OBS Websocket.
-                Please check that the password is correct and reload the bot.`);
-                host.close(1000);
+                errorMessage("OBS Error", authSucceeded.msg);
             }
         }
 
         host.onmessage = (event) => {
-            const data = JSON.parse(event.data);
+            const data: IncomingMessage = JSON.parse(event.data);
             console.log(data);
-            if (data[`message-id`]) {
-                ObsEmitter.emit(`${data["message-id"]}`, data);
+            
+            //Check which type of event needs emitting based on response
+            if (data.op == WebSocketOpCode.RequestResponse) {
+                ObsEmitter.emit(data.d.requestId, data.d); // Emit response
+            } else {
+                ObsEmitter.emit(data.op.toString(), data.d); // Everything else
             }
         }
 
-        host.onclose = () => {
+        host.onclose = (ev) => {
             console.log("OBS connection closed");
+            console.log(ev)
         }
 
         host.onerror = (event) => {
@@ -55,14 +59,12 @@ function connect() {
  * Sends a message to the OBS websocket. If the response is needed, waits for the response.
  * @param data
  * @param dataToGet
- * @returns
  */
-async function sendObsData(data: any, dataToGet?: CommandActionVariables[], isRetry = false): Promise<false | any> {
+async function sendObsData(data: OutgoingMessage<WebSocketOpCode.Request>, dataToGet?: CommandActionVariables[], isRetry = false): Promise<false | any> {
     if (host.readyState === WebSocket.OPEN) {
         host.send(JSON.stringify(data));
         if (dataToGet) {
-            await connect();
-            return await waitForRespone(data["message-id"], dataToGet);
+            return await waitForResponse(data.d.requestId, dataToGet);
         } else {
             return false;
         }
@@ -83,23 +85,26 @@ async function sendObsData(data: any, dataToGet?: CommandActionVariables[], isRe
  * @param dataToGet
  * @returns
  */
-async function waitForRespone(messageToListenFor: string, dataToGet: CommandActionVariables[]) {
+async function waitForResponse(messageToListenFor: string, dataToGet: CommandActionVariables[]) {
     return new Promise((resolve, reject) => {
         try {
-            ObsEmitter.once(`${messageToListenFor}`, (obsResponse) => {
+            ObsEmitter.on(messageToListenFor, (obsResponse: IncomingMessage<WebSocketOpCode.RequestResponse>["d"]) => {
                 console.log(obsResponse);
                 try {
-                    let dataToReturn:string[] = []
-                    for (let i = 0; i < dataToGet.length; i++) {
-                        dataToReturn.push(obsResponse[dataToGet[i].variable]);
-                        CommandHandle.ChatAction.ActionResources.addVariable({name: dataToGet[i].variable, data: obsResponse[dataToGet[i].data]});
-                    }
-                    resolve(obsResponse);
+                    if (!obsResponse.requestStatus.result) throw `OBS request ${obsResponse.requestId} failed: ${obsResponse.requestStatus}`
+                    
+                    //TODO -- implement return results
+                    // let dataToReturn:string[] = []
+                    // for (let i = 0; i < dataToGet.length; i++) {
+                    //     dataToReturn.push(obsResponse[dataToGet[i].variable]);
+                    //     CommandHandle.ChatAction.ActionResources.addVariable({name: dataToGet[i].variable, data: obsResponse[dataToGet[i].data]});
+                    // }
+                    // resolve(obsResponse);
                 } catch (error2) {
                     resolve("HUGE ERROR");
                     console.trace(error2);
                 }
-            })
+            });
         } catch (error) {
             reject(error);
         }
@@ -112,18 +117,22 @@ async function waitForRespone(messageToListenFor: string, dataToGet: CommandActi
  * The base OBS request. Contains the basic info and any extra user added data.
  */
 class ObsRequest {
-    request: { "request-type": string, "message-id": string };
-    constructor(requestType: string, data: any) {
+    request: OutgoingMessage;
+    constructor() {}
+
+    createRequest<Type extends keyof OutgoingMessageTypes>(op: Type, d: OutgoingMessageTypes[typeof op]) {
         this.request = {
-            "request-type": requestType,
-            "message-id": `Request-${messageID++}`,
-        }
-        this.mergeParams(data);
+            op: op,
+            d: d
+        } as OutgoingMessage;
+
         this.handleSpecialRequests(this.request);
     }
 
-    mergeParams(data: any) {
-        this.request = Object.assign(this.request, data);
+    setRequestParams<_, reqType extends keyof OBSRequestTypes>(id: string, type: keyof OBSRequestTypes, request: OBSRequestTypes[reqType]) {
+        (this.request.d as OutgoingMessageTypes[6]).requestId = id;
+        (this.request.d as OutgoingMessageTypes[6]).requestType = type;
+        (this.request.d as OutgoingMessageTypes[6]).requestData = request;
     }
 
     handleSpecialRequests(data: any) {
@@ -139,16 +148,20 @@ class ObsRequest {
 }
 
 /**
- * Checks if auth is needed and if so, sends it.
- * @returns
+ * Identify to OBS. Add auth if needed
  */
-async function authenticate() {
+async function identify(): Promise<{success: boolean, msg: string}> {
     return new Promise(resolve => {
         // The auth request
-        let authNeededRequest = new ObsRequest("GetAuthRequired", {});
+        let identifyRequest = new ObsRequest();
+        identifyRequest.createRequest(WebSocketOpCode.Identify, {
+            rpcVersion: 1,
+        });
+
         // Wait for the response
-        ObsEmitter.once(authNeededRequest.request["message-id"], (data: ClientAPIs.WebsSockets.OBS.isAuthRequired) => {
-            if (data.authRequired) { // Auth is required, we hash a password and send it
+        ObsEmitter.once("0", (data: IncomingMessage<WebSocketOpCode.Hello>["d"]) => {
+            console.log("Received Hello from OBS")
+            if (data.authentication) { // Auth is required, we hash a password and send it
                 console.log("Auth is required, hashing password");
                 let sha256 = require("crypto-js/sha256");
                 let Base64 = require("crypto-js/enc-base64");
@@ -156,27 +169,33 @@ async function authenticate() {
                 let userPassword = CacheStore.get("obsPassword", "lol123");
                 if (userPassword == "") {
                     console.log("They didn't enter a password")
-                    resolve(false);
+                    resolve({success: false, msg: "OBS requested a password but you do not have one set. Change that in Glimboi settings!"});
                 }
 
-                const hash = Base64.stringify(sha256(CacheStore.get("obsPassword", "lol123") + data.salt)) as string;
-                let password = Base64.stringify(sha256(hash + data.challenge)) as string;
+                //Generate the password
+                const hash = Base64.stringify(sha256(CacheStore.get("obsPassword", "lol123") + data.authentication.salt)) as string;
+                let password = Base64.stringify(sha256(hash + data.authentication.challenge)) as string;
 
-                let authRequest = new ObsRequest("Authenticate", {auth: password});
-                // Wait for the response.
-                ObsEmitter.once(authRequest.request["message-id"], (data: any) => {
-                    if (data.status == "ok") {
-                        resolve(true); // it worked
-                    } else {
-                        resolve(false); // oops
-                    }
-                })
-                host.send(JSON.stringify(authRequest.request));
-            } else {
-                resolve(true);
+                //Add the password to the request
+                (identifyRequest.request.d as OutgoingMessageTypes[WebSocketOpCode.Identify]).authentication = password;
             }
+
+            //Return when we get a response
+            ObsEmitter.once("2", () => resolve({success: true, msg: ""}));
+            
+            //Handle auth or version failure
+            host.addEventListener("close", (ev) => {
+                if (ev.code == 4009) {
+                    console.log("Auth failure!");
+                    resolve({success: false, msg: "The password was incorrect. Please enter the correct password."});
+                } else {
+                    resolve({success: false, msg: "Unknown OBS error. Connection to OBS closed."});
+                }
+            })
+
+            //Send the identify message
+            host.send(JSON.stringify(identifyRequest.request));
         })
-        host.send(JSON.stringify(authNeededRequest.request));
     })
 }
 

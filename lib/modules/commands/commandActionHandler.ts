@@ -1,5 +1,7 @@
 // File creates and runs actions for commands.
 
+import { OBSRequestTypes, OutgoingMessage, WebSocketOpCode } from "../API/websockets/types/obsProtocol";
+
 const ActionResources:typeof import("../commands/actionResources") = require(appData[0] + "/modules/commands/actionResources.js")
 
 /**
@@ -234,11 +236,11 @@ class Notification extends ChatAction {
  * Trigger an action in OBS.
  */
 class ObsWebSocket extends ChatAction {
-    requestType: string
+    requestType: keyof OBSRequestTypes
     data: any
     returns: any
     instruction: string
-    constructor({requestType, data, variables, instruction}:BuildObsWebSocket) {
+    constructor({requestType, data, variables, instruction}) {
         super("ObsWebSocket", "data", variables);
         this.requestType = requestType;
         this.data = data;
@@ -247,10 +249,15 @@ class ObsWebSocket extends ChatAction {
     }
 
     async run({activation, user}:any) {
-        let obsPacket = new ApiHandle.WebSockets.OBSWebSocket.ObsRequest(this.requestType, this.data);
-        obsPacket = await this.checkForReplacedVariables(this.requestType, obsPacket, {activation: activation, user: user});
+        let obsPacket = new ApiHandle.WebSockets.OBSWebSocket.ObsRequest();
+        obsPacket.setRequestParams(this.generateRandomString(), this.requestType, this.data);
+        // obsPacket = await this.checkForReplacedVariables(this.requestType, obsPacket, {activation: activation, user: user});
         console.log(obsPacket);
-        let result = await ApiHandle.WebSockets.OBSWebSocket.sendObsData(obsPacket.request, this.checkforVariables());
+        
+        let result = await ApiHandle.WebSockets.OBSWebSocket.sendObsData(
+            obsPacket.request as OutgoingMessage<WebSocketOpCode.Request>,
+            this.checkforVariables()
+        );
         console.log(result);
         return result
     }
@@ -270,20 +277,30 @@ class ObsWebSocket extends ChatAction {
      * @param param2 Data about the command
      * @returns The OBS packet with replaced variables
      */
-    async checkForReplacedVariables(requestType:string, request, {activation, user}:any) {
-        switch (requestType) {
-            case "ToggleMute":
-            case "SetMute":
-            case "SetSceneItemRender":
-            case "SetSourceSettings":
-            case "SetVolume":
-                request.request["source"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["source"]});
-                return request
-            case "SetCurrentScene":
-                request.request["scene-name"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["scene-name"]});
-                return request
-            default: return request
+    async checkForReplacedVariables(requestType: keyof OBSRequestTypes, request, {activation, user}:any) {
+        
+        // switch (requestType) {
+        //     case "ToggleMute":
+        //     case "SetMute":
+        //     case "SetSceneItemRender":
+        //     case "SetSourceSettings":
+        //     case "SetVolume":
+        //         request.request["source"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["source"]});
+        //         return request
+        //     case "SetCurrentScene":
+        //         request.request["scene-name"] = await ActionResources.searchForVariables({activation: activation, user: user, message: request.request["scene-name"]});
+        //         return request
+        //     default: return request
+        // }
+    }
+
+    private generateRandomString(): string {
+        let text = "";
+        let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (let i = 0; i < 15; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
+        return text;
     }
 }
 
