@@ -2738,3 +2738,18 @@ export interface OBSResponseTypes {
 	OpenVideoMixProjector: undefined;
 	OpenSourceProjector: undefined;
 }
+
+export interface Scene {
+	/**
+	 * ID of the item itself
+	 */
+	sceneItemId: number;
+	/**
+	 * Name of the item itself
+	 */
+	sourceName: string;
+	/**
+	 * Name of the parent scene the item is in
+	 */
+	sceneName: string;
+}
