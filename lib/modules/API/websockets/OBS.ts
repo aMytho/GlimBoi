@@ -1,13 +1,32 @@
 import EventEmitter from "events";
-import { IncomingMessage, OBSRequestTypes, OutgoingMessage, OutgoingMessageTypes, WebSocketOpCode } from "./types/obsProtocol";
+import { IncomingMessage, OutgoingMessage, OutgoingMessageTypes, WebSocketOpCode } from "./types/obsProtocol";
+import { OBSCache } from "./cache";
+import { ObsRequest } from "./request";
 
-/**
- * The how many messages have been sent to the OBS websocket. The number is the last request. request-id
- */
-let messageID = 0; // @ts-ignore
+// @ts-ignore
 let host:WebSocket = {};
 
 let ObsEmitter = new EventEmitter();
+
+let cache = new OBSCache(ObsEmitter);
+cache.setHost(host, false);
+ObsEmitter.on("CacheNeedConnection", async () => {
+    if (host.readyState === WebSocket.OPEN) {
+        cache.setHost(host, true);
+    } else {
+        let isConnected = await connect();
+        console.log(isConnected)
+        if (isConnected == true) {
+            console.log(true)
+            cache.setHost(host, true);
+        } else {
+            cache.setHost(host, false);
+        }
+    }
+})
+
+
+
 
 /**
  * Connects to the OBS websocket
@@ -25,6 +44,7 @@ function connect() {
             let authSucceeded = await identify();
             if (authSucceeded.success) {
                 resolve(true);
+                cache.setHost(host, true);
             } else {
                 resolve(false);
                 errorMessage("OBS Error", authSucceeded.msg);
@@ -36,7 +56,7 @@ function connect() {
             console.log(data);
             
             //Check which type of event needs emitting based on response
-            if (data.op == WebSocketOpCode.RequestResponse) {
+            if (data.op == WebSocketOpCode.RequestResponse || data.op == WebSocketOpCode.RequestBatchResponse) {
                 ObsEmitter.emit(data.d.requestId, data.d); // Emit response
             } else {
                 ObsEmitter.emit(data.op.toString(), data.d); // Everything else
@@ -45,12 +65,14 @@ function connect() {
 
         host.onclose = (ev) => {
             console.log("OBS connection closed");
-            console.log(ev)
+            console.log(ev);
+            cache.setHost(host, false);
         }
 
         host.onerror = (event) => {
             console.log("OBS connection error");
             console.log(event);
+            cache.setHost(host, false);
         }
     })
 }
@@ -113,43 +135,7 @@ async function waitForResponse(messageToListenFor: string, dataToGet: CommandAct
 
 
 
-/**
- * The base OBS request. Contains the basic info and any extra user added data.
- */
-class ObsRequest {
-    public request: OutgoingMessage = {
-        op: 1,
-        d: {}
-    }
-    constructor() {}
 
-    createRequest<Type extends keyof OutgoingMessageTypes>(op: Type, d: OutgoingMessageTypes[typeof op]) {
-        this.request = {
-            op: op,
-            d: d
-        } as OutgoingMessage;
-
-        this.handleSpecialRequests(this.request);
-    }
-
-    setRequestParams<_, reqType extends keyof OBSRequestTypes>(id: string, type: keyof OBSRequestTypes, request: OBSRequestTypes[reqType]) {
-        (this.request.d as OutgoingMessageTypes[6]).requestId = id;
-        (this.request.d as OutgoingMessageTypes[6]).requestType = type;
-        (this.request.d as OutgoingMessageTypes[6]).requestData = request;
-        this.request.op = 6;
-    }
-
-    handleSpecialRequests(data: any) {
-        let keys = Object.keys(data);
-        keys.forEach(key => {
-            switch (key) {
-                case "embedPictureFormat":
-                    this.request["saveToFilePath"] = `${appData[1]}/screenshots/${Date.now()}.png`
-                    break;
-            }
-        })
-    }
-}
 
 /**
  * Identify to OBS. Add auth if needed
@@ -203,4 +189,7 @@ async function identify(): Promise<{success: boolean, msg: string}> {
     })
 }
 
-export {connect, ObsRequest, sendObsData};
+
+export {cache, connect, ObsRequest, sendObsData};
+
+// TO DO -- in requestinfo function, make sure usr is connected first!
