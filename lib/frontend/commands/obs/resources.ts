@@ -1,3 +1,5 @@
+import { Scene } from "../../../modules/API/websockets/types/obsProtocol";
+
 async function loadObsAction(action, isEdit: false | CommandType = false) {
     let html = await getObsHtml(action);
     if (isEdit) {
@@ -17,6 +19,13 @@ async function loadBasicHthml(action) {
     let div = document.createElement("div");
     let file = await fs.readFile(dirName + `/html/commands/actions/resources/obs/${action}.html`);
     div.innerHTML = file.toString();
+    //Check if the action needs a scene item target
+    let req = await ApiHandle.WebSockets.OBSWebSocket.cache.getSceneInfo();
+    let items = ApiHandle.WebSockets.OBSWebSocket.cache.getItems();
+    switch(action) {
+        case "changeVisibility":
+            fillSceneItems(items, div.firstElementChild.firstElementChild.firstElementChild as HTMLSelectElement);
+    }
     return div;
 }
 
@@ -28,7 +37,6 @@ function fillObsData(data, html) {
             html.firstElementChild.firstElementChild.innerText = data.data["scene-name"];
             return html;
         case "changeVisibility":
-            html.firstElementChild.firstElementChild.firstElementChild;
             html.firstElementChild.firstElementChild.firstElementChild.innerText = data.data["source"];
             let sourceVisible;
             if (data.data["render"]) {
@@ -79,5 +87,20 @@ function fillObsData(data, html) {
     }
 }
 
+async function fillSceneItems(items: any, html: HTMLSelectElement) {
+    Object.entries(items).forEach(([key, value]) => {
+        console.log(key + ': ' + JSON.stringify(value));
+        let optGroup = document.createElement("optgroup");
+        optGroup.label = key;
+
+        (value as []).forEach((scn: Scene) => {
+            let scnItem = document.createElement("option");
+            scnItem.value = scn.sceneItemId.toString();
+            scnItem.innerText = scn.sourceName;
+            optGroup.appendChild(scnItem);
+        })
+        html.appendChild(optGroup);
+      });
+}
 
 export { fillObsData, loadObsAction }
