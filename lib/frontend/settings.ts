@@ -229,11 +229,13 @@ function importData() {
 
 function useNewURL() {
     let newURL = (document.getElementById("newServerURL") as HTMLInputElement).value.trim();
-    CacheStore.set("glimeshURL", newURL);
     let useHTTPS = (document.getElementById("useHttps") as HTMLInputElement).checked;
-    CacheStore.set("useGlimeshHTTPS", useHTTPS);
     let newClientID = (document.getElementById("newClientID") as HTMLInputElement).value.trim();
-    CacheStore.set("glimeshClientID", newClientID);
+    CacheStore.setMultiple([
+        {glimeshURL: newURL},
+        {useHTTPS: useHTTPS},
+        {glimeshClientID: newClientID}
+    ]);
     showToast("Server updated. Good luck with your new platform!");
 }
 
