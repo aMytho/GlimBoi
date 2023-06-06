@@ -27,7 +27,7 @@ Windows can recieve automatic updates. Other platforms must manually update. You
 
 ## Info
 
-For docs, tutorials, and other info view the Glimboi [website](https://glimboi.com/docs/intro/introduction/).
+For docs, tutorials, and other info view the [Glimboi Website](https://glimboi.com/docs/intro/introduction/).
 
 ## Overview
 
