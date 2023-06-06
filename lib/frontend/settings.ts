@@ -233,7 +233,7 @@ function useNewURL() {
     let newClientID = (document.getElementById("newClientID") as HTMLInputElement).value.trim();
     CacheStore.setMultiple([
         {glimeshURL: newURL},
-        {useHTTPS: useHTTPS},
+        {useGlimeshHTTPS: useHTTPS},
         {glimeshClientID: newClientID}
     ]);
     showToast("Server updated. Good luck with your new platform!");
