@@ -2807,6 +2807,40 @@ select, input {
           animation: border-pulsate-err 2s infinite;
 }
 
+@-webkit-keyframes border-pulsate-err-server {
+  0%   {
+    border-color: rgb(9, 247, 255);
+  }
+
+  50% {
+    border-color: rgba(0, 255, 255, 0);
+  }
+
+  100%   {
+    border-color: rgb(9, 247, 255);
+  }
+}
+
+@keyframes border-pulsate-err-server {
+  0%   {
+    border-color: rgb(9, 247, 255);
+  }
+
+  50% {
+    border-color: rgba(0, 255, 255, 0);
+  }
+
+  100%   {
+    border-color: rgb(9, 247, 255);
+  }
+}
+
+.red-pulse-server {
+  border: 3px solid rgb(9, 247, 255);
+  -webkit-animation: border-pulsate-err-server 2s infinite;
+          animation: border-pulsate-err-server 2s infinite;
+}
+
 .dataTables_wrapper label,
 .dataTables_wrapper select,
 .dataTables_wrapper input,

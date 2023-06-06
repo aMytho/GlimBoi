@@ -77,3 +77,43 @@
         </div>
     </div>
 </div>
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="theFinalModal" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-xl h-full md:h-auto whiteText">
+        <div class="relative glimPanel rounded-lg shadow p-4">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Glimesh Closure</h4>
+            </div>
+            <!--Body-->
+            <div class="prose prose-base whiteText text-center">
+                <p class="mt-2">As of May 31st, Glimesh has ended their service. The service will stop functioning July 1st.</p>
+                <p class="mt-2">However, Glimesh is open source! If someone wanted to, they could launch their own version, or make improvements.
+                    Due to this possibility, I have allowed the origin server to be customized in the Integrations Page.
+                    If you want to run Glimboi after the shutdown, you can modify that URL. You should <b>export your bot data</b>, and then delete it before connecting to a new server.
+                    Otherwise, strange things may happen. Glimboi will try to use things that no longer exist, and it won't be good.
+                </p>
+
+                <p class="mt-2">There will be no further updates. While Glimboi will work with new versions of Glimesh, any changes may break this support. If you are interested in continuing support, contact me. I can't do it myself, but I will offer guidance.</p>
+
+                <p class="mt-2">You can contact Mytho via the below profiles for any questions/support, or just to chat.</p>
+                <ul style="list-style: none; text-align: left;">
+                    <li>Twitter: @MythoGM</li>
+                    <li>Discord: Mytho #1108 (numbers will eventually be gone!)</li>
+                    <li>Github: Amytho</li>
+                </ul>
+
+                <p class="mt-3">Its been a privilege to develop this tool. Thank you for your support.</p>
+            </div>
+            <!--Footer-->
+            <div
+                class="flex flex-row-reverse relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <button type="button" class="btn-warning" id="denyTheEndBtn"\
+                    onclick="denyTheEnd()">Close</button>
+                <button type="button" class="btn-primary" id="acceptTheEndBtn"
+                    onclick="acceptTheEnd()">I understand (Message will not reappear)</button>
+            </div>
+        </div>
+    </div>
+</div>

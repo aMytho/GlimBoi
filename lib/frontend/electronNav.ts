@@ -24,7 +24,8 @@ let Companion: Companion = require(appData[0] + "/modules/companion/companion.js
 Companion.updatePath(appData[1]);
 const Util:Util = require(appData[0] + "/modules/util/util.js");
 const mm = require("music-metadata");
-let currentPage:pageState = "home"
+let currentPage:pageState = "home";
+console.log("Greetings Inquirer! Sadly, Glimesh has come to an end. Feel free to have a look around.");
 
 var globalChatMessages:storedChatMessage[] = [];
 
@@ -159,8 +160,12 @@ $(document).on('keypress','input, textarea', function (event) {
 /**
  * Opens a link in the users default browser
  */
-function loadLink(link: string) {
-    ipcRenderer.invoke("openPath", `https://${link}`, "external");
+function loadLink(link: string, customProtocol: boolean = false) {
+    if (customProtocol) {
+        ipcRenderer.invoke("openPath", `${link}`, "external");
+    } else {
+        ipcRenderer.invoke("openPath", `https://${link}`, "external");
+    }
 }
 
 // Shows an error message to the user in the form of a modal.

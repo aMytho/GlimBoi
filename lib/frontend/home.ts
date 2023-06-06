@@ -1,5 +1,8 @@
 //Handles the charts for the homepage and the auth.
 let hasAuthorized = false;
+// Show the last modal :(
+let theFinalModal: Modal;
+// dah du dah dah, .....
 
 // start the app authentication process
 async function startAuthProcess() {
@@ -38,6 +41,26 @@ async function loadBotStats() {
     document.getElementById("quoteCount")!.innerHTML = quoteCount.toString();
     document.getElementById("commandCount")!.innerHTML = commandCount.toString();
     document.getElementById("pointCount")!.innerHTML = pointCount.toString();
+
+    theFinalModal = new Modal(document.getElementById("theFinalModal"), {});
+    if (!CacheStore.get("theEnd", false)) {
+        theFinalModal.show();
+    }
+}
+
+function acceptTheEnd() {
+    // Prevent the end message from showing.
+    CacheStore.set("theEnd", true);
+    theFinalModal.hide();
+
+    // Restart the bot incase of the modal glitch
+    ipcRenderer.send("window", "refresh");
+}
+
+function denyTheEnd() {
+    // Remove modal, but don't update the setting
+    theFinalModal.hide();
+    showToast("If you have a popup bug, press CTRL+R to reload the bot. Sorry about that!");
 }
 
 /**
@@ -48,7 +71,7 @@ function checkForUpdate() {
   	const version = document.getElementById('version')!;
   	ipcRenderer.send('app_version');
   	ipcRenderer.on('app_version', (event, arg) => {
-    	console.log("Recieved app_version with : " + arg.version)
+    	console.log("Received app_version with : " + arg.version)
     	version.innerText = 'Version ' + arg.version;
     	ipcRenderer.removeAllListeners('app_version');
   	});
@@ -59,7 +82,7 @@ function checkForUpdate() {
 
   	ipcRenderer.on('update_available', () => {
     	ipcRenderer.removeAllListeners('update_available');
-    	console.log("Update Avaible")
+    	console.log("Update Available")
     	message.innerText = 'A new update is available. Downloading now...';
     	notification.classList.remove('hidden');
   	});
