@@ -12,6 +12,8 @@ Windows may display a warning. This is due to the lack of official licensing. Se
 
 ## Authorization
 
+> **While Glimesh is closing down, you can still use Glimboi with custom Gimesh instances/servers! See the release notes for [v2.7.6](https://github.com/aMytho/GlimBoi/releases/tag/v2.7.6)**
+
 GlimBoi requires authentication to talk as a bot/streamer account. Press authorize on the bot homepage. It will ask you to log in with a glimesh account. The account that authorizes the bot will be the one that the bot uses to speak. If you want the bot to talk as the streamer account log in with that account. If you want a custom bot name you need a Glimesh account with that name.
 
 Once logged in you can go back to the bot. You can head to the chat page and start using Glimboi!
@@ -31,21 +33,22 @@ For docs, tutorials, and other info view the Glimboi [website](https://glimboi.c
 
 ### Command Action System
 Run macro like scripts to create truly unique commands. Supports much more than chat messages!
-[![image](https://user-images.githubusercontent.com/58316242/145436403-48629e62-7b6f-4836-b5c5-347effa0900b.png)
-](https://glimboi.com/docs/commands/commands/)
+[![Glimboi Command System](https://github.com/aMytho/GlimBoi/assets/58316242/d6c500a6-9350-46e4-8f53-871616d53ce1)](https://glimboi.com/docs/commands/commands/)
+
 
 ### User Database and Currency System
 Store data on your users. Give them custom ranks and reward them with currency.
-[![image](https://user-images.githubusercontent.com/58316242/145437132-14701ecb-1912-4fcc-b4e2-f50c46764b26.png)
+[![Glimboi User Page](https://github.com/aMytho/GlimBoi/assets/58316242/7a1b7244-6fe8-4404-8630-82c793f01c20)
 ](https://glimboi.com/docs/users/users/)
-[![image](https://user-images.githubusercontent.com/58316242/145436832-7e5febe6-d4d9-4243-94df-a9f66c9b21ab.png)
+
+[![Rank System](https://github.com/aMytho/GlimBoi/assets/58316242/9c2b98f6-9c11-4036-b3a2-c0c571eed33a)
 ](https://glimboi.com/docs/users/ranks/)
-[![image](https://user-images.githubusercontent.com/58316242/145436738-4826f402-e182-4564-a79d-f7f0b16a342d.png)
+[![Point Leaderboard](https://github.com/aMytho/GlimBoi/assets/58316242/dfe066c3-78c2-4986-8292-526493ca29f7)
 ](https://glimboi.com/docs/users/points/)
 
 ### Events and games
 Glimboi supports various chat games to play with your chat. Most events use the currency system.
-[![image](https://user-images.githubusercontent.com/58316242/145437444-6c7a2958-191b-4e88-951e-3cccb74c6334.png)
+[![image](https://github.com/aMytho/GlimBoi/assets/58316242/09051206-f28b-4876-8624-82d17f65c7d1)
 ](https://glimboi.com/docs/miscellaneous/events/)
 
 ### Media System
