@@ -42,12 +42,19 @@ function checkIfEnabled() {
  * Builds the message to be sent to the webhook.
  */
 function buildGuildedMessage([thumbnail, title, streamer, guildedMessage]): string {
+    let theUrl = "";
+    if (CacheStore.get("useGlimeshHTTPS")) {
+        theUrl = "https://" + CacheStore.get("glimeshURL", "glimesh.tv");
+    } else {
+        theUrl = "http://" + CacheStore.get("glimeshURL", "glimesh.tv");
+    }
+
     if (thumbnail) {
         let body = {
             "content": guildedMessage,
             "embeds": [{
                 "title": `${title}`,
-                "url": `https://glimesh.tv/${streamer}`,
+                "url": `${theUrl}/${streamer}`,
                 "color": 3164874,
                 "footer": {
                     "text": "Sent from Glimboi"
@@ -67,7 +74,7 @@ function buildGuildedMessage([thumbnail, title, streamer, guildedMessage]): stri
             "content": guildedMessage,
             "embeds": [{
                 "title": `${streamer} just went live on Glimesh`,
-                "url": `https://glimesh.tv/${streamer}`,
+                "url": `${theUrl}/${streamer}`,
                 "color": 3164874,
                 "footer": {
                     "text": "Sent from Glimboi"

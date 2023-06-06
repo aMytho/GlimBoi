@@ -40,8 +40,15 @@ function glimeshError(data:Glimesh.RootQueryType): Glimesh.RootQueryType["data"]
 }
 
 async function glimeshQuery(query): Promise<Glimesh.RootQueryType["data"] | false | null> {
+    let theUrl = "";
+    if (CacheStore.get("useGlimeshHTTPS")) {
+        theUrl = "https://" + CacheStore.get("glimeshURL", "glimesh.tv") + "/api/graph";
+    } else {
+        theUrl = "http://" + CacheStore.get("glimeshURL", "glimesh.tv") + "/api/graph";
+    }
+
     let token = AuthHandle.getToken();
-    let result = await fetch("https://glimesh.tv/api/graph", {method: "POST", body: query, headers: {Authorization: `Bearer ${token}`}});
+    let result = await fetch(theUrl, {method: "POST", body: query, headers: {Authorization: `Bearer ${token}`}});
     let parsedResult:Glimesh.RootQueryType = await result.json();
     console.log(parsedResult);
     if (parsedResult.errors) {
@@ -190,7 +197,13 @@ async function glimeshApiRequest(requestInfo: any, key:glimeshMutation): Promise
     console.log("key is" + key);
     let token = AuthHandle.getToken();
     return new Promise(async resolve => {
-        let requestResult = await fetch("https://glimesh.tv/api", { method: "POST", body: requestInfo, headers: { Authorization: `bearer ${token}` } })
+        let theUrl = "";
+        if (CacheStore.get("useGlimeshHTTPS")) {
+            theUrl = "https://" + CacheStore.get("glimeshURL", "glimesh.tv") + "/api";
+        } else {
+            theUrl = "http://" + CacheStore.get("glimeshURL", "glimesh.tv") + "/api";
+        }
+        let requestResult = await fetch(theUrl, { method: "POST", body: requestInfo, headers: { Authorization: `bearer ${token}` } })
         let data = await requestResult.json();
         try {
             console.log(data);
@@ -241,7 +254,7 @@ async function getStreamerId(channelId: number) {
 }
 
  /**
-  * Returns the socail link requested of the channel that you are currently in
+  * Returns the social link requested of the channel that you are currently in
   * @param {string} social The type of social link (discord, youtube, etc)
   * @param {string} channel The channel to request the info from
   * @returns {Promise}

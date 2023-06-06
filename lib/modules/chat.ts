@@ -52,7 +52,13 @@ function isConnected(): boolean {
  * @param {number} channelID The channel ID for the channel we are joining
  */
 function connectToGlimesh(access_token:string, channelID:number, isReconnect:boolean) {
-    const url = `wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&client_id=${AuthHandle.getClientID()}` // The websocket URL
+    let theUrl = "";
+    if (CacheStore.get("useGlimeshHTTPS")) {
+        theUrl = "wss://" + CacheStore.get("glimeshURL", "glimesh.tv");
+    } else {
+        theUrl = "ws://" + CacheStore.get("glimeshURL", "glimesh.tv");
+    }
+    const url = `${theUrl}/api/socket/websocket?vsn=2.0.0&client_id=${AuthHandle.getClientID()}` // The websocket URL
     connection = new WebSocket(url); // Connection is now an offical connection!
     chatID = channelID // The channel ID is now an accessible variable for this module
 
@@ -91,7 +97,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         }
     });
 
-    //We recieve a message from glimesh chat! (includes heartbeats and other info)
+    //We receive a message from glimesh chat! (includes heartbeats and other info)
     connection.on("message", function incoming(event) {
         console.log(event);
         event = JSON.parse(event.toString());
@@ -119,7 +125,7 @@ function connectToGlimesh(access_token:string, channelID:number, isReconnect:boo
         console.log(event);
         console.trace("Connection closed");
         try {
-            clearInterval(heartbeat); // stops the hearbteat
+            clearInterval(heartbeat); // stops the heartbeat
             ChatSettings.stopChatSettings(); // stops everything else
             ChatStats.stopChatStats();
             ChatLogger.endMessageLogging();

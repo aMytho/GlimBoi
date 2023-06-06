@@ -399,8 +399,12 @@ async function loadUserTable() {
     $('#userTable').on('click', ' tbody tr a', function (e) {
         e.stopPropagation();
         let data = userTable.row($(this).parents('tr')).data();
-        console.log(data)
-        loadLink("glimesh.tv/" + data.userName)
+        console.log(data);
+        if (CacheStore.get("useGlimeshHTTPS", true)) {
+            loadLink("https://" + CacheStore.get("glimeshURL", "glimesh.tv") + "/" + data.userName);
+        } else {
+            loadLink("http://" + CacheStore.get("glimeshURL", "glimesh.tv") + "/" + data.userName);
+        }
     });
     $('#userTable').on('click', ' tbody tr', async function (e) {
         console.log("zzz");
