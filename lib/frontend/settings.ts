@@ -6,12 +6,8 @@ ModHandle.loadFilter(appData[1]);
 // removes the disable class on the navbar
 function unlockBot() {
     try {
-        let mainNav = document.getElementById("mainNavBar")!;
-        let navItems = [...mainNav.children];
-        // Remove the diable class from all navbar items
-        navItems.forEach(item => {
-            //item.firstElementChild!.classList.remove("disabled");
-        });
+        // No more auth, no more need for this function.
+        console.log("Unlocked! There isn't really a need for this anymore...")
     } catch (e) {
         console.log("error unlocking bot. It may already be unlocked.")
         errorMessage("Error unlocking bot. This is a unknown bug. You can report it to Mytho at the git repo or through any other means.",  "A restart may fix the problem.")
@@ -97,6 +93,13 @@ function showIntegrations() {
     (document.getElementById("matrixRoom") as HTMLInputElement)!.value = CacheStore.get("matrixRoom", "");
     if (CacheStore.get("matrixConfirmation", true)) {
         document.getElementById("matrixConfirmation")!.toggleAttribute("checked");
+    }
+
+    // New Origin Server - - -
+    (document.getElementById("newServerURL") as HTMLInputElement).value = CacheStore.get("glimeshURL", "glimesh.tv");
+    (document.getElementById("newClientID") as HTMLInputElement).value = CacheStore.get("glimeshClientID", "468920e4-d88f-46ee-bbf6-94bed88d8872");
+    if (CacheStore.get("useGlimeshHTTPS", true)) {
+        document.getElementById("useHttps")!.toggleAttribute("checked");
     }
 
 }
@@ -222,6 +225,16 @@ function importData() {
     }
     let {importBackup} = require(appData[0] + "/modules/files/backup.js");
     importBackup(selectedFiles);
+}
+
+function useNewURL() {
+    let newURL = (document.getElementById("newServerURL") as HTMLInputElement).value.trim();
+    CacheStore.set("glimeshURL", newURL);
+    let useHTTPS = (document.getElementById("useHttps") as HTMLInputElement).checked;
+    CacheStore.set("useGlimeshHTTPS", useHTTPS);
+    let newClientID = (document.getElementById("newClientID") as HTMLInputElement).value.trim();
+    CacheStore.set("glimeshClientID", newClientID);
+    showToast("Server updated. Good luck with your new platform!");
 }
 
 //applies the settings. This is ran at launch after the file is read. Once finished the bot is fully ready

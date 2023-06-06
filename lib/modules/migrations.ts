@@ -8,6 +8,7 @@ function migrate() {
     checkForScreenShots();
     checkForMediaOverlay();
     checkForCommandTriggers();
+    checkForHoldOnAMinCommaCriesCommaTheFinalUpdate()
 }
 
 /**
@@ -68,6 +69,23 @@ async function checkForCommandTriggers() {
         CacheStore.set("hasCommandTriggers", true);
     } else {
         console.log("Triggers found, skipping conversion");
+    }
+}
+
+function checkForHoldOnAMinCommaCriesCommaTheFinalUpdate() {
+    // Oh well, we had fun.
+    let knowsAboutTheEnd = CacheStore.get("setFinalURL", false);
+    if (!knowsAboutTheEnd) {
+        // But now the end has come..
+        
+        // Set the new URL
+        CacheStore.set("glimeshURL", "glimesh.tv");
+        CacheStore.set("useGlimeshHTTPS", true);
+        // There is also a new client ID, but every use has the default value
+        // Don't run this function again
+        CacheStore.set("setFinalURL", true);
+        
+        // My glimboi dev is now done...
     }
 }
 

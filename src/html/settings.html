@@ -248,6 +248,7 @@
             Backup</a>
         <a class="btn-info mx-2" href="#" data-modal-toggle="importBackup">Import
             Backup</a>
+        <a class="btn-warning mx-2 red-pulse-server" style="display: flex !important;" href="#" data-modal-toggle="showServer">Edit Server</a>
     </div>
 </div>
 
@@ -277,7 +278,7 @@
             <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
                 <p id="errorQuoteExit"></p>
                 <button type="button" class="mb-0 btn-warning" data-modal-toggle="openDB">Close</button>
-                <button class="mb-0 btn-danger" onclick="ipcRenderer.invoke('openPath', appData[1] + '/data/', 'internal')">Open</button>
+                <button class="mb-0 btn-danger" onclick="ipcRenderer.invoke('openPath', appData[1] + '\\data', 'internal')">Open</button>
             </div>
         </div>
     </div>
@@ -437,6 +438,55 @@
             <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
                 <button type="button" class="mb-0 btn-warning" data-modal-toggle="importBackup">Close</button>
                 <button class="mb-0 btn-success" onclick="importData()">Import Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full"
+    id="showServer" tabindex="-1" aria-hidden="true" style="overflow-wrap: break-word;">
+    <div class="relative max-w-xl h-full md:h-auto whiteText">
+        <div class="rounded-lg shadow p-4 relative glimPanel whiteText">
+            <!--Header-->
+            <div class="text-center w-full border-solid border-b-2 border-blue-300 pb-2">
+                <h4 class="text-center whiteText font-bold text-2xl w-full">Modify Server</h4>
+            </div>
+            <!--Body-->
+            <div class="px-6 pb-4 mt-8">
+                <div class="prose prose-base">
+                    <p class="whiteText">You can manually change the server URL that Glimboi connects to. Previously, this was glimesh.tv. Since they are closing down, you can now change that URL to any new instance of Glimesh!</p>
+                    <p class="whiteText">You <b>must</b> export your bot data and delete any existing bot data.
+                    Exporting can be done with the export button on this page. Deletion can be done with the Show Database button.
+                    Once the folder is open, delete it all. There is no undo!
+                    You may want to browse through the data. Many memories, and bot internals can be seen. The files are all human readable(use notepad), albeit some symbols.</p>
+                    <p class="whiteText">Include only the root server URL. For example, mytho.tv, myWebsite.net. Do not include https://</p>
+                    <input class="settingsInput max-w-none w-full" style="width: 100%;" value="glimesh.tv" type="url" placeholder="Server URL. Glimesh.tv, etc."
+                    id="newServerURL">
+                    <div class="niceSwitch mt-2 whiteText">
+                        <label class="switch">
+                            <input type="checkbox" id="useHttps">
+                            <span class="slider round"></span>
+                        </label>
+                        <p class="mx-0 mb-0 my-0">Use HTTPS / WSS</p>
+                    </div>
+
+                    <p class="whiteText">If you are not using the official website, you will need to provide your own client ID.
+                        You may need to make a new developer application. This can be done from the applications page in Settings on the Glimesh website.
+                        The form fields will accept any data, but the redirect url must be exactly http://localhost:3000
+                        . If you return to the main site, the default ID is 468920e4-d88f-46ee-bbf6-94bed88d8872
+                    </p>
+                    <input class="settingsInput max-w-none w-full" style="width: 100%;" value="468920e4-d88f-46ee-bbf6-94bed88d8872" type="text" placeholder="Client ID"
+                    id="newClientID">
+                    
+
+                    <p class="errorMessage whiteText font-bold text-xl">Backup your files before changing this. Remove any bot data after doing so.</p>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="flex justify-end relative bottom-0 mr-8 mt-8 w-full border-t-2 border-blue-300 border-solid py-2">
+                <p id="errorQuoteExit"></p>
+                <button type="button" class="mb-0 btn-warning" data-modal-toggle="showServer">Close</button>
+                <button class="mb-0 btn-primary" data-modal-toggle="showServer" onclick="useNewURL()">Switch Server</button>
             </div>
         </div>
     </div>
